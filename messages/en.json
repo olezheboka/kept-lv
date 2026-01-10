@@ -1,0 +1,120 @@
+{
+  "common": {
+    "appName": "KEPT",
+    "tagline": "Political Promise Accountability",
+    "home": "Home",
+    "promises": "Promises",
+    "politicians": "Politicians",
+    "about": "About",
+    "admin": "Admin",
+    "login": "Login",
+    "logout": "Logout",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "loading": "Loading...",
+    "error": "Error",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "viewMore": "View more",
+    "readMore": "Read more",
+    "share": "Share",
+    "language": "Language"
+  },
+  "status": {
+    "kept": "KEPT",
+    "notKept": "NOT KEPT",
+    "inProgress": "IN PROGRESS",
+    "abandoned": "ABANDONED",
+    "partial": "PARTIAL"
+  },
+  "home": {
+    "heroTitle": "Track Political Promises",
+    "heroSubtitle": "A transparent platform for political accountability in Latvia",
+    "statsTitle": "Statistics",
+    "totalPromises": "Total Promises",
+    "featuredTitle": "Latest Promises",
+    "viewAllPromises": "View all promises",
+    "ctaTitle": "Help Us Track",
+    "ctaText": "If you have information about political promises, contact us."
+  },
+  "promises": {
+    "title": "Promises",
+    "subtitle": "Browse and filter political promises",
+    "filterByStatus": "Filter by status",
+    "filterByPolitician": "Filter by politician",
+    "filterByCategory": "Filter by category",
+    "filterByParty": "Filter by party",
+    "dateFrom": "Date from",
+    "dateTo": "Date to",
+    "searchPlaceholder": "Search promises...",
+    "noResults": "No promises found",
+    "promiseDate": "Promised",
+    "source": "Source",
+    "evidence": "Evidence",
+    "explanation": "Explanation",
+    "whyStatus": "Why is this promise {status}?"
+  },
+  "politicians": {
+    "title": "Politicians",
+    "subtitle": "Learn about politicians and their promises",
+    "promises": "promises",
+    "party": "Party",
+    "biography": "Biography",
+    "promiseHistory": "Promise History"
+  },
+  "categories": {
+    "economy": "Economy",
+    "healthcare": "Healthcare",
+    "environment": "Environment",
+    "infrastructure": "Infrastructure",
+    "education": "Education",
+    "security": "Security",
+    "other": "Other"
+  },
+  "about": {
+    "title": "About KEPT",
+    "subtitle": "Our mission is to make the political process more transparent",
+    "mission": "Mission",
+    "missionText": "KEPT is an independent platform that tracks political promises and their fulfillment. We believe transparency is the foundation of democracy.",
+    "howItWorks": "How It Works",
+    "howItWorksText": "We collect political promises from various sources - interviews, press conferences, social media - and track their fulfillment.",
+    "contact": "Contact"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "managePromises": "Manage Promises",
+    "managePoliticians": "Manage Politicians",
+    "manageParties": "Manage Parties",
+    "manageCategories": "Manage Categories",
+    "addNew": "Add New",
+    "editItem": "Edit",
+    "deleteConfirm": "Are you sure you want to delete?",
+    "saved": "Saved!",
+    "stats": {
+      "totalPromises": "Total Promises",
+      "totalPoliticians": "Total Politicians",
+      "totalParties": "Total Parties",
+      "keptRate": "Kept Rate"
+    }
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Login",
+    "loginError": "Invalid email or password",
+    "logoutSuccess": "You have been logged out"
+  },
+  "footer": {
+    "copyright": "KEPT - Political Promise Accountability",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  }
+}

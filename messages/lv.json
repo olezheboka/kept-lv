@@ -1,0 +1,120 @@
+{
+  "common": {
+    "appName": "KEPT",
+    "tagline": "Politisko solījumu uzskaite",
+    "home": "Sākums",
+    "promises": "Solījumi",
+    "politicians": "Politiķi",
+    "about": "Par mums",
+    "admin": "Administrācija",
+    "login": "Ieiet",
+    "logout": "Iziet",
+    "search": "Meklēt",
+    "filter": "Filtrēt",
+    "all": "Visi",
+    "loading": "Ielādē...",
+    "error": "Kļūda",
+    "save": "Saglabāt",
+    "cancel": "Atcelt",
+    "delete": "Dzēst",
+    "edit": "Rediģēt",
+    "create": "Izveidot",
+    "back": "Atpakaļ",
+    "next": "Tālāk",
+    "previous": "Iepriekšējais",
+    "viewMore": "Skatīt vairāk",
+    "readMore": "Lasīt vairāk",
+    "share": "Dalīties",
+    "language": "Valoda"
+  },
+  "status": {
+    "kept": "IZPILDĪTS",
+    "notKept": "NEIZPILDĪTS",
+    "inProgress": "PROCESĀ",
+    "abandoned": "PAMESTS",
+    "partial": "DAĻĒJI"
+  },
+  "home": {
+    "heroTitle": "Sekojiet līdzi politiķu solījumiem",
+    "heroSubtitle": "Pārskatāma platforma politiskās atbildības uzskaitei Latvijā",
+    "statsTitle": "Statistika",
+    "totalPromises": "Kopā solījumu",
+    "featuredTitle": "Jaunākie solījumi",
+    "viewAllPromises": "Skatīt visus solījumus",
+    "ctaTitle": "Palīdziet mums sekot līdzi",
+    "ctaText": "Ja jums ir informācija par politiķu solījumiem, sazinieties ar mums."
+  },
+  "promises": {
+    "title": "Solījumi",
+    "subtitle": "Pārskatiet un filtrējiet politiķu solījumus",
+    "filterByStatus": "Filtrēt pēc statusa",
+    "filterByPolitician": "Filtrēt pēc politiķa",
+    "filterByCategory": "Filtrēt pēc kategorijas",
+    "filterByParty": "Filtrēt pēc partijas",
+    "dateFrom": "Datums no",
+    "dateTo": "Datums līdz",
+    "searchPlaceholder": "Meklēt solījumos...",
+    "noResults": "Nav atrasti solījumi",
+    "promiseDate": "Solīts",
+    "source": "Avots",
+    "evidence": "Pierādījumi",
+    "explanation": "Paskaidrojums",
+    "whyStatus": "Kāpēc šis solījums ir {status}?"
+  },
+  "politicians": {
+    "title": "Politiķi",
+    "subtitle": "Iepazīstieties ar politiķiem un viņu solījumiem",
+    "promises": "solījumi",
+    "party": "Partija",
+    "biography": "Biogrāfija",
+    "promiseHistory": "Solījumu vēsture"
+  },
+  "categories": {
+    "economy": "Ekonomika",
+    "healthcare": "Veselības aprūpe",
+    "environment": "Vide",
+    "infrastructure": "Infrastruktūra",
+    "education": "Izglītība",
+    "security": "Drošība",
+    "other": "Citi"
+  },
+  "about": {
+    "title": "Par KEPT",
+    "subtitle": "Mūsu misija ir padarīt politisko procesu caurskatāmāku",
+    "mission": "Misija",
+    "missionText": "KEPT ir neatkarīga platforma, kas seko līdzi politiķu solījumiem un to izpildei. Mēs uzskatām, ka caurskatāmība ir demokrātijas pamats.",
+    "howItWorks": "Kā tas darbojas",
+    "howItWorksText": "Mēs apkopojam politiķu solījumus no dažādiem avotiem - intervijām, preses konferencēm, sociālajiem tīkliem - un sekojam līdzi to izpildei.",
+    "contact": "Kontakti"
+  },
+  "admin": {
+    "dashboard": "Panelis",
+    "managePromises": "Pārvaldīt solījumus",
+    "managePoliticians": "Pārvaldīt politiķus",
+    "manageParties": "Pārvaldīt partijas",
+    "manageCategories": "Pārvaldīt kategorijas",
+    "addNew": "Pievienot jaunu",
+    "editItem": "Rediģēt",
+    "deleteConfirm": "Vai tiešām vēlaties dzēst?",
+    "saved": "Saglabāts!",
+    "stats": {
+      "totalPromises": "Kopā solījumu",
+      "totalPoliticians": "Kopā politiķu",
+      "totalParties": "Kopā partiju",
+      "keptRate": "Izpildes rādītājs"
+    }
+  },
+  "auth": {
+    "loginTitle": "Ieiet sistēmā",
+    "email": "E-pasts",
+    "password": "Parole",
+    "loginButton": "Ieiet",
+    "loginError": "Nepareizs e-pasts vai parole",
+    "logoutSuccess": "Jūs esat veiksmīgi izgājis"
+  },
+  "footer": {
+    "copyright": "KEPT - Politisko solījumu uzskaite",
+    "privacy": "Privātuma politika",
+    "terms": "Lietošanas noteikumi"
+  }
+}

@@ -1,0 +1,114 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { updatePoliticianSchema } from "@/lib/validators";
+import { auth } from "@/lib/auth";
+import { Prisma } from "@prisma/client";
+
+type RouteParams = { params: Promise<{ id: string }> };
+
+export async function GET(request: NextRequest, { params }: RouteParams) {
+  try {
+    const { id } = await params;
+
+    const politician = await prisma.politician.findUnique({
+      where: { id },
+      include: {
+        party: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            color: true,
+            logoUrl: true,
+          },
+        },
+        promises: {
+          include: {
+            category: true,
+            sources: true,
+          },
+          orderBy: { dateOfPromise: "desc" },
+        },
+      },
+    });
+
+    if (!politician) {
+      return NextResponse.json(
+        { error: "Politician not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(politician);
+  } catch (error) {
+    console.error("Error fetching politician:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch politician" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request: NextRequest, { params }: RouteParams) {
+  try {
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id } = await params;
+    const body = await request.json();
+    const parsed = updatePoliticianSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: parsed.error.issues },
+        { status: 400 }
+      );
+    }
+
+    const { bio, ...rest } = parsed.data;
+
+    const politician = await prisma.politician.update({
+      where: { id },
+      data: {
+        ...rest,
+        ...(bio !== undefined && { bio: bio ? (bio as Prisma.InputJsonValue) : Prisma.JsonNull }),
+      },
+      include: {
+        party: true,
+      },
+    });
+
+    return NextResponse.json(politician);
+  } catch (error) {
+    console.error("Error updating politician:", error);
+    return NextResponse.json(
+      { error: "Failed to update politician" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  try {
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id } = await params;
+
+    await prisma.politician.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting politician:", error);
+    return NextResponse.json(
+      { error: "Failed to delete politician" },
+      { status: 500 }
+    );
+  }
+}
