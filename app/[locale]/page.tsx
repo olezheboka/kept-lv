@@ -105,9 +105,7 @@ const Index = () => {
                             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                                 Aktuālie solījumi
                             </h2>
-                            <p className="text-muted-foreground">
-                                Svarīgākie solījumi, ko šobrīd uzraugām
-                            </p>
+
                         </div>
                         <Link href="/promises">
                             <Button variant="ghost" className="hidden md:flex gap-2">
@@ -141,9 +139,7 @@ const Index = () => {
                             <h2 className="text-2xl font-bold text-foreground mb-2">
                                 Kopējā statistika
                             </h2>
-                            <p className="text-muted-foreground mb-8">
-                                Visu solījumu sadalījums pēc statusa
-                            </p>
+
                             <Card className="border-border/50">
                                 <CardContent className="p-8">
                                     <StatsPieChart />
