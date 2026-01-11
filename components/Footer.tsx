@@ -8,10 +8,9 @@ export const Footer = () => {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-                <span className="text-accent-foreground font-bold text-sm">K</span>
-              </div>
-              <span className="font-bold text-xl text-foreground">Kept</span>
+              <span className="font-bold text-2xl bg-[linear-gradient(180deg,#9E1B34_0%,#9E1B34_50%,#ffffff_50%,#ffffff_60%,#9E1B34_60%,#9E1B34_100%)] bg-clip-text text-transparent decoration-clone drop-shadow-sm pb-1">
+                solijums.lv
+              </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Sekojam līdzi Latvijas politiķu solījumiem un to izpildei.
@@ -88,7 +87,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 mt-8 border-t border-border">
           <p className="text-sm text-muted-foreground">
-            © 2025 Kept. Visas tiesības aizsargātas.
+            © 2025 solijums.lv. Visas tiesības aizsargātas.
           </p>
           <div className="flex items-center gap-4">
             <span className="text-xs text-muted-foreground">
