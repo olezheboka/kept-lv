@@ -6,16 +6,9 @@ import { PromiseCard } from "@/components/PromiseCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-    promises,
-    getFeaturedPromises,
-    getPoliticianRankings,
-    getPartyRankings,
-} from "@/lib/data";
 import { RankingCard } from "@/components/RankingCard";
-import { CATEGORIES } from "@/lib/types";
 import {
     ArrowRight,
-    TrendingUp,
     Quote,
 } from "lucide-react";
 
@@ -123,63 +116,6 @@ const Index = () => {
                                 </a>
                             </footer>
                         </blockquote>
-                    </div>
-                </div>
-            </section>
-
-            {/* Categories Grid */}
-            <section className="py-16 md:py-20">
-                <div className="container-wide">
-                    <div className="text-center mb-12">
-                        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-                            Pārlūkot pēc kategorijas
-                        </h2>
-
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {CATEGORIES.slice(0, 8).map((category, index) => {
-                            const count = promises.filter(
-                                (p) => p.category === category.id,
-                            ).length;
-                            return (
-                                <motion.div
-                                    key={category.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                >
-                                    <Link href={`/categories/${category.id}`}>
-                                        <Card className="group border-border/50 hover:border-accent/50 hover:shadow-medium transition-all duration-300">
-                                            <CardContent className="p-5">
-                                                <div className="flex items-center justify-between mb-3">
-                                                    <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
-                                                        <TrendingUp className="h-5 w-5" />
-                                                    </div>
-                                                    <span className="text-sm font-medium text-muted-foreground">
-                                                        {count} solījumi
-                                                    </span>
-                                                </div>
-                                                <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">
-                                                    {category.name}
-                                                </h3>
-                                                <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
-                                                    {category.description}
-                                                </p>
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                </motion.div>
-                            );
-                        })}
-                    </div>
-
-                    <div className="mt-8 text-center">
-                        <Link href="/categories">
-                            <Button variant="outline" className="gap-2">
-                                Visas kategorijas <ArrowRight className="h-4 w-4" />
-                            </Button>
-                        </Link>
                     </div>
                 </div>
             </section>
