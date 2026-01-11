@@ -78,9 +78,14 @@ const PoliticianDetail = () => {
                         className="flex flex-col md:flex-row items-start gap-6"
                     >
                         <Avatar className="h-24 w-24 md:h-32 md:w-32 border-4 border-background shadow-lg">
-                            <AvatarImage src={politician.photoUrl} alt={politician.name} />
-                            <AvatarFallback className="text-2xl">
-                                {politician.name.split(' ').map(n => n[0]).join('')}
+                            {party?.logoUrl ? (
+                                <AvatarImage src={party.logoUrl} alt={party.name} />
+                            ) : null}
+                            <AvatarFallback
+                                className="text-2xl font-bold text-white uppercase"
+                                style={{ backgroundColor: party?.color || '#333' }}
+                            >
+                                {party?.abbreviation || '?'}
                             </AvatarFallback>
                         </Avatar>
 

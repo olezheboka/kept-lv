@@ -120,9 +120,14 @@ const Politicians = () => {
                                             <CardContent className="p-5">
                                                 <div className="flex items-start gap-4 mb-4">
                                                     <Avatar className="h-16 w-16 border-2 border-background shadow-md">
-                                                        <AvatarImage src={politician.photoUrl} alt={politician.name} />
-                                                        <AvatarFallback className="text-lg bg-muted">
-                                                            {politician.name.split(' ').map(n => n[0]).join('')}
+                                                        {party?.logoUrl ? (
+                                                            <AvatarImage src={party.logoUrl} alt={party.name} />
+                                                        ) : null}
+                                                        <AvatarFallback
+                                                            className="text-lg font-bold text-white uppercase"
+                                                            style={{ backgroundColor: party?.color || '#333' }}
+                                                        >
+                                                            {party?.abbreviation || '?'}
                                                         </AvatarFallback>
                                                     </Avatar>
                                                     <div className="flex-1 min-w-0">

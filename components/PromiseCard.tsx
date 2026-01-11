@@ -49,9 +49,14 @@ export const PromiseCard = ({ promise, index = 0 }: PromiseCardProps) => {
             {/* Politician Info */}
             <div className="flex items-center gap-3 mb-4">
               <Avatar className="h-9 w-9 border-2 border-background shadow-sm">
-                <AvatarImage src={politician.photoUrl} alt={politician.name} />
-                <AvatarFallback className="text-xs bg-muted">
-                  {politician.name.split(' ').map(n => n[0]).join('')}
+                {party.logoUrl ? (
+                  <AvatarImage src={party.logoUrl} alt={party.name} />
+                ) : null}
+                <AvatarFallback
+                  className="text-[10px] font-bold text-white uppercase"
+                  style={{ backgroundColor: party.color }}
+                >
+                  {party.abbreviation}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
