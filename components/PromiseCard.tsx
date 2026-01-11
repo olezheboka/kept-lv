@@ -27,10 +27,11 @@ export const PromiseCard = ({ promise, index = 0 }: PromiseCardProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
+      className="h-full"
     >
-      <Link href={`/promises/${promise.id}`}>
-        <Card className="group overflow-hidden border-border/50 bg-card hover:shadow-elevated hover:border-border transition-all duration-300 cursor-pointer">
-          <CardContent className="p-5 relative pt-8">
+      <Link href={`/promises/${promise.id}`} className="block h-full">
+        <Card className="group h-full flex flex-col overflow-hidden border-border/50 bg-card hover:shadow-elevated hover:border-border transition-all duration-300 cursor-pointer">
+          <CardContent className="p-5 relative pt-8 flex flex-col h-full">
             {/* Status Badge - Absolute Top Right */}
             <div className="absolute top-0 right-0">
               <StatusBadge status={promise.status} className="rounded-none rounded-bl-lg" />
@@ -50,39 +51,42 @@ export const PromiseCard = ({ promise, index = 0 }: PromiseCardProps) => {
             </div>
 
             {/* Title */}
-            <h3 className="font-semibold text-lg text-foreground leading-snug mb-4 line-clamp-2 group-hover:text-accent transition-colors">
+            <h3 className="font-semibold text-lg text-foreground leading-snug mb-4 line-clamp-3 group-hover:text-accent transition-colors flex-1">
               {promise.title}
             </h3>
 
-            {/* Footer: Timeline */}
-            <div className="flex items-center justify-between pt-3 border-t border-border/50 gap-2">
-              {/* Date Promised */}
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Solīts</span>
-                <div className="flex items-center gap-1.5 text-xs text-foreground">
-                  <Calendar size={12} className="text-muted-foreground" />
-                  <span>{new Date(promise.datePromised).toLocaleDateString('lv-LV')}</span>
+            {/* FooterContainer - pushed to bottom */}
+            <div className="mt-auto space-y-2">
+              {/* Footer: Timeline */}
+              <div className="flex items-center justify-between pt-3 border-t border-border/50 gap-2">
+                {/* Date Promised */}
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Solīts</span>
+                  <div className="flex items-center gap-1.5 text-xs text-foreground">
+                    <Calendar size={12} className="text-muted-foreground" />
+                    <span>{new Date(promise.datePromised).toLocaleDateString('lv-LV')}</span>
+                  </div>
+                </div>
+
+                {/* Deadline */}
+                <div className="flex flex-col gap-0.5 text-right">
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Termiņš</span>
+                  <div className="flex items-center gap-1.5 text-xs text-foreground justify-end">
+                    <span className="font-medium">
+                      {promise.deadline
+                        ? new Date(promise.deadline).toLocaleDateString('lv-LV')
+                        : '—'
+                      }
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              {/* Deadline */}
-              <div className="flex flex-col gap-0.5 text-right">
-                <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Termiņš</span>
-                <div className="flex items-center gap-1.5 text-xs text-foreground justify-end">
-                  <span className="font-medium">
-                    {promise.deadline
-                      ? new Date(promise.deadline).toLocaleDateString('lv-LV')
-                      : '—'
-                    }
-                  </span>
-                </div>
-              </div>
+              {/* Updated indicator */}
+              <p className="text-[10px] text-muted-foreground">
+                Atjaunots {formatDistanceToNow(new Date(promise.statusUpdatedAt), { addSuffix: true, locale: require('date-fns/locale').lv })}
+              </p>
             </div>
-
-            {/* Updated indicator */}
-            <p className="text-[10px] text-muted-foreground mt-2">
-              Atjaunots {formatDistanceToNow(new Date(promise.statusUpdatedAt), { addSuffix: true, locale: require('date-fns/locale').lv })}
-            </p>
           </CardContent>
         </Card>
       </Link>
