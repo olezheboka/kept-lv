@@ -75,7 +75,7 @@ const PromiseDetail = () => {
                                 <div className="mb-4 border-b border-border/50 pb-3">
                                     <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                                         <div className="flex-1 text-center md:text-left">
-                                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-2">
+                                            <div className="flex flex-wrap items-center gap-3 mb-2">
                                                 <Link href={`/politicians/${politician.id}`} className="group">
                                                     <h2 className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-accent transition-colors">
                                                         {politician.name}
