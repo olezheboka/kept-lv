@@ -10,6 +10,8 @@ import { RankingCard } from "@/components/RankingCard";
 import {
     ArrowRight,
     Quote,
+    Lightbulb,
+    AlertCircle,
 } from "lucide-react";
 
 const Index = () => {
@@ -121,29 +123,41 @@ const Index = () => {
             </section>
 
             {/* CTA Section */}
-            <section className="py-16 md:py-20 bg-primary text-primary-foreground">
+            <section className="py-16 md:py-24 bg-card border-t border-border">
                 <div className="container-wide">
-                    <div className="max-w-3xl mx-auto text-center">
-                        <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                            Palīdziet mums uzraudzīt demokrātiju
-                        </h2>
-                        <p className="text-primary-foreground/80 mb-8 text-lg">
-                            Ja pamanāt neprecizitāti vai vēlaties ieteikt jaunu solījumu
-                            uzraudzībai, sazinieties ar mums.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Link href="/about">
-                                <Button size="lg" variant="secondary" className="gap-2">
-                                    Uzzināt vairāk
+                    <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+                        {/* Suggest Promise */}
+                        <div className="bg-muted/30 border border-border/50 rounded-2xl p-8 flex flex-col items-start hover:border-primary/20 transition-colors">
+                            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6">
+                                <Lightbulb className="h-6 w-6" />
+                            </div>
+                            <h3 className="text-xl font-bold text-foreground mb-3">
+                                Ieteikt solījumu
+                            </h3>
+                            <p className="text-muted-foreground mb-8 leading-relaxed">
+                                Zini solījumu, kas šeit trūkst? Iesniedz to mums izskatīšanai un palīdzi veidot pilnīgāku ainu par politisko atbildību.
+                            </p>
+                            <Link href="mailto:info@kept.lv?subject=Jauns%20solījums" className="mt-auto">
+                                <Button size="lg" className="font-semibold">
+                                    Iesniegt priekšlikumu
                                 </Button>
                             </Link>
-                            <Link href="/methodology">
-                                <Button
-                                    size="lg"
-                                    variant="outline"
-                                    className="gap-2 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10"
-                                >
-                                    Mūsu metodoloģija
+                        </div>
+
+                        {/* Report Issue */}
+                        <div className="bg-muted/30 border border-border/50 rounded-2xl p-8 flex flex-col items-start hover:border-destructive/20 transition-colors">
+                            <div className="h-12 w-12 rounded-xl bg-destructive/10 flex items-center justify-center text-destructive mb-6">
+                                <AlertCircle className="h-6 w-6" />
+                            </div>
+                            <h3 className="text-xl font-bold text-foreground mb-3">
+                                Paziņot par problēmu
+                            </h3>
+                            <p className="text-muted-foreground mb-8 leading-relaxed">
+                                Pamanīji neprecizitāti datos vai tehnisku kļūdu? Dod mums ziņu, lai varam to pēc iespējas ātrāk novērst.
+                            </p>
+                            <Link href="mailto:support@kept.lv?subject=Kļūda%20vai%20problēma" className="mt-auto">
+                                <Button size="lg" variant="outline" className="font-semibold hover:text-destructive hover:border-destructive/50">
+                                    Ziņot par kļūdu
                                 </Button>
                             </Link>
                         </div>
