@@ -72,7 +72,7 @@ const PromiseDetail = () => {
                         >
                             {/* Header Section: Author & Date */}
                             {politician && party && (
-                                <div className="mb-8 border-b border-border/50 pb-6">
+                                <div className="mb-4 border-b border-border/50 pb-3">
                                     <div className="flex flex-col gap-1.5 mb-2">
                                         <div className="flex items-center gap-3">
                                             <Link href={`/politicians/${politician.id}`} className="group inline-flex items-center gap-2">
