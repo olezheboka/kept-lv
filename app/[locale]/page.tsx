@@ -100,7 +100,7 @@ const Index = () => {
             {/* Featured Promises */}
             <section className="py-16 md:py-20">
                 <div className="container-wide">
-                    <div className="flex items-end justify-between mb-8">
+                    <div className="flex items-end justify-between mb-4">
                         <div>
                             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                                 Aktuālie solījumi
@@ -152,9 +152,7 @@ const Index = () => {
                             <h2 className="text-2xl font-bold text-foreground mb-2">
                                 Pēdējie atjauninājumi
                             </h2>
-                            <p className="text-muted-foreground mb-8">
-                                Jaunākās izmaiņas solījumu statusos
-                            </p>
+
                             <Card className="border-border/50">
                                 <CardContent className="p-4">
                                     <div className="space-y-0">
@@ -204,9 +202,7 @@ const Index = () => {
                         <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
                             Pārlūkot pēc kategorijas
                         </h2>
-                        <p className="text-muted-foreground">
-                            Izvēlieties jomas, kas jūs interesē visvairāk
-                        </p>
+
                     </div>
 
                     <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
