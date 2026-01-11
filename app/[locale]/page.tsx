@@ -56,7 +56,7 @@ const Index = () => {
                 <div className="container-wide">
                     <div className="flex items-end justify-between mb-4">
                         <div>
-                            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                            <h2 className="text-xl md:text-3xl font-bold text-foreground mb-2">
                                 Aktuālie solījumi
                             </h2>
 
