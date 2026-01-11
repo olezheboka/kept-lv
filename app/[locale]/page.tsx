@@ -11,7 +11,6 @@ import {
     getPartyRankings,
 } from "@/lib/data";
 import { RankingCard } from "@/components/RankingCard";
-import { HeroBackground } from "@/components/HeroBackground";
 import {
     ArrowRight,
     Quote,
@@ -25,8 +24,8 @@ const Index = () => {
     return (
         <div className="flex flex-col bg-background">
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-background border-b border-border/50">
-                <HeroBackground />
+            <section className="relative overflow-hidden bg-gray-50/50 border-b border-border/50">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
                 <div className="container-wide py-10 md:py-12 relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
