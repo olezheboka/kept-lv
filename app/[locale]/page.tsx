@@ -20,6 +20,7 @@ import {
     CheckCircle2,
     XCircle,
     Clock,
+    Info,
 } from "lucide-react";
 
 const Index = () => {
@@ -129,6 +130,26 @@ const Index = () => {
                             type="party"
                             data={getPartyRankings()}
                         />
+                    </div>
+                </div>
+            </section>
+
+            {/* Trust Context Section */}
+            <section className="py-12 md:py-16 bg-primary/5">
+                <div className="container-wide">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="flex gap-4 md:gap-6">
+                            <div className="flex-shrink-0">
+                                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                                    <Info className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                                </div>
+                            </div>
+                            <div>
+                                <p className="text-base md:text-lg text-foreground/90 leading-relaxed">
+                                    Latvijas sabiedrības uzticēšanās politiskajiem institūtiem un politiķiem ir viena no zemākajām Eiropas Savienībā. Politiskajām partijām uzticas tikai <strong className="text-foreground">12,51%</strong> Latvijas iedzīvotāju, kas ir divas reizes zemāks rādītājs nekā vidēji OECD valstīs (<strong className="text-foreground">24,5%</strong>). Parlamentam uzticas <strong className="text-foreground">28,72%</strong> iedzīvotāju, bet valdībai — tikai <strong className="text-foreground">24,5%</strong>.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
