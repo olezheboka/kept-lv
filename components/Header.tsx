@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -23,6 +22,13 @@ export const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  const isActiveLink = (href: string) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-xl border-b border-border/50">
@@ -46,8 +52,8 @@ export const Header = () => {
                 href={link.href}
                 className={cn(
                   'px-3 py-2 text-sm font-medium rounded-lg transition-colors',
-                  pathname === link.href
-                    ? 'text-foreground bg-muted'
+                  isActiveLink(link.href)
+                    ? 'text-foreground bg-muted font-semibold'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                 )}
               >
@@ -106,7 +112,7 @@ export const Header = () => {
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={cn(
                           'flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-colors',
-                          pathname === link.href
+                          isActiveLink(link.href)
                             ? 'bg-accent text-accent-foreground'
                             : 'text-foreground hover:bg-muted'
                         )}

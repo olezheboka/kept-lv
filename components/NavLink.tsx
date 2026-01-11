@@ -1,11 +1,11 @@
 "use client";
 
-import Link, { LinkProps } from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
+import { ComponentProps } from "react";
 import { forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
-interface NavLinkCompatProps extends Omit<LinkProps, "className"> {
+interface NavLinkCompatProps extends Omit<ComponentProps<typeof Link>, "className"> {
   className?: string | ((props: { isActive: boolean }) => string);
   activeClassName?: string;
   children: React.ReactNode;
