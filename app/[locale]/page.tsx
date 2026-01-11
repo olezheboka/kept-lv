@@ -11,6 +11,7 @@ import {
     getPartyRankings,
 } from "@/lib/data";
 import { RankingCard } from "@/components/RankingCard";
+import { QuoteTypewriter } from "@/components/QuoteTypewriter";
 import {
     ArrowRight,
     Quote,
@@ -112,9 +113,7 @@ const Index = () => {
                     >
                         <blockquote className="relative">
                             <Quote className="absolute -top-2 -left-2 md:-top-4 md:-left-4 h-8 w-8 md:h-12 md:w-12 text-primary/20" />
-                            <p className="text-base md:text-lg lg:text-xl text-foreground/90 leading-relaxed pl-8 md:pl-12 italic">
-                                Latvijas sabiedrības uzticēšanās politiskajiem institūtiem un politiķiem ir viena no zemākajām Eiropas Savienībā. Politiskajām partijām uzticas tikai <strong className="text-foreground not-italic">12,51%</strong> Latvijas iedzīvotāju, kas ir divas reizes zemāks rādītājs nekā vidēji OECD valstīs (<strong className="text-foreground not-italic">24,5%</strong>). Parlamentam uzticas <strong className="text-foreground not-italic">28,72%</strong> iedzīvotāju, bet valdībai — tikai <strong className="text-foreground not-italic">24,5%</strong>.
-                            </p>
+                            <QuoteTypewriter />
                             <footer className="mt-4 pl-8 md:pl-12">
                                 <a
                                     href="https://lvportals.lv/skaidrojumi/346761-aptauja-tikai-13-iedzivotaju-uzskata-ka-var-ietekmet-valdibas-lemumus-2022"
