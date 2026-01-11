@@ -27,7 +27,7 @@ const Index = () => {
             <section className="relative overflow-hidden bg-gray-50/50 border-b border-border/50">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
-                <div className="container-wide py-10 md:py-12 relative z-10">
+                <div className="container-wide py-7 md:py-8 relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -50,7 +50,7 @@ const Index = () => {
             </section>
 
             {/* Featured Promises */}
-            <section className="pt-8 pb-16 md:pt-12 md:pb-20">
+            <section className="pt-6 pb-10 md:pt-8 md:pb-14">
                 <div className="container-wide">
                     <div className="flex items-end justify-between mb-4">
                         <div>
@@ -83,7 +83,7 @@ const Index = () => {
             </section>
 
             {/* Leaderboards */}
-            <section className="py-16 md:py-20 bg-muted/30 border-y border-border/50">
+            <section className="py-10 md:py-14 bg-muted/30 border-y border-border/50">
                 <div className="container-wide">
                     <div className="grid md:grid-cols-2 gap-8">
                         <RankingCard
@@ -101,7 +101,7 @@ const Index = () => {
             </section>
 
             {/* Trust Context Section */}
-            <section className="py-12 md:py-16 bg-primary/5">
+            <section className="py-8 md:py-10 bg-primary/5">
                 <div className="container-wide">
                     <div className="max-w-4xl mx-auto">
                         <blockquote className="relative">
@@ -125,7 +125,7 @@ const Index = () => {
             </section>
 
             {/* CTA Section */}
-            <section className="py-16 md:py-24 bg-card border-t border-border">
+            <section className="py-10 md:py-16 bg-card border-t border-border">
                 <div className="container-wide">
                     <div className="grid md:grid-cols-2 gap-6 md:gap-8">
                         {/* Suggest Promise */}
