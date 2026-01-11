@@ -1,0 +1,239 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* Kept — Latvian Political Promise Tracker Design System */
+
+@layer base {
+  :root {
+    /* Core Colors */
+    --background: 210 20% 99%;
+    --foreground: 222 47% 11%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    
+    /* Navy Primary - Trust & Authority */
+    --primary: 222 47% 11%;
+    --primary-foreground: 210 40% 98%;
+    
+    /* Latvian Carmine Accent */
+    --accent: 348 73% 36%;
+    --accent-foreground: 0 0% 100%;
+    
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 222 47% 11%;
+    
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
+    
+    --destructive: 350 89% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 348 73% 36%;
+    
+    --radius: 0.75rem;
+    
+    /* Status Colors */
+    --status-kept: 160 84% 39%;
+    --status-kept-bg: 160 84% 96%;
+    --status-partially: 38 92% 50%;
+    --status-partially-bg: 38 92% 96%;
+    --status-progress: 217 91% 60%;
+    --status-progress-bg: 217 91% 96%;
+    --status-broken: 350 89% 60%;
+    --status-broken-bg: 350 89% 96%;
+    --status-unrated: 215 16% 47%;
+    --status-unrated-bg: 215 16% 96%;
+    
+    /* Party Colors */
+    --party-jv: 217 91% 40%;
+    --party-zzs: 142 71% 35%;
+    --party-na: 348 73% 36%;
+    --party-ap: 262 83% 58%;
+    --party-prog: 340 82% 52%;
+    --party-lra: 25 95% 53%;
+    --party-stab: 199 89% 48%;
+    --party-lpv: 45 93% 47%;
+    --party-sask: 271 81% 56%;
+    
+    /* Surfaces */
+    --surface-elevated: 0 0% 100%;
+    --surface-muted: 210 20% 98%;
+    --surface-subtle: 210 20% 96%;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.08), 0 2px 4px -2px hsl(222 47% 11% / 0.05);
+    --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.08), 0 4px 6px -4px hsl(222 47% 11% / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.1), 0 8px 10px -6px hsl(222 47% 11% / 0.05);
+    
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+    
+    --card: 222 47% 8%;
+    --card-foreground: 210 40% 98%;
+    
+    --popover: 222 47% 8%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 210 40% 98%;
+    --primary-foreground: 222 47% 11%;
+    
+    --accent: 348 73% 45%;
+    --accent-foreground: 0 0% 100%;
+    
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    
+    --destructive: 350 89% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 217 33% 20%;
+    --input: 217 33% 20%;
+    --ring: 348 73% 50%;
+    
+    /* Status Colors - Dark Mode */
+    --status-kept: 160 84% 45%;
+    --status-kept-bg: 160 84% 15%;
+    --status-partially: 38 92% 55%;
+    --status-partially-bg: 38 92% 15%;
+    --status-progress: 217 91% 65%;
+    --status-progress-bg: 217 91% 15%;
+    --status-broken: 350 89% 55%;
+    --status-broken-bg: 350 89% 15%;
+    --status-unrated: 215 16% 55%;
+    --status-unrated-bg: 215 16% 20%;
+    
+    --surface-elevated: 222 47% 10%;
+    --surface-muted: 222 47% 8%;
+    --surface-subtle: 222 47% 12%;
+    
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight text-foreground;
+  }
+}
+
+@layer components {
+  /* Status Badge Variants */
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wide;
+  }
+  
+  .status-kept {
+    @apply bg-[hsl(var(--status-kept-bg))] text-[hsl(var(--status-kept))];
+  }
+  
+  .status-partially {
+    @apply bg-[hsl(var(--status-partially-bg))] text-[hsl(var(--status-partially))];
+  }
+  
+  .status-progress {
+    @apply bg-[hsl(var(--status-progress-bg))] text-[hsl(var(--status-progress))];
+  }
+  
+  .status-broken {
+    @apply bg-[hsl(var(--status-broken-bg))] text-[hsl(var(--status-broken))];
+  }
+  
+  .status-unrated {
+    @apply bg-[hsl(var(--status-unrated-bg))] text-[hsl(var(--status-unrated))];
+  }
+  
+  /* Card Hover Effects */
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+  
+  .card-hover:hover {
+    @apply shadow-lg -translate-y-1;
+  }
+  
+  /* Glass Effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20;
+  }
+  
+  /* Container Widths */
+  .container-narrow {
+    @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .container-wide {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .animate-in {
+    animation: animate-in 0.5s ease-out forwards;
+  }
+  
+  @keyframes animate-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+}
