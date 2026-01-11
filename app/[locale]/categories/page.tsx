@@ -8,13 +8,13 @@ import { CATEGORIES } from '@/lib/types';
 import {
     TrendingUp, Heart, GraduationCap, Shield, Globe, Users,
     Leaf, Train, Scale, Landmark, Wheat, Laptop, Home,
-    HandHeart, Trophy, Briefcase
+    HandHeart, Trophy, Briefcase, Cpu, Map
 } from 'lucide-react';
 
 const iconMap: Record<string, any> = {
     TrendingUp, Heart, GraduationCap, Shield, Globe, Users,
     Leaf, Train, Scale, Landmark, Wheat, Laptop, Home,
-    HandHeart, Trophy, Briefcase
+    HandHeart, Trophy, Briefcase, Cpu, Map
 };
 
 const Categories = () => {

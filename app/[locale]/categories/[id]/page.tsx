@@ -8,12 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { getPromisesByCategory } from '@/lib/data';
 import { CATEGORIES, STATUS_CONFIG, PromiseStatus } from '@/lib/types';
-import { ArrowLeft, CheckCircle2, Clock, XCircle, CircleDot, HelpCircle, TrendingUp, Heart, GraduationCap, Shield, Globe, Users, Leaf, Train, Scale, Landmark, Wheat, Laptop, Home, HandHeart, Trophy, Briefcase } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Clock, XCircle, CircleDot, HelpCircle, TrendingUp, Heart, GraduationCap, Shield, Globe, Users, Leaf, Train, Scale, Landmark, Wheat, Laptop, Home, HandHeart, Trophy, Briefcase, Cpu, Map } from 'lucide-react';
 
 const iconMap: Record<string, any> = {
     TrendingUp, Heart, GraduationCap, Shield, Globe, Users,
     Leaf, Train, Scale, Landmark, Wheat, Laptop, Home,
-    HandHeart, Trophy, Briefcase
+    HandHeart, Trophy, Briefcase, Cpu, Map
 };
 
 const CategoryDetail = () => {
