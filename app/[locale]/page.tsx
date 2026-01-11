@@ -37,8 +37,7 @@ const Index = () => {
                                 Sekojam līdzi <span className="text-[#9E1B34]">Latvijas</span> politiķu solījumiem.
                             </h1>
                             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
-                                Pārredzama un objektīva platforma, kas uzrauga valdības solījumu
-                                izpildi un veicina politisko atbildību.
+                                Pārredzama un objektīva platforma, kas parāda valdības solījumu izpildi
                             </p>
                         </motion.div>
 
