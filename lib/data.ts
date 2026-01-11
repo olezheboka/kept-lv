@@ -176,6 +176,7 @@ export const promises: Promise[] = [
     statusUpdatedAt: '2024-12-15',
     statusUpdatedBy: 'Kept Analytics Team',
     category: 'education-science',
+    description: 'Šis solījums paredz būtisku atalgojuma reformu izglītības sektorā, nosakot jaunu minimālo likmi visiem pedagogiem un ieviešot motivējošu piemaksu sistēmu. Mērķis ir sasniegt vidējo atalgojumu, kas pārsniedz valsts vidējo rādītāju par 20%.',
     importance: 'Skolotāju atalgojuma palielināšana ir kritiski svarīga, lai nodrošinātu kvalitatīvu izglītību un piesaistītu jaunus pedagogus nozarei, kurā vērojams būtisks darbaspēka trūkums.',
     tags: ['izglītība', 'algas', 'skolotāji'],
     sources: [
