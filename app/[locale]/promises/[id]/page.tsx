@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getPromiseById, getPoliticianById, getPartyById, getPromisesByPolitician, getPromisesByCategory } from '@/lib/data';
 import { CATEGORIES } from '@/lib/types';
-import { Clock, ExternalLink, ArrowLeft, Share2, Calendar, User, Info, Tag } from 'lucide-react';
+import { Clock, ArrowLeft, Share2, Calendar, User, Tag } from 'lucide-react';
 import { format } from 'date-fns';
 import { lv } from 'date-fns/locale';
 
