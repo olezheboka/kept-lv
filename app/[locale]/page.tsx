@@ -103,7 +103,13 @@ const Index = () => {
             {/* Trust Context Section */}
             <section className="py-8 md:py-10 bg-primary/5">
                 <div className="container-wide">
-                    <div className="max-w-4xl mx-auto">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="max-w-4xl mx-auto"
+                    >
                         <blockquote className="relative">
                             <Quote className="absolute -top-2 -left-2 md:-top-4 md:-left-4 h-8 w-8 md:h-12 md:w-12 text-primary/20" />
                             <p className="text-base md:text-lg lg:text-xl text-foreground/90 leading-relaxed pl-8 md:pl-12 italic">
@@ -120,14 +126,20 @@ const Index = () => {
                                 </a>
                             </footer>
                         </blockquote>
-                    </div>
+                    </motion.div>
                 </div>
             </section>
 
             {/* CTA Section */}
             <section className="py-10 md:py-16 bg-card border-t border-border">
                 <div className="container-wide">
-                    <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="grid md:grid-cols-2 gap-6 md:gap-8"
+                    >
                         {/* Suggest Promise */}
                         <div className="bg-muted/30 border border-border/50 rounded-2xl p-8 flex flex-col items-start hover:border-primary/20 transition-colors">
                             <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6">
@@ -163,7 +175,7 @@ const Index = () => {
                                 </Button>
                             </Link>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </section>
         </div>
