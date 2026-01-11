@@ -86,24 +86,29 @@ const PromiseDetail = () => {
                                             {politician.role}
                                         </span>
                                     </div>
-
-                                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                        <Calendar className="h-3.5 w-3.5" />
-                                        <span>Solīts <span className="font-medium text-foreground">{format(new Date(promise.datePromised), 'dd.MM.yyyy')}</span></span>
-                                    </div>
                                 </div>
                             )}
 
                             {/* Promise Content Section */}
                             <div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                                <div className="flex flex-wrap items-center gap-3 mb-6 text-sm">
+                                    <h3 className="font-semibold text-muted-foreground uppercase tracking-wider">
                                         Solījums
                                     </h3>
+
+                                    <span className="text-muted-foreground/30">•</span>
+
+                                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                                        <Calendar className="h-3.5 w-3.5" />
+                                        <span className="font-medium text-foreground">
+                                            {format(new Date(promise.datePromised), 'dd.MM.yyyy')}
+                                        </span>
+                                    </div>
+
                                     {category && (
                                         <>
-                                            <span className="text-muted-foreground/40">•</span>
-                                            <span className="text-sm font-medium text-accent bg-accent/10 px-2 py-0.5 rounded-full">
+                                            <span className="text-muted-foreground/30">•</span>
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 text-accent font-medium text-xs">
                                                 {category.name}
                                             </span>
                                         </>
