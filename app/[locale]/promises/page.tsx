@@ -143,7 +143,7 @@ const Promises = () => {
             {/* Category Filter */}
             <div>
                 <h4 className="font-semibold text-foreground mb-3">Kategorija</h4>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
+                <div className="space-y-2">
                     {CATEGORIES.map(category => (
                         <label key={category.id} className="flex items-center gap-3 cursor-pointer group">
                             <Checkbox
