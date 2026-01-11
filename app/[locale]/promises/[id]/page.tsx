@@ -8,10 +8,9 @@ import { PartyBadge } from '@/components/PartyBadge';
 import { PromiseCard } from '@/components/PromiseCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getPromiseById, getPoliticianById, getPartyById, getPromisesByPolitician, getPromisesByCategory } from '@/lib/data';
 import { CATEGORIES } from '@/lib/types';
-import { Clock, ExternalLink, ArrowLeft, Share2, Calendar, User, Tag, Info } from 'lucide-react';
+import { Clock, ExternalLink, ArrowLeft, Share2, Calendar, User, Info } from 'lucide-react';
 import { format } from 'date-fns';
 import { lv } from 'date-fns/locale';
 
@@ -71,92 +70,73 @@ const PromiseDetail = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4 }}
                         >
-                            <div className="flex flex-wrap items-center gap-3 mb-4">
-                                {category && (
-                                    <span className="text-sm text-muted-foreground font-medium flex items-center gap-2 p-1.5 bg-muted rounded-md px-3">
-                                        {category.name}
-                                    </span>
-                                )}
-                            </div>
-
-                            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight">
-                                {promise.title}
-                            </h1>
-
-                            {/* Author & Context Section */}
-                            <div className="border-b border-border/50 pb-8 mb-8">
-                                {politician && party && (
-                                    <div className="flex flex-col sm:flex-row gap-6 items-start mb-6">
-                                        <Link href={`/politicians/${politician.id}`} className="shrink-0 relative group">
-                                            <Avatar className="h-20 w-20 border-2 border-background shadow-md">
-                                                <AvatarImage src={politician.photoUrl} alt={politician.name} />
-                                                <AvatarFallback className="text-xl">
-                                                    {politician.name.split(' ').map(n => n[0]).join('')}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div className="absolute -bottom-2 -right-2">
-                                                <PartyBadge party={party} size="sm" />
-                                            </div>
-                                        </Link>
-
-                                        <div className="space-y-3 flex-1">
-                                            <div>
-                                                <Link href={`/politicians/${politician.id}`} className="group inline-flex items-center gap-2">
-                                                    <h3 className="text-xl font-bold text-foreground group-hover:text-accent transition-colors">
-                                                        {politician.name}
-                                                    </h3>
-                                                </Link>
-                                                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mt-1">
-                                                    <span>{politician.role}</span>
-                                                    <span>•</span>
-                                                    {politician.isInOffice ? (
-                                                        <span className="text-status-kept font-medium">Amatā</span>
-                                                    ) : (
-                                                        <span className="text-muted-foreground font-medium">Bijušais</span>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-center gap-2 text-sm">
-                                                <Calendar className="h-4 w-4 text-accent" />
-                                                <span className="text-muted-foreground">Solīts:</span>
-                                                <span className="font-medium text-foreground">
-                                                    {format(new Date(promise.datePromised), 'dd. MMMM, yyyy', { locale: lv })}
-                                                </span>
-                                            </div>
+                            {/* Header Section: Author & Date */}
+                            {politician && party && (
+                                <div className="mb-8 border-b border-border/50 pb-6">
+                                    <div className="flex flex-col gap-1.5 mb-2">
+                                        <div className="flex items-center gap-3">
+                                            <Link href={`/politicians/${politician.id}`} className="group inline-flex items-center gap-2">
+                                                <h2 className="text-xl font-bold text-foreground group-hover:text-accent transition-colors">
+                                                    {politician.name}
+                                                </h2>
+                                            </Link>
+                                            <PartyBadge party={party} size="sm" />
                                         </div>
+                                        <span className="text-sm text-muted-foreground">
+                                            {politician.role}
+                                        </span>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                        <Calendar className="h-3.5 w-3.5" />
+                                        <span>Solīts <span className="font-medium text-foreground">{format(new Date(promise.datePromised), 'dd.MM.yyyy')}</span></span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Promise Content Section */}
+                            <div>
+                                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
+                                    Solījums
+                                </h3>
+
+                                {category && (
+                                    <div className="mb-4">
+                                        <span className="text-sm font-medium inline-flex items-center gap-1.5 text-accent">
+                                            {category.name}
+                                        </span>
                                     </div>
                                 )}
 
-                                {promise.importance && (
-                                    <div className="bg-muted/20 rounded-lg p-5 border border-border/50">
-                                        <h4 className="text-sm font-bold text-muted-foreground mb-2 flex items-center gap-2">
-                                            <Info className="h-4 w-4" />
-                                            Kāpēc tas ir svarīgi?
-                                        </h4>
-                                        <p className="text-foreground leading-relaxed">
-                                            {promise.importance}
-                                        </p>
-                                    </div>
+                                <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight">
+                                    {promise.title}
+                                </h1>
+
+                                {promise.description && (
+                                    <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                                        {promise.description}
+                                    </p>
                                 )}
+
+                                <blockquote className="border-l-4 border-accent pl-6 py-4 italic text-lg text-foreground/80 bg-muted/30 rounded-r-lg pr-6 relative">
+                                    <span className="absolute left-2 top-2 text-4xl text-accent/20 font-serif">"</span>
+                                    <span className="relative z-10">
+                                        {promise.fullText}
+                                        {promise.sources.map((source, index) => (
+                                            <a
+                                                key={index}
+                                                href={source.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center justify-center h-5 px-1.5 ml-1 text-[10px] font-bold tracking-wide uppercase rounded bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground transition-colors align-middle -translate-y-0.5 not-italic"
+                                                title={source.title}
+                                            >
+                                                {source.publication}
+                                            </a>
+                                        ))}
+                                    </span>
+                                </blockquote>
                             </div>
-
-                            {/* Quote Block */}
-                            <blockquote className="border-l-4 border-accent pl-6 py-2 italic text-lg text-muted-foreground bg-muted/30 rounded-r-lg pr-6">
-                                "{promise.fullText}"
-                                {promise.sources.map((source, index) => (
-                                    <a
-                                        key={index}
-                                        href={source.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center justify-center h-5 px-1.5 ml-1 text-[10px] font-bold tracking-wide uppercase rounded bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground transition-colors align-middle -translate-y-0.5 not-italic"
-                                        title={source.title}
-                                    >
-                                        {source.publication}
-                                    </a>
-                                ))}
-                            </blockquote>
                         </motion.div>
 
 
