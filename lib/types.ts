@@ -25,6 +25,8 @@ export interface Politician {
   partyId: string;
   photoUrl: string;
   isInOffice: boolean;
+  roleStartDate?: string;
+  roleEndDate?: string;
   bio?: string;
 }
 

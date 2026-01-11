@@ -85,6 +85,7 @@ export const politicians: Politician[] = [
     partyId: 'jv',
     photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face',
     isInOffice: true,
+    roleStartDate: '2023-09-15',
     bio: 'Prime Minister of Latvia since 2023'
   },
   {
@@ -93,7 +94,8 @@ export const politicians: Politician[] = [
     role: 'Ekonomikas ministrs',
     partyId: 'jv',
     photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face',
-    isInOffice: true
+    isInOffice: true,
+    roleStartDate: '2022-12-14'
   },
   {
     id: 'anda-caksa',
@@ -101,7 +103,8 @@ export const politicians: Politician[] = [
     role: 'Izglītības un zinātnes ministre',
     partyId: 'jv',
     photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face',
-    isInOffice: true
+    isInOffice: true,
+    roleStartDate: '2022-12-14'
   },
   {
     id: 'andris-spruds',
@@ -109,7 +112,8 @@ export const politicians: Politician[] = [
     role: 'Aizsardzības ministrs',
     partyId: 'prog',
     photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
-    isInOffice: true
+    isInOffice: true,
+    roleStartDate: '2023-09-15'
   },
   {
     id: 'baiba-braze',
@@ -117,7 +121,8 @@ export const politicians: Politician[] = [
     role: 'Ārlietu ministre',
     partyId: 'jv',
     photoUrl: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=200&h=200&fit=crop&crop=face',
-    isInOffice: true
+    isInOffice: true,
+    roleStartDate: '2024-04-19'
   },
   {
     id: 'hosams-abu-meri',
@@ -125,7 +130,8 @@ export const politicians: Politician[] = [
     role: 'Veselības ministrs',
     partyId: 'jv',
     photoUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face',
-    isInOffice: true
+    isInOffice: true,
+    roleStartDate: '2023-09-15'
   },
   {
     id: 'raimonds-bergmanis',
@@ -133,7 +139,8 @@ export const politicians: Politician[] = [
     role: 'Saeimas deputāts',
     partyId: 'zzs',
     photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&h=200&fit=crop&crop=face',
-    isInOffice: true
+    isInOffice: true,
+    roleStartDate: '2022-11-01'
   },
   {
     id: 'raivis-dzintars',
@@ -141,7 +148,8 @@ export const politicians: Politician[] = [
     role: 'Nacionālās apvienības līderis',
     partyId: 'na',
     photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face',
-    isInOffice: true
+    isInOffice: true,
+    roleStartDate: '2011-07-23'
   },
   {
     id: 'agnese-logina',
@@ -149,7 +157,9 @@ export const politicians: Politician[] = [
     role: 'Saeimas deputāte',
     partyId: 'prog',
     photoUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face',
-    isInOffice: true
+    isInOffice: false,
+    roleStartDate: '2022-11-01',
+    roleEndDate: '2024-06-17'
   },
   {
     id: 'edvards-smiltens',
@@ -157,7 +167,9 @@ export const politicians: Politician[] = [
     role: 'Saeimas priekšsēdētājs',
     partyId: 'na',
     photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop&crop=face',
-    isInOffice: true
+    isInOffice: false,
+    roleStartDate: '2022-11-01',
+    roleEndDate: '2023-09-20'
   }
 ];
 
