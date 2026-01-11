@@ -30,10 +30,10 @@ export const PromiseCard = ({ promise, index = 0 }: PromiseCardProps) => {
     >
       <Link href={`/promises/${promise.id}`}>
         <Card className="group overflow-hidden border-border/50 bg-card hover:shadow-elevated hover:border-border transition-all duration-300 cursor-pointer">
-          <CardContent className="p-5 relative">
+          <CardContent className="p-5 relative pt-8">
             {/* Status Badge - Absolute Top Right */}
-            <div className="absolute top-4 right-4">
-              <StatusBadge status={promise.status} />
+            <div className="absolute top-0 right-0">
+              <StatusBadge status={promise.status} className="rounded-none rounded-bl-lg" />
             </div>
 
             {/* Author & Party - Top Left */}
@@ -44,7 +44,7 @@ export const PromiseCard = ({ promise, index = 0 }: PromiseCardProps) => {
                 </span>
                 <PartyBadge party={party} />
               </div>
-              <span className="text-xs text-muted-foreground truncate">
+              <span className="text-xs text-muted-foreground whitespace-normal">
                 {politician.role}
               </span>
             </div>
@@ -55,19 +55,28 @@ export const PromiseCard = ({ promise, index = 0 }: PromiseCardProps) => {
             </h3>
 
             {/* Footer: Timeline */}
-            <div className="flex items-center justify-between pt-3 border-t border-border/50">
-              {/* Deadline */}
-              {promise.deadline ? (
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <span className="font-medium text-foreground">Termiņš:</span>
-                  <span>{new Date(promise.deadline).toLocaleDateString('lv-LV')}</span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Calendar size={12} />
+            <div className="flex items-center justify-between pt-3 border-t border-border/50 gap-2">
+              {/* Date Promised */}
+              <div className="flex flex-col gap-0.5">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Solīts</span>
+                <div className="flex items-center gap-1.5 text-xs text-foreground">
+                  <Calendar size={12} className="text-muted-foreground" />
                   <span>{new Date(promise.datePromised).toLocaleDateString('lv-LV')}</span>
                 </div>
-              )}
+              </div>
+
+              {/* Deadline */}
+              <div className="flex flex-col gap-0.5 text-right">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Termiņš</span>
+                <div className="flex items-center gap-1.5 text-xs text-foreground justify-end">
+                  <span className="font-medium">
+                    {promise.deadline
+                      ? new Date(promise.deadline).toLocaleDateString('lv-LV')
+                      : '—'
+                    }
+                  </span>
+                </div>
+              </div>
             </div>
 
             {/* Updated indicator */}
