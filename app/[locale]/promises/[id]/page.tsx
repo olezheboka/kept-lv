@@ -116,6 +116,18 @@ const PromiseDetail = () => {
                             {/* Quote Block */}
                             <blockquote className="border-l-4 border-accent pl-6 py-2 italic text-lg text-muted-foreground bg-muted/30 rounded-r-lg pr-6">
                                 "{promise.fullText}"
+                                {promise.sources.map((source, index) => (
+                                    <a
+                                        key={index}
+                                        href={source.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center justify-center h-5 px-1.5 ml-1 text-[10px] font-bold tracking-wide uppercase rounded bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground transition-colors align-middle -translate-y-0.5 not-italic"
+                                        title={source.title}
+                                    >
+                                        {source.publication}
+                                    </a>
+                                ))}
                             </blockquote>
                         </motion.div>
 
