@@ -80,7 +80,7 @@ const PromiseDetail = () => {
                                                     {politician.name}
                                                 </h2>
                                             </Link>
-                                            <PartyBadge party={party} size="sm" />
+                                            <PartyBadge party={party} size="sm" showFullName />
                                         </div>
                                         <span className="text-sm text-muted-foreground">
                                             {politician.role}
