@@ -16,9 +16,7 @@ export type Category =
   | 'agriculture-rural'
   | 'digital-technology'
   | 'housing-regional'
-  | 'human-rights'
-  | 'youth-sports'
-  | 'labor-employment';
+  | 'youth-sports';
 
 export interface Politician {
   id: string;
@@ -110,13 +108,11 @@ export const CATEGORIES: CategoryInfo[] = [
   { id: 'foreign-affairs', name: 'Ārlietas', icon: 'Globe', description: 'ES, starptautiskās attiecības, diplomātija' },
   { id: 'social-welfare', name: 'Sociālā labklājība', icon: 'Users', description: 'Pensijas, pabalsti, nabadzības mazināšana' },
   { id: 'environment-energy', name: 'Vide un enerģētika', icon: 'Leaf', description: 'Zaļā enerģija, klimats, ilgtspēja' },
-  { id: 'transport-infrastructure', name: 'Transports un infrastruktūra', icon: 'Train', description: 'Ceļi, Rail Baltica, ostas' },
-  { id: 'justice-law', name: 'Tieslietas', icon: 'Scale', description: 'Tiesas, korupcija, tiesiskums' },
+  { id: 'transport-infrastructure', name: 'Satiksme un infrastruktūra', icon: 'Train', description: 'Ceļi, Rail Baltica, ostas' },
+  { id: 'justice-law', name: 'Tieslietas un korupcijas apkarošana', icon: 'Scale', description: 'Tiesas, korupcija, tiesiskums' },
   { id: 'culture-heritage', name: 'Kultūra un mantojums', icon: 'Landmark', description: 'Māksla, nacionālā identitāte, mediji' },
   { id: 'agriculture-rural', name: 'Lauksaimniecība', icon: 'Wheat', description: 'Lauksaimniecība, mežsaimniecība, lauku attīstība' },
-  { id: 'digital-technology', name: 'Digitalizācija', icon: 'Laptop', description: 'E-pārvalde, IT sektors, inovācijas' },
-  { id: 'housing-regional', name: 'Mājokļi un reģioni', icon: 'Home', description: 'Mājokļu politika, reģionālā attīstība' },
-  { id: 'human-rights', name: 'Cilvēktiesības', icon: 'HandHeart', description: 'Mazākumtautību tiesības, vienlīdzība, brīvība' },
+  { id: 'digital-technology', name: 'Tehnoloģijas un inovācijas', icon: 'Laptop', description: 'E-pārvalde, IT sektors, inovācijas' },
+  { id: 'housing-regional', name: 'Reģionāla attīstība', icon: 'Home', description: 'Mājokļu politika, reģionālā attīstība' },
   { id: 'youth-sports', name: 'Jaunatne un sports', icon: 'Trophy', description: 'Jaunatnes politika, sports' },
-  { id: 'labor-employment', name: 'Darbs un nodarbinātība', icon: 'Briefcase', description: 'Darba vietas, algas, darba likums' },
 ];
