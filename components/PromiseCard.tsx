@@ -37,7 +37,7 @@ export const PromiseCard = ({ promise, index = 0 }: PromiseCardProps) => {
             </div>
 
             {/* Author & Party - Top Left */}
-            <div className="flex flex-col gap-1 mb-3 pt-1 pr-24">
+            <div className="flex flex-col gap-1 mb-3 pt-1">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-foreground truncate">
                   {politician.name}
