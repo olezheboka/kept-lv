@@ -28,7 +28,7 @@ export const QuoteTypewriter = () => {
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.015,
+                staggerChildren: 0.010,
                 delayChildren: 0.3,
             },
         },
