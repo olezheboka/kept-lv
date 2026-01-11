@@ -104,8 +104,20 @@ const PromiseDetail = () => {
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-foreground leading-relaxed">
+                                    <p className="text-foreground leading-relaxed inline">
                                         {promise.statusJustification}
+                                        {promise.sources.map((source, index) => (
+                                            <a
+                                                key={index}
+                                                href={source.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center justify-center h-5 px-1.5 ml-1 text-[10px] font-bold tracking-wide uppercase rounded bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground transition-colors align-middle -translate-y-0.5"
+                                                title={source.title}
+                                            >
+                                                {source.publication}
+                                            </a>
+                                        ))}
                                     </p>
                                     <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border text-sm text-muted-foreground">
                                         <span>
