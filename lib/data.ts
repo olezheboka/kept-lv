@@ -6,7 +6,7 @@ export const parties: Party[] = [
     id: 'jv',
     name: 'Jaunā Vienotība',
     abbreviation: 'JV',
-    color: '#84CC16',
+    color: '#8AB73E',
     isInCoalition: true,
     mpCount: 26
   },
@@ -14,7 +14,7 @@ export const parties: Party[] = [
     id: 'zzs',
     name: 'Zaļo un Zemnieku savienība',
     abbreviation: 'ZZS',
-    color: '#14532D',
+    color: '#026036',
     isInCoalition: true,
     mpCount: 16
   },
@@ -22,7 +22,7 @@ export const parties: Party[] = [
     id: 'na',
     name: 'Nacionālā apvienība',
     abbreviation: 'NA',
-    color: '#9E1B34',
+    color: '#932330',
     isInCoalition: true,
     mpCount: 13
   },
@@ -30,7 +30,7 @@ export const parties: Party[] = [
     id: 'ap',
     name: 'Attīstībai/Par!',
     abbreviation: 'AP!',
-    color: '#09090b',
+    color: '#000000',
     isInCoalition: false,
     mpCount: 0
   },
@@ -38,7 +38,7 @@ export const parties: Party[] = [
     id: 'prog',
     name: 'Progresīvie',
     abbreviation: 'P',
-    color: '#E11D48',
+    color: '#E63915',
     isInCoalition: false,
     mpCount: 10
   },
@@ -46,7 +46,7 @@ export const parties: Party[] = [
     id: 'lra',
     name: 'Latvijas Reģionu apvienība',
     abbreviation: 'LRA',
-    color: '#1E3A8A',
+    color: '#982632',
     isInCoalition: false,
     mpCount: 8
   },
@@ -54,7 +54,7 @@ export const parties: Party[] = [
     id: 'stab',
     name: 'Stabilitātei!',
     abbreviation: 'S!',
-    color: '#F97316',
+    color: '#fd7e14',
     isInCoalition: false,
     mpCount: 11
   },
@@ -62,7 +62,7 @@ export const parties: Party[] = [
     id: 'lpv',
     name: 'Latvija pirmajā vietā',
     abbreviation: 'LPV',
-    color: '#881337',
+    color: '#9E3139',
     isInCoalition: false,
     mpCount: 9
   },
@@ -70,7 +70,7 @@ export const parties: Party[] = [
     id: 'sask',
     name: 'Saskaņa',
     abbreviation: 'S',
-    color: '#DC2626',
+    color: '#E31D23',
     isInCoalition: false,
     mpCount: 0
   }
