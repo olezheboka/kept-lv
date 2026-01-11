@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { formatDistanceToNow } from "date-fns";
+import { lv } from "date-fns/locale";
 
 const Index = () => {
     const stats = getPromiseStats();
@@ -44,39 +45,23 @@ const Index = () => {
     return (
         <div className="flex flex-col bg-background">
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-b from-surface-muted to-background border-b border-border/50">
-                <div className="container-wide py-16 md:py-24">
+            <section className="relative overflow-hidden bg-gradient-to-b from-red-50/50 via-background to-background border-b border-border/50">
+                <div className="container-wide py-12 md:py-16">
                     <div className="max-w-4xl mx-auto text-center">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6 }}
+                            className="mb-12"
                         >
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight text-balance">
                                 Sekojam līdzi Latvijas politiķu{" "}
                                 <span className="text-accent">solījumiem</span>
                             </h1>
-                            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto text-balance">
+                            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
                                 Pārredzama un objektīva platforma, kas uzrauga valdības solījumu
                                 izpildi un veicina politisko atbildību.
                             </p>
-                        </motion.div>
-
-                        {/* Search Bar */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.1 }}
-                            className="max-w-xl mx-auto mb-12"
-                        >
-                            <div className="relative">
-                                <Input
-                                    type="search"
-                                    placeholder="Meklēt solījumus, politiķus vai tēmas..."
-                                    className="w-full h-14 pl-12 pr-4 text-base bg-card border-border shadow-medium rounded-2xl"
-                                />
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            </div>
                         </motion.div>
 
                         {/* Stats Counters */}
@@ -84,7 +69,7 @@ const Index = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.2 }}
-                            className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
+                            className="grid grid-cols-2 lg:grid-cols-5 gap-8 md:gap-12"
                         >
                             <StatsCounter value={stats.total} label="Solījumi" delay={0} />
                             <StatsCounter
@@ -98,13 +83,19 @@ const Index = () => {
                                 suffix="%"
                                 delay={200}
                             />
+                            <StatsCounter
+                                value={stats.partiallyKept}
+                                label="Daļēji izpildīti"
+                                delay={250}
+                            />
                             <StatsCounter value={parties.length} label="Partijas" delay={300} />
                         </motion.div>
                     </div>
                 </div>
 
-                {/* Decorative elements */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-accent/5 rounded-full blur-3xl pointer-events-none" />
+                {/* Decorative elements - Flag inspired gradient */}
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-red-500/5 rounded-full blur-3xl pointer-events-none" />
             </section>
 
             {/* Quick Stats Bar */}
@@ -221,7 +212,7 @@ const Index = () => {
                                                                 {politician?.name} •{" "}
                                                                 {formatDistanceToNow(
                                                                     new Date(promise.statusUpdatedAt),
-                                                                    { addSuffix: true },
+                                                                    { addSuffix: true, locale: lv },
                                                                 )}
                                                             </p>
                                                         </div>
