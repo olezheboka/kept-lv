@@ -17,12 +17,27 @@ const iconMap = {
 };
 
 export const StatusBadge = ({ status, size = 'md', showIcon = true, className }: StatusBadgeProps & { className?: string }) => {
-  // ... inside return ...
-  <span className={cn('status-badge whitespace-nowrap', config.className, sizeClasses[size], className)}>
-    {showIcon && IconComponent && (
-      <IconComponent size={iconSizes[size]} className="flex-shrink-0" />
-    )}
-    <span>{config.label}</span>
-  </span>
+  const config = STATUS_CONFIG[status];
+  const IconComponent = iconMap[config.icon as keyof typeof iconMap];
+
+  const sizeClasses = {
+    sm: 'px-2 py-0.5 text-[10px] gap-1',
+    md: 'px-2.5 py-1 text-xs gap-1.5',
+    lg: 'px-3 py-1.5 text-sm gap-2',
+  };
+
+  const iconSizes = {
+    sm: 10,
+    md: 12,
+    lg: 14,
+  };
+
+  return (
+    <span className={cn('status-badge whitespace-nowrap', config.className, sizeClasses[size], className)}>
+      {showIcon && IconComponent && (
+        <IconComponent size={iconSizes[size]} className="flex-shrink-0" />
+      )}
+      <span>{config.label}</span>
+    </span>
   );
 };
