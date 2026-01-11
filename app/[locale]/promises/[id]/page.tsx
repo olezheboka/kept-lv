@@ -72,9 +72,8 @@ const PromiseDetail = () => {
                             transition={{ duration: 0.4 }}
                         >
                             <div className="flex flex-wrap items-center gap-3 mb-4">
-                                <StatusBadge status={promise.status} size="lg" />
                                 {category && (
-                                    <span className="text-sm text-muted-foreground font-medium">
+                                    <span className="text-sm text-muted-foreground font-medium flex items-center gap-2 p-1.5 bg-muted rounded-md px-3">
                                         {category.name}
                                     </span>
                                 )}
@@ -138,11 +137,12 @@ const PromiseDetail = () => {
                             transition={{ duration: 0.4, delay: 0.1 }}
                         >
                             <Card className="border-border/50">
-                                <CardHeader>
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                     <CardTitle className="text-lg flex items-center gap-2">
                                         <Clock className="h-5 w-5 text-muted-foreground" />
                                         Statusa pamatojums
                                     </CardTitle>
+                                    <StatusBadge status={promise.status} />
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-foreground leading-relaxed inline">
