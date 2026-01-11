@@ -121,7 +121,7 @@ const Promises = () => {
             {/* Party Filter */}
             <div>
                 <h4 className="font-semibold text-foreground mb-3">Partija</h4>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
+                <div className="space-y-2">
                     {parties.map(party => (
                         <label key={party.id} className="flex items-center gap-3 cursor-pointer group">
                             <Checkbox
@@ -254,7 +254,7 @@ const Promises = () => {
                                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                                     </div>
 
-                                    <div className="hidden sm:flex items-center border border-input rounded-lg overflow-hidden">
+                                    <div className="flex items-center border border-input rounded-lg overflow-hidden">
                                         <Button
                                             variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
                                             size="icon"
@@ -331,7 +331,7 @@ const Promises = () => {
                             {/* Promise Grid */}
                             {filteredPromises.length > 0 ? (
                                 <div className={viewMode === 'grid'
-                                    ? 'grid sm:grid-cols-2 xl:grid-cols-3 gap-5'
+                                    ? 'grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-5'
                                     : 'space-y-4'
                                 }>
                                     {filteredPromises.map((promise, index) => (
