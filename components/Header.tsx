@@ -53,7 +53,7 @@ export const Header = () => {
                 className={cn(
                   'px-3 py-2 text-sm font-medium rounded-lg transition-colors',
                   isActiveLink(link.href)
-                    ? 'text-foreground bg-muted font-semibold'
+                    ? 'text-[#9E1B34] bg-[#9E1B34]/10 font-bold'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                 )}
               >
@@ -113,7 +113,7 @@ export const Header = () => {
                         className={cn(
                           'flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-colors',
                           isActiveLink(link.href)
-                            ? 'bg-accent text-accent-foreground'
+                            ? 'bg-[#9E1B34]/10 text-[#9E1B34] font-bold'
                             : 'text-foreground hover:bg-muted'
                         )}
                       >
