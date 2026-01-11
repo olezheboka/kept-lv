@@ -133,7 +133,7 @@ const Promises = () => {
                                     className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                                     style={{ backgroundColor: party.color }}
                                 />
-                                <span className="text-sm text-foreground">{party.abbreviation}</span>
+                                <span className="text-sm text-foreground">{party.name}</span>
                             </div>
                         </label>
                     ))}
