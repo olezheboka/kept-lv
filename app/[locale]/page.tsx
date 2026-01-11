@@ -53,14 +53,10 @@ const Index = () => {
                             transition={{ duration: 0.6 }}
                             className=""
                         >
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight text-balance">
-                                Sekojam līdzi Latvijas politiķu{" "}
-                                <span className="text-accent">solījumiem</span>
-                            </h1>
-                            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
+                            <h1 className="text-2xl md:text-3xl font-bold text-foreground max-w-3xl mx-auto text-balance">
                                 Pārredzama un objektīva platforma, kas uzrauga valdības solījumu
                                 izpildi un veicina politisko atbildību.
-                            </p>
+                            </h1>
                         </motion.div>
 
 
