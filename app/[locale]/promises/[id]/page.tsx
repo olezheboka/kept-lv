@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getPromiseById, getPoliticianById, getPartyById, getPromisesByPolitician, getPromisesByCategory } from '@/lib/data';
 import { CATEGORIES } from '@/lib/types';
-import { Clock, ExternalLink, ArrowLeft, Share2, Calendar, User, Tag } from 'lucide-react';
+import { Clock, ExternalLink, ArrowLeft, Share2, Calendar, User, Tag, Info } from 'lucide-react';
 import { format } from 'date-fns';
 import { lv } from 'date-fns/locale';
 
@@ -83,6 +83,35 @@ const PromiseDetail = () => {
                             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight">
                                 {promise.title}
                             </h1>
+
+                            {/* Context Card */}
+                            <Card className="border-border/50 bg-muted/20">
+                                <CardContent className="p-5 space-y-4">
+                                    <div className="flex flex-wrap gap-6 text-sm">
+                                        <div className="flex items-center gap-2">
+                                            <User className="h-4 w-4 text-accent" />
+                                            <span className="text-muted-foreground">Solīja:</span>
+                                            <span className="font-medium text-foreground">{politician?.name}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Calendar className="h-4 w-4 text-accent" />
+                                            <span className="text-muted-foreground">Kad:</span>
+                                            <span className="font-medium text-foreground">
+                                                {format(new Date(promise.datePromised), 'dd. MMMM, yyyy', { locale: lv })}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {promise.importance && (
+                                        <div className="pt-2 border-t border-border/50">
+                                            <h4 className="text-sm font-medium text-muted-foreground mb-1">Kāpēc tas ir svarīgi?</h4>
+                                            <p className="text-foreground leading-relaxed">
+                                                {promise.importance}
+                                            </p>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
 
                             {/* Quote Block */}
                             <blockquote className="border-l-4 border-accent pl-6 py-2 italic text-lg text-muted-foreground bg-muted/30 rounded-r-lg pr-6">
@@ -235,23 +264,7 @@ const PromiseDetail = () => {
                         >
                             <Card className="border-border/50">
                                 <CardContent className="p-5 space-y-4">
-                                    <div className="flex items-center gap-3 text-sm">
-                                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                                        <span className="text-muted-foreground">Solīts:</span>
-                                        <span className="font-medium text-foreground">
-                                            {format(new Date(promise.datePromised), 'dd. MMMM, yyyy', { locale: lv })}
-                                        </span>
-                                    </div>
-
-                                    {promise.electionCycle && (
-                                        <div className="flex items-center gap-3 text-sm">
-                                            <User className="h-4 w-4 text-muted-foreground" />
-                                            <span className="text-muted-foreground">Vēlēšanas:</span>
-                                            <span className="font-medium text-foreground">
-                                                {promise.electionCycle}
-                                            </span>
-                                        </div>
-                                    )}
+                                    {/* Removed Date/Election info as it is now in Context card */}
 
                                     {promise.tags.length > 0 && (
                                         <div>

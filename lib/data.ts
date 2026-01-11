@@ -176,6 +176,7 @@ export const promises: Promise[] = [
     statusUpdatedAt: '2024-12-15',
     statusUpdatedBy: 'Kept Analytics Team',
     category: 'education-science',
+    importance: 'Skolotāju atalgojuma palielināšana ir kritiski svarīga, lai nodrošinātu kvalitatīvu izglītību un piesaistītu jaunus pedagogus nozarei, kurā vērojams būtisks darbaspēka trūkums.',
     tags: ['izglītība', 'algas', 'skolotāji'],
     sources: [
       {

@@ -58,6 +58,7 @@ export interface Promise {
   statusUpdatedAt: string;
   statusUpdatedBy: string;
   category: Category;
+  importance?: string;
   deadline?: string;
   tags: string[];
   sources: Source[];
