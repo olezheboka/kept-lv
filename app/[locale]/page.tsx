@@ -36,7 +36,7 @@ const Index = () => {
                             className=""
                         >
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight text-balance">
-                                Sekojam līdzi <span className="bg-[linear-gradient(180deg,#9E1B34_0%,#9E1B34_59%,#ffffff_59%,#ffffff_70%,#9E1B34_70%,#9E1B34_100%)] bg-clip-text text-transparent decoration-clone pb-2">Latvijas</span> politiķu solījumiem.
+                                Sekojam līdzi <span className="text-[#9E1B34]">Latvijas</span> politiķu <span className="bg-[linear-gradient(180deg,#9E1B34_0%,#9E1B34_45%,#dedede_45%,#dedede_55%,#9E1B34_55%,#9E1B34_100%)] bg-clip-text text-transparent decoration-clone pb-2">solījumiem</span>.
                             </h1>
                             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
                                 Pārredzama un objektīva platforma, kas parāda valdības solījumu izpildi
