@@ -11,7 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { promises, parties } from '@/lib/data';
 import { CATEGORIES, PromiseStatus, STATUS_CONFIG } from '@/lib/types';
-import { Search, Filter, Grid3X3, List, X, SlidersHorizontal } from 'lucide-react';
+import { Search, Filter, Grid3X3, List, X, SlidersHorizontal, ChevronDown } from 'lucide-react';
 
 const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'in-progress', 'broken', 'not-rated'];
 
@@ -241,15 +241,18 @@ const Promises = () => {
 
                                 {/* Sort & View */}
                                 <div className="flex items-center gap-2">
-                                    <select
-                                        value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value as any)}
-                                        className="h-10 px-3 rounded-lg border border-input bg-background text-sm"
-                                    >
-                                        <option value="updated">Pēdējie atjaunināti</option>
-                                        <option value="date">Datums</option>
-                                        <option value="views">Populārākie</option>
-                                    </select>
+                                    <div className="relative">
+                                        <select
+                                            value={sortBy}
+                                            onChange={(e) => setSortBy(e.target.value as any)}
+                                            className="appearance-none h-10 pl-3 pr-10 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                                        >
+                                            <option value="updated">Pēdējie atjaunināti</option>
+                                            <option value="date">Datums</option>
+                                            <option value="views">Populārākie</option>
+                                        </select>
+                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                                    </div>
 
                                     <div className="hidden sm:flex items-center border border-input rounded-lg overflow-hidden">
                                         <Button
