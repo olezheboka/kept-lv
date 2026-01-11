@@ -11,11 +11,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { promises, parties } from '@/lib/data';
 import { CATEGORIES, PromiseStatus, STATUS_CONFIG } from '@/lib/types';
-import { Search, Filter, Grid3X3, List, X, SlidersHorizontal, ChevronDown, TrendingUp, Heart, GraduationCap, Shield, Globe, Users, Leaf, Train, Scale, Landmark, Wheat, Cpu, Map } from 'lucide-react';
+import { Search, Filter, Grid3X3, List, X, SlidersHorizontal, ChevronDown } from 'lucide-react';
 
 const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'in-progress', 'broken', 'not-rated'];
-
-const iconMap: Record<string, any> = { TrendingUp, Heart, GraduationCap, Shield, Globe, Users, Leaf, Train, Scale, Landmark, Wheat, Cpu, Map };
 
 const Promises = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -152,15 +150,7 @@ const Promises = () => {
                                 checked={selectedCategories.includes(category.id)}
                                 onCheckedChange={() => toggleCategory(category.id)}
                             />
-                            {(() => {
-                                const Icon = iconMap[category.icon] || TrendingUp;
-                                return (
-                                    <span className="flex items-center gap-1 text-sm text-foreground">
-                                        <Icon className="h-4 w-4 text-muted-foreground" />
-                                        {category.name}
-                                    </span>
-                                );
-                            })()}
+                            <span className="text-sm text-foreground">{category.name}</span>
                         </label>
                     ))}
                 </div>
