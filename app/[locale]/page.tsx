@@ -3,18 +3,17 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { PromiseCard } from "@/components/PromiseCard";
-
-import { StatsPieChart } from "@/components/StatsPieChart";
-import { StatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
     promises,
-
     getPromiseStats,
     getFeaturedPromises,
     getPoliticianById,
+    getPoliticianRankings,
+    getPartyRankings,
 } from "@/lib/data";
+import { RankingCard } from "@/components/RankingCard";
 import { CATEGORIES } from "@/lib/types";
 import {
     ArrowRight,
@@ -22,24 +21,11 @@ import {
     CheckCircle2,
     XCircle,
     Clock,
-    Search,
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { formatDistanceToNow } from "date-fns";
-import { lv } from "date-fns/locale";
 
 const Index = () => {
     const stats = getPromiseStats();
     const featuredPromises = getFeaturedPromises().slice(0, 4);
-
-    // Get recent updates (sorted by statusUpdatedAt)
-    const recentUpdates = [...promises]
-        .sort(
-            (a, b) =>
-                new Date(b.statusUpdatedAt).getTime() -
-                new Date(a.statusUpdatedAt).getTime(),
-        )
-        .slice(0, 5);
 
     return (
         <div className="flex flex-col bg-background">
@@ -130,67 +116,20 @@ const Index = () => {
                 </div>
             </section>
 
-            {/* Statistics & Updates Grid */}
-            <section className="py-16 md:py-20 bg-surface-muted border-y border-border/50">
+            {/* Leaderboards */}
+            <section className="py-16 md:py-20 bg-muted/30 border-y border-border/50">
                 <div className="container-wide">
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        {/* Pie Chart */}
-                        <div>
-                            <h2 className="text-2xl font-bold text-foreground mb-2">
-                                Kopējā statistika
-                            </h2>
-
-                            <Card className="border-border/50">
-                                <CardContent className="p-8">
-                                    <StatsPieChart />
-                                </CardContent>
-                            </Card>
-                        </div>
-
-                        {/* Recent Updates */}
-                        <div>
-                            <h2 className="text-2xl font-bold text-foreground mb-2">
-                                Pēdējie atjauninājumi
-                            </h2>
-
-                            <Card className="border-border/50">
-                                <CardContent className="p-4">
-                                    <div className="space-y-0">
-                                        {recentUpdates.map((promise, index) => {
-                                            const politician = getPoliticianById(promise.politicianId);
-                                            return (
-                                                <Link key={promise.id} href={`/promises/${promise.id}`}>
-                                                    <motion.div
-                                                        initial={{ opacity: 0, x: -10 }}
-                                                        animate={{ opacity: 1, x: 0 }}
-                                                        transition={{ delay: index * 0.05 }}
-                                                        className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
-                                                    >
-                                                        <StatusBadge
-                                                            status={promise.status}
-                                                            size="sm"
-                                                            showIcon={false}
-                                                        />
-                                                        <div className="flex-1 min-w-0">
-                                                            <p className="text-sm font-medium text-foreground line-clamp-1">
-                                                                {promise.title}
-                                                            </p>
-                                                            <p className="text-xs text-muted-foreground mt-0.5">
-                                                                {politician?.name} •{" "}
-                                                                {formatDistanceToNow(
-                                                                    new Date(promise.statusUpdatedAt),
-                                                                    { addSuffix: true, locale: lv },
-                                                                )}
-                                                            </p>
-                                                        </div>
-                                                    </motion.div>
-                                                </Link>
-                                            );
-                                        })}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <RankingCard
+                            title="Top Politiķi"
+                            type="politician"
+                            data={getPoliticianRankings()}
+                        />
+                        <RankingCard
+                            title="Top Partijas"
+                            type="party"
+                            data={getPartyRankings()}
+                        />
                     </div>
                 </div>
             </section>

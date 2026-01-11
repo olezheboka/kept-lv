@@ -571,3 +571,60 @@ export const getPromiseStats = () => {
     brokenPercentage: Math.round((broken / total) * 100),
   };
 };
+
+export interface RankingItem {
+  id: string;
+  name: string;
+  avatarUrl?: string; // photoUrl for politician, logoUrl for party
+  color?: string; // For fallback party avatar or party color
+  role?: string; // Only for politician
+  partyId?: string; // Only for politician
+  totalPromises: number;
+  keptPromises: number;
+  keptPercentage: number;
+  abbreviation?: string; // For parties
+}
+
+export const getPoliticianRankings = (): RankingItem[] => {
+  return politicians
+    .map(politician => {
+      const politiciansPromises = getPromisesByPolitician(politician.id);
+      const totalPromises = politiciansPromises.length;
+      const keptPromises = politiciansPromises.filter(p => p.status === 'kept').length;
+
+      return {
+        id: politician.id,
+        name: politician.name,
+        avatarUrl: politician.photoUrl,
+        partyId: politician.partyId,
+        role: politician.role,
+        totalPromises,
+        keptPromises,
+        keptPercentage: totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0
+      };
+    })
+    .filter(item => item.totalPromises > 0)
+    .sort((a, b) => b.keptPercentage - a.keptPercentage);
+};
+
+export const getPartyRankings = (): RankingItem[] => {
+  return parties
+    .map(party => {
+      const partyPromises = getPromisesByParty(party.id);
+      const totalPromises = partyPromises.length;
+      const keptPromises = partyPromises.filter(p => p.status === 'kept').length;
+
+      return {
+        id: party.id,
+        name: party.name,
+        avatarUrl: party.logoUrl,
+        abbreviation: party.abbreviation,
+        color: party.color,
+        totalPromises,
+        keptPromises,
+        keptPercentage: totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0
+      };
+    })
+    .filter(item => item.totalPromises > 0)
+    .sort((a, b) => b.keptPercentage - a.keptPercentage);
+};
