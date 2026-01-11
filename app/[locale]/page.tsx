@@ -120,7 +120,7 @@ const Index = () => {
                                     href="https://lvportals.lv/skaidrojumi/346761-aptauja-tikai-13-iedzivotaju-uzskata-ka-var-ietekmet-valdibas-lemumus-2022"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 underline underline-offset-4"
+                                    className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
                                 >
                                     — LV Portāls, 2022
                                     <ExternalLink className="h-3 w-3" />
