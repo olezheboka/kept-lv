@@ -75,21 +75,9 @@ const PoliticianDetail = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4 }}
-                        className="flex flex-col md:flex-row items-start gap-6"
+                        className="flex flex-col md:flex-row items-center md:items-start gap-6"
                     >
-                        <Avatar className="h-24 w-24 md:h-32 md:w-32 border-4 border-background shadow-lg">
-                            {party?.logoUrl ? (
-                                <AvatarImage src={party.logoUrl} alt={party.name} />
-                            ) : null}
-                            <AvatarFallback
-                                className="text-2xl font-bold text-white uppercase"
-                                style={{ backgroundColor: party?.color || '#333' }}
-                            >
-                                {party?.abbreviation || '?'}
-                            </AvatarFallback>
-                        </Avatar>
-
-                        <div className="flex-1">
+                        <div className="flex-1 text-center md:text-left">
                             <div className="flex flex-wrap items-center gap-3 mb-2">
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">
                                     {politician.name}
