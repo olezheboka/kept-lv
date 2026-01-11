@@ -24,8 +24,11 @@ const Index = () => {
     return (
         <div className="flex flex-col bg-background">
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-[linear-gradient(to_bottom,rgba(158,27,52,0.1)_0%,rgba(158,27,52,0.02)_50%,transparent_100%)] border-b border-border/50">
-                <div className="container-wide py-10 md:py-12">
+            <section className="relative overflow-hidden bg-background border-b border-border/50">
+                <div className="absolute top-0 left-1/4 -translate-x-1/2 w-[600px] h-[600px] bg-[#9E1B34]/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/2" />
+                <div className="absolute top-0 right-1/4 translate-x-1/2 w-[500px] h-[500px] bg-[#9E1B34]/5 rounded-full blur-[80px] pointer-events-none -translate-y-1/3" />
+
+                <div className="container-wide py-10 md:py-12 relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -45,9 +48,6 @@ const Index = () => {
                     </div>
                 </div>
 
-                {/* Decorative elements - Flag inspired gradient */}
-                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-red-500/5 rounded-full blur-3xl pointer-events-none" />
             </section>
 
             {/* Featured Promises */}
