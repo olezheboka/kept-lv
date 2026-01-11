@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
     promises,
-    getPromiseStats,
     getFeaturedPromises,
     getPoliticianRankings,
     getPartyRankings,
@@ -17,14 +16,10 @@ import { CATEGORIES } from "@/lib/types";
 import {
     ArrowRight,
     TrendingUp,
-    CheckCircle2,
-    XCircle,
-    Clock,
     Quote,
 } from "lucide-react";
 
 const Index = () => {
-    const stats = getPromiseStats();
     const featuredPromises = getFeaturedPromises().slice(0, 4);
 
     return (
@@ -57,34 +52,8 @@ const Index = () => {
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-red-500/5 rounded-full blur-3xl pointer-events-none" />
             </section>
 
-            {/* Quick Stats Bar */}
-            <section className="border-b border-border bg-card">
-                <div className="container-wide py-4">
-                    <div className="flex items-center justify-center gap-6 md:gap-12 overflow-x-auto">
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                            <CheckCircle2 className="h-4 w-4 text-status-kept" />
-                            <span className="text-sm font-medium text-foreground">
-                                {stats.kept} Izpildīti
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                            <Clock className="h-4 w-4 text-status-progress" />
-                            <span className="text-sm font-medium text-foreground">
-                                {stats.inProgress} Procesā
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                            <XCircle className="h-4 w-4 text-status-broken" />
-                            <span className="text-sm font-medium text-foreground">
-                                {stats.broken} Lauzti
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             {/* Featured Promises */}
-            <section className="py-16 md:py-20">
+            <section className="pt-8 pb-16 md:pt-12 md:pb-20">
                 <div className="container-wide">
                     <div className="flex items-end justify-between mb-4">
                         <div>
