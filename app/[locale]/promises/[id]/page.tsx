@@ -82,9 +82,22 @@ const PromiseDetail = () => {
                                             </Link>
                                             <PartyBadge party={party} size="sm" showFullName />
                                         </div>
-                                        <span className="text-sm text-muted-foreground">
-                                            {politician.role}
-                                        </span>
+                                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+                                            <span>
+                                                {politician.role}
+                                                {politician.roleStartDate && (
+                                                    <> no {format(new Date(politician.roleStartDate), 'dd.MM.yyyy')}</>
+                                                )}
+                                                {!politician.isInOffice && politician.roleEndDate && (
+                                                    <> līdz {format(new Date(politician.roleEndDate), 'dd.MM.yyyy')}</>
+                                                )}
+                                            </span>
+                                            {politician.isInOffice && (
+                                                <span className="inline-flex items-center rounded-md bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                    Amatā
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             )}
