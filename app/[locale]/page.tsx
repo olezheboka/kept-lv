@@ -24,7 +24,7 @@ const Index = () => {
     return (
         <div className="flex flex-col bg-background">
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-b from-red-50/50 via-background to-background border-b border-border/50">
+            <section className="relative overflow-hidden bg-[linear-gradient(to_bottom,rgba(158,27,52,0.1)_0%,rgba(158,27,52,0.02)_50%,transparent_100%)] border-b border-border/50">
                 <div className="container-wide py-10 md:py-12">
                     <div className="max-w-4xl mx-auto text-center">
                         <motion.div
@@ -34,7 +34,7 @@ const Index = () => {
                             className=""
                         >
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight text-balance">
-                                Sekojam līdzi <span className="text-[#9E1B34]">Latvijas</span> politiķu solījumiem.
+                                Sekojam līdzi <span className="bg-[linear-gradient(180deg,#9E1B34_0%,#9E1B34_40%,#ffffff_40%,#ffffff_60%,#9E1B34_60%,#9E1B34_100%)] bg-clip-text text-transparent decoration-clone pb-2">Latvijas</span> politiķu solījumiem.
                             </h1>
                             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
                                 Pārredzama un objektīva platforma, kas parāda valdības solījumu izpildi
