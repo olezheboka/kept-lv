@@ -45,13 +45,13 @@ const Index = () => {
         <div className="flex flex-col bg-background">
             {/* Hero Section */}
             <section className="relative overflow-hidden bg-gradient-to-b from-red-50/50 via-background to-background border-b border-border/50">
-                <div className="container-wide py-12 md:py-16">
+                <div className="container-wide py-10 md:py-12">
                     <div className="max-w-4xl mx-auto text-center">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6 }}
-                            className="mb-12"
+                            className=""
                         >
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight text-balance">
                                 Sekojam līdzi Latvijas politiķu{" "}
