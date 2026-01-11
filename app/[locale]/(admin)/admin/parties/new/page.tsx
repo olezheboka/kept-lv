@@ -12,19 +12,17 @@ export default function NewPartyPage() {
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    nameLv: "",
-    nameEn: "",
-    nameRu: "",
+    name: "",
     slug: "",
     color: "#3B82F6",
     logoUrl: "",
   });
 
   useEffect(() => {
-    if (formData.nameLv && !formData.slug) {
-      setFormData((prev) => ({ ...prev, slug: slugify(formData.nameLv) }));
+    if (formData.name && !formData.slug) {
+      setFormData((prev) => ({ ...prev, slug: slugify(formData.name) }));
     }
-  }, [formData.nameLv]);
+  }, [formData.name]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +30,8 @@ export default function NewPartyPage() {
 
     try {
       const payload = {
-        name: { lv: formData.nameLv, en: formData.nameEn, ru: formData.nameRu },
-        slug: formData.slug || slugify(formData.nameLv),
+        name: formData.name,
+        slug: formData.slug || slugify(formData.name),
         color: formData.color,
         logoUrl: formData.logoUrl || null,
       };
@@ -73,42 +71,16 @@ export default function NewPartyPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Latvian (Required)
+                Name (Latvian)
               </label>
               <input
                 type="text"
                 required
-                value={formData.nameLv}
-                onChange={(e) => setFormData({ ...formData, nameLv: e.target.value })}
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
                   text-white placeholder-gray-500 focus:bg-white/20 transition-all"
-                placeholder="Partijas nosaukums latviešu valodā"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                English
-              </label>
-              <input
-                type="text"
-                value={formData.nameEn}
-                onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
-                placeholder="Party name in English"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Russian
-              </label>
-              <input
-                type="text"
-                value={formData.nameRu}
-                onChange={(e) => setFormData({ ...formData, nameRu: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
-                placeholder="Название партии на русском"
+                placeholder="Partijas nosaukums"
               />
             </div>
           </div>

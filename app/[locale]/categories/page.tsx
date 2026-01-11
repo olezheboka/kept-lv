@@ -73,9 +73,7 @@ const Categories = () => {
                                                 <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors mb-1">
                                                     {category.name}
                                                 </h3>
-                                                <p className="text-sm text-muted-foreground mb-1">
-                                                    {category.nameLv}
-                                                </p>
+
                                                 <p className="text-xs text-muted-foreground line-clamp-2 mb-4">
                                                     {category.description}
                                                 </p>
