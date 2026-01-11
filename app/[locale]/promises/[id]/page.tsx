@@ -108,7 +108,7 @@ const PromiseDetail = () => {
                                     {category && (
                                         <>
                                             <span className="text-muted-foreground/30">•</span>
-                                            <span className="text-muted-foreground font-medium">
+                                            <span className="text-xs text-muted-foreground/70">
                                                 {category.name}
                                             </span>
                                         </>
