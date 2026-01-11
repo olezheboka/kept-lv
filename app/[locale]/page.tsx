@@ -25,8 +25,7 @@ const Index = () => {
         <div className="flex flex-col bg-background">
             {/* Hero Section */}
             <section className="relative overflow-hidden bg-background border-b border-border/50">
-                <div className="absolute top-0 left-1/4 -translate-x-1/2 w-[600px] h-[600px] bg-[#9E1B34]/10 rounded-full blur-[100px] pointer-events-none -translate-y-1/2" />
-                <div className="absolute top-0 right-1/4 translate-x-1/2 w-[500px] h-[500px] bg-[#9E1B34]/5 rounded-full blur-[80px] pointer-events-none -translate-y-1/3" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
                 <div className="container-wide py-10 md:py-12 relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
