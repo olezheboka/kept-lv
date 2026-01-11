@@ -9,7 +9,6 @@ import {
     promises,
     getPromiseStats,
     getFeaturedPromises,
-    getPoliticianById,
     getPoliticianRankings,
     getPartyRankings,
 } from "@/lib/data";
@@ -121,12 +120,12 @@ const Index = () => {
                 <div className="container-wide">
                     <div className="grid md:grid-cols-2 gap-8">
                         <RankingCard
-                            title="Top Politiķi"
+                            title="Uzticamākie politiķi"
                             type="politician"
                             data={getPoliticianRankings()}
                         />
                         <RankingCard
-                            title="Top Partijas"
+                            title="Uzticamākās partijas"
                             type="party"
                             data={getPartyRankings()}
                         />
