@@ -13,9 +13,10 @@ import { formatDistanceToNow } from 'date-fns';
 interface PromiseCardProps {
   promise: Promise;
   index?: number;
+  hideLastUpdated?: boolean;
 }
 
-export const PromiseCard = ({ promise, index = 0 }: PromiseCardProps) => {
+export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: PromiseCardProps) => {
   const politician = getPoliticianById(promise.politicianId);
   const party = getPartyById(promise.partyId);
   const category = CATEGORIES.find(c => c.id === promise.category);
@@ -56,25 +57,19 @@ export const PromiseCard = ({ promise, index = 0 }: PromiseCardProps) => {
             </h3>
 
             {/* FooterContainer - pushed to bottom */}
-            <div className="mt-auto space-y-2">
+            <div className="mt-auto space-y-3">
               {/* Footer: Timeline */}
-              <div className="flex items-center justify-between pt-3 border-t border-border/50 gap-2">
-                {/* Date Promised */}
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Solīts</span>
-                  <div className="flex items-center gap-1.5 text-xs text-foreground">
-                    <Calendar size={12} className="text-muted-foreground" />
-                    <span>{new Date(promise.datePromised).toLocaleDateString('lv-LV')}</span>
-                  </div>
-                </div>
-
-
+              <div className="pt-3 border-t border-border/50 text-xs text-muted-foreground flex items-center gap-2">
+                <Calendar size={14} className="text-muted-foreground/70" />
+                <span>Solīts <span className="font-medium text-foreground">{new Date(promise.datePromised).toLocaleDateString('lv-LV')}</span></span>
               </div>
 
               {/* Updated indicator */}
-              <p className="text-[10px] text-muted-foreground">
-                Atjaunots {formatDistanceToNow(new Date(promise.statusUpdatedAt), { addSuffix: true, locale: require('date-fns/locale').lv })}
-              </p>
+              {!hideLastUpdated && (
+                <p className="text-[10px] text-muted-foreground">
+                  Atjaunots {formatDistanceToNow(new Date(promise.statusUpdatedAt), { addSuffix: true, locale: require('date-fns/locale').lv })}
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>

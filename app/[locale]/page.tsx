@@ -70,7 +70,7 @@ const Index = () => {
 
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                         {featuredPromises.map((promise, index) => (
-                            <PromiseCard key={promise.id} promise={promise} index={index} />
+                            <PromiseCard key={promise.id} promise={promise} index={index} hideLastUpdated={true} />
                         ))}
                     </div>
 
