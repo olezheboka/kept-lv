@@ -155,25 +155,25 @@ const PromiseDetail = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.4, delay: 0.2 }}
                             >
-                                <Card className="border-border/50">
-                                    <CardHeader>
-                                        <CardTitle className="text-lg">Avoti</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-3">
+                                <Card className="border-border/50 bg-muted/10">
+                                    <div className="px-4 py-3 border-b border-border/50">
+                                        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Avoti</h3>
+                                    </div>
+                                    <CardContent className="p-2 space-y-1">
                                         {promise.sources.map((source, index) => (
                                             <a
                                                 key={index}
                                                 href={source.url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors group"
+                                                className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors group"
                                             >
-                                                <ExternalLink className="h-4 w-4 text-muted-foreground mt-0.5 group-hover:text-accent" />
-                                                <div>
-                                                    <p className="font-medium text-foreground group-hover:text-accent transition-colors">
+                                                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground group-hover:text-accent shrink-0" />
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-foreground truncate group-hover:text-accent transition-colors">
                                                         {source.title}
                                                     </p>
-                                                    <p className="text-sm text-muted-foreground">
+                                                    <p className="text-xs text-muted-foreground truncate">
                                                         {source.publication} • {format(new Date(source.date), 'dd.MM.yyyy')}
                                                     </p>
                                                 </div>
