@@ -3,15 +3,14 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { PromiseCard } from "@/components/PromiseCard";
-import { StatsCounter } from "@/components/StatsCounter";
+
 import { StatsPieChart } from "@/components/StatsPieChart";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
     promises,
-    politicians,
-    parties,
+
     getPromiseStats,
     getFeaturedPromises,
     getPoliticianById,
@@ -64,32 +63,7 @@ const Index = () => {
                             </p>
                         </motion.div>
 
-                        {/* Stats Counters */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                            className="grid grid-cols-2 lg:grid-cols-5 gap-8 md:gap-12"
-                        >
-                            <StatsCounter value={stats.total} label="Solījumi" delay={0} />
-                            <StatsCounter
-                                value={politicians.length}
-                                label="Politiķi"
-                                delay={100}
-                            />
-                            <StatsCounter
-                                value={stats.keptPercentage}
-                                label="Izpildīti"
-                                suffix="%"
-                                delay={200}
-                            />
-                            <StatsCounter
-                                value={stats.partiallyKept}
-                                label="Daļēji izpildīti"
-                                delay={250}
-                            />
-                            <StatsCounter value={parties.length} label="Partijas" delay={300} />
-                        </motion.div>
+
                     </div>
                 </div>
 
