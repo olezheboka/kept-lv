@@ -84,7 +84,7 @@ const CategoryDetail = () => {
                             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
                                 {category.name}
                             </h1>
-                            <p className="text-lg text-muted-foreground mb-1">{category.nameLv}</p>
+
                             <p className="text-muted-foreground">{category.description}</p>
                         </div>
                     </motion.div>
