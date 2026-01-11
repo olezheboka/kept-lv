@@ -22,22 +22,22 @@ export const Footer = () => {
             <h4 className="font-semibold text-foreground mb-4">Pārlūkot</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/promises" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/promises" className="text-sm text-muted-foreground hover:text-foreground hover:underline underline-offset-4 transition-colors">
                   Solījumi
                 </Link>
               </li>
               <li>
-                <Link href="/politicians" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/politicians" className="text-sm text-muted-foreground hover:text-foreground hover:underline underline-offset-4 transition-colors">
                   Politiķi
                 </Link>
               </li>
               <li>
-                <Link href="/parties" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/parties" className="text-sm text-muted-foreground hover:text-foreground hover:underline underline-offset-4 transition-colors">
                   Partijas
                 </Link>
               </li>
               <li>
-                <Link href="/categories" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/categories" className="text-sm text-muted-foreground hover:text-foreground hover:underline underline-offset-4 transition-colors">
                   Kategorijas
                 </Link>
               </li>
@@ -49,17 +49,17 @@ export const Footer = () => {
             <h4 className="font-semibold text-foreground mb-4">Par mums</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground hover:underline underline-offset-4 transition-colors">
                   Par Kept
                 </Link>
               </li>
               <li>
-                <Link href="/methodology" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/methodology" className="text-sm text-muted-foreground hover:text-foreground hover:underline underline-offset-4 transition-colors">
                   Metodoloģija
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground hover:underline underline-offset-4 transition-colors">
                   Kontakti
                 </Link>
               </li>
@@ -71,12 +71,12 @@ export const Footer = () => {
             <h4 className="font-semibold text-foreground mb-4">Juridiskā info</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground hover:underline underline-offset-4 transition-colors">
                   Privātuma politika
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground hover:underline underline-offset-4 transition-colors">
                   Lietošanas noteikumi
                 </Link>
               </li>
