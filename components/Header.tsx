@@ -37,7 +37,7 @@ export const Header = () => {
           {/* Logo */}
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
-            <span className="font-bold text-2xl bg-[linear-gradient(180deg,#9E1B34_0%,#9E1B34_50%,#ffffff_50%,#ffffff_60%,#9E1B34_60%,#9E1B34_100%)] bg-clip-text text-transparent decoration-clone drop-shadow-sm pb-1">
+            <span className="font-bold text-2xl text-[#9E1B34]">
               solijums.lv
             </span>
           </Link>
