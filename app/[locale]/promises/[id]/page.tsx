@@ -83,34 +83,63 @@ const PromiseDetail = () => {
                                 {promise.title}
                             </h1>
 
-                            {/* Context Card */}
-                            <Card className="border-border/50 bg-muted/20">
-                                <CardContent className="p-5 space-y-4">
-                                    <div className="flex flex-wrap gap-6 text-sm">
-                                        <div className="flex items-center gap-2">
-                                            <User className="h-4 w-4 text-accent" />
-                                            <span className="text-muted-foreground">Solīja:</span>
-                                            <span className="font-medium text-foreground">{politician?.name}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <Calendar className="h-4 w-4 text-accent" />
-                                            <span className="text-muted-foreground">Kad:</span>
-                                            <span className="font-medium text-foreground">
-                                                {format(new Date(promise.datePromised), 'dd. MMMM, yyyy', { locale: lv })}
-                                            </span>
+                            {/* Author & Context Section */}
+                            <div className="border-b border-border/50 pb-8 mb-8">
+                                {politician && party && (
+                                    <div className="flex flex-col sm:flex-row gap-6 items-start mb-6">
+                                        <Link href={`/politicians/${politician.id}`} className="shrink-0 relative group">
+                                            <Avatar className="h-20 w-20 border-2 border-background shadow-md">
+                                                <AvatarImage src={politician.photoUrl} alt={politician.name} />
+                                                <AvatarFallback className="text-xl">
+                                                    {politician.name.split(' ').map(n => n[0]).join('')}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <div className="absolute -bottom-2 -right-2">
+                                                <PartyBadge party={party} size="sm" />
+                                            </div>
+                                        </Link>
+
+                                        <div className="space-y-3 flex-1">
+                                            <div>
+                                                <Link href={`/politicians/${politician.id}`} className="group inline-flex items-center gap-2">
+                                                    <h3 className="text-xl font-bold text-foreground group-hover:text-accent transition-colors">
+                                                        {politician.name}
+                                                    </h3>
+                                                </Link>
+                                                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mt-1">
+                                                    <span>{politician.role}</span>
+                                                    <span>•</span>
+                                                    {politician.isInOffice ? (
+                                                        <span className="text-status-kept font-medium">Amatā</span>
+                                                    ) : (
+                                                        <span className="text-muted-foreground font-medium">Bijušais</span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-2 text-sm">
+                                                <Calendar className="h-4 w-4 text-accent" />
+                                                <span className="text-muted-foreground">Solīts:</span>
+                                                <span className="font-medium text-foreground">
+                                                    {format(new Date(promise.datePromised), 'dd. MMMM, yyyy', { locale: lv })}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
+                                )}
 
-                                    {promise.importance && (
-                                        <div className="pt-2 border-t border-border/50">
-                                            <h4 className="text-sm font-medium text-muted-foreground mb-1">Kāpēc tas ir svarīgi?</h4>
-                                            <p className="text-foreground leading-relaxed">
-                                                {promise.importance}
-                                            </p>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
+                                {promise.importance && (
+                                    <div className="bg-muted/20 rounded-lg p-5 border border-border/50">
+                                        <h4 className="text-sm font-bold text-muted-foreground mb-2 flex items-center gap-2">
+                                            <Info className="h-4 w-4" />
+                                            Kāpēc tas ir svarīgi?
+                                        </h4>
+                                        <p className="text-foreground leading-relaxed">
+                                            {promise.importance}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Quote Block */}
                             <blockquote className="border-l-4 border-accent pl-6 py-2 italic text-lg text-muted-foreground bg-muted/30 rounded-r-lg pr-6">
@@ -130,46 +159,7 @@ const PromiseDetail = () => {
                             </blockquote>
                         </motion.div>
 
-                        {/* Status Justification */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.1 }}
-                        >
-                            <Card className="border-border/50">
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-lg flex items-center gap-2">
-                                        <Clock className="h-5 w-5 text-muted-foreground" />
-                                        Statusa pamatojums
-                                    </CardTitle>
-                                    <StatusBadge status={promise.status} />
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-foreground leading-relaxed inline">
-                                        {promise.statusJustification}
-                                        {promise.sources.map((source, index) => (
-                                            <a
-                                                key={index}
-                                                href={source.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center justify-center h-5 px-1.5 ml-1 text-[10px] font-bold tracking-wide uppercase rounded bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground transition-colors align-middle -translate-y-0.5"
-                                                title={source.title}
-                                            >
-                                                {source.publication}
-                                            </a>
-                                        ))}
-                                    </p>
-                                    <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border text-sm text-muted-foreground">
-                                        <span>
-                                            Atjaunināts: {format(new Date(promise.statusUpdatedAt), 'dd. MMMM, yyyy', { locale: lv })}
-                                        </span>
-                                        <span>•</span>
-                                        <span>{promise.statusUpdatedBy}</span>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
+
 
                         {/* Sources */}
                         {promise.sources.length > 0 && (
@@ -226,47 +216,51 @@ const PromiseDetail = () => {
 
                     {/* Sidebar */}
                     <div className="space-y-6">
-                        {/* Politician Card */}
-                        {politician && party && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.4, delay: 0.1 }}
-                            >
-                                <Card className="border-border/50">
-                                    <CardContent className="p-5">
-                                        <Link href={`/politicians/${politician.id}`} className="group">
-                                            <div className="flex items-center gap-4 mb-4">
-                                                <Avatar className="h-16 w-16 border-2 border-background shadow-md">
-                                                    <AvatarImage src={politician.photoUrl} alt={politician.name} />
-                                                    <AvatarFallback className="text-lg">
-                                                        {politician.name.split(' ').map(n => n[0]).join('')}
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <div>
-                                                    <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors">
-                                                        {politician.name}
-                                                    </h3>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {politician.role}
-                                                    </p>
-                                                    {politician.isInOffice ? (
-                                                        <span className="inline-block mt-1 px-2 py-0.5 bg-status-kept-bg text-status-kept text-xs font-medium rounded-full">
-                                                            Amatā
-                                                        </span>
-                                                    ) : (
-                                                        <span className="inline-block mt-1 px-2 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
-                                                            Bijušais
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <PartyBadge party={party} size="md" showFullName />
-                                        </Link>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        )}
+                        {/* Status Justification (Moved to Sidebar) */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.1 }}
+                        >
+                            <Card className="border-border/50 shadow-sm border-l-4 border-l-primary/20">
+                                <CardHeader className="space-y-4 pb-4">
+                                    <div className="flex items-center justify-between">
+                                        <CardTitle className="text-lg flex items-center gap-2">
+                                            Status
+                                        </CardTitle>
+                                        <StatusBadge status={promise.status} />
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="text-sm text-foreground leading-relaxed">
+                                        <span className="font-medium block mb-2 text-muted-foreground">Pamatojums:</span>
+                                        {promise.statusJustification}
+                                        {promise.sources.map((source, index) => (
+                                            <a
+                                                key={index}
+                                                href={source.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center justify-center h-5 px-1.5 ml-1 text-[10px] font-bold tracking-wide uppercase rounded bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground transition-colors align-middle -translate-y-0.5"
+                                                title={source.title}
+                                            >
+                                                {source.publication}
+                                            </a>
+                                        ))}
+                                    </div>
+                                    <div className="flex flex-col gap-1 pt-4 border-t border-border/50 text-xs text-muted-foreground">
+                                        <div className="flex justify-between">
+                                            <span>Atjaunināts:</span>
+                                            <span className="font-medium">{format(new Date(promise.statusUpdatedAt), 'dd.MM.yyyy')}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Avots:</span>
+                                            <span className="font-medium">{promise.statusUpdatedBy}</span>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </motion.div>
 
                         {/* Meta Info */}
                         <motion.div
