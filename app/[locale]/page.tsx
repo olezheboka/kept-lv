@@ -158,7 +158,7 @@ const Index = () => {
                                 Pamanīji neprecizitāti datos vai tehnisku kļūdu? Dod mums ziņu, lai varam to pēc iespējas ātrāk novērst.
                             </p>
                             <Link href="mailto:support@kept.lv?subject=Kļūda%20vai%20problēma" className="mt-auto">
-                                <Button size="lg" variant="outline" className="font-semibold hover:text-destructive hover:border-destructive/50">
+                                <Button size="lg" variant="outline" className="font-semibold">
                                     Ziņot par kļūdu
                                 </Button>
                             </Link>
