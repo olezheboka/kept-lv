@@ -6,7 +6,7 @@ export const parties: Party[] = [
     id: 'jv',
     name: 'Jaunā Vienotība',
     abbreviation: 'JV',
-    color: '#1E40AF',
+    color: '#84CC16',
     isInCoalition: true,
     mpCount: 26
   },
@@ -14,7 +14,7 @@ export const parties: Party[] = [
     id: 'zzs',
     name: 'Zaļo un Zemnieku savienība',
     abbreviation: 'ZZS',
-    color: '#15803D',
+    color: '#14532D',
     isInCoalition: true,
     mpCount: 16
   },
@@ -30,7 +30,7 @@ export const parties: Party[] = [
     id: 'ap',
     name: 'Attīstībai/Par!',
     abbreviation: 'AP!',
-    color: '#7C3AED',
+    color: '#09090b',
     isInCoalition: false,
     mpCount: 0
   },
@@ -38,7 +38,7 @@ export const parties: Party[] = [
     id: 'prog',
     name: 'Progresīvie',
     abbreviation: 'P',
-    color: '#DB2777',
+    color: '#F97316',
     isInCoalition: false,
     mpCount: 10
   },
