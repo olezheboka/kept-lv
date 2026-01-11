@@ -6,6 +6,10 @@ import { PromiseCard } from "@/components/PromiseCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+    getFeaturedPromises,
+    getPoliticianRankings,
+    getPartyRankings,
+} from "@/lib/data";
 import { RankingCard } from "@/components/RankingCard";
 import {
     ArrowRight,
