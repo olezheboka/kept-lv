@@ -68,18 +68,7 @@ export const PromiseCard = ({ promise, index = 0 }: PromiseCardProps) => {
                   </div>
                 </div>
 
-                {/* Deadline */}
-                <div className="flex flex-col gap-0.5 text-right">
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium">Termiņš</span>
-                  <div className="flex items-center gap-1.5 text-xs text-foreground justify-end">
-                    <span className="font-medium">
-                      {promise.deadline
-                        ? new Date(promise.deadline).toLocaleDateString('lv-LV')
-                        : '—'
-                      }
-                    </span>
-                  </div>
-                </div>
+
               </div>
 
               {/* Updated indicator */}
