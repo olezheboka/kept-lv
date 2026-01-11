@@ -334,7 +334,7 @@ export const promises: Promise[] = [
     statusJustification: 'Minimālā alga palielināta līdz 700 EUR no 2024. gada 1. janvāra.',
     statusUpdatedAt: '2024-01-15',
     statusUpdatedBy: 'Kept Analytics Team',
-    category: 'labor-employment',
+    category: 'economy-finance',
     tags: ['algas', 'darbs', 'ekonomika'],
     sources: [
       {
@@ -525,13 +525,13 @@ export const promises: Promise[] = [
 ];
 
 // Helper functions
-export const getPartyById = (id: string): Party | undefined => 
+export const getPartyById = (id: string): Party | undefined =>
   parties.find(p => p.id === id);
 
-export const getPoliticianById = (id: string): Politician | undefined => 
+export const getPoliticianById = (id: string): Politician | undefined =>
   politicians.find(p => p.id === id);
 
-export const getPromiseById = (id: string): Promise | undefined => 
+export const getPromiseById = (id: string): Promise | undefined =>
   promises.find(p => p.id === id);
 
 export const getPromisesByPolitician = (politicianId: string): Promise[] =>
@@ -556,7 +556,7 @@ export const getPromiseStats = () => {
   const inProgress = promises.filter(p => p.status === 'in-progress').length;
   const broken = promises.filter(p => p.status === 'broken').length;
   const notRated = promises.filter(p => p.status === 'not-rated').length;
-  
+
   return {
     total,
     kept,
