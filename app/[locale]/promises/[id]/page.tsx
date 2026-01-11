@@ -125,64 +125,13 @@ const PromiseDetail = () => {
                                     </p>
                                 )}
 
-                                <blockquote className="border-l-4 border-accent pl-6 py-4 italic text-lg text-foreground/80 bg-muted/30 rounded-r-lg pr-6 relative">
-                                    <span className="absolute left-2 top-2 text-4xl text-accent/20 font-serif">"</span>
-                                    <span className="relative z-10">
-                                        {promise.fullText}
-                                        {promise.sources.map((source, index) => (
-                                            <a
-                                                key={index}
-                                                href={source.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center justify-center h-5 px-1.5 ml-1 text-[10px] font-bold tracking-wide uppercase rounded bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground transition-colors align-middle -translate-y-0.5 not-italic"
-                                                title={source.title}
-                                            >
-                                                {source.publication}
-                                            </a>
-                                        ))}
-                                    </span>
-                                </blockquote>
+
                             </div>
                         </motion.div>
 
 
 
-                        {/* Sources */}
-                        {promise.sources.length > 0 && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.4, delay: 0.2 }}
-                            >
-                                <Card className="border-border/50 bg-muted/10">
-                                    <div className="px-4 py-3 border-b border-border/50">
-                                        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Avoti</h3>
-                                    </div>
-                                    <CardContent className="p-2 space-y-1">
-                                        {promise.sources.map((source, index) => (
-                                            <a
-                                                key={index}
-                                                href={source.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors group"
-                                            >
-                                                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground group-hover:text-accent shrink-0" />
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium text-foreground truncate group-hover:text-accent transition-colors">
-                                                        {source.title}
-                                                    </p>
-                                                    <p className="text-xs text-muted-foreground truncate">
-                                                        {source.publication} • {format(new Date(source.date), 'dd.MM.yyyy')}
-                                                    </p>
-                                                </div>
-                                            </a>
-                                        ))}
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        )}
+                        {/* Sources Removed */}
 
                         {/* Related Promises */}
                         {(relatedByPolitician.length > 0 || relatedByCategory.length > 0) && (
