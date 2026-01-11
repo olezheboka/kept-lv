@@ -5,7 +5,7 @@ import { StatusBadge } from './StatusBadge';
 import { PartyBadge } from './PartyBadge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar, Eye } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
@@ -30,61 +30,49 @@ export const PromiseCard = ({ promise, index = 0 }: PromiseCardProps) => {
     >
       <Link href={`/promises/${promise.id}`}>
         <Card className="group overflow-hidden border-border/50 bg-card hover:shadow-elevated hover:border-border transition-all duration-300 cursor-pointer">
-          <CardContent className="p-5">
-            {/* Header with Status & Category */}
-            <div className="flex items-start justify-between gap-3 mb-4">
+          <CardContent className="p-5 relative">
+            {/* Status Badge - Absolute Top Right */}
+            <div className="absolute top-4 right-4">
               <StatusBadge status={promise.status} />
-              {category && (
-                <span className="text-xs text-muted-foreground font-medium">
-                  {category.name}
+            </div>
+
+            {/* Author & Party - Top Left */}
+            <div className="flex flex-col gap-1 mb-3 pt-1 pr-24">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-foreground truncate">
+                  {politician.name}
                 </span>
-              )}
+                <PartyBadge party={party} />
+              </div>
+              <span className="text-xs text-muted-foreground truncate">
+                {politician.role}
+              </span>
             </div>
 
             {/* Title */}
-            <h3 className="font-semibold text-foreground leading-snug mb-3 line-clamp-2 group-hover:text-accent transition-colors">
+            <h3 className="font-semibold text-lg text-foreground leading-snug mb-4 line-clamp-2 group-hover:text-accent transition-colors">
               {promise.title}
             </h3>
 
-            {/* Politician Info */}
-            <div className="flex items-center gap-3 mb-4">
-              <Avatar className="h-9 w-9 border-2 border-background shadow-sm">
-                {party.logoUrl ? (
-                  <AvatarImage src={party.logoUrl} alt={party.name} />
-                ) : null}
-                <AvatarFallback
-                  className="text-[10px] font-bold text-white uppercase"
-                  style={{ backgroundColor: party.color }}
-                >
-                  {party.abbreviation}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
-                  {politician.name}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {politician.role}
-                </p>
-              </div>
-              <PartyBadge party={party} />
-            </div>
-
-            {/* Footer */}
+            {/* Footer: Timeline */}
             <div className="flex items-center justify-between pt-3 border-t border-border/50">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Calendar size={12} />
-                <span>{new Date(promise.datePromised).toLocaleDateString('lv-LV')}</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Eye size={12} />
-                <span>{promise.viewCount.toLocaleString()}</span>
-              </div>
+              {/* Deadline */}
+              {promise.deadline ? (
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className="font-medium text-foreground">Termiņš:</span>
+                  <span>{new Date(promise.deadline).toLocaleDateString('lv-LV')}</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Calendar size={12} />
+                  <span>{new Date(promise.datePromised).toLocaleDateString('lv-LV')}</span>
+                </div>
+              )}
             </div>
 
             {/* Updated indicator */}
             <p className="text-[10px] text-muted-foreground mt-2">
-              Atjaunots {formatDistanceToNow(new Date(promise.statusUpdatedAt), { addSuffix: true })}
+              Atjaunots {formatDistanceToNow(new Date(promise.statusUpdatedAt), { addSuffix: true, locale: require('date-fns/locale').lv })}
             </p>
           </CardContent>
         </Card>
