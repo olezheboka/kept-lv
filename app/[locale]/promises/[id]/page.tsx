@@ -96,17 +96,19 @@ const PromiseDetail = () => {
 
                             {/* Promise Content Section */}
                             <div>
-                                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-                                    Solījums
-                                </h3>
-
-                                {category && (
-                                    <div className="mb-4">
-                                        <span className="text-sm font-medium inline-flex items-center gap-1.5 text-accent">
-                                            {category.name}
-                                        </span>
-                                    </div>
-                                )}
+                                <div className="flex items-center gap-3 mb-4">
+                                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                                        Solījums
+                                    </h3>
+                                    {category && (
+                                        <>
+                                            <span className="text-muted-foreground/40">•</span>
+                                            <span className="text-sm font-medium text-accent bg-accent/10 px-2 py-0.5 rounded-full">
+                                                {category.name}
+                                            </span>
+                                        </>
+                                    )}
+                                </div>
 
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight">
                                     {promise.title}
