@@ -29,12 +29,19 @@ async function main() {
   console.log("Seeding database with real Latvia data...");
 
   // Create admin user
-  const adminPassword = await hash("admin123", 12);
+  // Create admin user
+  const adminPassword = await hash("17191719", 12);
+
+  // Cleanup old default admin if exists
+  await prisma.user.deleteMany({ where: { email: "admin@kept.lv" } });
+
   const admin = await prisma.user.upsert({
-    where: { email: "admin@kept.lv" },
-    update: {},
+    where: { email: "oleg.jar@gmail.com" },
+    update: {
+      passwordHash: adminPassword,
+    },
     create: {
-      email: "admin@kept.lv",
+      email: "oleg.jar@gmail.com",
       passwordHash: adminPassword,
       name: "Admin",
       role: "ADMIN",
