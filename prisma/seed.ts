@@ -99,7 +99,7 @@ async function main() {
     { slug: "na", name: { lv: "Nacionālā apvienība", en: "National Alliance", ru: "Национальное объединение" }, color: "#932330", logoUrl: "/logos/na.png" },
     { slug: "ap", name: { lv: "Attīstībai/Par!", en: "Development/For!", ru: "Развитие/За!" }, color: "#000000", logoUrl: "/logos/ap.png" },
     { slug: "prog", name: { lv: "Progresīvie", en: "Progressives", ru: "Прогрессивные" }, color: "#E63915", logoUrl: "/logos/prog.png" },
-    { slug: "lra", name: { lv: "Latvijas Reģionu apvienība", en: "Latvian Regions Association", ru: "Объединение регионов Латвии" }, color: "#982632", logoUrl: "/logos/unknown_2.png" },
+    { slug: "lra", name: { lv: "Latvijas Reģionu apvienība", en: "Latvian Regions Association", ru: "Объединение регионов Латвии" }, color: "#982632", logoUrl: "/logos/lra.png" },
     { slug: "stab", name: { lv: "Stabilitātei!", en: "For Stability!", ru: "За стабильность!" }, color: "#fd7e14", logoUrl: "/logos/stab.png" },
     { slug: "lpv", name: { lv: "Latvija pirmajā vietā", en: "Latvia First", ru: "Латвия на первом месте" }, color: "#9E3139", logoUrl: "/logos/lpv.png" },
     { slug: "sask", name: { lv: "Saskaņa", en: "Harmony", ru: "Согласие" }, color: "#E31D23", logoUrl: "/logos/unknown_4.png" },
