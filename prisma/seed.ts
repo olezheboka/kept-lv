@@ -97,7 +97,7 @@ async function main() {
     { slug: "jv", name: { lv: "Jaunā Vienotība", en: "New Unity", ru: "Новое Единство" }, color: "#8AB73E", logoUrl: "/logos/jv.png" },
     { slug: "zzs", name: { lv: "Zaļo un Zemnieku savienība", en: "Union of Greens and Farmers", ru: "Союз зелёных и крестьян" }, color: "#026036", logoUrl: "/logos/zzs.png" },
     { slug: "na", name: { lv: "Nacionālā apvienība", en: "National Alliance", ru: "Национальное объединение" }, color: "#932330", logoUrl: "/logos/na.png" },
-    { slug: "ap", name: { lv: "Attīstībai/Par!", en: "Development/For!", ru: "Развитие/За!" }, color: "#000000", logoUrl: "/logos/unknown_1.png" },
+    { slug: "ap", name: { lv: "Attīstībai/Par!", en: "Development/For!", ru: "Развитие/За!" }, color: "#000000", logoUrl: "/logos/ap.png" },
     { slug: "prog", name: { lv: "Progresīvie", en: "Progressives", ru: "Прогрессивные" }, color: "#E63915", logoUrl: "/logos/prog.png" },
     { slug: "lra", name: { lv: "Latvijas Reģionu apvienība", en: "Latvian Regions Association", ru: "Объединение регионов Латвии" }, color: "#982632", logoUrl: "/logos/unknown_2.png" },
     { slug: "stab", name: { lv: "Stabilitātei!", en: "For Stability!", ru: "За стабильность!" }, color: "#fd7e14", logoUrl: "/logos/stab.png" },
