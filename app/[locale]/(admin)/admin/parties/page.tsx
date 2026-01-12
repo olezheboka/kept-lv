@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { DeleteButton } from "@/components/ui/DeleteButton";
+import { Plus, Building2 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -26,60 +27,62 @@ export default async function AdminPartiesPage({ params }: Props) {
   const parties = await getParties();
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-4xl font-black text-white">{t("manageParties")}</h1>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("manageParties")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">Manage political parties and colors.</p>
+        </div>
         <Link
           href="/admin/parties/new"
-          className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600
-            text-white font-bold hover:shadow-lg transition-all"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
         >
+          <Plus className="w-4 h-4" />
           {t("addNew")}
         </Link>
       </div>
 
-      <div className="glass-card rounded-2xl overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-white/10">
+      <div className="border border-border rounded-lg overflow-hidden bg-card">
+        <table className="w-full text-sm text-left">
+          <thead className="bg-muted/50 border-b border-border">
             <tr>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300 uppercase">
+              <th className="px-4 py-3 font-medium text-muted-foreground">
                 Name
               </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300 uppercase">
+              <th className="px-4 py-3 font-medium text-muted-foreground">
                 Color
               </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300 uppercase">
+              <th className="px-4 py-3 font-medium text-muted-foreground">
                 Politicians
               </th>
-              <th className="px-6 py-4 text-right text-sm font-semibold text-gray-300 uppercase">
+              <th className="px-4 py-3 font-medium text-muted-foreground text-right">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10">
+          <tbody className="divide-y divide-border">
             {parties.map((party) => (
-              <tr key={party.id} className="hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 text-white font-medium">
+              <tr key={party.id} className="hover:bg-muted/50 transition-colors">
+                <td className="px-4 py-3 align-top font-medium text-foreground">
                   {(party.name as any).lv || (party.name as any).en}
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-3 align-top">
                   <div className="flex items-center gap-2">
                     <div
-                      className="w-6 h-6 rounded-full"
+                      className="w-4 h-4 rounded-full border border-black/10 shadow-sm"
                       style={{ backgroundColor: party.color }}
                     />
-                    <span className="text-gray-400 text-sm">{party.color}</span>
+                    <span className="text-muted-foreground font-mono text-xs uppercase">{party.color}</span>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-gray-300">
+                <td className="px-4 py-3 align-top text-muted-foreground">
                   {party._count.politicians}
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-4 py-3 align-top text-right">
                   <div className="flex items-center justify-end gap-2">
                     <Link
                       href={`/admin/parties/${party.id}`}
-                      className="px-3 py-1.5 rounded-lg bg-white/10 text-white
-                        hover:bg-white/20 transition-all text-sm font-medium"
+                      className="text-muted-foreground hover:text-foreground font-medium transition-colors"
                     >
                       Edit
                     </Link>
@@ -92,8 +95,12 @@ export default async function AdminPartiesPage({ params }: Props) {
         </table>
 
         {parties.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-400">No parties yet. Create your first one!</p>
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+              <Building2 className="w-6 h-6 text-muted-foreground" />
+            </div>
+            <p className="text-muted-foreground font-medium">No parties found</p>
+            <p className="text-sm text-muted-foreground/60 w-64 mt-1">Get started by adding a new party.</p>
           </div>
         )}
       </div>
