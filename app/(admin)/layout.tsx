@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { AdminSidebar } from "@/components/layout/AdminSidebar";
+
 export default async function AdminLayout({
   children,
 }: {
@@ -8,7 +9,7 @@ export default async function AdminLayout({
 }) {
   const session = await auth();
 
-  if (!session) {
+  if (!session?.user || session.user.role !== "ADMIN") {
     redirect("/login");
   }
 
