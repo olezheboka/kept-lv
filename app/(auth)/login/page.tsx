@@ -42,7 +42,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen mesh-gradient flex items-center justify-center p-6">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-muted/30">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -52,71 +52,59 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="text-4xl font-black bg-gradient-to-r from-blue-400 to-purple-500
+            className="text-4xl font-black bg-gradient-to-r from-blue-600 to-purple-600
               bg-clip-text text-transparent inline-block"
           >
             KEPT
           </motion.div>
-          <p className="text-gray-400 mt-2">Admin Panel</p>
+          <p className="text-muted-foreground mt-2">Admin Panel</p>
         </div>
 
         {/* Login Form */}
-        <div className="glass-card rounded-2xl p-8">
-          <h1 className="text-2xl font-bold text-white mb-6 text-center">
+        <div className="bg-card border border-border rounded-xl shadow-sm p-8">
+          <h1 className="text-xl font-bold text-foreground mb-6 text-center">
             {t("loginTitle")}
           </h1>
 
           {error && (
-            <div className="mb-4 p-4 rounded-lg bg-rose-500/20 border border-rose-500/50 text-rose-400">
+            <div className="mb-6 p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                 {t("email")}
               </label>
               <input
                 type="email"
                 name="email"
                 required
-                className="w-full px-4 py-3 rounded-lg
-                  bg-white/10 border border-white/20
-                  text-white placeholder-gray-500
-                  focus:bg-white/20 focus:border-blue-500
-                  transition-all outline-none"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="admin@kept.lv"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                 {t("password")}
               </label>
               <input
                 type="password"
                 name="password"
                 required
-                className="w-full px-4 py-3 rounded-lg
-                  bg-white/10 border border-white/20
-                  text-white placeholder-gray-500
-                  focus:bg-white/20 focus:border-blue-500
-                  transition-all outline-none"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="••••••••"
               />
             </div>
 
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
               type="submit"
               disabled={loading}
-              className="w-full px-6 py-3 rounded-lg
-                bg-gradient-to-r from-blue-500 to-purple-600
-                text-white font-bold
-                hover:shadow-lg transition-all
-                disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
             >
               {loading ? "..." : t("loginButton")}
             </motion.button>
