@@ -1,14 +1,10 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { DeleteButton } from "@/components/ui/DeleteButton";
 import { Plus, FileText } from "lucide-react";
 
 export const dynamic = "force-dynamic";
-
-type Props = {
-  params: Promise<{ locale: string }>;
-};
 
 async function getPromises() {
   return prisma.promise.findMany({
@@ -20,11 +16,8 @@ async function getPromises() {
   });
 }
 
-export default async function AdminPromisesPage({ params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
-
-  const t = await getTranslations("admin");
+export default async function AdminPromisesPage() {
+  const t = await getTranslations({ locale: "lv", namespace: "admin" });
   const promises = await getPromises();
 
   return (
