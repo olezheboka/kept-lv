@@ -161,7 +161,7 @@ const Index = () => {
 
                         {/* Report Issue */}
                         <div className="bg-muted/30 border border-border/50 rounded-2xl p-8 flex flex-col items-start hover:border-destructive/20 transition-colors">
-                            <div className="h-12 w-12 rounded-xl bg-destructive/10 flex items-center justify-center text-destructive mb-6">
+                            <div className="h-12 w-12 rounded-xl bg-[#DC2626]/10 flex items-center justify-center text-[#DC2626] mb-6">
                                 <AlertCircle className="h-6 w-6" />
                             </div>
                             <h3 className="text-xl font-bold text-foreground mb-3">
@@ -171,7 +171,7 @@ const Index = () => {
                                 Pamanīji neprecizitāti datos vai tehnisku kļūdu? Dod mums ziņu, lai varam to pēc iespējas ātrāk novērst.
                             </p>
                             <Link href="mailto:support@kept.lv?subject=Kļūda%20vai%20problēma" className="mt-auto" suppressHydrationWarning>
-                                <Button size="lg" variant="outline" className="font-semibold hover:bg-destructive hover:text-destructive-foreground hover:border-destructive">
+                                <Button size="lg" variant="outline" className="font-semibold text-[#DC2626] border-[#DC2626] hover:bg-[#DC2626] hover:text-white">
                                     Ziņot par kļūdu
                                 </Button>
                             </Link>

@@ -33,7 +33,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2" suppressHydrationWarning>
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="text-3xl font-black bg-gradient-to-r from-blue-400 to-purple-500
@@ -46,7 +46,7 @@ export function Header() {
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={item.href} suppressHydrationWarning>
                 <motion.span
                   whileHover={{ y: -2 }}
                   className={`text-base font-medium transition-colors

@@ -41,6 +41,7 @@ const PaginationLink = ({ className, isActive, size = "icon", ...props }: Pagina
       }),
       className,
     )}
+    suppressHydrationWarning
     {...props}
   />
 );

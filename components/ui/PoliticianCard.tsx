@@ -19,7 +19,7 @@ export function PoliticianCard({ politician }: PoliticianCardProps) {
   const promiseCount = politician.promises?.length || 0;
 
   return (
-    <Link href={`/politicians/${politician.slug}`}>
+    <Link href={`/politicians/${politician.id}`} className="group block h-full" suppressHydrationWarning>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

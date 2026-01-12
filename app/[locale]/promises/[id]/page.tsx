@@ -168,8 +168,8 @@ const PromiseDetail = () => {
                                     <div className="flex justify-start">
                                         <StatusBadge status={promise.status} size="lg" variant="solid" />
                                     </div>
-                                    <div className="text-sm text-foreground leading-relaxed">
-                                        <span className="font-medium block mb-2 text-foreground/80">Pamatojums:</span>
+                                    <div className="text-lg text-foreground leading-relaxed">
+                                        <span className="font-bold block mb-2 text-foreground/80">Pamatojums:</span>
                                         {promise.statusJustification}
                                         {promise.sources.map((source, index) => (
                                             <a
@@ -185,11 +185,14 @@ const PromiseDetail = () => {
                                             </a>
                                         ))}
                                     </div>
-                                    <div className="flex flex-col gap-1.5 pt-4 border-t border-black/5 text-xs text-foreground/70">
+
+                                    <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-black/5 text-xs text-foreground/70">
                                         <div className="flex items-center gap-2">
+                                            <Calendar className="h-3.5 w-3.5 opacity-70" />
                                             <span className="opacity-70">Atjaunināts:</span>
                                             <span className="font-medium">{format(new Date(promise.statusUpdatedAt), 'dd.MM.yyyy')}</span>
                                         </div>
+                                        <div className="hidden sm:block w-px h-3 bg-foreground/20"></div>
                                         <div className="flex items-center gap-2">
                                             <span className="opacity-70">Avots:</span>
                                             <span className="font-medium">{promise.statusUpdatedBy}</span>

@@ -11,13 +11,15 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MultiSelectDropdown } from '@/components/ui/multi-select-dropdown';
 import { politicians, parties, getPartyById, getPromisesByPolitician } from '@/lib/data';
-import { Search } from 'lucide-react';
+import { Search, ArrowUpDown } from 'lucide-react';
 
 const Politicians = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedParty, setSelectedParty] = useState<string>('');
+    const [selectedParties, setSelectedParties] = useState<string[]>([]);
     const [showInOffice, setShowInOffice] = useState(false);
+    const [sortBy, setSortBy] = useState('default');
 
     const filteredPoliticians = useMemo(() => {
         let result = [...politicians];
@@ -30,16 +32,40 @@ const Politicians = () => {
             );
         }
 
-        if (selectedParty && selectedParty !== 'all') {
-            result = result.filter(p => p.partyId === selectedParty);
+        if (selectedParties.length > 0) {
+            result = result.filter(p => p.partyId && selectedParties.includes(p.partyId));
         }
 
         if (showInOffice) {
             result = result.filter(p => p.isInOffice);
         }
 
+        // Sorting
+        if (sortBy !== 'default') {
+            result.sort((a, b) => {
+                const aPromises = getPromisesByPolitician(a.id);
+                const aKept = aPromises.filter(p => p.status === 'kept').length;
+                const aTotal = aPromises.length;
+                const aPercentage = aTotal > 0 ? (aKept / aTotal) * 100 : 0;
+
+                const bPromises = getPromisesByPolitician(b.id);
+                const bKept = bPromises.filter(p => p.status === 'kept').length;
+                const bTotal = bPromises.length;
+                const bPercentage = bTotal > 0 ? (bKept / bTotal) * 100 : 0;
+
+                if (sortBy === 'kept-percentage') {
+                    // Sort by percentage descending
+                    return bPercentage - aPercentage;
+                } else if (sortBy === 'kept-count') {
+                    // Sort by count descending
+                    return bKept - aKept;
+                }
+                return 0;
+            });
+        }
+
         return result;
-    }, [searchQuery, selectedParty, showInOffice]);
+    }, [searchQuery, selectedParties, showInOffice, sortBy]);
 
     return (
         <div className="flex flex-col bg-background">
@@ -77,16 +103,27 @@ const Politicians = () => {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         </div>
 
-                        <div className="w-[200px]">
-                            <Select value={selectedParty} onValueChange={setSelectedParty}>
+                        <div className="w-full sm:w-[250px]">
+                            <MultiSelectDropdown
+                                options={parties.map(p => ({ label: p.name, value: p.id, color: p.color }))}
+                                selected={selectedParties}
+                                onChange={setSelectedParties}
+                                placeholder="Visas partijas"
+                            />
+                        </div>
+
+                        <div className="w-full sm:w-[200px]">
+                            <Select value={sortBy} onValueChange={setSortBy}>
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Visas partijas" />
+                                    <div className="flex items-center gap-2">
+                                        <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+                                        <SelectValue placeholder="Kārtot pēc" />
+                                    </div>
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">Visas partijas</SelectItem>
-                                    {parties.map(party => (
-                                        <SelectItem key={party.id} value={party.id}>{party.name}</SelectItem>
-                                    ))}
+                                    <SelectItem value="default">Bez kārtošanas</SelectItem>
+                                    <SelectItem value="kept-percentage">% izpildīts</SelectItem>
+                                    <SelectItem value="kept-count"># izpildīts</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>

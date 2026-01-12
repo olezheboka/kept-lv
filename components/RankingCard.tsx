@@ -170,7 +170,7 @@ export const RankingCard = ({ title, type, data }: RankingCardProps) => {
 
                     <div className="mt-auto pt-4 border-t border-border/50 text-center">
                         <Link href={type === 'politician' ? "/politicians" : "/parties"} suppressHydrationWarning>
-                            <button className="text-sm text-muted-foreground hover:text-foreground flex items-center justify-center gap-1 mx-auto transition-colors">
+                            <button className="text-sm text-muted-foreground hover:text-foreground flex items-center justify-center gap-1 mx-auto transition-colors" suppressHydrationWarning>
                                 Skatīt visus <ArrowRight className="h-3 w-3" />
                             </button>
                         </Link>

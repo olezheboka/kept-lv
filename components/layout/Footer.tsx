@@ -33,22 +33,22 @@ export function Footer() {
             <h4 className="text-white font-semibold mb-4">Navigation</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-gray-400 hover:text-white transition-colors text-sm">
+                <Link href="/" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
                   {t("home")}
                 </Link>
               </li>
               <li>
-                <Link href="/promises" className="text-gray-400 hover:text-white transition-colors text-sm">
+                <Link href="/promises" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
                   {t("promises")}
                 </Link>
               </li>
               <li>
-                <Link href="/politicians" className="text-gray-400 hover:text-white transition-colors text-sm">
+                <Link href="/politicians" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
                   {t("politicians")}
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-gray-400 hover:text-white transition-colors text-sm">
+                <Link href="/about" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
                   {t("about")}
                 </Link>
               </li>
@@ -60,12 +60,12 @@ export function Footer() {
             <h4 className="text-white font-semibold mb-4">Legal</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm">
+                <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
                   {tFooter("privacy")}
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-gray-400 hover:text-white transition-colors text-sm">
+                <Link href="/terms" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
                   {tFooter("terms")}
                 </Link>
               </li>

@@ -30,7 +30,7 @@ export function AdminSidebar() {
     <aside className="w-64 min-h-screen glass border-r border-white/10 flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-white/10">
-        <Link href="/admin">
+        <Link href="/admin" suppressHydrationWarning>
           <motion.div
             whileHover={{ scale: 1.05 }}
             className="text-2xl font-black bg-gradient-to-r from-blue-400 to-purple-500
@@ -46,7 +46,7 @@ export function AdminSidebar() {
         <ul className="space-y-2">
           {navItems.map((item) => (
             <li key={item.href}>
-              <Link href={item.href}>
+              <Link href={item.href} suppressHydrationWarning>
                 <motion.div
                   whileHover={{ x: 4 }}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg
@@ -67,7 +67,7 @@ export function AdminSidebar() {
 
       {/* Footer */}
       <div className="p-4 border-t border-white/10">
-        <Link href="/">
+        <Link href="/" suppressHydrationWarning>
           <motion.div
             whileHover={{ x: 4 }}
             className="flex items-center gap-3 px-4 py-3 rounded-lg

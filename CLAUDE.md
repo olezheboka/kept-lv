@@ -42,6 +42,7 @@ npx tsc --noEmit     # Run TypeScript type check
 **Dynamic Rendering**: Pages using Prisma export `dynamic = "force-dynamic"` to prevent build-time database queries.
 
 **Reusable Components**: navigate with `NavLink` component for localized links with active state handling. Use standard UI components from `components/ui`.
+*   **CRITICAL RULE**: Always add `suppressHydrationWarning` to `Link`, `a`, `<button>`, and `<input>` elements if they are interactive or contain text. This is required to prevent persistent hydration mismatches caused by user browser extensions.
 
 ### Data Models
 - **Promise** - Political promises with status (KEPT/NOT_KEPT/IN_PROGRESS/ABANDONED/PARTIAL)

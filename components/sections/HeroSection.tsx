@@ -47,7 +47,7 @@ export function HeroSection({ stats }: HeroSectionProps) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
           >
-            <Link href="/promises">
+            <Link href="/promises" suppressHydrationWarning>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
