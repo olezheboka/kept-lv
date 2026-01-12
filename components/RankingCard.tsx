@@ -62,7 +62,7 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                 <div className="mb-1.5 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap text-sm leading-tight">
                         <span className="font-semibold text-foreground truncate">{item.name}</span>
-                        {party && (
+                        {type === 'politician' && party && (
                             <PartyBadge
                                 party={party}
                                 size="sm"
@@ -87,6 +87,19 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                             {item.isInOffice && (
                                 <span className="flex-shrink-0 px-1.5 py-0 bg-muted/60 text-muted-foreground text-[10px] font-medium rounded-full whitespace-nowrap border border-border/50">
                                     Amatā
+                                </span>
+                            )}
+                        </div>
+                    )}
+                    {type === 'party' && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground w-full mt-0.5">
+                            {item.isInCoalition ? (
+                                <span className="flex-shrink-0 px-1.5 py-0 bg-muted/60 text-muted-foreground text-[10px] font-medium rounded-full whitespace-nowrap border border-border/50">
+                                    Koalīcijā
+                                </span>
+                            ) : (
+                                <span className="flex-shrink-0 px-1.5 py-0 bg-muted/60 text-muted-foreground text-[10px] font-medium rounded-full whitespace-nowrap border border-border/50">
+                                    Opozīcijā
                                 </span>
                             )}
                         </div>

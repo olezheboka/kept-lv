@@ -615,6 +615,7 @@ export interface RankingItem {
   keptPercentage: number;
   abbreviation?: string; // For parties
   isInOffice?: boolean; // Only for politician
+  isInCoalition?: boolean; // Only for party
 }
 
 export const getPoliticianRankings = (): RankingItem[] => {
@@ -653,6 +654,7 @@ export const getPartyRankings = (): RankingItem[] => {
         avatarUrl: party.logoUrl,
         abbreviation: party.abbreviation,
         color: party.color,
+        isInCoalition: party.isInCoalition,
         totalPromises,
         keptPromises,
         keptPercentage: totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0
