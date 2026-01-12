@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -16,16 +15,14 @@ import {
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/admin", icon: LayoutDashboard, labelKey: "dashboard" },
-  { href: "/admin/promises", icon: FileText, labelKey: "managePromises" },
-  { href: "/admin/politicians", icon: Users, labelKey: "managePoliticians" },
-  { href: "/admin/parties", icon: Building2, labelKey: "manageParties" },
-  { href: "/admin/categories", icon: Tag, labelKey: "manageCategories" },
+  { href: "/admin", icon: LayoutDashboard, label: "Panelis" },
+  { href: "/admin/promises", icon: FileText, label: "Solījumi" },
+  { href: "/admin/politicians", icon: Users, label: "Politiķi" },
+  { href: "/admin/parties", icon: Building2, label: "Partijas" },
+  { href: "/admin/categories", icon: Tag, label: "Kategorijas" },
 ];
 
 export function AdminSidebar() {
-  const t = useTranslations("admin");
-  const tCommon = useTranslations("common");
   const pathname = usePathname();
 
   const isActive = (href: string) => {
@@ -60,7 +57,7 @@ export function AdminSidebar() {
               )}
             >
               <item.icon className="w-4 h-4" />
-              <span>{t(item.labelKey as any)}</span>
+              <span>{item.label}</span>
             </Link>
           );
         })}
@@ -80,7 +77,7 @@ export function AdminSidebar() {
           className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md transition-colors text-left"
         >
           <LogOut className="w-4 h-4" />
-          <span>{tCommon("logout")}</span>
+          <span>Iziet</span>
         </button>
       </div>
     </aside>

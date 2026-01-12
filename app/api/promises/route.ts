@@ -51,11 +51,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
-      where.OR = [
-        { title: { path: ["lv"], string_contains: search } },
-        { title: { path: ["en"], string_contains: search } },
-        { title: { path: ["ru"], string_contains: search } },
-      ];
+      where.title = { contains: search, mode: "insensitive" };
     }
 
     if (dateFrom || dateTo) {
@@ -129,20 +125,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { sources, evidence, dateOfPromise, explanation, ...promiseData } = parsed.data;
+    const { sources, evidence, dateOfPromise, ...promiseData } = parsed.data;
 
     const promise = await prisma.promise.create({
       data: {
         ...promiseData,
         dateOfPromise: new Date(dateOfPromise),
-        explanation: explanation ? (explanation as Prisma.InputJsonValue) : Prisma.JsonNull,
         sources: sources?.length
           ? {
             create: sources.map(s => ({
               type: s.type,
               url: s.url,
-              title: s.title ? (s.title as Prisma.InputJsonValue) : Prisma.JsonNull,
-              description: s.description ? (s.description as Prisma.InputJsonValue) : Prisma.JsonNull,
+              title: s.title,
+              description: s.description,
             })),
           }
           : undefined,
@@ -151,7 +146,7 @@ export async function POST(request: NextRequest) {
             create: evidence.map(e => ({
               type: e.type,
               url: e.url,
-              description: e.description ? (e.description as Prisma.InputJsonValue) : Prisma.JsonNull,
+              description: e.description,
             })),
           }
           : undefined,

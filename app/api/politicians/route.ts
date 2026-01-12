@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     const politician = await prisma.politician.create({
       data: {
         ...rest,
-        bio: bio ? (bio as Prisma.InputJsonValue) : Prisma.JsonNull,
+        bio: bio || null,
       },
       include: {
         party: true,

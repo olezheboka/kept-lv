@@ -1,13 +1,7 @@
-"use client";
-
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 export function Footer() {
-  const t = useTranslations("common");
-  const tFooter = useTranslations("footer");
-
   const currentYear = new Date().getFullYear();
 
   return (
@@ -24,32 +18,32 @@ export function Footer() {
               KEPT
             </motion.div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-md">
-              {t("tagline")}
+              Politisko solījumu uzskaite
             </p>
           </div>
 
           {/* Navigation */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Navigation</h4>
+            <h4 className="text-white font-semibold mb-4">Navigācija</h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
-                  {t("home")}
+                  Sākums
                 </Link>
               </li>
               <li>
                 <Link href="/promises" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
-                  {t("promises")}
+                  Solījumi
                 </Link>
               </li>
               <li>
                 <Link href="/politicians" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
-                  {t("politicians")}
+                  Politiķi
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
-                  {t("about")}
+                  Par mums
                 </Link>
               </li>
             </ul>
@@ -57,16 +51,16 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Legal</h4>
+            <h4 className="text-white font-semibold mb-4">Juridiskā informācija</h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
-                  {tFooter("privacy")}
+                  Privātuma politika
                 </Link>
               </li>
               <li>
                 <Link href="/terms" className="text-gray-400 hover:text-white transition-colors text-sm" suppressHydrationWarning>
-                  {tFooter("terms")}
+                  Lietošanas noteikumi
                 </Link>
               </li>
             </ul>
@@ -76,7 +70,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 mt-8 pt-8 text-center">
           <p className="text-gray-500 text-sm">
-            {currentYear} {tFooter("copyright")}
+            {currentYear} KEPT - Politisko solījumu uzskaite
           </p>
         </div>
       </div>

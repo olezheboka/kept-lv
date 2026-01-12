@@ -1,25 +1,12 @@
 import { z } from "zod";
 
-// Localized text schema
-export const localizedTextSchema = z.object({
-  lv: z.string(),
-  en: z.string(),
-  ru: z.string(),
-});
-
-export const localizedTextOptionalSchema = z.object({
-  lv: z.string().optional().default(""),
-  en: z.string().optional().default(""),
-  ru: z.string().optional().default(""),
-}).optional();
-
 // Party schemas
 export const createPartySchema = z.object({
-  name: localizedTextSchema,
+  name: z.string().min(1),
   slug: z.string().min(1).max(100),
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
   logoUrl: z.string().url().optional().nullable(),
-  description: localizedTextOptionalSchema,
+  description: z.string().optional().nullable(),
   websiteUrl: z.string().url().optional().nullable(),
 });
 
@@ -30,12 +17,8 @@ export const createPoliticianSchema = z.object({
   name: z.string().min(1).max(200),
   slug: z.string().min(1).max(100),
   imageUrl: z.string().url().optional().nullable(),
-  role: localizedTextOptionalSchema,
-  bio: z.object({
-    lv: z.string().default(""),
-    en: z.string().default(""),
-    ru: z.string().default(""),
-  }).optional().nullable(),
+  role: z.string().optional().nullable(),
+  bio: z.string().optional().nullable(),
   partyId: z.string().cuid().optional().nullable(),
 });
 
@@ -43,18 +26,15 @@ export const updatePoliticianSchema = z.object({
   name: z.string().min(1).max(200).optional(),
   slug: z.string().min(1).max(100).optional(),
   imageUrl: z.string().url().optional().nullable(),
-  bio: z.object({
-    lv: z.string().default(""),
-    en: z.string().default(""),
-    ru: z.string().default(""),
-  }).optional().nullable(),
+  role: z.string().optional().nullable(),
+  bio: z.string().optional().nullable(),
   partyId: z.string().cuid().optional(),
 });
 
 // Category schemas
 export const createCategorySchema = z.object({
-  name: localizedTextSchema,
-  description: localizedTextOptionalSchema,
+  name: z.string().min(1),
+  description: z.string().optional().nullable(),
   slug: z.string().min(1).max(100),
   color: z.string().min(1).max(100),
   icon: z.string().optional().nullable(),
@@ -66,39 +46,23 @@ export const updateCategorySchema = createCategorySchema.partial();
 export const sourceSchema = z.object({
   type: z.enum(["VIDEO", "ARTICLE", "DOCUMENT", "SOCIAL_MEDIA", "INTERVIEW"]),
   url: z.string().url(),
-  title: z.object({
-    lv: z.string().default(""),
-    en: z.string().default(""),
-    ru: z.string().default(""),
-  }).optional(),
-  description: z.object({
-    lv: z.string().default(""),
-    en: z.string().default(""),
-    ru: z.string().default(""),
-  }).optional(),
+  title: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
 });
 
 // Evidence schema
 export const evidenceSchema = z.object({
   type: z.enum(["NEWS_ARTICLE", "OFFICIAL_DOCUMENT", "VIDEO", "STATISTICS", "OTHER"]),
   url: z.string().url(),
-  description: z.object({
-    lv: z.string().default(""),
-    en: z.string().default(""),
-    ru: z.string().default(""),
-  }).optional(),
+  description: z.string().optional().nullable(),
 });
 
 // Promise schemas
 export const createPromiseSchema = z.object({
-  title: localizedTextSchema,
-  description: localizedTextOptionalSchema,
+  title: z.string().min(1),
+  description: z.string().optional().nullable(),
   status: z.enum(["KEPT", "NOT_KEPT", "IN_PROGRESS", "ABANDONED", "PARTIAL"]).default("IN_PROGRESS"),
-  explanation: z.object({
-    lv: z.string().default(""),
-    en: z.string().default(""),
-    ru: z.string().default(""),
-  }).optional().nullable(),
+  explanation: z.string().optional().nullable(),
   dateOfPromise: z.string().datetime().or(z.date()),
   statusUpdatedAt: z.string().datetime().optional().nullable(),
   politicianId: z.string().cuid(),

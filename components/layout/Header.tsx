@@ -1,25 +1,20 @@
-"use client";
-
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function Header() {
-  const t = useTranslations("common");
   const pathname = usePathname();
 
   const navItems = [
-    { href: "/", label: t("home") },
-    { href: "/promises", label: t("promises") },
-    { href: "/politicians", label: t("politicians") },
-    { href: "/about", label: t("about") },
+    { href: "/", label: "Sākums" },
+    { href: "/promises", label: "Solījumi" },
+    { href: "/politicians", label: "Politiķi" },
+    { href: "/about", label: "Par mums" },
   ];
 
   const isActive = (href: string) => {
     if (href === "/") {
-      return pathname === "/" || pathname.match(/^\/(lv|en|ru)$/);
+      return pathname === "/";
     }
     return pathname.includes(href);
   };
@@ -69,8 +64,6 @@ export function Header() {
 
           {/* Right side */}
           <div className="flex items-center gap-4">
-            <LanguageSwitcher />
-
             {/* Mobile menu button */}
             <button className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors">
               <svg

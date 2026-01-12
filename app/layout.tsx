@@ -1,6 +1,13 @@
-import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages, setRequestLocale } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Providers } from "@/components/Providers";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,36 +19,42 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "solījums.lv - Politisko solījumu uzskaite",
-    template: "%s | solījums.lv",
-  },
-  description: "Sekojiet līdzi politiķu solījumiem Latvijā. Pārskatāma platforma politiskās atbildības uzskaitei.",
-  keywords: ["politika", "solījumi", "Latvija", "atbildība", "caurskatāmība"],
-  authors: [{ name: "solījums.lv" }],
-  openGraph: {
-    type: "website",
-    locale: "lv_LV",
-    alternateLocale: ["en_US", "ru_RU"],
-    siteName: "solījums.lv",
-  },
+type Props = {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html suppressHydrationWarning>
-      <body suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}>
-        {children}
-      </body>
-    </html>
-  );
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
 }
 
-export function generateStaticParams() {
-  return [{ locale: "lv" }, { locale: "en" }, { locale: "ru" }];
+export default async function LocaleLayout({ children, params }: Props) {
+  const { locale } = await params;
+
+  // Ensure that the incoming `locale` is valid
+  if (!routing.locales.includes(locale as typeof routing.locales[number])) {
+    notFound();
+  }
+
+  // Enable static rendering
+  setRequestLocale(locale);
+
+  // Get messages for the current locale
+  const messages = await getMessages();
+
+  return (
+    <NextIntlClientProvider messages={messages}>
+      <Providers>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </div>
+        <Toaster />
+        <Sonner />
+      </Providers>
+    </NextIntlClientProvider>
+  );
 }

@@ -10,16 +10,9 @@ type RouteParams = { params: Promise<{ id: string }> };
 const LOCALES = ["lv", "en", "ru"];
 
 function revalidatePromisePaths(promiseId: string) {
-  // Revalidate for all locales
-  LOCALES.forEach((locale) => {
-    revalidatePath(`/${locale}`);
-    revalidatePath(`/${locale}/promises`);
-    revalidatePath(`/${locale}/promises/${promiseId}`);
-
-    // Also revalidate root if strictly using / without locale in some cases
-    revalidatePath("/");
-    revalidatePath("/promises");
-  });
+  revalidatePath("/promises");
+  revalidatePath(`/promises/${promiseId}`);
+  revalidatePath("/");
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
@@ -80,7 +73,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { sources, evidence, dateOfPromise, explanation, ...promiseData } = parsed.data;
+    const { sources, evidence, dateOfPromise, ...promiseData } = parsed.data;
 
     // Delete existing sources and evidence if new ones are provided
     if (sources) {
@@ -95,16 +88,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       data: {
         ...promiseData,
         dateOfPromise: dateOfPromise ? new Date(dateOfPromise) : undefined,
-        ...(explanation !== undefined && {
-          explanation: explanation ? (explanation as Prisma.InputJsonValue) : Prisma.JsonNull,
-        }),
         sources: sources?.length
           ? {
             create: sources.map(s => ({
               type: s.type,
               url: s.url,
-              title: s.title ? (s.title as Prisma.InputJsonValue) : Prisma.JsonNull,
-              description: s.description ? (s.description as Prisma.InputJsonValue) : Prisma.JsonNull,
+              title: s.title,
+              description: s.description,
             })),
           }
           : undefined,
@@ -113,7 +103,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             create: evidence.map(e => ({
               type: e.type,
               url: e.url,
-              description: e.description ? (e.description as Prisma.InputJsonValue) : Prisma.JsonNull,
+              description: e.description,
             })),
           }
           : undefined,

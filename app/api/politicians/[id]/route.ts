@@ -72,8 +72,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const politician = await prisma.politician.update({
       where: { id },
       data: {
-        ...rest,
-        ...(bio !== undefined && { bio: bio ? (bio as Prisma.InputJsonValue) : Prisma.JsonNull }),
+        name: rest.name,
+        slug: rest.slug,
+        imageUrl: rest.imageUrl,
+        role: rest.role,
+        bio: bio || null, // Handle null explicitly
+        partyId: rest.partyId !== undefined ? (rest.partyId || null) : undefined,
       },
       include: {
         party: true,
