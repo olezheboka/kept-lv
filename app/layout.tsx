@@ -19,22 +19,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-type Props = {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-};
+import { getLocale } from "next-intl/server";
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
-
-export default async function LocaleLayout({ children, params }: Props) {
-  const { locale } = await params;
-
-  // Ensure that the incoming `locale` is valid
-  if (!routing.locales.includes(locale as typeof routing.locales[number])) {
-    notFound();
-  }
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
 
   // Enable static rendering
   setRequestLocale(locale);
@@ -43,18 +31,22 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = await getMessages();
 
   return (
-    <NextIntlClientProvider messages={messages}>
-      <Providers>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-        </div>
-        <Toaster />
-        <Sonner />
-      </Providers>
-    </NextIntlClientProvider>
+    <html lang={locale}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <NextIntlClientProvider messages={messages}>
+          <Providers>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </div>
+            <Toaster />
+            <Sonner />
+          </Providers>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }

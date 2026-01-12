@@ -18,7 +18,7 @@ import {
 
 export default async function Index() {
     const [featuredPromises, politicianRankings, partyRankings] = await Promise.all([
-        getFeaturedPromises(4),
+        getFeaturedPromises("lv", 4),
         getPoliticianRankings(),
         getPartyRankings(),
     ]);

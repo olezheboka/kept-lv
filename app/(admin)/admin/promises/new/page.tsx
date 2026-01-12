@@ -86,12 +86,15 @@ export default function NewPromisePage() {
   };
 
   return (
-    <div>
+    <div className="max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-4xl font-black text-white">Jauns Solījums</h1>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Jauns Solījums</h1>
+          <p className="text-muted-foreground mt-1">Izveidot jaunu solījumu.</p>
+        </div>
         <Link
           href="/admin/promises"
-          className="text-gray-400 hover:text-white transition-colors"
+          className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
         >
           ← Atpakaļ
         </Link>
@@ -99,33 +102,31 @@ export default function NewPromisePage() {
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Promise Text */}
-        <div className="glass-card rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-white mb-6">Solījuma informācija</h2>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-foreground mb-6">Solījuma informācija</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Nosaukums
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Nosaukums <span className="text-red-500">*</span>
               </label>
               <textarea
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                 placeholder="Solījuma virsraksts..."
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Apraksts (neobligāts)
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={4}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                 placeholder="Pilns apraksts..."
               />
             </div>
@@ -133,19 +134,18 @@ export default function NewPromisePage() {
         </div>
 
         {/* Details */}
-        <div className="glass-card rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-white mb-6">Detaļas</h2>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-foreground mb-6">Detaļas</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Politiķis
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Politiķis <span className="text-red-500">*</span>
               </label>
               <select
                 required
                 value={formData.politicianId}
                 onChange={(e) => setFormData({ ...formData, politicianId: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
               >
                 <option value="">Izvēlieties politiķi...</option>
                 {politicians.map((p) => (
@@ -155,15 +155,14 @@ export default function NewPromisePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Kategorija
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Kategorija <span className="text-red-500">*</span>
               </label>
               <select
                 required
                 value={formData.categoryId}
                 onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
               >
                 <option value="">Izvēlieties kategoriju...</option>
                 {categories.map((c) => (
@@ -173,14 +172,13 @@ export default function NewPromisePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Statuss
               </label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
               >
                 <option value="IN_PROGRESS">Procesā</option>
                 <option value="KEPT">Izpildīts</option>
@@ -191,46 +189,43 @@ export default function NewPromisePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Datums
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Datums <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
                 required
                 value={formData.dateOfPromise}
                 onChange={(e) => setFormData({ ...formData, dateOfPromise: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Statusa atjaunināšanas datums
               </label>
               <input
                 type="date"
                 value={formData.statusUpdatedAt}
                 onChange={(e) => setFormData({ ...formData, statusUpdatedAt: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
               />
             </div>
           </div>
         </div>
 
         {/* Source */}
-        <div className="glass-card rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-white mb-6">Avots (Neobligāts)</h2>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-foreground mb-6">Avots (Neobligāts)</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Avota tips
               </label>
               <select
                 value={formData.sourceType}
                 onChange={(e) => setFormData({ ...formData, sourceType: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
               >
                 <option value="VIDEO">Video</option>
                 <option value="ARTICLE">Raksts</option>
@@ -241,28 +236,26 @@ export default function NewPromisePage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 URL
               </label>
               <input
                 type="url"
                 value={formData.sourceUrl}
                 onChange={(e) => setFormData({ ...formData, sourceUrl: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                 placeholder="https://..."
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Avota nosaukums
               </label>
               <input
                 type="text"
                 value={formData.sourceTitle}
                 onChange={(e) => setFormData({ ...formData, sourceTitle: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                 placeholder="Avota nosaukums..."
               />
             </div>
@@ -270,33 +263,29 @@ export default function NewPromisePage() {
         </div>
 
         {/* Explanation */}
-        <div className="glass-card rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-white mb-6">Paskaidrojums (Neobligāts)</h2>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-foreground mb-6">Paskaidrojums (Neobligāts)</h2>
           <textarea
             value={formData.explanation}
             onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
             rows={4}
-            className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-              text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+            className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
             placeholder="Kāpēc statuss ir šāds?..."
           />
         </div>
 
         {/* Submit */}
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-3 pt-4 border-t border-border">
           <Link
             href="/admin/promises"
-            className="px-6 py-3 rounded-lg bg-white/10 text-white font-bold
-              hover:bg-white/20 transition-all"
+            className="px-4 py-2 rounded-lg border border-input bg-background text-sm font-medium hover:bg-muted transition-colors"
           >
             Atcelt
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600
-              text-white font-bold hover:shadow-lg transition-all
-              disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 shadow-sm"
           >
             {loading ? "Veido..." : "Izveidot Solījumu"}
           </button>

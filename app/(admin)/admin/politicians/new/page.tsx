@@ -70,57 +70,57 @@ export default function NewPoliticianPage() {
   };
 
   return (
-    <div>
+    <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-4xl font-black text-white">{t("addNew")} Politician</h1>
-        <Link href="/admin/politicians" className="text-gray-400 hover:text-white">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">{t("addNew")} Politician</h1>
+          <p className="text-muted-foreground mt-1">Create a new politician profile.</p>
+        </div>
+        <Link href="/admin/politicians" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
           ← Back
         </Link>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="glass-card rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-white mb-6">Basic Info</h2>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-foreground mb-6">Basic Info</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Name
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                 placeholder="Jānis Bērziņš"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Slug
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Slug <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={formData.slug}
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                 placeholder="janis-berzins"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Party
               </label>
               <select
                 value={formData.partyId}
                 onChange={(e) => setFormData({ ...formData, partyId: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
               >
                 <option value="">No Party / Independent</option>
                 {parties.map((p) => (
@@ -130,53 +130,49 @@ export default function NewPoliticianPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Image URL
               </label>
               <input
                 type="url"
                 value={formData.imageUrl}
                 onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                 placeholder="https://..."
               />
             </div>
           </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-white mb-6">Biography</h2>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-foreground mb-6">Biography</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Bio
               </label>
               <textarea
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                 rows={5}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                 placeholder="Biogrāfija..."
               />
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-3 pt-4 border-t border-border">
           <Link
             href="/admin/politicians"
-            className="px-6 py-3 rounded-lg bg-white/10 text-white font-bold
-              hover:bg-white/20 transition-all"
+            className="px-4 py-2 rounded-lg border border-input bg-background text-sm font-medium hover:bg-muted transition-colors"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600
-              text-white font-bold hover:shadow-lg transition-all disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 shadow-sm"
           >
             {loading ? "Creating..." : "Create Politician"}
           </button>

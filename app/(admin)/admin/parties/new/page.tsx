@@ -57,103 +57,102 @@ export default function NewPartyPage() {
   };
 
   return (
-    <div>
+    <div className="max-w-xl mx-auto">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-4xl font-black text-white">{t("addNew")} Party</h1>
-        <Link href="/admin/parties" className="text-gray-400 hover:text-white">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">{t("addNew")} Party</h1>
+          <p className="text-muted-foreground mt-1">Create a new political party.</p>
+        </div>
+        <Link href="/admin/parties" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">
           ← Back
         </Link>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="glass-card rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-white mb-6">Party Name</h2>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-foreground mb-6">Party Name</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Name
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                 placeholder="Partijas nosaukums"
               />
             </div>
           </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-white mb-6">Details</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Slug
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-foreground mb-6">Details</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Slug <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={formData.slug}
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                 placeholder="party-slug"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Color
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Color <span className="text-red-500">*</span>
               </label>
               <div className="flex gap-2">
-                <input
-                  type="color"
-                  value={formData.color}
-                  onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                  className="w-12 h-12 rounded-lg cursor-pointer"
-                />
+                <div className="relative w-10 h-10 rounded-lg overflow-hidden border border-input shrink-0">
+                  <input
+                    type="color"
+                    value={formData.color}
+                    onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] p-0 border-0 cursor-pointer"
+                  />
+                </div>
                 <input
                   type="text"
                   value={formData.color}
                   onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                  className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                    text-white focus:bg-white/20 transition-all"
+                  className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-mono uppercase"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Logo URL
               </label>
               <input
                 type="url"
                 value={formData.logoUrl}
                 onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
-                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                 placeholder="https://..."
               />
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-end gap-3 pt-4 border-t border-border">
           <Link
             href="/admin/parties"
-            className="px-6 py-3 rounded-lg bg-white/10 text-white font-bold
-              hover:bg-white/20 transition-all"
+            className="px-4 py-2 rounded-lg border border-input bg-background text-sm font-medium hover:bg-muted transition-colors"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600
-              text-white font-bold hover:shadow-lg transition-all disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 shadow-sm"
           >
             {loading ? "Creating..." : "Create Party"}
           </button>

@@ -201,10 +201,10 @@ export default async function AdminDashboard({ params }: Props) {
                 >
                   <div className="min-w-0 pr-4">
                     <p className="font-medium text-foreground truncate">
-                      {(promise.title as any).lv || (promise.title as any).en}
+                      {promise.title}
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {promise.politician.name} • {(promise.category.name as any).lv || (promise.category.name as any).en}
+                      {promise.politician.name} • {promise.category.name}
                     </p>
                   </div>
                   <span className={`inline-flex items-center flex-shrink-0 px-2.5 py-0.5 rounded-full text-xs font-medium border
