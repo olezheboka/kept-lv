@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-// touched to restart server
+// touched to restart server - cache bust 2
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
