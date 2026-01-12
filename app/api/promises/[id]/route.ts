@@ -3,8 +3,24 @@ import { prisma } from "@/lib/prisma";
 import { updatePromiseSchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 type RouteParams = { params: Promise<{ id: string }> };
+
+const LOCALES = ["lv", "en", "ru"];
+
+function revalidatePromisePaths(promiseId: string) {
+  // Revalidate for all locales
+  LOCALES.forEach((locale) => {
+    revalidatePath(`/${locale}`);
+    revalidatePath(`/${locale}/promises`);
+    revalidatePath(`/${locale}/promises/${promiseId}`);
+
+    // Also revalidate root if strictly using / without locale in some cases
+    revalidatePath("/");
+    revalidatePath("/promises");
+  });
+}
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
@@ -84,22 +100,22 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }),
         sources: sources?.length
           ? {
-              create: sources.map(s => ({
-                type: s.type,
-                url: s.url,
-                title: s.title ? (s.title as Prisma.InputJsonValue) : Prisma.JsonNull,
-                description: s.description ? (s.description as Prisma.InputJsonValue) : Prisma.JsonNull,
-              })),
-            }
+            create: sources.map(s => ({
+              type: s.type,
+              url: s.url,
+              title: s.title ? (s.title as Prisma.InputJsonValue) : Prisma.JsonNull,
+              description: s.description ? (s.description as Prisma.InputJsonValue) : Prisma.JsonNull,
+            })),
+          }
           : undefined,
         evidence: evidence?.length
           ? {
-              create: evidence.map(e => ({
-                type: e.type,
-                url: e.url,
-                description: e.description ? (e.description as Prisma.InputJsonValue) : Prisma.JsonNull,
-              })),
-            }
+            create: evidence.map(e => ({
+              type: e.type,
+              url: e.url,
+              description: e.description ? (e.description as Prisma.InputJsonValue) : Prisma.JsonNull,
+            })),
+          }
           : undefined,
       },
       include: {
@@ -113,6 +129,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         evidence: true,
       },
     });
+
+    revalidatePromisePaths(id);
 
     return NextResponse.json(promise);
   } catch (error) {
@@ -136,6 +154,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await prisma.promise.delete({
       where: { id },
     });
+
+    revalidatePromisePaths(id);
 
     return NextResponse.json({ success: true });
   } catch (error) {
