@@ -14,7 +14,7 @@ interface NavLinkCompatProps extends Omit<ComponentProps<typeof Link>, "classNam
 const NavLink = forwardRef<HTMLAnchorElement, NavLinkCompatProps>(
   ({ className, activeClassName, href, ...props }, ref) => {
     const pathname = usePathname();
-    const isActive = pathname === href;
+    const isActive = href === '/' ? pathname === href : pathname.startsWith(href.toString());
 
     const computedClassName =
       typeof className === "function"
@@ -22,7 +22,7 @@ const NavLink = forwardRef<HTMLAnchorElement, NavLinkCompatProps>(
         : cn(className, isActive && activeClassName);
 
     return (
-      <Link ref={ref} href={href} className={computedClassName} {...props} />
+      <Link ref={ref} href={href} className={computedClassName} suppressHydrationWarning {...props} />
     );
   },
 );

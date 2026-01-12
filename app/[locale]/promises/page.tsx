@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import { motion } from 'framer-motion';
+import { useSearchParams } from 'next/navigation';
 import { PromiseCard } from '@/components/PromiseCard';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
@@ -9,14 +10,22 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { promises, parties } from '@/lib/data';
+import { promises, parties, getPoliticianById } from '@/lib/data';
 import { CATEGORIES, PromiseStatus, STATUS_CONFIG } from '@/lib/types';
 import { Search, Filter, Grid3X3, List, X, SlidersHorizontal, ChevronDown } from 'lucide-react';
 
 const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'in-progress', 'broken', 'not-rated'];
 
-const Promises = () => {
-    const [searchQuery, setSearchQuery] = useState('');
+const PromisesContent = () => {
+    const searchParams = useSearchParams();
+    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+
+    useEffect(() => {
+        const query = searchParams.get('q');
+        if (query !== null) {
+            setSearchQuery(query);
+        }
+    }, [searchParams]);
     const [selectedStatuses, setSelectedStatuses] = useState<PromiseStatus[]>([]);
     const [selectedParties, setSelectedParties] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -29,11 +38,17 @@ const Promises = () => {
         // Search filter
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
-            result = result.filter(p =>
-                p.title.toLowerCase().includes(query) ||
-                p.fullText.toLowerCase().includes(query) ||
-                p.tags.some(t => t.toLowerCase().includes(query))
-            );
+            result = result.filter(p => {
+                const politician = getPoliticianById(p.politicianId);
+                const politicianName = politician ? politician.name.toLowerCase() : '';
+
+                return (
+                    p.title.toLowerCase().includes(query) ||
+                    p.fullText.toLowerCase().includes(query) ||
+                    p.tags.some(t => t.toLowerCase().includes(query)) ||
+                    politicianName.includes(query)
+                );
+            });
         }
 
         // Status filter
@@ -128,13 +143,7 @@ const Promises = () => {
                                 checked={selectedParties.includes(party.id)}
                                 onCheckedChange={() => toggleParty(party.id)}
                             />
-                            <div className="flex items-center gap-2">
-                                <span
-                                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                                    style={{ backgroundColor: party.color }}
-                                />
-                                <span className="text-sm text-foreground">{party.name}</span>
-                            </div>
+                            <span className="text-sm text-foreground">{party.name}</span>
                         </label>
                     ))}
                 </div>
@@ -358,4 +367,12 @@ const Promises = () => {
     );
 };
 
-export default Promises;
+const PromisesPage = () => {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <PromisesContent />
+        </Suspense>
+    );
+};
+
+export default PromisesPage;

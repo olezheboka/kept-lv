@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from 'react';
-import { Link, usePathname } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Search, Menu, X, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { NavLink } from '@/components/NavLink';
 
 const navLinks = [
   { href: '/', label: 'Sākums' },
@@ -21,13 +22,14 @@ const navLinks = [
 export const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
+  const [searchValue, setSearchValue] = useState('');
+  const router = useRouter();
 
-  const isActiveLink = (href: string) => {
-    if (href === '/') {
-      return pathname === '/';
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setIsSearchOpen(false);
+      router.push(`/promises?q=${encodeURIComponent(searchValue)}`);
     }
-    return pathname.startsWith(href);
   };
 
   return (
@@ -35,28 +37,27 @@ export const Header = () => {
       <div className="container-wide">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
-            <span className="font-bold text-2xl text-[#9E1B34]">
-              solijums.lv
+          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0" suppressHydrationWarning>
+            <span className="font-bold text-2xl text-[#2563EB]">
+              solījums.lv
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
-              <Link
+              <NavLink
                 key={link.href}
                 href={link.href}
-                className={cn(
+                className={({ isActive }) => cn(
                   'px-3 py-2 text-sm font-medium rounded-lg transition-colors',
-                  isActiveLink(link.href)
-                    ? 'text-[#9E1B34] bg-[#9E1B34]/10 font-bold'
+                  isActive
+                    ? 'text-[#2563EB] bg-[#2563EB]/10 font-bold'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                 )}
               >
                 {link.label}
-              </Link>
+              </NavLink>
             ))}
           </nav>
 
@@ -68,6 +69,9 @@ export const Header = () => {
                 type="search"
                 placeholder="Meklēt solījumus..."
                 className="w-64 pl-9 h-9 bg-muted/50 border-transparent focus:border-border focus:bg-background"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onKeyDown={handleSearch}
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             </div>
@@ -104,20 +108,20 @@ export const Header = () => {
                   </div>
                   <nav className="flex-1 p-4 space-y-1">
                     {navLinks.map((link) => (
-                      <Link
+                      <NavLink
                         key={link.href}
                         href={link.href}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className={cn(
+                        className={({ isActive }) => cn(
                           'flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-colors',
-                          isActiveLink(link.href)
-                            ? 'bg-[#9E1B34]/10 text-[#9E1B34] font-bold'
+                          isActive
+                            ? 'bg-[#2563EB]/10 text-[#2563EB] font-bold'
                             : 'text-foreground hover:bg-muted'
                         )}
                       >
                         {link.label}
                         <ChevronRight className="h-4 w-4 opacity-50" />
-                      </Link>
+                      </NavLink>
                     ))}
                   </nav>
                 </div>
@@ -140,6 +144,9 @@ export const Header = () => {
                 placeholder="Meklēt solījumus, politiķus..."
                 className="w-full pl-9 bg-muted/50"
                 autoFocus
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                onKeyDown={handleSearch}
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             </div>

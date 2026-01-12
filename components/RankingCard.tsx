@@ -51,47 +51,53 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
             </div>
 
             <div className="flex-shrink-0">
-                <Avatar className="h-10 w-10 border border-border">
-                    {type === 'politician' && party ? (
-                        <>
-                            {party.logoUrl ? (
-                                <AvatarImage src={party.logoUrl} alt={party.name} />
-                            ) : null}
-                            <AvatarFallback
-                                className="text-[10px] font-bold text-white uppercase"
-                                style={{ backgroundColor: party.color }}
-                            >
-                                {party.abbreviation}
-                            </AvatarFallback>
-                        </>
-                    ) : (
-                        <>
-                            {item.avatarUrl ? (
-                                <AvatarImage src={item.avatarUrl} alt={item.name} />
-                            ) : null}
-                            <AvatarFallback
-                                className="text-[10px] font-bold text-white uppercase"
-                                style={{ backgroundColor: item.color }}
-                            >
-                                {type === 'party' ? item.abbreviation || item.name[0] : item.name[0]}
-                            </AvatarFallback>
-                        </>
-                    )}
-                </Avatar>
+                {type === 'politician' && party ? (
+                    <div
+                        className="h-10 w-10 rounded-xl flex items-center justify-center text-white font-bold text-[10px] uppercase overflow-hidden"
+                        style={{ backgroundColor: party.color }}
+                    >
+                        {party.logoUrl ? (
+                            <img src={party.logoUrl} alt={party.name} className="h-full w-full object-cover" />
+                        ) : (
+                            <span>{party.abbreviation}</span>
+                        )}
+                    </div>
+                ) : type === 'party' ? (
+                    <div
+                        className="h-10 w-10 rounded-xl flex items-center justify-center text-white font-bold text-[10px] uppercase overflow-hidden"
+                        style={{ backgroundColor: item.color }}
+                    >
+                        {item.avatarUrl ? (
+                            <img src={item.avatarUrl} alt={item.name} className="h-full w-full object-cover" />
+                        ) : (
+                            <span>{item.abbreviation || item.name[0]}</span>
+                        )}
+                    </div>
+                ) : (
+                    <Avatar className="h-10 w-10 border border-border">
+                        {item.avatarUrl ? (
+                            <AvatarImage src={item.avatarUrl} alt={item.name} />
+                        ) : null}
+                        <AvatarFallback
+                            className="text-[10px] font-bold text-white uppercase"
+                            style={{ backgroundColor: item.color }}
+                        >
+                            {item.name[0]}
+                        </AvatarFallback>
+                    </Avatar>
+                )}
             </div>
 
-            <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm font-medium truncate">{item.name}</span>
-                    {type === 'politician' && party && (
-                        <PartyBadge party={party} className="h-4 px-1 text-[9px]" />
+            <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <div className="mb-1.5 truncate text-sm">
+                    <span className="font-medium text-foreground">{item.name}</span>
+                    {type === 'politician' && item.role && (
+                        <span className="text-muted-foreground font-normal ml-1">({item.role})</span>
                     )}
                 </div>
-                <div className="flex items-center gap-2">
-                    <Progress value={progress} className="h-1.5 flex-1 transition-all duration-1000 ease-out" indicatorClassName={cn(
-                        viewMode === 'percentage' ? "bg-status-kept" : "bg-muted-foreground/30"
-                    )} />
-                </div>
+                <Progress value={progress} className="h-1.5 w-full transition-all duration-1000 ease-out" indicatorClassName={cn(
+                    viewMode === 'percentage' ? "bg-status-kept" : "bg-muted-foreground/30"
+                )} />
             </div>
 
             <div className="flex-shrink-0 text-right min-w-[3rem]">
@@ -163,7 +169,7 @@ export const RankingCard = ({ title, type, data }: RankingCardProps) => {
                     </div>
 
                     <div className="mt-auto pt-4 border-t border-border/50 text-center">
-                        <Link href={type === 'politician' ? "/politicians" : "/parties"}>
+                        <Link href={type === 'politician' ? "/politicians" : "/parties"} suppressHydrationWarning>
                             <button className="text-sm text-muted-foreground hover:text-foreground flex items-center justify-center gap-1 mx-auto transition-colors">
                                 Skatīt visus <ArrowRight className="h-3 w-3" />
                             </button>

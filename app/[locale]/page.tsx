@@ -61,7 +61,7 @@ const Index = () => {
                             </h2>
 
                         </div>
-                        <Link href="/promises">
+                        <Link href="/promises" suppressHydrationWarning>
                             <Button variant="ghost" className="hidden md:flex gap-2">
                                 Skatīt visus <ArrowRight className="h-4 w-4" />
                             </Button>
@@ -75,7 +75,7 @@ const Index = () => {
                     </div>
 
                     <div className="mt-8 text-center md:hidden">
-                        <Link href="/promises">
+                        <Link href="/promises" suppressHydrationWarning>
                             <Button variant="outline" className="gap-2">
                                 Skatīt visus solījumus <ArrowRight className="h-4 w-4" />
                             </Button>
@@ -152,7 +152,7 @@ const Index = () => {
                             <p className="text-muted-foreground mb-8 leading-relaxed">
                                 Zini solījumu, kas šeit trūkst? Iesniedz to mums izskatīšanai un palīdzi veidot pilnīgāku ainu par politisko atbildību.
                             </p>
-                            <Link href="mailto:info@kept.lv?subject=Jauns%20solījums" className="mt-auto">
+                            <Link href="mailto:info@kept.lv?subject=Jauns%20solījums" className="mt-auto" suppressHydrationWarning>
                                 <Button size="lg" className="font-semibold">
                                     Iesniegt priekšlikumu
                                 </Button>
@@ -170,8 +170,8 @@ const Index = () => {
                             <p className="text-muted-foreground mb-8 leading-relaxed">
                                 Pamanīji neprecizitāti datos vai tehnisku kļūdu? Dod mums ziņu, lai varam to pēc iespējas ātrāk novērst.
                             </p>
-                            <Link href="mailto:support@kept.lv?subject=Kļūda%20vai%20problēma" className="mt-auto">
-                                <Button size="lg" variant="outline" className="font-semibold">
+                            <Link href="mailto:support@kept.lv?subject=Kļūda%20vai%20problēma" className="mt-auto" suppressHydrationWarning>
+                                <Button size="lg" variant="outline" className="font-semibold hover:bg-destructive hover:text-destructive-foreground hover:border-destructive">
                                     Ziņot par kļūdu
                                 </Button>
                             </Link>

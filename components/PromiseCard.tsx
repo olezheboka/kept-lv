@@ -30,7 +30,7 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
       transition={{ duration: 0.4, delay: index * 0.05 }}
       className="h-full"
     >
-      <Link href={`/promises/${promise.id}`} className="block h-full">
+      <Link href={`/promises/${promise.id}`} className="block h-full" suppressHydrationWarning>
         <Card className="group h-full flex flex-col overflow-hidden border-border/50 bg-card hover:shadow-elevated hover:border-border transition-all duration-300 cursor-pointer">
           <CardContent className="p-5 relative pt-8 flex flex-col h-full">
             {/* Status Badge - Absolute Top Right */}
@@ -46,9 +46,20 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
                 </span>
                 <PartyBadge party={party} />
               </div>
-              <span className="text-xs text-muted-foreground/70 whitespace-normal">
-                {politician.role}
-              </span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-xs text-muted-foreground/70">
+                  {politician.role}
+                </span>
+                {politician.isInOffice ? (
+                  <span className="flex-shrink-0 px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] font-medium rounded-full">
+                    Amatā
+                  </span>
+                ) : (
+                  <span className="flex-shrink-0 px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] font-medium rounded-full">
+                    Bijušais
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Title */}
@@ -65,11 +76,7 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
               </div>
 
               {/* Updated indicator */}
-              {!hideLastUpdated && (
-                <p className="text-[10px] text-muted-foreground">
-                  Atjaunots {formatDistanceToNow(new Date(promise.statusUpdatedAt), { addSuffix: true, locale: require('date-fns/locale').lv })}
-                </p>
-              )}
+
             </div>
           </CardContent>
         </Card>

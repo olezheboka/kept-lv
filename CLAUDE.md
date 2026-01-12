@@ -41,6 +41,8 @@ npx tsc --noEmit     # Run TypeScript type check
 
 **Dynamic Rendering**: Pages using Prisma export `dynamic = "force-dynamic"` to prevent build-time database queries.
 
+**Reusable Components**: navigate with `NavLink` component for localized links with active state handling. Use standard UI components from `components/ui`.
+
 ### Data Models
 - **Promise** - Political promises with status (KEPT/NOT_KEPT/IN_PROGRESS/ABANDONED/PARTIAL)
 - **Politician** - Linked to Party, has multiple Promises

@@ -86,7 +86,7 @@ export const STATUS_CONFIG: Record<PromiseStatus, { label: string; className: st
   'partially-kept': {
     label: 'Daļēji izpildīts',
     className: 'status-partially',
-    icon: 'CircleDot'
+    icon: 'Contrast'
   },
   'in-progress': {
     label: 'Procesā',

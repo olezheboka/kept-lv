@@ -14,17 +14,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "KEPT - Politisko solījumu uzskaite",
-    template: "%s | KEPT",
+    default: "solījums.lv - Politisko solījumu uzskaite",
+    template: "%s | solījums.lv",
   },
   description: "Sekojiet līdzi politiķu solījumiem Latvijā. Pārskatāma platforma politiskās atbildības uzskaitei.",
   keywords: ["politika", "solījumi", "Latvija", "atbildība", "caurskatāmība"],
-  authors: [{ name: "KEPT" }],
+  authors: [{ name: "solījums.lv" }],
   openGraph: {
     type: "website",
     locale: "lv_LV",
     alternateLocale: ["en_US", "ru_RU"],
-    siteName: "KEPT",
+    siteName: "solījums.lv",
   },
 };
 
@@ -33,7 +33,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return children;
+  return (
+    <html suppressHydrationWarning>
+      <body suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background text-foreground`}>
+        {children}
+      </body>
+    </html>
+  );
 }
 
 export function generateStaticParams() {

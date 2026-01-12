@@ -8,6 +8,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { politicians, parties, getPartyById, getPromisesByPolitician } from '@/lib/data';
 import { Search } from 'lucide-react';
 
@@ -27,7 +30,7 @@ const Politicians = () => {
             );
         }
 
-        if (selectedParty) {
+        if (selectedParty && selectedParty !== 'all') {
             result = result.filter(p => p.partyId === selectedParty);
         }
 
@@ -74,23 +77,24 @@ const Politicians = () => {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         </div>
 
-                        <select
-                            value={selectedParty}
-                            onChange={(e) => setSelectedParty(e.target.value)}
-                            className="h-10 px-3 rounded-lg border border-input bg-background text-sm"
-                        >
-                            <option value="">Visas partijas</option>
-                            {parties.map(party => (
-                                <option key={party.id} value={party.id}>{party.name}</option>
-                            ))}
-                        </select>
+                        <div className="w-[200px]">
+                            <Select value={selectedParty} onValueChange={setSelectedParty}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Visas partijas" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Visas partijas</SelectItem>
+                                    {parties.map(party => (
+                                        <SelectItem key={party.id} value={party.id}>{party.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                        <Button
-                            variant={showInOffice ? 'secondary' : 'outline'}
-                            onClick={() => setShowInOffice(!showInOffice)}
-                        >
-                            Tikai amatā
-                        </Button>
+                        <div className="flex items-center space-x-2">
+                            <Switch id="in-office" checked={showInOffice} onCheckedChange={setShowInOffice} />
+                            <Label htmlFor="in-office" className="cursor-pointer">Tikai amatā</Label>
+                        </div>
                     </div>
 
                     {/* Results */}
@@ -99,7 +103,7 @@ const Politicians = () => {
                     </p>
 
                     {/* Politicians Grid */}
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                         {filteredPoliticians.map((politician, index) => {
                             const party = getPartyById(politician.partyId);
                             const politicianPromises = getPromisesByPolitician(politician.id);
@@ -119,41 +123,40 @@ const Politicians = () => {
                                         <Card className="group overflow-hidden border-border/50 hover:shadow-elevated hover:border-border transition-all duration-300">
                                             <CardContent className="p-5">
                                                 <div className="flex items-start gap-4 mb-4">
-                                                    <Avatar className="h-16 w-16 border-2 border-background shadow-md">
-                                                        {party?.logoUrl ? (
-                                                            <AvatarImage src={party.logoUrl} alt={party.name} />
-                                                        ) : null}
-                                                        <AvatarFallback
-                                                            className="text-lg font-bold text-white uppercase"
+                                                    <div className="flex-shrink-0">
+                                                        <div
+                                                            className="h-16 w-16 rounded-xl flex items-center justify-center text-white font-bold text-lg overflow-hidden shadow-md"
                                                             style={{ backgroundColor: party?.color || '#333' }}
                                                         >
-                                                            {party?.abbreviation || '?'}
-                                                        </AvatarFallback>
-                                                    </Avatar>
+                                                            {party?.logoUrl ? (
+                                                                <img src={party.logoUrl} alt={party.name} className="h-full w-full object-cover" />
+                                                            ) : (
+                                                                <span>{party?.abbreviation || '?'}</span>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                     <div className="flex-1 min-w-0">
                                                         <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors truncate">
                                                             {politician.name}
                                                         </h3>
-                                                        <p className="text-sm text-muted-foreground truncate">
-                                                            {politician.role}
-                                                        </p>
-                                                        {politician.isInOffice ? (
-                                                            <span className="inline-block mt-1 px-2 py-0.5 bg-status-kept-bg text-status-kept text-xs font-medium rounded-full">
-                                                                Amatā
+                                                        <div className="flex items-center gap-1.5 flex-wrap">
+                                                            <span className="text-sm text-muted-foreground truncate">
+                                                                {politician.role}
                                                             </span>
-                                                        ) : (
-                                                            <span className="inline-block mt-1 px-2 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
-                                                                Bijušais
-                                                            </span>
-                                                        )}
+                                                            {politician.isInOffice ? (
+                                                                <span className="flex-shrink-0 px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] font-medium rounded-full">
+                                                                    Amatā
+                                                                </span>
+                                                            ) : (
+                                                                <span className="flex-shrink-0 px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] font-medium rounded-full">
+                                                                    Bijušais
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
 
-                                                {party && (
-                                                    <div className="mb-4">
-                                                        <PartyBadge party={party} size="sm" />
-                                                    </div>
-                                                )}
+
 
                                                 {/* Stats Bar */}
                                                 {total > 0 && (

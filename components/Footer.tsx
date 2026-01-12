@@ -7,9 +7,9 @@ export const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <span className="font-bold text-2xl text-[#9E1B34]">
-                solijums.lv
+            <Link href="/" className="flex items-center gap-2.5 mb-4" suppressHydrationWarning>
+              <span className="font-bold text-2xl text-[#2563EB]">
+                solījums.lv
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -22,22 +22,22 @@ export const Footer = () => {
             <h4 className="font-semibold text-foreground mb-4">Pārlūkot</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/promises" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/promises" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
                   Solījumi
                 </Link>
               </li>
               <li>
-                <Link href="/politicians" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/politicians" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
                   Politiķi
                 </Link>
               </li>
               <li>
-                <Link href="/parties" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/parties" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
                   Partijas
                 </Link>
               </li>
               <li>
-                <Link href="/categories" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/categories" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
                   Kategorijas
                 </Link>
               </li>
@@ -49,17 +49,17 @@ export const Footer = () => {
             <h4 className="font-semibold text-foreground mb-4">Par mums</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
                   Par Kept
                 </Link>
               </li>
               <li>
-                <Link href="/methodology" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/methodology" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
                   Metodoloģija
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
                   Kontakti
                 </Link>
               </li>
@@ -71,12 +71,12 @@ export const Footer = () => {
             <h4 className="font-semibold text-foreground mb-4">Juridiskā info</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
                   Privātuma politika
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
                   Lietošanas noteikumi
                 </Link>
               </li>

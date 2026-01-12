@@ -78,24 +78,27 @@ const PoliticianDetail = () => {
                         className="flex flex-col md:flex-row items-center md:items-start gap-6"
                     >
                         <div className="flex-1 text-center md:text-left">
-                            <div className="flex flex-wrap items-center gap-3 mb-2">
+                            {/* Row 1: Name + Party Badge */}
+                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-2">
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">
                                     {politician.name}
                                 </h1>
+                                {party && <PartyBadge party={party} size="md" showFullName />}
+                            </div>
+
+                            {/* Row 2: Role + Amatā Badge */}
+                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-lg text-muted-foreground">
+                                <span>{politician.role}</span>
                                 {politician.isInOffice ? (
-                                    <span className="px-3 py-1 bg-status-kept-bg text-status-kept text-sm font-medium rounded-full">
+                                    <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
                                         Amatā
                                     </span>
                                 ) : (
-                                    <span className="px-3 py-1 bg-muted text-muted-foreground text-sm font-medium rounded-full">
+                                    <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
                                         Bijušais
                                     </span>
                                 )}
                             </div>
-                            <p className="text-lg text-muted-foreground mb-4">
-                                {politician.role}
-                            </p>
-                            {party && <PartyBadge party={party} size="md" showFullName />}
                         </div>
                     </motion.div>
                 </div>

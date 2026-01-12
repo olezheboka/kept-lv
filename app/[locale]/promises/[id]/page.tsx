@@ -24,7 +24,7 @@ const PromiseDetail = () => {
             <div className="flex flex-col bg-background min-h-[50vh] items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-foreground mb-4">Solījums nav atrasts</h1>
-                    <Link href="/promises">
+                    <Link href="/promises" suppressHydrationWarning>
                         <Button>Atpakaļ uz solījumiem</Button>
                     </Link>
                 </div>
@@ -52,6 +52,7 @@ const PromiseDetail = () => {
                     <Link
                         href="/promises"
                         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        suppressHydrationWarning
                     >
                         <ArrowLeft className="h-4 w-4" />
                         Atpakaļ uz solījumiem
@@ -73,36 +74,29 @@ const PromiseDetail = () => {
                             {/* Header Section: Author & Date */}
                             {politician && party && (
                                 <div className="mb-4 border-b border-border/50 pb-3">
-                                    <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                                        <div className="flex-1 text-center md:text-left">
-                                            <div className="flex flex-wrap items-center gap-3 mb-2">
-                                                <Link href={`/politicians/${politician.id}`} className="group">
-                                                    <h2 className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-accent transition-colors">
+                                    <div className="flex flex-col md:flex-row items-start gap-6">
+                                        <div className="flex-1 text-left">
+                                            <div className="flex flex-wrap items-center justify-start gap-4 mb-2">
+                                                <Link href={`/politicians/${politician.id}`} className="group" suppressHydrationWarning>
+                                                    <h2 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-accent transition-colors">
                                                         {politician.name}
                                                     </h2>
                                                 </Link>
+                                                {party && <PartyBadge party={party} size="md" showFullName />}
+                                            </div>
+
+                                            <div className="flex flex-wrap items-center justify-start gap-3 mb-4 text-base text-muted-foreground">
+                                                <span>{politician.role}</span>
                                                 {politician.isInOffice ? (
-                                                    <span className="px-3 py-1 bg-status-kept-bg text-status-kept text-sm font-medium rounded-full">
+                                                    <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
                                                         Amatā
                                                     </span>
                                                 ) : (
-                                                    <span className="px-3 py-1 bg-muted text-muted-foreground text-sm font-medium rounded-full">
+                                                    <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
                                                         Bijušais
                                                     </span>
                                                 )}
                                             </div>
-
-                                            <p className="text-lg text-muted-foreground mb-4">
-                                                {politician.role}
-                                                {politician.roleStartDate && (
-                                                    <> no {format(new Date(politician.roleStartDate), 'dd.MM.yyyy')}</>
-                                                )}
-                                                {!politician.isInOffice && politician.roleEndDate && (
-                                                    <> līdz {format(new Date(politician.roleEndDate), 'dd.MM.yyyy')}</>
-                                                )}
-                                            </p>
-
-                                            <PartyBadge party={party} size="md" showFullName />
                                         </div>
                                     </div>
                                 </div>
@@ -132,6 +126,11 @@ const PromiseDetail = () => {
                                             </span>
                                         </>
                                     )}
+
+                                    <Button variant="ghost" size="sm" className="ml-auto gap-2 text-muted-foreground hover:text-foreground hover:bg-muted h-8 px-2">
+                                        <Share2 className="h-4 w-4" />
+                                        <span className="hidden sm:inline">Dalīties</span>
+                                    </Button>
                                 </div>
 
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight">
@@ -152,43 +151,25 @@ const PromiseDetail = () => {
 
                         {/* Sources Removed */}
 
-                        {/* Related Promises */}
-                        {(relatedByPolitician.length > 0 || relatedByCategory.length > 0) && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.4, delay: 0.3 }}
-                            >
-                                <h2 className="text-xl font-bold text-foreground mb-4">Saistītie solījumi</h2>
-                                <div className="grid sm:grid-cols-2 gap-4">
-                                    {[...relatedByPolitician, ...relatedByCategory].slice(0, 4).map((related, index) => (
-                                        <PromiseCard key={related.id} promise={related} index={index} />
-                                    ))}
-                                </div>
-                            </motion.div>
-                        )}
-                    </div>
-
-                    {/* Sidebar */}
-                    <div className="space-y-6">
-                        {/* Status Justification (Moved to Sidebar) */}
+                        {/* Status Justification (Moved to Main Column) */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: 0.1 }}
+                            className="mb-8"
                         >
-                            <Card className="border-border/50 shadow-sm border-l-4 border-l-primary/20">
-                                <CardHeader className="space-y-4 pb-4">
-                                    <div className="flex items-center justify-between">
-                                        <CardTitle className="text-lg flex items-center gap-2">
-                                            Status
-                                        </CardTitle>
-                                        <StatusBadge status={promise.status} />
+                            <Card className={`shadow-sm border transition-colors ${promise.status === 'kept' ? "bg-status-kept-bg border-status-kept/30" :
+                                promise.status === 'partially-kept' ? "bg-status-partially-bg border-status-partially/30" :
+                                    promise.status === 'in-progress' ? "bg-status-progress-bg border-status-progress/30" :
+                                        promise.status === 'broken' ? "bg-status-broken-bg border-status-broken/30" :
+                                            "bg-status-unrated-bg border-status-unrated/30"
+                                }`}>
+                                <CardContent className="p-6 space-y-4">
+                                    <div className="flex justify-start">
+                                        <StatusBadge status={promise.status} size="lg" variant="solid" />
                                     </div>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
                                     <div className="text-sm text-foreground leading-relaxed">
-                                        <span className="font-medium block mb-2 text-muted-foreground">Pamatojums:</span>
+                                        <span className="font-medium block mb-2 text-foreground/80">Pamatojums:</span>
                                         {promise.statusJustification}
                                         {promise.sources.map((source, index) => (
                                             <a
@@ -196,20 +177,21 @@ const PromiseDetail = () => {
                                                 href={source.url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="inline-flex items-center justify-center h-5 px-1.5 ml-1 text-[10px] font-bold tracking-wide uppercase rounded bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground transition-colors align-middle -translate-y-0.5"
+                                                className="inline-flex items-center justify-center h-5 px-1.5 ml-1 text-[10px] font-bold tracking-wide uppercase rounded bg-white/50 hover:bg-white text-foreground/70 hover:text-foreground transition-colors align-middle -translate-y-0.5 border border-black/5"
                                                 title={source.title}
+                                                suppressHydrationWarning
                                             >
                                                 {source.publication}
                                             </a>
                                         ))}
                                     </div>
-                                    <div className="flex flex-col gap-1 pt-4 border-t border-border/50 text-xs text-muted-foreground">
-                                        <div className="flex justify-between">
-                                            <span>Atjaunināts:</span>
+                                    <div className="flex flex-col gap-1.5 pt-4 border-t border-black/5 text-xs text-foreground/70">
+                                        <div className="flex items-center gap-2">
+                                            <span className="opacity-70">Atjaunināts:</span>
                                             <span className="font-medium">{format(new Date(promise.statusUpdatedAt), 'dd.MM.yyyy')}</span>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span>Avots:</span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="opacity-70">Avots:</span>
                                             <span className="font-medium">{promise.statusUpdatedBy}</span>
                                         </div>
                                     </div>
@@ -217,50 +199,54 @@ const PromiseDetail = () => {
                             </Card>
                         </motion.div>
 
-                        {/* Meta Info */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.2 }}
-                        >
-                            <Card className="border-border/50">
-                                <CardContent className="p-5 space-y-4">
-                                    {/* Removed Date/Election info as it is now in Context card */}
-
-                                    {promise.tags.length > 0 && (
-                                        <div>
-                                            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                                                <Tag className="h-4 w-4" />
-                                                <span>Tēmturi:</span>
-                                            </div>
-                                            <div className="flex flex-wrap gap-2">
-                                                {promise.tags.map(tag => (
-                                                    <span key={tag} className="px-2 py-1 bg-muted rounded-full text-xs font-medium text-muted-foreground">
-                                                        #{tag}
-                                                    </span>
-                                                ))}
-                                            </div>
+                        {/* Meta Info (Tags) */}
+                        {promise.tags.length > 0 && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.4, delay: 0.2 }}
+                                className="mb-6"
+                            >
+                                <Card className="border-border/50">
+                                    <CardContent className="p-5">
+                                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                                            <Tag className="h-4 w-4" />
+                                            <span>Tēmturi:</span>
                                         </div>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        </motion.div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {promise.tags.map(tag => (
+                                                <span key={tag} className="px-2 py-1 bg-muted rounded-full text-xs font-medium text-muted-foreground">
+                                                    #{tag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        )}
 
-                        {/* Share */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.3 }}
-                        >
-                            <Card className="border-border/50">
-                                <CardContent className="p-5">
-                                    <Button variant="outline" className="w-full gap-2">
-                                        <Share2 className="h-4 w-4" />
-                                        Dalīties
-                                    </Button>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
+
+                    </div>
+
+                    {/* Sidebar */}
+                    <div className="space-y-6">
+
+
+                        {/* Related Promises (Sidebar) */}
+                        {(relatedByPolitician.length > 0 || relatedByCategory.length > 0) && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.4, delay: 0.3 }}
+                            >
+                                <h2 className="text-lg font-bold text-foreground mb-4">Saistītie solījumi</h2>
+                                <div className="flex flex-col gap-4">
+                                    {[...relatedByPolitician, ...relatedByCategory].slice(0, 4).map((related, index) => (
+                                        <PromiseCard key={related.id} promise={related} index={index} />
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
                     </div>
                 </div>
             </div>
