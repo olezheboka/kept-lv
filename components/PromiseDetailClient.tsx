@@ -44,6 +44,8 @@ export const PromiseDetailClient = ({
         );
     }
 
+    const hasSidebar = relatedByPolitician.length > 0 || relatedByCategory.length > 0;
+
     return (
         <div className="flex flex-col bg-background">
             {/* Breadcrumb */}
@@ -64,7 +66,7 @@ export const PromiseDetailClient = ({
             <div className="container-wide py-8 md:py-12">
                 <div className="grid lg:grid-cols-3 gap-8">
                     {/* Main Column */}
-                    <div className="lg:col-span-2 space-y-8">
+                    <div className={`${hasSidebar ? 'lg:col-span-2' : 'lg:col-span-3 max-w-5xl mx-auto w-full'} space-y-8`}>
                         {/* Header */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -126,7 +128,7 @@ export const PromiseDetailClient = ({
                                     <span className="text-muted-foreground/30">•</span>
 
                                     <div className="flex items-center gap-1.5 text-muted-foreground">
-                                        <Calendar className="h-3.5 w-3.5" />
+                                        <Clock className="h-3.5 w-3.5" />
                                         <span className="font-medium text-foreground">
                                             {format(new Date(promise.datePromised), 'dd.MM.yyyy')}
                                         </span>
@@ -246,11 +248,8 @@ export const PromiseDetailClient = ({
                     </div>
 
                     {/* Sidebar */}
-                    <div className="space-y-6">
-
-
-                        {/* Related Promises (Sidebar) */}
-                        {(relatedByPolitician.length > 0 || relatedByCategory.length > 0) && (
+                    {hasSidebar && (
+                        <div className="space-y-6">
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -263,8 +262,8 @@ export const PromiseDetailClient = ({
                                     ))}
                                 </div>
                             </motion.div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
