@@ -1,28 +1,25 @@
-import { Promise } from '@/lib/types';
-import { getPartyById, getPoliticianById } from '@/lib/data';
+"use client";
+
 import { CATEGORIES } from '@/lib/types';
 import { StatusBadge } from './StatusBadge';
 import { PartyBadge } from './PartyBadge';
 import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import type { PromiseUI, PartyUI, PoliticianUI } from '@/lib/db';
 
 interface PromiseCardProps {
-  promise: Promise;
+  promise: PromiseUI;
   index?: number;
   hideLastUpdated?: boolean;
+  politician?: PoliticianUI;
+  party?: PartyUI;
 }
 
 export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: PromiseCardProps) => {
-  const politician = getPoliticianById(promise.politicianId);
-  const party = getPartyById(promise.partyId);
   const category = CATEGORIES.find(c => c.id === promise.category);
-
-  if (!politician || !party) return null;
 
   return (
     <motion.div
@@ -43,29 +40,19 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
             <div className="flex flex-col gap-1 mb-4 pt-1 pr-8">
               <div className="flex items-center gap-2 flex-wrap max-w-full">
                 <span className="text-base font-semibold text-foreground leading-tight truncate">
-                  {politician.name}
+                  {promise.politicianName}
                 </span>
-                <PartyBadge
-                  party={party}
-                  size="sm"
-                  className="opacity-90 flex-shrink-0"
-                />
+                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-muted text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                  {promise.partyAbbreviation}
+                </span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground w-full">
-                <TooltipProvider>
-                  <Tooltip delayDuration={300}>
-                    <TooltipTrigger asChild>
-                      <span className="truncate cursor-default hover:text-foreground transition-colors">
-                        {politician.role}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="max-w-[300px]">
-                      {politician.role}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                {politician.isInOffice && (
-                  <span className="flex-shrink-0 px-1.5 py-0.5 bg-muted/60 text-muted-foreground text-[10px] font-medium rounded-full whitespace-nowrap">
+
+              <div className="flex items-center gap-2 mt-0">
+                <span className="text-sm text-muted-foreground truncate max-w-[200px]">
+                  {promise.politicianRole}
+                </span>
+                {promise.politicianIsInOffice && (
+                  <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
                     Amatā
                   </span>
                 )}
@@ -84,9 +71,6 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
                 <Calendar size={14} className="text-muted-foreground/70" />
                 <span>Solīts <span className="font-medium text-foreground">{new Date(promise.datePromised).toLocaleDateString('lv-LV')}</span></span>
               </div>
-
-              {/* Updated indicator */}
-
             </div>
           </CardContent>
         </Card>

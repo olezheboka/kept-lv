@@ -3,22 +3,20 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { RankingItem } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Trophy, Medal, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { getPartyById } from '@/lib/data';
 import { PartyBadge } from './PartyBadge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
 import { motion } from "framer-motion";
+import type { RankingItem, PartyUI } from '@/lib/db';
 
 interface RankingCardProps {
     title: string;
     type: 'politician' | 'party';
     data: RankingItem[];
+    parties?: PartyUI[];
 }
 
 const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
@@ -38,9 +36,24 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
         return () => clearTimeout(timer);
     }, [item.keptPercentage, index]);
 
-    const party = type === 'party'
-        ? getPartyById(item.id)
-        : (item.partyId ? getPartyById(item.partyId) : undefined);
+    // Create a simple party object from the item data for PartyBadge
+    const partyBadgeData = type === 'party' ? {
+        id: item.id,
+        slug: item.id,
+        name: item.name,
+        abbreviation: item.abbreviation || item.id.toUpperCase(),
+        color: item.color || '#888',
+        isInCoalition: item.isInCoalition || false,
+        mpCount: 0,
+    } : item.partyId ? {
+        id: item.partyId,
+        slug: item.partyId,
+        name: item.partyId,
+        abbreviation: item.partyId.toUpperCase(),
+        color: '#888',
+        isInCoalition: false,
+        mpCount: 0,
+    } : null;
 
     return (
         <motion.div
@@ -54,7 +67,6 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
             </div>
 
             <div className="flex-shrink-0">
-                {/* No avatar for both politician and party in new style */}
                 {null}
             </div>
 
@@ -68,9 +80,9 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                         >
                             {item.name}
                         </Link>
-                        {type === 'politician' && party && (
+                        {type === 'politician' && partyBadgeData && (
                             <PartyBadge
-                                party={party}
+                                party={partyBadgeData}
                                 size="sm"
                                 className="opacity-90 flex-shrink-0 scale-90 origin-left"
                             />
@@ -172,7 +184,7 @@ export const RankingCard = ({ title, type, data }: RankingCardProps) => {
                     <div className="space-y-4 mb-6">
                         {topItems.map((item, index) => (
                             <RankingRow
-                                key={`${item.id}-${viewMode}`} // Force re-mount on mode switch to re-play animation
+                                key={`${item.id}-${viewMode}`}
                                 item={item}
                                 index={index}
                                 viewMode={viewMode}

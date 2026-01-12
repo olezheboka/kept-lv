@@ -1,55 +1,32 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { PromiseCard } from "@/components/PromiseCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { RankingCard } from "@/components/RankingCard";
+import { QuoteTypewriter } from "@/components/QuoteTypewriter";
+import { HeroSection } from "@/components/home/HeroSection";
+import { CTASection } from "@/components/home/CTASection";
 import {
     getFeaturedPromises,
     getPoliticianRankings,
     getPartyRankings,
-} from "@/lib/data";
-import { RankingCard } from "@/components/RankingCard";
-import { QuoteTypewriter } from "@/components/QuoteTypewriter";
+} from "@/lib/db";
 import {
     ArrowRight,
     Quote,
-    Lightbulb,
-    AlertCircle,
     ExternalLink,
 } from "lucide-react";
 
-const Index = () => {
-    const featuredPromises = getFeaturedPromises().slice(0, 4);
+export default async function Index() {
+    const [featuredPromises, politicianRankings, partyRankings] = await Promise.all([
+        getFeaturedPromises("lv", 4),
+        getPoliticianRankings("lv"),
+        getPartyRankings("lv"),
+    ]);
 
     return (
         <div className="flex flex-col bg-background">
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gray-50/50 border-b border-border/50">
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
-
-                <div className="container-wide py-7 md:py-8 relative z-10">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                            className=""
-                        >
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight text-balance">
-                                Sekojam līdzi <span className="text-[#9E1B34]">Latvijas</span> politiķu solījumiem
-                            </h1>
-                            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
-                                Neatkarīga un objektīva platforma, kas atspoguļo valdības solījumu izpildi.
-                            </p>
-                        </motion.div>
-
-
-                    </div>
-                </div>
-
-            </section>
+            <HeroSection />
 
             {/* Featured Promises */}
             <section className="pt-6 pb-10 md:pt-8 md:pb-14">
@@ -91,12 +68,12 @@ const Index = () => {
                         <RankingCard
                             title="Uzticamākie politiķi"
                             type="politician"
-                            data={getPoliticianRankings()}
+                            data={politicianRankings}
                         />
                         <RankingCard
                             title="Uzticamākās partijas"
                             type="party"
-                            data={getPartyRankings()}
+                            data={partyRankings}
                         />
                     </div>
                 </div>
@@ -105,13 +82,7 @@ const Index = () => {
             {/* Trust Context Section */}
             <section className="py-8 md:py-10 bg-primary/5">
                 <div className="container-wide">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5 }}
-                        className="max-w-4xl mx-auto"
-                    >
+                    <div className="max-w-4xl mx-auto">
                         <blockquote className="relative">
                             <Quote className="absolute -top-2 -left-2 md:-top-4 md:-left-4 h-8 w-8 md:h-12 md:w-12 text-primary/20" />
                             <QuoteTypewriter />
@@ -128,60 +99,12 @@ const Index = () => {
                                 </a>
                             </footer>
                         </blockquote>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
 
             {/* CTA Section */}
-            <section className="py-10 md:py-16 bg-card border-t border-border">
-                <div className="container-wide">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5 }}
-                        className="grid md:grid-cols-2 gap-6 md:gap-8"
-                    >
-                        {/* Suggest Promise */}
-                        <div className="bg-muted/30 border border-border/50 rounded-2xl p-8 flex flex-col items-start hover:border-primary/20 transition-colors">
-                            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6">
-                                <Lightbulb className="h-6 w-6" />
-                            </div>
-                            <h3 className="text-xl font-bold text-foreground mb-3">
-                                Ieteikt solījumu
-                            </h3>
-                            <p className="text-muted-foreground mb-8 leading-relaxed">
-                                Zini solījumu, kas šeit trūkst? Iesniedz to mums izskatīšanai un palīdzi veidot pilnīgāku ainu par politisko atbildību.
-                            </p>
-                            <Link href="mailto:info@kept.lv?subject=Jauns%20solījums" className="mt-auto" suppressHydrationWarning>
-                                <Button size="lg" className="font-semibold">
-                                    Iesniegt priekšlikumu
-                                </Button>
-                            </Link>
-                        </div>
-
-                        {/* Report Issue */}
-                        <div className="bg-muted/30 border border-border/50 rounded-2xl p-8 flex flex-col items-start hover:border-destructive/20 transition-colors">
-                            <div className="h-12 w-12 rounded-xl bg-[#DC2626]/10 flex items-center justify-center text-[#DC2626] mb-6">
-                                <AlertCircle className="h-6 w-6" />
-                            </div>
-                            <h3 className="text-xl font-bold text-foreground mb-3">
-                                Paziņot par problēmu
-                            </h3>
-                            <p className="text-muted-foreground mb-8 leading-relaxed">
-                                Pamanīji neprecizitāti datos vai tehnisku kļūdu? Dod mums ziņu, lai varam to pēc iespējas ātrāk novērst.
-                            </p>
-                            <Link href="mailto:support@kept.lv?subject=Kļūda%20vai%20problēma" className="mt-auto" suppressHydrationWarning>
-                                <Button size="lg" variant="outline" className="font-semibold text-[#DC2626] border-[#DC2626] hover:bg-[#DC2626] hover:text-white">
-                                    Ziņot par kļūdu
-                                </Button>
-                            </Link>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
+            <CTASection />
         </div>
     );
-};
-
-export default Index;
+}
