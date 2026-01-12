@@ -261,7 +261,7 @@ export const PromiseDetailClient = ({
                         >
                             <h2 className="text-lg font-bold text-foreground mb-4">Saistītie solījumi</h2>
                             <div className="flex flex-col gap-4">
-                                {[...relatedByPolitician, ...relatedByCategory].slice(0, 4).map((related, index) => (
+                                {[...relatedByPolitician, ...relatedByCategory].slice(0, 3).map((related, index) => (
                                     <PromiseCard key={related.id} promise={related} index={index} />
                                 ))}
 

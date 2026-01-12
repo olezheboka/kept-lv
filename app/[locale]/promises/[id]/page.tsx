@@ -73,9 +73,9 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
     const relatedCount = relatedByPoliticianFiltered.length + relatedByCategoryFiltered.length;
     let fallbackPromises: any[] = []; // Use any for now or PromiseUI
 
-    // Always fill up to 4 items in sidebar if possible
-    if (relatedCount < 4) {
-        const remaining = 4 - relatedCount;
+    // Always fill up to 3 items in sidebar if possible
+    if (relatedCount < 3) {
+        const remaining = 3 - relatedCount;
         fallbackPromises = await getRandomPromises(remaining, promise.id);
     } // wait, getRandomPromises needs to be imported: done in chunk 1
 
