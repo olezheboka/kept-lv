@@ -26,7 +26,7 @@ function mapStatus(status: string) {
 }
 
 async function main() {
-  console.log("Seeding database with all mock data...");
+  console.log("Seeding database with real Latvia data...");
 
   // Create admin user
   const adminPassword = await hash("admin123", 12);
@@ -174,25 +174,34 @@ async function main() {
   }
   console.log("Created parties:", Object.keys(parties).length);
 
-  // Create all politicians (10 total)
+  // Create all politicians (19 total)
   const politiciansData = [
     { slug: "evika-silina", name: "Evika Siliņa", role: "Ministru prezidente", bio: "Latvijas Republikas Ministru prezidente kopš 2023. gada.", partySlug: "jv", isActive: true },
-    { slug: "arvils-aseradens", name: "Arvils Ašeradens", role: "Ekonomikas ministrs", bio: "Ekonomikas ministrs, iepriekš Saeimas deputāts.", partySlug: "jv", isActive: true },
+    { slug: "arvils-aseradens", name: "Arvils Ašeradens", role: "Finanšu ministrs", bio: "Finanšu ministrs, partijas 'Vienotība' priekšsēdētājs.", partySlug: "jv", isActive: true },
     { slug: "anda-caksa", name: "Anda Čakša", role: "Izglītības un zinātnes ministre", bio: "Izglītības un zinātnes ministre.", partySlug: "jv", isActive: true },
     { slug: "andris-spruds", name: "Andris Sprūds", role: "Aizsardzības ministrs", bio: "Aizsardzības ministrs, profesors.", partySlug: "prog", isActive: true },
     { slug: "baiba-braze", name: "Baiba Braže", role: "Ārlietu ministre", bio: "Ārlietu ministre, diplomāte.", partySlug: "jv", isActive: true },
     { slug: "hosams-abu-meri", name: "Hosams Abu Meri", role: "Veselības ministrs", bio: "Veselības ministrs, ārsts.", partySlug: "jv", isActive: true },
     { slug: "raimonds-bergmanis", name: "Raimonds Bergmanis", role: "Saeimas deputāts", bio: "Saeimas deputāts, bijušais aizsardzības ministrs.", partySlug: "zzs", isActive: true },
     { slug: "raivis-dzintars", name: "Raivis Dzintars", role: "NA priekšsēdētājs", bio: "Nacionālās apvienības līderis.", partySlug: "na", isActive: true },
-    { slug: "agnese-logina", name: "Agnese Logina", role: "Saeimas deputāte", bio: "Saeimas deputāte, bijusī kultūras ministre.", partySlug: "prog", isActive: true },
-    { slug: "edvards-smiltens", name: "Edvards Smiltēns", role: "Saeimas priekšsēdētāja biedrs", bio: "Saeimas sekretārs, bijušais spīkers.", partySlug: "na", isActive: true },
+    { slug: "kaspars-briskens", name: "Kaspars Briškens", role: "Satiksmes ministrs", bio: "Satiksmes ministrs, Progresīvie.", partySlug: "prog", isActive: true },
+    { slug: "edvards-smiltens", name: "Edvards Smiltēns", role: "Saeimas sekretārs", bio: "Saeimas prezidija loceklis, AS līderis.", partySlug: "lra", isActive: true },
+    { slug: "rihards-kozlovskis", name: "Rihards Kozlovskis", role: "Iekšlietu ministrs", bio: "Iekšlietu ministrs, Saeimas deputāts.", partySlug: "jv", isActive: true },
+    { slug: "inese-libina-egnere", name: "Inese Lībiņa-Egnere", role: "Tieslietu ministre", bio: "Tieslietu ministre, juriste.", partySlug: "jv", isActive: true },
+    { slug: "viktors-valainis", name: "Viktors Valainis", role: "Ekonomikas ministrs", bio: "Ekonomikas ministrs, ZZS valdes priekšsēdētājs.", partySlug: "zzs", isActive: true },
+    { slug: "uldis-augulis", name: "Uldis Augulis", role: "Labklājības ministrs", bio: "Labklājības ministrs, ilggadējs politiķis.", partySlug: "zzs", isActive: true },
+    { slug: "janis-dombrava", name: "Jānis Dombrava", role: "Saeimas deputāts", bio: "Nacionālās apvienības valdes loceklis.", partySlug: "na", isActive: true },
+    { slug: "juris-puce", name: "Juris Pūce", role: "Partijas 'Latvijas attīstībai' līdzpriekšsēdētājs", bio: "Bijušais VARAM ministrs.", partySlug: "ap", isActive: true },
+    { slug: "ainars-slesers", name: "Ainārs Šlesers", role: "Saeimas deputāts", bio: "Partijas 'Latvija pirmajā vietā' līderis.", partySlug: "lpv", isActive: true },
+    { slug: "aleksejs-roslikovs", name: "Aleksejs Rosļikovs", role: "Saeimas deputāts", bio: "Partijas 'Stabilitātei!' līderis.", partySlug: "stab", isActive: true },
+    { slug: "nils-usakovs", name: "Nils Ušakovs", role: "Eiroparlamenta deputāts", bio: "Bijušais Rīgas mērs, 'Saskaņa' līderis.", partySlug: "sask", isActive: true },
   ];
 
   const politicians: Record<string, { id: string }> = {};
   for (const pol of politiciansData) {
     const created = await prisma.politician.upsert({
       where: { slug: pol.slug },
-      update: { name: pol.name, role: pol.role, bio: pol.bio, isActive: pol.isActive },
+      update: { name: pol.name, role: pol.role, bio: pol.bio, isActive: pol.isActive, partyId: parties[pol.partySlug].id },
       create: {
         slug: pol.slug,
         name: pol.name,
@@ -206,177 +215,378 @@ async function main() {
   }
   console.log("Created politicians:", Object.keys(politicians).length);
 
-  // Create all promises (18 total) - first delete existing to avoid duplicates
+  // Create all promises (38 total)
   await prisma.source.deleteMany({});
   await prisma.evidence.deleteMany({});
   await prisma.promise.deleteMany({});
 
   const promisesData = [
+    // Education & Science
     {
       title: "Paaugstināt skolotāju algas",
-      description: "Paaugstināt skolotāju algas par 20% līdz 2025. gadam",
+      description: "Nodrošināt skolotāju zemākās mēneša darba algas likmes pieaugumu",
       status: "in-progress" as const,
-      explanation: "Valdība ir īstenojusi 10% palielinājumu no 2024. gada janvāra, vēl 10% plānots 2025. gada budžetā.",
-      dateOfPromise: new Date("2022-09-15"),
+      explanation: "Algu grafiks ir apstiprināts, taču pedagogu arodbiedrība norāda uz slodzes balansēšanas problēmām.",
+      dateOfPromise: new Date("2023-01-01"),
       politicianSlug: "anda-caksa",
       categorySlug: "education",
     },
     {
-      title: "2.5% no IKP aizsardzībai",
-      description: "Sasniegt 2.5% no IKP aizsardzības izdevumiem",
+      title: "Pāreja uz mācībām valsts valodā",
+      description: "Pilnīga pāreja uz mācībām latviešu valodā vispārējā izglītībā",
       status: "kept" as const,
-      explanation: "Latvija 2024. gadā sasniedza 2.4% no IKP aizsardzībai un 2025. gada budžetā apstiprināja 2.5% mērķi.",
-      dateOfPromise: new Date("2023-01-20"),
+      explanation: "Reforma tiek īstenota, visas skolas pāriet uz mācībām latviešu valodā.",
+      dateOfPromise: new Date("2022-10-01"),
+      politicianSlug: "anda-caksa",
+      categorySlug: "education",
+    },
+    {
+      title: "Augstākās izglītības finansējums",
+      description: "Palielināt augstākās izglītības finansējumu līdz 1.5% no IKP",
+      status: "not-rated" as const,
+      explanation: "Finansējums pieaudzis, bet mērķis nav sasniegts.",
+      dateOfPromise: new Date("2023-05-15"),
+      politicianSlug: "anda-caksa",
+      categorySlug: "education",
+    },
+
+    // Security & Defense
+    {
+      title: "Aizsardzības budžets 3%",
+      description: "Sasniegt 3% no IKP aizsardzībai līdz 2027. gadam",
+      status: "kept" as const,
+      explanation: "Budžeta plāni apstiprināti ar straujāku pieaugumu, sasniedzot 3% ātrāk.",
+      dateOfPromise: new Date("2023-09-20"),
       politicianSlug: "andris-spruds",
       categorySlug: "security",
     },
     {
-      title: "Ģimenes ārsti 48h laikā",
-      description: "Ieviest ģimenes ārstu pieejamību 48 stundu laikā",
-      status: "broken" as const,
-      explanation: "Neskatoties uz reformām, vidējais gaidīšanas laiks joprojām pārsniedz 5 darba dienas lielākajā daļā reģionu.",
-      dateOfPromise: new Date("2022-10-01"),
+      title: "Sēlijas poligona izveide",
+      description: "Izveidot militāro poligonu Sēlijā",
+      status: "in-progress" as const,
+      explanation: "Uzsākta zemes atsavināšana un infrastruktūras projektēšana.",
+      dateOfPromise: new Date("2023-06-01"),
+      politicianSlug: "andris-spruds",
+      categorySlug: "security",
+    },
+    {
+      title: "Valsts aizsardzības dienests",
+      description: "Ieviest obligāto valsts aizsardzības dienestu",
+      status: "kept" as const,
+      explanation: "Dienests ieviests, pirmie iesaukumi veiksmīgi aizvadīti.",
+      dateOfPromise: new Date("2022-12-01"),
+      politicianSlug: "inese-libina-egnere", // Actually Inese Libina-Egnere supported legislation
+      categorySlug: "security",
+    },
+
+    // Economy & Finance
+    {
+      title: "Banku virspeļņas nodoklis",
+      description: "Ieviest solidaritātes iemaksu bankām",
+      status: "kept" as const,
+      explanation: "Saeima apstiprināja grozījumus, liekot bankām maksāt avansa nodokli.",
+      dateOfPromise: new Date("2023-08-15"),
+      politicianSlug: "arvils-aseradens",
+      categorySlug: "economy",
+    },
+    {
+      title: "Samazināt birokrātiju nekustamā īpašuma attīstītājiem",
+      description: "Vienkāršot būvniecības saskaņošanas procesus",
+      status: "in-progress" as const,
+      explanation: "Izstrādāti grozījumi Būvniecības likumā, process turpinās.",
+      dateOfPromise: new Date("2023-11-01"),
+      politicianSlug: "viktors-valainis",
+      categorySlug: "economy",
+    },
+    {
+      title: "Eksporta veicināšana",
+      description: "Dubultot augstas pievienotās vērtības eksportu",
+      status: "not-rated" as const,
+      explanation: "Eksporta rādītāji svārstīgi ģeopolitisko apstākļu dēļ.",
+      dateOfPromise: new Date("2023-10-10"),
+      politicianSlug: "viktors-valainis",
+      categorySlug: "economy",
+    },
+
+    // Healthcare
+    {
+      title: "Zāļu cenu samazināšana",
+      description: "Pārskatīt zāļu cenu veidošanas mehānismu",
+      status: "in-progress" as const,
+      explanation: "Ministrija prezentējusi jauno modeli, farmācijas nozare iebilst.",
+      dateOfPromise: new Date("2023-12-01"),
       politicianSlug: "hosams-abu-meri",
       categorySlug: "healthcare",
     },
     {
-      title: "Rail Baltica līdz 2030",
-      description: "Rail Baltica pabeigšana līdz 2030. gadam",
+      title: "Vēža skrīninga aptvere",
+      description: "Palielināt vēža skrīninga aptveri",
       status: "in-progress" as const,
-      explanation: "Būvdarbi turpinās, bet projekts saskaras ar kavējumiem un budžeta pārsniegumiem.",
-      dateOfPromise: new Date("2023-03-15"),
-      politicianSlug: "evika-silina",
+      explanation: "Ieviesta jauna uzaicināšanas kārtība, rezultāti uzlabojas lēni.",
+      dateOfPromise: new Date("2023-11-15"),
+      politicianSlug: "hosams-abu-meri",
+      categorySlug: "healthcare",
+    },
+
+    // Transport & Infrastructure
+    {
+      title: "Jauni elektrovilcieni",
+      description: "Nodrošināt jauno Škoda vilcienu pilnvērtīgu kursēšanu",
+      status: "partially-kept" as const,
+      explanation: "Vilcieni kursē, bet ar regulārām tehniskām ķibelēm un kavējumiem.",
+      dateOfPromise: new Date("2023-12-15"),
+      politicianSlug: "kaspars-briskens",
       categorySlug: "infrastructure",
     },
     {
-      title: "PVN pārtikai 5%",
-      description: "Samazināt PVN pārtikas produktiem līdz 5%",
-      status: "partially-kept" as const,
-      explanation: "PVN samazināts līdz 12% noteiktiem produktiem, bet pilnīgs 5% samazinājums nav ieviests.",
-      dateOfPromise: new Date("2022-08-20"),
-      politicianSlug: "arvils-aseradens",
-      categorySlug: "economy",
-    },
-    {
-      title: "10,000 bērnudārza vietas",
-      description: "Izveidot 10,000 jaunas bērnudārza vietas",
-      status: "in-progress" as const,
-      explanation: "Izveidotas 4,200 jaunas vietas. Programma turpinās, bet temps ir lēnāks nekā plānots.",
-      dateOfPromise: new Date("2022-10-10"),
-      politicianSlug: "anda-caksa",
-      categorySlug: "education",
-    },
-    {
-      title: "50% atjaunojamā enerģija",
-      description: "Panākt 50% atjaunojamās enerģijas īpatsvaru",
-      status: "in-progress" as const,
-      explanation: "Pašreizējais līmenis ir aptuveni 42%. Vairāki vēja parku projekti ir izstrādes stadijā.",
-      dateOfPromise: new Date("2023-06-01"),
-      politicianSlug: "evika-silina",
-      categorySlug: "environment",
-    },
-    {
-      title: "Minimālā alga 700 EUR",
-      description: "Palielināt minimālo algu līdz 700 EUR",
+      title: "Rail Baltica audits",
+      description: "Veikt pilnu Rail Baltica projekta auditu",
       status: "kept" as const,
-      explanation: "Minimālā alga palielināta līdz 700 EUR no 2024. gada 1. janvāra.",
-      dateOfPromise: new Date("2022-09-01"),
-      politicianSlug: "arvils-aseradens",
-      categorySlug: "economy",
+      explanation: "Audits veikts, atklājot būtiskas pārvaldības problēmas.",
+      dateOfPromise: new Date("2023-09-01"),
+      politicianSlug: "kaspars-briskens",
+      categorySlug: "infrastructure",
     },
     {
-      title: "E-veselības karte",
-      description: "Ieviest e-veselības karti visiem iedzīvotājiem",
-      status: "in-progress" as const,
-      explanation: "Sistēma ir izstrādes stadijā. Pilotprojekts sākts Rīgā ar 50,000 lietotājiem.",
-      dateOfPromise: new Date("2023-02-15"),
-      politicianSlug: "hosams-abu-meri",
-      categorySlug: "digital",
-    },
-    {
-      title: "Dubultot KNAB budžetu",
-      description: "Cīņa pret korupciju - KNAB budžeta dubultošana",
-      status: "partially-kept" as const,
-      explanation: "KNAB budžets palielināts par 40%, bet ne dubultots.",
-      dateOfPromise: new Date("2022-08-30"),
-      politicianSlug: "raivis-dzintars",
-      categorySlug: "justice",
-    },
-    {
-      title: "100% latviešu valoda skolās",
-      description: "Nodrošināt 100% valsts valodas prasmi skolās",
+      title: "Pasta nodaļu tīkla saglabāšana",
+      description: "Apturēt masveida pasta nodaļu slēgšanu reģionos",
       status: "kept" as const,
-      explanation: "Reforma pilnībā ieviesta. Kopš 2024./2025. mācību gada visas skolas strādā latviešu valodā.",
-      dateOfPromise: new Date("2022-07-15"),
-      politicianSlug: "raivis-dzintars",
-      categorySlug: "education",
+      explanation: "Plāns pārskatīts, saglabājot vairāk nodaļu nekā sākotnēji iecerēts.",
+      dateOfPromise: new Date("2024-01-20"),
+      politicianSlug: "kaspars-briskens",
+      categorySlug: "regional",
     },
+
+    // Welfare
     {
-      title: "Atbalsts jaunajiem lauksaimniekiem",
-      description: "Izveidot atbalsta programmu jaunajiem lauksaimniekiem",
+      title: "Pensiju piemaksas",
+      description: "Atjaunot pensiju piemaksas par stāžu līdz 2012. gadam",
       status: "kept" as const,
-      explanation: "Programma 'Jaunais lauksaimnieks' darbojas ar kopējo finansējumu 15 milj. EUR.",
-      dateOfPromise: new Date("2022-09-25"),
-      politicianSlug: "raimonds-bergmanis",
-      categorySlug: "agriculture",
-    },
-    {
-      title: "Pensiju indeksācija",
-      description: "Pensiju indeksācija virs inflācijas līmeņa",
-      status: "broken" as const,
-      explanation: "Pensiju indeksācija 2024. gadā bija zemāka par inflāciju.",
-      dateOfPromise: new Date("2023-09-15"),
-      politicianSlug: "evika-silina",
+      explanation: "Piemaksas atjaunotas pakāpeniski no 2024. gada.",
+      dateOfPromise: new Date("2023-10-05"),
+      politicianSlug: "uldis-augulis",
       categorySlug: "social-welfare",
     },
     {
-      title: "Atcelt OMD",
-      description: "Atcelt obligāto militāro dienestu",
-      status: "broken" as const,
-      explanation: "Saeima 2024. gadā apstiprināja Valsts aizsardzības dienesta likumu ar obligāto militāro dienestu no 2027. gada.",
-      dateOfPromise: new Date("2022-08-15"),
-      politicianSlug: "agnese-logina",
-      categorySlug: "security",
-    },
-    {
-      title: "1 mlrd. reģioniem",
-      description: "Investēt 1 miljardu EUR reģionu attīstībā",
-      status: "in-progress" as const,
-      explanation: "Līdz šim investēti aptuveni 320 milj. EUR.",
-      dateOfPromise: new Date("2023-05-20"),
-      politicianSlug: "evika-silina",
-      categorySlug: "regional",
-    },
-    {
-      title: "Tirgus Ukrainas precēm",
-      description: "Atvērt Latvijas tirgu Ukrainas precēm",
+      title: "Minimālo ienākumu reforma",
+      description: "Pārskatīt minimālo ienākumu sliekšņus katru gadu",
       status: "kept" as const,
-      explanation: "Latvija aktīvi atbalsta Ukrainas ES kandidātvalsts statusu.",
-      dateOfPromise: new Date("2022-11-01"),
+      explanation: "Likums pieņemts, sliekšņi tiek pārskatīti ik gadu.",
+      dateOfPromise: new Date("2023-02-01"),
+      politicianSlug: "uldis-augulis",
+      categorySlug: "social-welfare",
+    },
+
+    // Foreign Affairs
+    {
+      title: "Sankcijas Krievijai",
+      description: "Stiprināt sankciju apiešanas kontroli",
+      status: "in-progress" as const,
+      explanation: "Ieviesta deklarēšanās uz robežas, pastiprināta muitas kontrole.",
+      dateOfPromise: new Date("2024-02-24"),
       politicianSlug: "baiba-braze",
       categorySlug: "foreign-affairs",
     },
     {
-      title: "Bezmaksas pusdienas",
-      description: "Nodrošināt bezmaksas ēdināšanu visiem skolēniem",
-      status: "partially-kept" as const,
-      explanation: "Bezmaksas ēdināšana pieejama 1.-4. klašu skolēniem.",
-      dateOfPromise: new Date("2022-10-20"),
-      politicianSlug: "anda-caksa",
+      title: "Latvija ANO Drošības padomē",
+      description: "Panākt Latvijas ievēlēšanu ANO Drošības padomē",
+      status: "in-progress" as const,
+      explanation: "Aktīva kampaņa norit, vēlēšanas plānotas 2025. gadā.",
+      dateOfPromise: new Date("2023-09-01"),
+      politicianSlug: "baiba-braze",
+      categorySlug: "foreign-affairs",
+    },
+
+    // Justice & Interior
+    {
+      title: "Stambulas konvencija",
+      description: "Ratificēt Stambulas konvenciju",
+      status: "kept" as const,
+      explanation: "Saeima ratificēja konvenciju 2023. gada novembrī.",
+      dateOfPromise: new Date("2023-01-01"),
+      politicianSlug: "evika-silina", // As PM pushed it
+      categorySlug: "justice",
+    },
+    {
+      title: "Civilās savienības likums",
+      description: "Pieņemt regulējumu visu ģimeņu tiesiskajai aizsardzībai",
+      status: "kept" as const,
+      explanation: "Partnerības institūts ieviests ar grozījumiem Notariāta likumā.",
+      dateOfPromise: new Date("2022-11-01"),
+      politicianSlug: "inese-libina-egnere",
+      categorySlug: "justice",
+    },
+    {
+      title: "Austrumu robežas izbūve",
+      description: "Pabeigt žoga izbūvi uz Baltkrievijas un Krievijas robežas",
+      status: "in-progress" as const,
+      explanation: "Žogs uz Baltkrievijas robežas pabeigts, uz Krievijas robežas darbi turpinās.",
+      dateOfPromise: new Date("2023-05-01"),
+      politicianSlug: "rihards-kozlovskis",
+      categorySlug: "security",
+    },
+    {
+      title: "Glābšanas dienestu depo",
+      description: "Jaunu katastrofu pārvaldības centru būvniecība",
+      status: "in-progress" as const,
+      explanation: "Vairāki depo nodoti ekspluatācijā, būvniecība turpinās.",
+      dateOfPromise: new Date("2023-08-01"),
+      politicianSlug: "rihards-kozlovskis",
+      categorySlug: "security",
+    },
+
+    // Opposition / Others
+    {
+      title: "Apturēt skolu slēgšanu",
+      description: "Neļaut slēgt mazās lauku skolas",
+      status: "broken" as const,
+      explanation: "Skolu tīkla optimizācija turpinās, vairākas lauku skolas slēgtas.",
+      dateOfPromise: new Date("2023-09-01"),
+      politicianSlug: "raimonds-bergmanis",
       categorySlug: "education",
     },
     {
-      title: "100% e-pakalpojumi",
-      description: "Digitalizēt 100% valsts pakalpojumus",
+      title: "Samazināt PVN apkurei",
+      description: "Noteikt samazināto PVN likmi apkurei",
+      status: "broken" as const,
+      explanation: "Priekšlikums noraidīts budžeta sarunās.",
+      dateOfPromise: new Date("2023-10-01"),
+      politicianSlug: "ainars-slesers",
+      categorySlug: "economy",
+    },
+    {
+      title: "Tautas vēlēts prezidents",
+      description: "Ieviest tautas vēlētu prezidentu",
+      status: "broken" as const,
+      explanation: "Saeimas vairākums neatbalsta šādas konstitucionālas izmaiņas.",
+      dateOfPromise: new Date("2022-10-01"),
+      politicianSlug: "ainars-slesers",
+      categorySlug: "justice",
+    },
+    {
+      title: "Latvijas bankas likvidācija",
+      description: "Reorganizēt finanšu sektora uzraudzību",
+      status: "broken" as const,
+      explanation: "Priekšlikums nav guvis atbalstu.",
+      dateOfPromise: new Date("2022-10-01"),
+      politicianSlug: "aleksejs-roslikovs",
+      categorySlug: "economy",
+    },
+    {
+      title: "Izstāšanās no Stambulas konvencijas",
+      description: "Atsaukt parakstu no Stambulas konvencijas",
+      status: "broken" as const,
+      explanation: "Konvencija ir ratificēta.",
+      dateOfPromise: new Date("2023-11-01"),
+      politicianSlug: "aleksejs-roslikovs",
+      categorySlug: "justice",
+    },
+    {
+      title: "Pensiju neapliekamais minimums",
+      description: "Noteikt pensiju neapliekamo minimumu 1000 EUR",
+      status: "broken" as const,
+      explanation: "Neapliekamais minimums celts, bet nav sasniedzis 1000 EUR.",
+      dateOfPromise: new Date("2023-10-01"),
+      politicianSlug: "aleksejs-roslikovs",
+      categorySlug: "social-welfare",
+    },
+    {
+      title: "Demogrāfijas programma",
+      description: "Ieviest 'Trešā bērna' politiku ar būtiskiem pabalstiem",
+      status: "broken" as const,
+      explanation: "Nav piešķirts finansējums.",
+      dateOfPromise: new Date("2022-10-01"),
+      politicianSlug: "raivis-dzintars", // NA priority
+      categorySlug: "social-welfare",
+    },
+    {
+      title: "Latviska Latvija",
+      description: "Stiprināt latvisko kultūrtelpu",
+      status: "kept" as const,
+      explanation: "Pieņemti dažādi likumi valsts valodas stiprināšanai.",
+      dateOfPromise: new Date("2022-10-01"),
+      politicianSlug: "raivis-dzintars",
+      categorySlug: "culture",
+    },
+    {
+      title: "Imigrācijas ierobežošana",
+      description: "Neļaut ievest lētu darbaspēku",
+      status: "partially-kept" as const,
+      explanation: "Noteikumi ir stingri, bet tiek diskutēts par atvieglojumiem.",
+      dateOfPromise: new Date("2023-01-01"),
+      politicianSlug: "janis-dombrava",
+      categorySlug: "security",
+    },
+    {
+      title: "Robežapsardzības stiprināšana",
+      description: "Dot tiesības robežsargiem pielietot ieroci",
+      status: "kept" as const,
+      explanation: "Likums grozīts, dodot plašākas pilnvaras robežas aizsardzībā.",
+      dateOfPromise: new Date("2023-08-01"),
+      politicianSlug: "janis-dombrava",
+      categorySlug: "security",
+    },
+    {
+      title: "Adminstratīvi teritoriālā reforma",
+      description: "Pārskatīt reformu, atgriežot pilnvaras vietējām kopienām",
       status: "in-progress" as const,
-      explanation: "Aptuveni 75% valsts pakalpojumu pieejami digitāli.",
-      dateOfPromise: new Date("2023-01-10"),
-      politicianSlug: "evika-silina",
+      explanation: "Notiek diskusijas, bet būtiskas izmaiņas nav veiktas.",
+      dateOfPromise: new Date("2022-10-01"),
+      politicianSlug: "edvards-smiltens",
+      categorySlug: "regional",
+    },
+    {
+      title: "Krīzes vadības centrs",
+      description: "Izveidot vienotu krīzes vadības centru Ministru prezidenta pakļautībā",
+      status: "partially-kept" as const,
+      explanation: "Centrs tiek veidots, bet pilnībā vēl nefunkcionē.",
+      dateOfPromise: new Date("2022-11-01"),
+      politicianSlug: "edvards-smiltens",
+      categorySlug: "security",
+    },
+    {
+      title: "Azartspēļu ierobežošana",
+      description: "Slēgt spēļu zāles dzīvojamos rajonos",
+      status: "in-progress" as const,
+      explanation: "Rīgas dome pieņēma lēmumu, bet tas tika apturēts tiesā.",
+      dateOfPromise: new Date("2023-05-01"),
+      politicianSlug: "juris-puce", // LA/AP in Riga coalition context (though Puce is national leader)
+      categorySlug: "justice", // Or regional
+    },
+    {
+      title: "Digitālā transformācija",
+      description: "Ieguldīt digitālajās prasmēs un infrastruktūrā",
+      status: "in-progress" as const,
+      explanation: "Projekti tiek realizēti ar ES fondu atbalstu.",
+      dateOfPromise: new Date("2022-10-01"),
+      politicianSlug: "juris-puce",
       categorySlug: "digital",
     },
+    {
+      title: "Sociālais atbalsts senioriem",
+      description: "Ieviest 13. pensiju",
+      status: "broken" as const,
+      explanation: "Priekšlikums noraidīts.",
+      dateOfPromise: new Date("2022-10-01"),
+      politicianSlug: "nils-usakovs",
+      categorySlug: "social-welfare",
+    },
+    {
+      title: "Mājokļu atbalsta programma",
+      description: "Valsts garantijas mājokļa iegādei jaunajām ģimenēm",
+      status: "kept" as const,
+      explanation: "Altum programmas darbojas un tiek paplašinātas.",
+      dateOfPromise: new Date("2023-01-01"),
+      politicianSlug: "evika-silina",
+      categorySlug: "social-welfare",
+    }
   ];
 
   for (const promise of promisesData) {
+    if (!politicians[promise.politicianSlug]) {
+      console.error(`Politician not found: ${promise.politicianSlug}`);
+      continue;
+    }
     await prisma.promise.create({
       data: {
         title: promise.title,
