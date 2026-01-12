@@ -111,14 +111,12 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                         </div>
                     )}
                 </div>
-                <Progress value={progress} className="h-1.5 w-full transition-all duration-1000 ease-out" indicatorClassName={cn(
-                    viewMode === 'percentage' ? "bg-status-kept" : "bg-muted-foreground/30"
-                )} />
+                <Progress value={progress} className="h-1.5 w-full transition-all duration-1000 ease-out" indicatorClassName="bg-status-kept" />
             </div>
 
             <div className="flex-shrink-0 text-right min-w-[3rem]">
                 {viewMode === 'percentage' ? (
-                    <span className="text-sm font-bold text-status-kept">{item.keptPercentage}%</span>
+                    <span className="text-sm font-bold text-foreground">{item.keptPercentage}%</span>
                 ) : (
                     <span className="text-sm font-bold text-foreground">{item.keptPromises}<span className="text-muted-foreground font-normal text-xs">/{item.totalPromises}</span></span>
                 )}

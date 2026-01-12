@@ -66,18 +66,26 @@ export function MultiSelectDropdown({
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className={cn("w-full justify-between h-auto min-h-10", className)}
+                    className={cn("w-full justify-between h-auto min-h-10 hover:bg-background hover:text-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none ring-offset-background data-[state=open]:ring-2 data-[state=open]:ring-ring data-[state=open]:ring-offset-2", className)}
                 >
-                    <div className="flex flex-wrap gap-1 items-center">
+                    <div className="flex flex-nowrap gap-1 items-center flex-1 min-w-0 overflow-hidden">
                         {selected.length === 0 && (
                             <span className="text-muted-foreground font-normal">
                                 {placeholder}
                             </span>
                         )}
                         {selected.length > 0 && selected.length <= 2 && (
-                            <span className="font-normal truncate">
-                                {selectedLabels.join(", ")}
-                            </span>
+                            <div className="flex-1 min-w-0 flex justify-start">
+                                <span
+                                    className="font-normal truncate block w-full text-left"
+                                    style={{
+                                        maskImage: 'linear-gradient(to right, black 85%, transparent 100%)',
+                                        WebkitMaskImage: 'linear-gradient(to right, black 85%, transparent 100%)'
+                                    }}
+                                >
+                                    {selectedLabels.join(", ")}
+                                </span>
+                            </div>
                         )}
                         {selected.length > 2 && (
                             <Badge variant="secondary" className="mr-1">
