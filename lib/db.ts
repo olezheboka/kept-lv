@@ -663,6 +663,68 @@ export async function getCategories(locale: Locale = "lv"): Promise<(CategoryUI 
     });
 }
 
+export async function getRandomPromises(count: number, excludeId?: string, locale: Locale = 'lv'): Promise<PromiseUI[]> {
+    const promises = await prisma.promise.findMany({
+        where: excludeId ? { id: { not: excludeId } } : undefined,
+        take: count * 2,
+        include: {
+            politician: {
+                include: {
+                    party: true
+                }
+            },
+            category: true,
+            sources: true
+        }
+    });
+
+    // Simple shuffle
+    const shuffled = promises.sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, count);
+
+    return selected.map((p) => {
+        const party = p.politician.party;
+        const mappedStatus = mapStatusToUI(p.status);
+
+        return {
+            id: p.id,
+            title: getLocalizedText(p.title, locale),
+            fullText: p.description ? getLocalizedText(p.description, locale) : "",
+            description: p.description ? getLocalizedText(p.description, locale) : undefined,
+            politicianId: p.politician.slug,
+            politicianName: p.politician.name,
+            politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
+            politicianPhotoUrl: p.politician.imageUrl || "",
+            politicianIsInOffice: p.politician.isActive,
+            partyId: party?.slug,
+            partyAbbreviation: party ? (partyAbbreviations[party.slug] || party.slug.toUpperCase()) : undefined,
+            partyLogoUrl: party?.logoUrl || undefined,
+            datePromised: p.dateOfPromise.toISOString(),
+            status: mappedStatus,
+            statusJustification: p.explanation ? getLocalizedText(p.explanation, locale) : "",
+            statusUpdatedAt: p.statusUpdatedAt?.toISOString() || p.updatedAt.toISOString(),
+            statusUpdatedBy: "Kept.lv",
+            category: p.category.slug,
+            tags: [], // Tags handling needed if schema has tags? Schema had no tags on Promise model, wait.
+            // checking Schema again... Promise model has no tags.
+            // But PromiseUI has tags: string[]. I'll return empty array.
+            sources: p.sources.map(s => ({
+                title: s.title ? getLocalizedText(s.title, locale) : "",
+                url: s.url,
+                publication: s.type,
+                date: s.createdAt.toISOString()
+            })),
+            viewCount: 0,
+            featured: false,
+            // PromiseUI in db.ts lines 31-57 has these fields.
+            // Let me double check if I missed any.
+            // electionCycle? It is optional in PromiseUI.
+            // importance? Optional.
+            // deadline? Optional.
+        };
+    });
+}
+
 export async function getCategoryBySlug(
     slug: string,
     locale: Locale = "lv"

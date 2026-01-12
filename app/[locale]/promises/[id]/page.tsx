@@ -4,6 +4,7 @@ import {
     getPartyBySlug,
     getPromisesByPolitician,
     getPromisesByCategory,
+    getRandomPromises,
     CategoryUI
 } from '@/lib/db';
 import { CATEGORIES, Category } from '@/lib/types';
@@ -69,6 +70,15 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
         .filter(p => p.id !== promise.id && !relatedByPoliticianFiltered.find(r => r.id === p.id))
         .slice(0, 2);
 
+    const relatedCount = relatedByPoliticianFiltered.length + relatedByCategoryFiltered.length;
+    let fallbackPromises: any[] = []; // Use any for now or PromiseUI
+
+    // Always fill up to 4 items in sidebar if possible
+    if (relatedCount < 4) {
+        const remaining = 4 - relatedCount;
+        fallbackPromises = await getRandomPromises(remaining, promise.id);
+    } // wait, getRandomPromises needs to be imported: done in chunk 1
+
     return (
         <PromiseDetailClient
             promise={promise}
@@ -76,7 +86,7 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
             party={party}
             category={category}
             relatedByPolitician={relatedByPoliticianFiltered}
-            relatedByCategory={relatedByCategoryFiltered}
+            relatedByCategory={[...relatedByCategoryFiltered, ...fallbackPromises]}
         />
     );
 };

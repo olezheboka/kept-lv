@@ -48,7 +48,8 @@ export const PromiseDetailClient = ({
         );
     }
 
-    const hasSidebar = relatedByPolitician.length > 0 || relatedByCategory.length > 0;
+    // We always assume a sidebar now due to random promises filling the gap
+    // But check just in case to show empty sidebar if needed (though requirement says always 2 col)
 
     return (
         <div className="flex flex-col bg-background">
@@ -68,9 +69,9 @@ export const PromiseDetailClient = ({
 
             {/* Main Content */}
             <div className="container-wide py-8 md:py-12">
-                <div className={`grid gap-8 ${hasSidebar ? 'lg:grid-cols-3' : 'grid-cols-1'}`}>
+                <div className="grid lg:grid-cols-3 gap-8">
                     {/* Main Column */}
-                    <div className={`${hasSidebar ? 'lg:col-span-2' : 'w-full max-w-4xl mx-auto'} space-y-8`}>
+                    <div className="lg:col-span-2 space-y-8">
                         {/* Header */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -132,7 +133,7 @@ export const PromiseDetailClient = ({
                                     <span className="text-muted-foreground/30">•</span>
 
                                     <div className="flex items-center gap-1.5 text-muted-foreground">
-                                        <Clock className="h-3.5 w-3.5" />
+                                        <Calendar className="h-3.5 w-3.5" />
                                         <span className="font-medium text-foreground">
                                             {format(new Date(promise.datePromised), 'dd.MM.yyyy')}
                                         </span>
@@ -251,23 +252,26 @@ export const PromiseDetailClient = ({
 
                     </div>
 
-                    {/* Sidebar */}
-                    {hasSidebar && (
-                        <div className="space-y-6">
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.4, delay: 0.3 }}
-                            >
-                                <h2 className="text-lg font-bold text-foreground mb-4">Saistītie solījumi</h2>
-                                <div className="flex flex-col gap-4">
-                                    {[...relatedByPolitician, ...relatedByCategory].slice(0, 4).map((related, index) => (
-                                        <PromiseCard key={related.id} promise={related} index={index} />
-                                    ))}
-                                </div>
-                            </motion.div>
-                        </div>
-                    )}
+                    {/* Sidebar: Always Render (with fallback content if needed) */}
+                    <div className="space-y-6">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.3 }}
+                        >
+                            <h2 className="text-lg font-bold text-foreground mb-4">Saistītie solījumi</h2>
+                            <div className="flex flex-col gap-4">
+                                {[...relatedByPolitician, ...relatedByCategory].slice(0, 4).map((related, index) => (
+                                    <PromiseCard key={related.id} promise={related} index={index} />
+                                ))}
+
+                                {/* If somehow we still have 0, we could show a message, but logic ensures fallback */}
+                                {[...relatedByPolitician, ...relatedByCategory].length === 0 && (
+                                    <p className="text-sm text-muted-foreground">Nav saistīto solījumu.</p>
+                                )}
+                            </div>
+                        </motion.div>
+                    </div>
                 </div>
             </div>
         </div>
