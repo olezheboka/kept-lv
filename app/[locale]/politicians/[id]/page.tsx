@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -11,7 +12,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getPoliticianById, getPartyById, getPromisesByPolitician } from '@/lib/data';
 import { PromiseStatus, STATUS_CONFIG } from '@/lib/types';
-import { ArrowLeft, CheckCircle2, Clock, XCircle, CircleDot, HelpCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Clock, XCircle, CircleDot, HelpCircle, List } from 'lucide-react';
 
 const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'in-progress', 'broken', 'not-rated'];
 
@@ -36,6 +37,12 @@ const PoliticianDetail = () => {
     const party = getPartyById(politician.partyId);
     const politicianPromises = getPromisesByPolitician(politician.id);
 
+    const [filterStatus, setFilterStatus] = useState<PromiseStatus | 'all'>('all');
+
+    const filteredPromises = politicianPromises.filter(p =>
+        filterStatus === 'all' ? true : p.status === filterStatus
+    );
+
     const stats = {
         total: politicianPromises.length,
         kept: politicianPromises.filter(p => p.status === 'kept').length,
@@ -45,13 +52,10 @@ const PoliticianDetail = () => {
         notRated: politicianPromises.filter(p => p.status === 'not-rated').length,
     };
 
-    const statCards = [
-        { status: 'kept' as PromiseStatus, count: stats.kept, icon: CheckCircle2, color: 'text-status-kept', bg: 'bg-status-kept-bg' },
-        { status: 'partially-kept' as PromiseStatus, count: stats.partiallyKept, icon: CircleDot, color: 'text-status-partially', bg: 'bg-status-partially-bg' },
-        { status: 'in-progress' as PromiseStatus, count: stats.inProgress, icon: Clock, color: 'text-status-progress', bg: 'bg-status-progress-bg' },
-        { status: 'broken' as PromiseStatus, count: stats.broken, icon: XCircle, color: 'text-status-broken', bg: 'bg-status-broken-bg' },
-        { status: 'not-rated' as PromiseStatus, count: stats.notRated, icon: HelpCircle, color: 'text-status-unrated', bg: 'bg-status-unrated-bg' },
-    ];
+    // Calculate percentage for circular progress
+    const keptPercentage = stats.total > 0 ? (stats.kept / stats.total) * 100 : 0;
+    const circumference = 2 * Math.PI * 70; // r=70
+    const strokeDashoffset = circumference - (keptPercentage / 100) * circumference;
 
     return (
         <div className="flex flex-col bg-background">
@@ -104,88 +108,152 @@ const PoliticianDetail = () => {
                 </div>
             </section>
 
-            {/* Stats */}
+            {/* Performance Section */}
             <section className="py-8 border-b border-border/50">
                 <div className="container-wide">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                        {statCards.map((stat, index) => {
-                            const Icon = stat.icon;
-                            return (
-                                <motion.div
-                                    key={stat.status}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.4, delay: index * 0.05 }}
-                                >
-                                    <Card className="border-border/50">
-                                        <CardContent className="p-4 text-center">
-                                            <div className={`inline-flex items-center justify-center w-10 h-10 rounded-full ${stat.bg} mb-2`}>
-                                                <Icon className={`h-5 w-5 ${stat.color}`} />
-                                            </div>
-                                            <div className="text-2xl font-bold text-foreground">{stat.count}</div>
-                                            <div className="text-xs text-muted-foreground">{STATUS_CONFIG[stat.status].label}</div>
-                                        </CardContent>
-                                    </Card>
-                                </motion.div>
-                            );
-                        })}
-                    </div>
+                    {stats.total > 0 ? (
+                        <Card className="overflow-hidden border-border/50">
+                            <div className="flex flex-col lg:flex-row">
+                                {/* Left: Hero (Kept Promises) */}
+                                <div className="lg:w-5/12 p-8 border-b lg:border-b-0 lg:border-r border-border/50 bg-gradient-to-br from-muted to-background flex flex-col items-center justify-center text-center">
+                                    <div className="relative w-48 h-48 mb-6">
+                                        {/* Circular Progress */}
+                                        <svg className="w-full h-full transform -rotate-90">
+                                            {/* Track (Grey) */}
+                                            <circle
+                                                cx="96"
+                                                cy="96"
+                                                r="70"
+                                                stroke="currentColor"
+                                                strokeWidth="12"
+                                                fill="transparent"
+                                                className="text-muted"
+                                            />
+                                            {/* Progress (Green) */}
+                                            <circle
+                                                cx="96"
+                                                cy="96"
+                                                r="70"
+                                                stroke="currentColor"
+                                                strokeWidth="12"
+                                                fill="transparent"
+                                                strokeDasharray={circumference}
+                                                strokeDashoffset={strokeDashoffset}
+                                                strokeLinecap="round"
+                                                className="text-status-kept transition-all duration-1000 ease-out"
+                                            />
+                                        </svg>
+                                        <div className="absolute inset-0 flex items-center justify-center flex-col">
+                                            <span className="text-5xl font-bold text-foreground">
+                                                {Math.round(keptPercentage)}%
+                                            </span>
+                                            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider mt-1">Izpildīti</span>
+                                        </div>
+                                    </div>
 
-                    {/* Progress Bar */}
-                    {stats.total > 0 && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.4, delay: 0.3 }}
-                            className="mt-6"
-                        >
-                            <div className="h-3 bg-muted rounded-full overflow-hidden flex">
-                                {stats.kept > 0 && (
-                                    <div
-                                        className="h-full bg-status-kept transition-all duration-500"
-                                        style={{ width: `${(stats.kept / stats.total) * 100}%` }}
-                                    />
-                                )}
-                                {stats.partiallyKept > 0 && (
-                                    <div
-                                        className="h-full bg-status-partially transition-all duration-500"
-                                        style={{ width: `${(stats.partiallyKept / stats.total) * 100}%` }}
-                                    />
-                                )}
-                                {stats.inProgress > 0 && (
-                                    <div
-                                        className="h-full bg-status-progress transition-all duration-500"
-                                        style={{ width: `${(stats.inProgress / stats.total) * 100}%` }}
-                                    />
-                                )}
-                                {stats.broken > 0 && (
-                                    <div
-                                        className="h-full bg-status-broken transition-all duration-500"
-                                        style={{ width: `${(stats.broken / stats.total) * 100}%` }}
-                                    />
-                                )}
-                                {stats.notRated > 0 && (
-                                    <div
-                                        className="h-full bg-status-unrated transition-all duration-500"
-                                        style={{ width: `${(stats.notRated / stats.total) * 100}%` }}
-                                    />
-                                )}
+                                    <h3 className="text-xl font-bold text-foreground">
+                                        {stats.kept} <span className="text-muted-foreground font-normal">no {stats.total} solījumiem</span>
+                                    </h3>
+                                </div>
+
+                                {/* Right: Status Grid */}
+                                <div className="lg:w-7/12 p-8 bg-background">
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 h-full content-center">
+                                        {/* All Promises */}
+                                        <button
+                                            onClick={() => setFilterStatus('all')}
+                                            className={`
+                                                flex flex-col p-4 rounded-xl border transition-all text-left group
+                                                ${filterStatus === 'all'
+                                                    ? 'bg-primary/5 border-primary ring-1 ring-primary'
+                                                    : 'bg-background border-border/50 hover:bg-muted/50 hover:border-border'}
+                                            `}
+                                        >
+                                            <div className="mb-3 p-2 w-fit rounded-lg bg-primary/10 text-primary">
+                                                <List className="h-5 w-5" />
+                                            </div>
+                                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1 group-hover:text-primary transition-colors">
+                                                Visi solījumi
+                                            </span>
+                                            <span className="text-2xl font-bold text-foreground">
+                                                {stats.total}
+                                            </span>
+                                        </button>
+
+                                        {/* Other Statuses */}
+                                        {STATUSES.map((status) => {
+
+                                            // Mapping for icon and color 
+                                            // Note: kept is handled separately
+                                            const config = {
+                                                'kept': { icon: CheckCircle2, color: 'text-status-kept', bg: 'bg-status-kept-bg' },
+                                                'partially-kept': { icon: CircleDot, color: 'text-status-partially', bg: 'bg-status-partially-bg' },
+                                                'in-progress': { icon: Clock, color: 'text-status-progress', bg: 'bg-status-progress-bg' },
+                                                'broken': { icon: XCircle, color: 'text-status-broken', bg: 'bg-status-broken-bg' },
+                                                'not-rated': { icon: HelpCircle, color: 'text-muted', bg: 'bg-muted' },
+                                            }[status as string] || { icon: HelpCircle, color: 'text-muted', bg: 'bg-muted' };
+
+                                            const Icon = config.icon;
+                                            const count = stats[status === 'partially-kept' ? 'partiallyKept' : status === 'in-progress' ? 'inProgress' : status === 'not-rated' ? 'notRated' : status];
+                                            const isActive = filterStatus === status;
+
+                                            return (
+                                                <button
+                                                    key={status}
+                                                    onClick={() => setFilterStatus(status)}
+                                                    className={`
+                                                        flex flex-col p-4 rounded-xl border transition-all text-left group
+                                                        ${isActive
+                                                            ? 'bg-accent/5 border-accent ring-1 ring-accent'
+                                                            : 'bg-background border-border/50 hover:bg-muted/50 hover:border-border'}
+                                                    `}
+                                                >
+                                                    <div className={`mb-3 p-2 w-fit rounded-lg ${config.bg} bg-opacity-20`}>
+                                                        <Icon className={`h-5 w-5 ${config.color}`} />
+                                                    </div>
+                                                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1 group-hover:text-foreground transition-colors">
+                                                        {STATUS_CONFIG[status].label}
+                                                    </span>
+                                                    <div className="flex items-baseline gap-1.5">
+                                                        <span className="text-2xl font-bold text-foreground">
+                                                            {count}
+                                                        </span>
+                                                        <span className="text-sm font-medium text-muted-foreground">
+                                                            / {stats.total}
+                                                        </span>
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
                             </div>
-                        </motion.div>
+                        </Card>
+                    ) : (
+                        <Card className="border-border/50">
+                            <CardContent className="py-12 text-center">
+                                <p className="text-muted-foreground">
+                                    Dati tiek apkopoti...
+                                </p>
+                            </CardContent>
+                        </Card>
                     )}
                 </div>
             </section>
 
-            {/* Promises */}
+            {/* Promises List */}
             <section className="py-8 md:py-12">
                 <div className="container-wide">
-                    <h2 className="text-2xl font-bold text-foreground mb-6">
-                        Visi solījumi ({stats.total})
+                    <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+                        {filterStatus === 'all' ? 'Visi solījumi' : STATUS_CONFIG[filterStatus].label}
+                        <span className="text-muted-foreground font-normal text-lg">
+                            ({filteredPromises.length})
+                        </span>
                     </h2>
 
-                    {politicianPromises.length > 0 ? (
+                    {filteredPromises.length > 0 ? (
                         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {politicianPromises.map((promise, index) => (
+                            {filteredPromises.map((promise, index) => (
                                 <PromiseCard key={promise.id} promise={promise} index={index} />
                             ))}
                         </div>
@@ -193,8 +261,15 @@ const PoliticianDetail = () => {
                         <Card className="border-border/50">
                             <CardContent className="py-12 text-center">
                                 <p className="text-muted-foreground">
-                                    Šim politiķim nav reģistrētu solījumu.
+                                    {filterStatus === 'all'
+                                        ? 'Šim politiķim nav reģistrētu solījumu.'
+                                        : `Nav atrasti solījumi ar statusu "${STATUS_CONFIG[filterStatus].label}".`}
                                 </p>
+                                {filterStatus !== 'all' && (
+                                    <Button variant="outline" onClick={() => setFilterStatus('all')} className="mt-4">
+                                        Rādīt visus solījumus
+                                    </Button>
+                                )}
                             </CardContent>
                         </Card>
                     )}
