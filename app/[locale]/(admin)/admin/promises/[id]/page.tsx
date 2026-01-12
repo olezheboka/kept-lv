@@ -112,7 +112,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                 title: { lv: formData.titleLv, en: formData.titleEn, ru: formData.titleRu },
                 description: formData.descriptionLv
                     ? { lv: formData.descriptionLv, en: formData.descriptionEn, ru: formData.descriptionRu }
-                    : null,
+                    : undefined,
                 status: formData.status,
                 explanation: formData.explanationLv
                     ? { lv: formData.explanationLv, en: formData.explanationEn, ru: formData.explanationRu }
@@ -125,7 +125,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                     ? [{
                         type: formData.sourceType,
                         url: formData.sourceUrl,
-                        title: formData.sourceTitleLv ? { lv: formData.sourceTitleLv, en: "", ru: "" } : null,
+                        title: formData.sourceTitleLv ? { lv: formData.sourceTitleLv, en: "", ru: "" } : undefined,
                     }]
                     : [],
             };
