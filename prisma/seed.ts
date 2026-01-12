@@ -102,7 +102,7 @@ async function main() {
     { slug: "lra", name: { lv: "Latvijas Reģionu apvienība", en: "Latvian Regions Association", ru: "Объединение регионов Латвии" }, color: "#982632", logoUrl: "/logos/lra.png" },
     { slug: "stab", name: { lv: "Stabilitātei!", en: "For Stability!", ru: "За стабильность!" }, color: "#fd7e14", logoUrl: "/logos/stab.png" },
     { slug: "lpv", name: { lv: "Latvija pirmajā vietā", en: "Latvia First", ru: "Латвия на первом месте" }, color: "#9E3139", logoUrl: "/logos/lpv.png" },
-    { slug: "sask", name: { lv: "Saskaņa", en: "Harmony", ru: "Согласие" }, color: "#E31D23", logoUrl: "/logos/unknown_4.png" },
+    { slug: "sask", name: { lv: "Saskaņa", en: "Harmony", ru: "Согласие" }, color: "#E31D23", logoUrl: "/logos/sask.png" },
   ];
 
   const parties: Record<string, { id: string }> = {};
