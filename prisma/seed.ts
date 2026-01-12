@@ -109,7 +109,7 @@ async function main() {
   for (const party of partiesData) {
     const created = await prisma.party.upsert({
       where: { slug: party.slug },
-      update: { name: party.name, color: party.color },
+      update: { name: party.name, color: party.color, logoUrl: party.logoUrl },
       create: party,
     });
     parties[party.slug] = created;
