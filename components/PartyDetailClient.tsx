@@ -76,9 +76,19 @@ export const PartyDetailClient = ({ party, promises }: PartyDetailClientProps) =
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">
                                     {party.name}
                                 </h1>
-                                <span className="text-2xl font-bold text-muted-foreground bg-muted px-3 py-1 rounded-lg">
-                                    {party.abbreviation}
-                                </span>
+                                {party.logoUrl ? (
+                                    <div className="h-10 w-auto min-w-[40px] relative flex items-center justify-center">
+                                        <img
+                                            src={party.logoUrl}
+                                            alt={party.abbreviation}
+                                            className="h-full w-auto object-contain"
+                                        />
+                                    </div>
+                                ) : (
+                                    <span className="text-2xl font-bold text-muted-foreground bg-muted px-3 py-1 rounded-lg">
+                                        {party.abbreviation}
+                                    </span>
+                                )}
                             </div>
 
                             {/* Row 2: Status Badge */}

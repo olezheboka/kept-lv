@@ -85,7 +85,14 @@ export const PoliticianDetailClient = ({ politician, party, promises }: Politici
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">
                                     {politician.name}
                                 </h1>
-                                {party && <PartyBadge party={party} size="md" showFullName />}
+                                {party && (
+                                    <div className="flex items-center gap-3 bg-muted/50 pl-1 pr-4 py-1 rounded-full border border-border/50">
+                                        <PartyBadge party={party} size="md" variant="avatar" className="shadow-sm" />
+                                        <span className="text-lg font-medium text-foreground/80">
+                                            {party.name}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Row 2: Role + Amatā Badge */}

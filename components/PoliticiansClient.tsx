@@ -180,7 +180,8 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                         {party && (
                                                             <PartyBadge
                                                                 party={party}
-                                                                size="sm"
+                                                                size="md"
+                                                                variant="avatar"
                                                                 className="opacity-90 hover:opacity-100"
                                                             />
                                                         )}
