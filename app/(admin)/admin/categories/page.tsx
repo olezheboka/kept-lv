@@ -19,11 +19,8 @@ async function getCategories() {
   });
 }
 
-export default async function AdminCategoriesPage({ params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
-
-  const t = await getTranslations("admin");
+export default async function AdminCategoriesPage() {
+  const t = await getTranslations({ locale: "lv", namespace: "admin" });
   const categories = await getCategories();
 
   return (
@@ -67,7 +64,7 @@ export default async function AdminCategoriesPage({ params }: Props) {
             {categories.map((category) => (
               <tr key={category.id} className="hover:bg-muted/50 transition-colors">
                 <td className="px-4 py-3 align-top font-medium text-foreground">
-                  {category.name}
+                  {(category.name as any)}
                 </td>
                 <td className="px-4 py-3 align-top text-muted-foreground">
                   {category.slug}

@@ -20,11 +20,8 @@ async function getPoliticians() {
   });
 }
 
-export default async function AdminPoliticiansPage({ params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
-
-  const t = await getTranslations("admin");
+export default async function AdminPoliticiansPage() {
+  const t = await getTranslations({ locale: "lv", namespace: "admin" });
   const politicians = await getPoliticians();
 
   return (
@@ -71,9 +68,9 @@ export default async function AdminPoliticiansPage({ params }: Props) {
                   {politician.party ? (
                     <span
                       className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-white"
-                      style={{ backgroundColor: politician.party.color }}
+                      style={{ backgroundColor: (politician.party.color as any) }}
                     >
-                      {politician.party.name}
+                      {(politician.party.name as any)}
                     </span>
                   ) : (
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-muted-foreground">

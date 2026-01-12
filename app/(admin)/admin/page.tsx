@@ -1,4 +1,4 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import {
@@ -14,10 +14,6 @@ import {
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
-
-type Props = {
-  params: Promise<{ locale: string }>;
-};
 
 async function getDashboardStats() {
   const [
@@ -64,11 +60,8 @@ async function getDashboardStats() {
   };
 }
 
-export default async function AdminDashboard({ params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
-
-  const t = await getTranslations("admin");
+export default async function AdminDashboard() {
+  const t = await getTranslations({ locale: "lv", namespace: "admin" });
   const stats = await getDashboardStats();
 
   return (
@@ -201,10 +194,10 @@ export default async function AdminDashboard({ params }: Props) {
                 >
                   <div className="min-w-0 pr-4">
                     <p className="font-medium text-foreground truncate">
-                      {promise.title}
+                      {(promise as any).title || (promise as any).text}
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {promise.politician.name} • {promise.category.name}
+                      {promise.politician.name} • {(promise.category.name as any)}
                     </p>
                   </div>
                   <span className={`inline-flex items-center flex-shrink-0 px-2.5 py-0.5 rounded-full text-xs font-medium border

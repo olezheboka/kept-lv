@@ -19,11 +19,8 @@ async function getParties() {
   });
 }
 
-export default async function AdminPartiesPage({ params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
-
-  const t = await getTranslations("admin");
+export default async function AdminPartiesPage() {
+  const t = await getTranslations({ locale: "lv", namespace: "admin" });
   const parties = await getParties();
 
   return (
@@ -64,7 +61,7 @@ export default async function AdminPartiesPage({ params }: Props) {
             {parties.map((party) => (
               <tr key={party.id} className="hover:bg-muted/50 transition-colors">
                 <td className="px-4 py-3 align-top font-medium text-foreground">
-                  {party.name}
+                  {(party.name as any)}
                 </td>
                 <td className="px-4 py-3 align-top">
                   <div className="flex items-center gap-2">
