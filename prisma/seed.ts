@@ -94,7 +94,7 @@ async function main() {
 
   // Create all parties (9 total)
   const partiesData = [
-    { slug: "jv", name: { lv: "Jaunā Vienotība", en: "New Unity", ru: "Новое Единство" }, color: "#8AB73E", logoUrl: "/logos/unknown_0.png" },
+    { slug: "jv", name: { lv: "Jaunā Vienotība", en: "New Unity", ru: "Новое Единство" }, color: "#8AB73E", logoUrl: "/logos/jv.png" },
     { slug: "zzs", name: { lv: "Zaļo un Zemnieku savienība", en: "Union of Greens and Farmers", ru: "Союз зелёных и крестьян" }, color: "#026036", logoUrl: "/logos/zzs.png" },
     { slug: "na", name: { lv: "Nacionālā apvienība", en: "National Alliance", ru: "Национальное объединение" }, color: "#932330", logoUrl: "/logos/na.png" },
     { slug: "ap", name: { lv: "Attīstībai/Par!", en: "Development/For!", ru: "Развитие/За!" }, color: "#000000", logoUrl: "/logos/unknown_1.png" },
