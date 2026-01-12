@@ -6,13 +6,19 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient() {
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    console.error("❌ DATABASE_URL is missing in environment variables. Database connection will likely fail.");
+  }
+
   const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL!,
+    connectionString: connectionString ?? "",
   });
 
   return new PrismaClient({
     adapter,
-    log: process.env.NODE_ENV === "development" ? ["query"] : [],
+    log: process.env.NODE_ENV === "development" ? ["query"] : ["error", "warn"],
   });
 }
 
