@@ -163,38 +163,37 @@ const Politicians = () => {
                                     <Link href={`/politicians/${politician.id}`}>
                                         <Card className="group overflow-hidden border-border/50 hover:shadow-elevated hover:border-border transition-all duration-300">
                                             <CardContent className="p-5">
-                                                <div className="flex items-start gap-4 mb-4">
-                                                    {party && (
-                                                        <PartyBadge
-                                                            party={party}
-                                                            variant="avatar"
-                                                            size="lg"
-                                                            className="flex-shrink-0"
-                                                        />
-                                                    )}
-                                                    <div className="flex-1 min-w-0">
-                                                        <h3 className="font-semibold text-foreground text-lg leading-tight group-hover:text-accent transition-colors truncate mb-1">
+                                                <div className="flex flex-col gap-1 mb-4">
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                        <h3 className="font-semibold text-foreground text-lg leading-tight group-hover:text-accent transition-colors truncate">
                                                             {politician.name}
                                                         </h3>
-                                                        <div className="flex items-center gap-2 min-w-0 text-sm text-muted-foreground w-full">
-                                                            <TooltipProvider>
-                                                                <Tooltip delayDuration={300}>
-                                                                    <TooltipTrigger asChild>
-                                                                        <span className="truncate cursor-default hover:text-foreground transition-colors">
-                                                                            {politician.role}
-                                                                        </span>
-                                                                    </TooltipTrigger>
-                                                                    <TooltipContent side="bottom" className="max-w-[300px]">
+                                                        {party && (
+                                                            <PartyBadge
+                                                                party={party}
+                                                                size="sm"
+                                                                className="opacity-90 hover:opacity-100"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    <div className="flex items-center gap-2 min-w-0 text-sm text-muted-foreground w-full">
+                                                        <TooltipProvider>
+                                                            <Tooltip delayDuration={300}>
+                                                                <TooltipTrigger asChild>
+                                                                    <span className="truncate cursor-default hover:text-foreground transition-colors">
                                                                         {politician.role}
-                                                                    </TooltipContent>
-                                                                </Tooltip>
-                                                            </TooltipProvider>
-                                                            {politician.isInOffice && (
-                                                                <span className="flex-shrink-0 px-2 py-0.5 bg-muted/60 text-muted-foreground text-xs font-medium rounded-full whitespace-nowrap">
-                                                                    Amatā
-                                                                </span>
-                                                            )}
-                                                        </div>
+                                                                    </span>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent side="bottom" className="max-w-[300px]">
+                                                                    {politician.role}
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
+                                                        {politician.isInOffice && (
+                                                            <span className="flex-shrink-0 px-2 py-0.5 bg-muted/60 text-muted-foreground text-xs font-medium rounded-full whitespace-nowrap">
+                                                                Amatā
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </div>
 

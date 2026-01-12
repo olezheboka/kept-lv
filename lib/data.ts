@@ -614,6 +614,7 @@ export interface RankingItem {
   keptPromises: number;
   keptPercentage: number;
   abbreviation?: string; // For parties
+  isInOffice?: boolean; // Only for politician
 }
 
 export const getPoliticianRankings = (): RankingItem[] => {
@@ -629,6 +630,7 @@ export const getPoliticianRankings = (): RankingItem[] => {
         avatarUrl: politician.photoUrl,
         partyId: politician.partyId,
         role: politician.role,
+        isInOffice: politician.isInOffice,
         totalPromises,
         keptPromises,
         keptPercentage: totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0

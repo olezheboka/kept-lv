@@ -11,6 +11,7 @@ import { Trophy, Medal, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { getPartyById } from '@/lib/data';
 import { PartyBadge } from './PartyBadge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { motion } from "framer-motion";
 
@@ -37,62 +38,58 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
         return () => clearTimeout(timer);
     }, [item.keptPercentage, index]);
 
-    const party = item.partyId ? getPartyById(item.partyId) : undefined;
+    const party = type === 'party'
+        ? getPartyById(item.id)
+        : (item.partyId ? getPartyById(item.partyId) : undefined);
 
     return (
         <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
-            className="flex items-center gap-3 relative"
+            className="flex items-center gap-4 relative py-2 min-h-[3.5rem]"
         >
             <div className="flex-shrink-0 w-6 flex justify-center">
                 {getRankIcon(index)}
             </div>
 
             <div className="flex-shrink-0">
-                {type === 'politician' && party ? (
-                    <div
-                        className="h-10 w-10 rounded-xl flex items-center justify-center text-white font-bold text-[10px] uppercase overflow-hidden"
-                        style={{ backgroundColor: party.color }}
-                    >
-                        {party.logoUrl ? (
-                            <img src={party.logoUrl} alt={party.name} className="h-full w-full object-cover" />
-                        ) : (
-                            <span>{party.abbreviation}</span>
-                        )}
-                    </div>
-                ) : type === 'party' ? (
-                    <div
-                        className="h-10 w-10 rounded-xl flex items-center justify-center text-white font-bold text-[10px] uppercase overflow-hidden"
-                        style={{ backgroundColor: item.color }}
-                    >
-                        {item.avatarUrl ? (
-                            <img src={item.avatarUrl} alt={item.name} className="h-full w-full object-cover" />
-                        ) : (
-                            <span>{item.abbreviation || item.name[0]}</span>
-                        )}
-                    </div>
-                ) : (
-                    <Avatar className="h-10 w-10 border border-border">
-                        {item.avatarUrl ? (
-                            <AvatarImage src={item.avatarUrl} alt={item.name} />
-                        ) : null}
-                        <AvatarFallback
-                            className="text-[10px] font-bold text-white uppercase"
-                            style={{ backgroundColor: item.color }}
-                        >
-                            {item.name[0]}
-                        </AvatarFallback>
-                    </Avatar>
-                )}
+                {/* No avatar for both politician and party in new style */}
+                {null}
             </div>
 
             <div className="flex-1 min-w-0 flex flex-col justify-center">
-                <div className="mb-1.5 truncate text-sm">
-                    <span className="font-medium text-foreground">{item.name}</span>
+                <div className="mb-1.5 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap text-sm leading-tight">
+                        <span className="font-semibold text-foreground truncate">{item.name}</span>
+                        {party && (
+                            <PartyBadge
+                                party={party}
+                                size="sm"
+                                className="opacity-90 flex-shrink-0 scale-90 origin-left"
+                            />
+                        )}
+                    </div>
                     {type === 'politician' && item.role && (
-                        <span className="text-muted-foreground font-normal ml-1">({item.role})</span>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground w-full mt-0.5">
+                            <TooltipProvider>
+                                <Tooltip delayDuration={300}>
+                                    <TooltipTrigger asChild>
+                                        <span className="truncate cursor-default hover:text-foreground transition-colors max-w-[150px]">
+                                            {item.role}
+                                        </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="bottom" className="max-w-[250px]">
+                                        {item.role}
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                            {item.isInOffice && (
+                                <span className="flex-shrink-0 px-1.5 py-0 bg-muted/60 text-muted-foreground text-[10px] font-medium rounded-full whitespace-nowrap border border-border/50">
+                                    Amatā
+                                </span>
+                            )}
+                        </div>
                     )}
                 </div>
                 <Progress value={progress} className="h-1.5 w-full transition-all duration-1000 ease-out" indicatorClassName={cn(
