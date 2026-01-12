@@ -69,14 +69,15 @@ export const PromiseDetailClient = ({
 
             {/* Main Content */}
             <div className="container-wide py-8 md:py-12">
-                <div className="grid lg:grid-cols-3 gap-8">
+                <div className="grid lg:grid-cols-3 gap-8 w-full">
                     {/* Main Column */}
-                    <div className="lg:col-span-2 space-y-8">
+                    <div className="lg:col-span-2 space-y-8 w-full">
                         {/* Header */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4 }}
+                            className="w-full"
                         >
                             {/* Header Section: Author & Date */}
                             {politician && party && (
@@ -179,7 +180,7 @@ export const PromiseDetailClient = ({
                             transition={{ duration: 0.4, delay: 0.1 }}
                             className="mb-8"
                         >
-                            <Card className={`shadow-sm border transition-colors ${promise.status === 'kept' ? "bg-status-kept-bg border-status-kept/30" :
+                            <Card className={`shadow-sm border transition-colors w-full ${promise.status === 'kept' ? "bg-status-kept-bg border-status-kept/30" :
                                 promise.status === 'partially-kept' ? "bg-status-partially-bg border-status-partially/30" :
                                     promise.status === 'in-progress' ? "bg-status-progress-bg border-status-progress/30" :
                                         promise.status === 'broken' ? "bg-status-broken-bg border-status-broken/30" :
