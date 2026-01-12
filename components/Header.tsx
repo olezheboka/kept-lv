@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Link, useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Search, Menu, X, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -94,6 +94,7 @@ export const Header = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80 p-0">
+                <SheetTitle className="sr-only">Navigācijas izvēlne</SheetTitle>
                 <div className="flex flex-col h-full">
                   <div className="flex items-center justify-between p-4 border-b border-border">
                     <span className="font-semibold">Izvēlne</span>

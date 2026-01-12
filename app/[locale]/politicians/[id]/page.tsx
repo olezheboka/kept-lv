@@ -79,11 +79,11 @@ const PoliticianDetail = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4 }}
-                        className="flex flex-col md:flex-row items-center md:items-start gap-6"
+                        className="flex flex-col md:flex-row items-start gap-6"
                     >
-                        <div className="flex-1 text-center md:text-left">
+                        <div className="flex-1 text-left">
                             {/* Row 1: Name + Party Badge */}
-                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-2">
+                            <div className="flex flex-wrap items-center justify-start gap-4 mb-2">
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">
                                     {politician.name}
                                 </h1>
@@ -91,7 +91,7 @@ const PoliticianDetail = () => {
                             </div>
 
                             {/* Row 2: Role + Amatā Badge */}
-                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-lg text-muted-foreground">
+                            <div className="flex flex-wrap items-center justify-start gap-3 text-lg text-muted-foreground">
                                 <span>{politician.role}</span>
                                 {politician.isInOffice ? (
                                     <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
@@ -119,7 +119,17 @@ const PoliticianDetail = () => {
                                     <div className="relative w-48 h-48 mb-6">
                                         {/* Circular Progress */}
                                         <svg className="w-full h-full transform -rotate-90">
-                                            {/* Track (Grey) */}
+                                            {/* Track Background (Darker for contrast) */}
+                                            <circle
+                                                cx="96"
+                                                cy="96"
+                                                r="70"
+                                                stroke="currentColor"
+                                                strokeWidth="14"
+                                                fill="transparent"
+                                                className="text-border"
+                                            />
+                                            {/* Track (Inner Grey) */}
                                             <circle
                                                 cx="96"
                                                 cy="96"
@@ -127,7 +137,7 @@ const PoliticianDetail = () => {
                                                 stroke="currentColor"
                                                 strokeWidth="12"
                                                 fill="transparent"
-                                                className="text-muted"
+                                                className="text-muted-foreground/20"
                                             />
                                             {/* Progress (Green) */}
                                             <circle
@@ -144,10 +154,10 @@ const PoliticianDetail = () => {
                                             />
                                         </svg>
                                         <div className="absolute inset-0 flex items-center justify-center flex-col">
-                                            <span className="text-5xl font-bold text-foreground">
+                                            <span className="text-3xl font-bold text-foreground">
                                                 {Math.round(keptPercentage)}%
                                             </span>
-                                            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider mt-1">Izpildīti</span>
+                                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider mt-0.5">Izpildīti</span>
                                         </div>
                                     </div>
 
@@ -190,8 +200,8 @@ const PoliticianDetail = () => {
                                                 'partially-kept': { icon: CircleDot, color: 'text-status-partially', bg: 'bg-status-partially-bg' },
                                                 'in-progress': { icon: Clock, color: 'text-status-progress', bg: 'bg-status-progress-bg' },
                                                 'broken': { icon: XCircle, color: 'text-status-broken', bg: 'bg-status-broken-bg' },
-                                                'not-rated': { icon: HelpCircle, color: 'text-muted', bg: 'bg-muted' },
-                                            }[status as string] || { icon: HelpCircle, color: 'text-muted', bg: 'bg-muted' };
+                                                'not-rated': { icon: HelpCircle, color: 'text-status-unrated', bg: 'bg-status-unrated-bg' },
+                                            }[status as string] || { icon: HelpCircle, color: 'text-status-unrated', bg: 'bg-status-unrated-bg' };
 
                                             const Icon = config.icon;
                                             const count = stats[status === 'partially-kept' ? 'partiallyKept' : status === 'in-progress' ? 'inProgress' : status === 'not-rated' ? 'notRated' : status];
