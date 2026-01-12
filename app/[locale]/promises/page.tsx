@@ -249,12 +249,12 @@ const PromisesContent = () => {
                                 </Sheet>
 
                                 {/* Sort & View */}
-                                <div className="flex items-center gap-2">
-                                    <div className="relative">
+                                <div className="flex items-center gap-2 w-full sm:w-auto">
+                                    <div className="relative flex-1 sm:flex-none">
                                         <select
                                             value={sortBy}
                                             onChange={(e) => setSortBy(e.target.value as any)}
-                                            className="appearance-none h-10 pl-3 pr-10 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                                            className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                                         >
                                             <option value="updated">Pēdējie atjaunināti</option>
                                             <option value="date">Datums</option>
@@ -263,7 +263,7 @@ const PromisesContent = () => {
                                         <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                                     </div>
 
-                                    <div className="flex items-center border border-input rounded-lg overflow-hidden">
+                                    <div className="flex items-center border border-input rounded-lg overflow-hidden flex-shrink-0">
                                         <Button
                                             variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
                                             size="icon"
