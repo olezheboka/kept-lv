@@ -64,9 +64,9 @@ export const PromiseDetailClient = ({
 
             {/* Main Content */}
             <div className="container-wide py-8 md:py-12">
-                <div className="grid lg:grid-cols-3 gap-8">
+                <div className={`grid gap-8 ${hasSidebar ? 'lg:grid-cols-3' : 'grid-cols-1'}`}>
                     {/* Main Column */}
-                    <div className={`${hasSidebar ? 'lg:col-span-2' : 'lg:col-span-3 max-w-5xl mx-auto w-full'} space-y-8`}>
+                    <div className={`${hasSidebar ? 'lg:col-span-2' : 'w-full max-w-4xl mx-auto'} space-y-8`}>
                         {/* Header */}
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
