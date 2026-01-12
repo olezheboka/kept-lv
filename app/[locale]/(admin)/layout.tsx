@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { AdminSidebar } from "@/components/layout/AdminSidebar";
-import { AnimatedMeshBackground } from "@/components/sections/AnimatedMeshBackground";
-
 export default async function AdminLayout({
   children,
 }: {
@@ -15,10 +13,9 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen flex">
-      <AnimatedMeshBackground />
+    <div className="min-h-screen flex bg-background">
       <AdminSidebar />
-      <main className="flex-1 p-8 relative z-10">{children}</main>
+      <main className="flex-1 p-8 overflow-y-auto">{children}</main>
     </div>
   );
 }

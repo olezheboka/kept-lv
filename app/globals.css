@@ -286,6 +286,19 @@
   .glass {
     @apply bg-white/80 backdrop-blur-xl border border-white/20;
   }
+
+  .glass-card {
+    @apply bg-slate-900/50 backdrop-blur-xl border border-white/10 ring-1 ring-white/20 shadow-2xl;
+  }
+
+  .mesh-gradient {
+    @apply bg-slate-950;
+    background-image:
+      radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+  }
 }
 
 /* Components */

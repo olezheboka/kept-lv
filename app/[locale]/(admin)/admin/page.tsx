@@ -1,6 +1,17 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import {
+  Users,
+  FileText,
+  Building2,
+  Tag,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  AlertCircle,
+  Plus
+} from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -61,110 +72,159 @@ export default async function AdminDashboard({ params }: Props) {
   const stats = await getDashboardStats();
 
   return (
-    <div>
-      <h1 className="text-4xl font-black text-white mb-8">{t("dashboard")}</h1>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">{t("dashboard")}</h1>
+        <p className="text-muted-foreground mt-2">Overview of the Solījums.lv platform data.</p>
+      </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        <div className="glass-card rounded-2xl p-6">
-          <p className="text-sm text-gray-400 uppercase tracking-wide mb-2">
-            {t("stats.totalPromises")}
-          </p>
-          <p className="text-4xl font-black text-white">{stats.totalPromises}</p>
+      {/* Main Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-6 bg-card border border-border rounded-xl shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-blue-50 text-blue-600 rounded-lg">
+              <FileText className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">{t("stats.totalPromises")}</p>
+              <p className="text-2xl font-bold text-foreground">{stats.totalPromises}</p>
+            </div>
+          </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-6">
-          <p className="text-sm text-gray-400 uppercase tracking-wide mb-2">
-            {t("stats.totalPoliticians")}
-          </p>
-          <p className="text-4xl font-black text-white">{stats.totalPoliticians}</p>
+        <div className="p-6 bg-card border border-border rounded-xl shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-lg">
+              <Users className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">{t("stats.totalPoliticians")}</p>
+              <p className="text-2xl font-bold text-foreground">{stats.totalPoliticians}</p>
+            </div>
+          </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-6">
-          <p className="text-sm text-gray-400 uppercase tracking-wide mb-2">
-            {t("stats.totalParties")}
-          </p>
-          <p className="text-4xl font-black text-white">{stats.totalParties}</p>
+        <div className="p-6 bg-card border border-border rounded-xl shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-violet-50 text-violet-600 rounded-lg">
+              <Building2 className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">{t("stats.totalParties")}</p>
+              <p className="text-2xl font-bold text-foreground">{stats.totalParties}</p>
+            </div>
+          </div>
         </div>
 
-        <div className="glass-card rounded-2xl p-6">
-          <p className="text-sm text-gray-400 uppercase tracking-wide mb-2">
-            {t("stats.keptRate")}
-          </p>
-          <p className="text-4xl font-black text-emerald-400">{stats.keptRate}%</p>
+        <div className="p-6 bg-card border border-border rounded-xl shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
+              <CheckCircle2 className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">{t("stats.keptRate")}</p>
+              <p className="text-2xl font-bold text-foreground">{stats.keptRate}%</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Promise Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div className="glass-card rounded-2xl p-6 text-center">
-          <p className="text-3xl font-black text-emerald-400 mb-2">{stats.keptPromises}</p>
-          <p className="text-gray-400">Kept</p>
+      {/* Breakdown Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-6 bg-card border border-border rounded-xl shadow-sm flex flex-col items-center text-center">
+          <div className="mb-2 p-2 bg-emerald-100 text-emerald-700 rounded-full">
+            <CheckCircle2 className="w-5 h-5" />
+          </div>
+          <p className="text-3xl font-bold text-foreground">{stats.keptPromises}</p>
+          <p className="text-sm text-muted-foreground">Promises Kept</p>
         </div>
-        <div className="glass-card rounded-2xl p-6 text-center">
-          <p className="text-3xl font-black text-rose-400 mb-2">{stats.notKeptPromises}</p>
-          <p className="text-gray-400">Not Kept</p>
+        <div className="p-6 bg-card border border-border rounded-xl shadow-sm flex flex-col items-center text-center">
+          <div className="mb-2 p-2 bg-rose-100 text-rose-700 rounded-full">
+            <XCircle className="w-5 h-5" />
+          </div>
+          <p className="text-3xl font-bold text-foreground">{stats.notKeptPromises}</p>
+          <p className="text-sm text-muted-foreground">Not Kept</p>
         </div>
-        <div className="glass-card rounded-2xl p-6 text-center">
-          <p className="text-3xl font-black text-amber-400 mb-2">{stats.inProgressPromises}</p>
-          <p className="text-gray-400">In Progress</p>
+        <div className="p-6 bg-card border border-border rounded-xl shadow-sm flex flex-col items-center text-center">
+          <div className="mb-2 p-2 bg-amber-100 text-amber-700 rounded-full">
+            <Clock className="w-5 h-5" />
+          </div>
+          <p className="text-3xl font-bold text-foreground">{stats.inProgressPromises}</p>
+          <p className="text-sm text-muted-foreground">In Progress</p>
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        <Link href="/admin/promises/new" className="glass-card rounded-2xl p-6 hover:bg-white/10 transition-all">
-          <span className="text-3xl mb-2 block">📜</span>
-          <p className="text-white font-bold">{t("addNew")} Promise</p>
-        </Link>
-        <Link href="/admin/politicians/new" className="glass-card rounded-2xl p-6 hover:bg-white/10 transition-all">
-          <span className="text-3xl mb-2 block">👤</span>
-          <p className="text-white font-bold">{t("addNew")} Politician</p>
-        </Link>
-        <Link href="/admin/parties/new" className="glass-card rounded-2xl p-6 hover:bg-white/10 transition-all">
-          <span className="text-3xl mb-2 block">🏛️</span>
-          <p className="text-white font-bold">{t("addNew")} Party</p>
-        </Link>
-        <Link href="/admin/categories/new" className="glass-card rounded-2xl p-6 hover:bg-white/10 transition-all">
-          <span className="text-3xl mb-2 block">🏷️</span>
-          <p className="text-white font-bold">{t("addNew")} Category</p>
-        </Link>
-      </div>
-
-      {/* Recent Promises */}
-      <div className="glass-card rounded-2xl p-6">
-        <h2 className="text-xl font-bold text-white mb-4">Recent Promises</h2>
-        <div className="space-y-4">
-          {stats.recentPromises.map((promise) => (
-            <Link
-              key={promise.id}
-              href={`/admin/promises/${promise.id}`}
-              className="block p-4 rounded-lg hover:bg-white/10 transition-all"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white font-medium line-clamp-1">
-                    {(promise.title as any).lv || (promise.title as any).en}
-                  </p>
-                  <p className="text-sm text-gray-400">
-                    {promise.politician.name}
-                  </p>
-                </div>
-                <span className={`px-3 py-1 rounded-full text-xs font-bold
-                  ${promise.status === "KEPT" ? "bg-emerald-500/20 text-emerald-400" :
-                    promise.status === "NOT_KEPT" ? "bg-rose-500/20 text-rose-400" :
-                      promise.status === "IN_PROGRESS" ? "bg-amber-500/20 text-amber-400" :
-                        "bg-gray-500/20 text-gray-400"
-                  }`}>
-                  {promise.status}
-                </span>
-              </div>
+      {/* Quick Actions & Recent */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Quick Actions */}
+        <div className="lg:col-span-1 space-y-4">
+          <h2 className="text-lg font-semibold text-foreground">Quick Actions</h2>
+          <div className="grid grid-cols-1 gap-3">
+            <Link href="/admin/promises/new" className="flex items-center justify-between p-4 bg-card border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group">
+              <span className="flex items-center gap-3 font-medium text-foreground">
+                <FileText className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
+                Add Promise
+              </span>
+              <Plus className="w-4 h-4 text-muted-foreground" />
             </Link>
-          ))}
+            <Link href="/admin/politicians/new" className="flex items-center justify-between p-4 bg-card border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group">
+              <span className="flex items-center gap-3 font-medium text-foreground">
+                <Users className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
+                Add Politician
+              </span>
+              <Plus className="w-4 h-4 text-muted-foreground" />
+            </Link>
+            <Link href="/admin/parties/new" className="flex items-center justify-between p-4 bg-card border border-border rounded-lg hover:border-primary/50 hover:bg-muted/50 transition-all group">
+              <span className="flex items-center gap-3 font-medium text-foreground">
+                <Building2 className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
+                Add Party
+              </span>
+              <Plus className="w-4 h-4 text-muted-foreground" />
+            </Link>
+          </div>
+        </div>
 
-          {stats.recentPromises.length === 0 && (
-            <p className="text-gray-400 text-center py-4">No promises yet</p>
-          )}
+        {/* Recent Activity */}
+        <div className="lg:col-span-2">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-foreground">Recent Promises</h2>
+            <Link href="/admin/promises" className="text-sm text-primary hover:underline">View All</Link>
+          </div>
+
+          <div className="bg-card border border-border rounded-lg overflow-hidden">
+            <div className="divide-y divide-border">
+              {stats.recentPromises.map((promise) => (
+                <Link
+                  key={promise.id}
+                  href={`/admin/promises/${promise.id}`}
+                  className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+                >
+                  <div className="min-w-0 pr-4">
+                    <p className="font-medium text-foreground truncate">
+                      {(promise.title as any).lv || (promise.title as any).en}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {promise.politician.name} • {(promise.category.name as any).lv || (promise.category.name as any).en}
+                    </p>
+                  </div>
+                  <span className={`inline-flex items-center flex-shrink-0 px-2.5 py-0.5 rounded-full text-xs font-medium border
+                                ${promise.status === "KEPT" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
+                      promise.status === "NOT_KEPT" ? "bg-red-50 text-red-700 border-red-200" :
+                        promise.status === "IN_PROGRESS" ? "bg-blue-50 text-blue-700 border-blue-200" :
+                          promise.status === "PARTIAL" ? "bg-amber-50 text-amber-700 border-amber-200" :
+                            "bg-gray-50 text-gray-600 border-gray-200"
+                    }`}>
+                    {promise.status}
+                  </span>
+                </Link>
+              ))}
+              {stats.recentPromises.length === 0 && (
+                <div className="p-8 text-center text-muted-foreground">
+                  No recent activity found.
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
