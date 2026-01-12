@@ -37,6 +37,7 @@ export interface PromiseUI {
     politicianIsInOffice: boolean;
     partyId: string;
     partyAbbreviation: string;
+    partyLogoUrl?: string; // Add this field
     datePromised: string;
     electionCycle?: string;
     status: "kept" | "partially-kept" | "in-progress" | "broken" | "not-rated";
@@ -272,6 +273,7 @@ export async function getPromises(locale: Locale = "lv"): Promise<PromiseUI[]> {
         politicianIsInOffice: true,
         partyId: p.politician.party.slug,
         partyAbbreviation: partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase(),
+        partyLogoUrl: p.politician.party.logoUrl || undefined,
         datePromised: p.dateOfPromise.toISOString().split("T")[0],
         electionCycle: "2022 Saeima Elections",
         status: mapStatusToUI(p.status),
@@ -323,6 +325,7 @@ export async function getPromiseById(
         politicianIsInOffice: true,
         partyId: p.politician.party.slug,
         partyAbbreviation: partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase(),
+        partyLogoUrl: p.politician.party.logoUrl || undefined,
         datePromised: p.dateOfPromise.toISOString().split("T")[0],
         electionCycle: "2022 Saeima Elections",
         status: mapStatusToUI(p.status),
@@ -378,6 +381,7 @@ export async function getPromisesByPolitician(
         politicianIsInOffice: true,
         partyId: p.politician.party.slug,
         partyAbbreviation: partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase(),
+        partyLogoUrl: p.politician.party.logoUrl || undefined,
         datePromised: p.dateOfPromise.toISOString().split("T")[0],
         electionCycle: "2022 Saeima Elections",
         status: mapStatusToUI(p.status),
@@ -436,6 +440,7 @@ export async function getPromisesByParty(
         politicianIsInOffice: true,
         partyId: p.politician.party.slug,
         partyAbbreviation: partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase(),
+        partyLogoUrl: p.politician.party.logoUrl || undefined,
         datePromised: p.dateOfPromise.toISOString().split("T")[0],
         electionCycle: "2022 Saeima Elections",
         status: mapStatusToUI(p.status),

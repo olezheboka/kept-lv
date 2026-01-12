@@ -94,15 +94,15 @@ async function main() {
 
   // Create all parties (9 total)
   const partiesData = [
-    { slug: "jv", name: { lv: "Jaunā Vienotība", en: "New Unity", ru: "Новое Единство" }, color: "#8AB73E" },
-    { slug: "zzs", name: { lv: "Zaļo un Zemnieku savienība", en: "Union of Greens and Farmers", ru: "Союз зелёных и крестьян" }, color: "#026036" },
-    { slug: "na", name: { lv: "Nacionālā apvienība", en: "National Alliance", ru: "Национальное объединение" }, color: "#932330" },
-    { slug: "ap", name: { lv: "Attīstībai/Par!", en: "Development/For!", ru: "Развитие/За!" }, color: "#000000" },
-    { slug: "prog", name: { lv: "Progresīvie", en: "Progressives", ru: "Прогрессивные" }, color: "#E63915" },
-    { slug: "lra", name: { lv: "Latvijas Reģionu apvienība", en: "Latvian Regions Association", ru: "Объединение регионов Латвии" }, color: "#982632" },
-    { slug: "stab", name: { lv: "Stabilitātei!", en: "For Stability!", ru: "За стабильность!" }, color: "#fd7e14" },
-    { slug: "lpv", name: { lv: "Latvija pirmajā vietā", en: "Latvia First", ru: "Латвия на первом месте" }, color: "#9E3139" },
-    { slug: "sask", name: { lv: "Saskaņa", en: "Harmony", ru: "Согласие" }, color: "#E31D23" },
+    { slug: "jv", name: { lv: "Jaunā Vienotība", en: "New Unity", ru: "Новое Единство" }, color: "#8AB73E", logoUrl: "/logos/unknown_0.png" },
+    { slug: "zzs", name: { lv: "Zaļo un Zemnieku savienība", en: "Union of Greens and Farmers", ru: "Союз зелёных и крестьян" }, color: "#026036", logoUrl: "/logos/zzs.png" },
+    { slug: "na", name: { lv: "Nacionālā apvienība", en: "National Alliance", ru: "Национальное объединение" }, color: "#932330", logoUrl: "/logos/na.png" },
+    { slug: "ap", name: { lv: "Attīstībai/Par!", en: "Development/For!", ru: "Развитие/За!" }, color: "#000000", logoUrl: "/logos/unknown_1.png" },
+    { slug: "prog", name: { lv: "Progresīvie", en: "Progressives", ru: "Прогрессивные" }, color: "#E63915", logoUrl: "/logos/prog.png" },
+    { slug: "lra", name: { lv: "Latvijas Reģionu apvienība", en: "Latvian Regions Association", ru: "Объединение регионов Латвии" }, color: "#982632", logoUrl: "/logos/unknown_2.png" },
+    { slug: "stab", name: { lv: "Stabilitātei!", en: "For Stability!", ru: "За стабильность!" }, color: "#fd7e14", logoUrl: "/logos/stab.png" },
+    { slug: "lpv", name: { lv: "Latvija pirmajā vietā", en: "Latvia First", ru: "Латвия на первом месте" }, color: "#9E3139", logoUrl: "/logos/unknown_3.png" },
+    { slug: "sask", name: { lv: "Saskaņa", en: "Harmony", ru: "Согласие" }, color: "#E31D23", logoUrl: "/logos/unknown_4.png" },
   ];
 
   const parties: Record<string, { id: string }> = {};
