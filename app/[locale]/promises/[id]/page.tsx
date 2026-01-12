@@ -29,7 +29,7 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
     }
 
     const politician = await getPoliticianBySlug(promise.politicianId);
-    const party = await getPartyBySlug(promise.partyId);
+    const party = promise.partyId ? await getPartyBySlug(promise.partyId) : null;
 
     // promise.category is a string (slug) in PromiseUI.
     // CATEGORIES.find expects id to match Category type.

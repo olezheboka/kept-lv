@@ -52,9 +52,9 @@ export async function GET(request: NextRequest) {
 
     if (search) {
       where.OR = [
-        { text: { path: ["lv"], string_contains: search } },
-        { text: { path: ["en"], string_contains: search } },
-        { text: { path: ["ru"], string_contains: search } },
+        { title: { path: ["lv"], string_contains: search } },
+        { title: { path: ["en"], string_contains: search } },
+        { title: { path: ["ru"], string_contains: search } },
       ];
     }
 
@@ -138,22 +138,22 @@ export async function POST(request: NextRequest) {
         explanation: explanation ? (explanation as Prisma.InputJsonValue) : Prisma.JsonNull,
         sources: sources?.length
           ? {
-              create: sources.map(s => ({
-                type: s.type,
-                url: s.url,
-                title: s.title ? (s.title as Prisma.InputJsonValue) : Prisma.JsonNull,
-                description: s.description ? (s.description as Prisma.InputJsonValue) : Prisma.JsonNull,
-              })),
-            }
+            create: sources.map(s => ({
+              type: s.type,
+              url: s.url,
+              title: s.title ? (s.title as Prisma.InputJsonValue) : Prisma.JsonNull,
+              description: s.description ? (s.description as Prisma.InputJsonValue) : Prisma.JsonNull,
+            })),
+          }
           : undefined,
         evidence: evidence?.length
           ? {
-              create: evidence.map(e => ({
-                type: e.type,
-                url: e.url,
-                description: e.description ? (e.description as Prisma.InputJsonValue) : Prisma.JsonNull,
-              })),
-            }
+            create: evidence.map(e => ({
+              type: e.type,
+              url: e.url,
+              description: e.description ? (e.description as Prisma.InputJsonValue) : Prisma.JsonNull,
+            })),
+          }
           : undefined,
       },
       include: {

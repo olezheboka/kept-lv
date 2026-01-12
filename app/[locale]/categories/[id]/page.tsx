@@ -1,8 +1,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { getPromisesByCategory } from '@/lib/db';
-import { CATEGORIES } from '@/lib/types';
+import { getPromisesByCategory, getCategoryBySlug } from '@/lib/db';
 import { CategoryDetailClient } from '@/components/CategoryDetailClient';
 
 interface PageProps {
@@ -11,7 +10,7 @@ interface PageProps {
 
 const CategoryDetailPage = async ({ params }: PageProps) => {
     const { id } = await params;
-    const category = CATEGORIES.find(c => c.id === id);
+    const category = await getCategoryBySlug(id);
 
     if (!category) {
         return (

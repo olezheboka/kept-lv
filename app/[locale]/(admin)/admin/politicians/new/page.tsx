@@ -49,7 +49,7 @@ export default function NewPoliticianPage() {
         bio: formData.bioLv
           ? { lv: formData.bioLv, en: formData.bioEn, ru: formData.bioRu }
           : null,
-        partyId: formData.partyId,
+        partyId: formData.partyId || null,
       };
 
       const res = await fetch("/api/politicians", {
@@ -120,13 +120,12 @@ export default function NewPoliticianPage() {
                 Party
               </label>
               <select
-                required
                 value={formData.partyId}
                 onChange={(e) => setFormData({ ...formData, partyId: e.target.value })}
                 className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
                   text-white focus:bg-white/20 transition-all"
               >
-                <option value="">Select party...</option>
+                <option value="">No Party / Independent</option>
                 {parties.map((p) => (
                   <option key={p.id} value={p.id}>{p.name.lv || p.name.en}</option>
                 ))}

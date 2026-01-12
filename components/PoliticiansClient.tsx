@@ -28,7 +28,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
     const [sortBy, setSortBy] = useState('default');
 
     // Helper to get party by ID
-    const getPartyById = (partyId: string) => parties.find(p => p.id === partyId);
+    const getPartyById = (partyId: string | undefined) => parties.find(p => p.id === partyId);
 
     // Helper to get promises by politician
     const getPromisesByPolitician = (politicianId: string) =>

@@ -23,14 +23,18 @@ export default function NewPromisePage() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const [formData, setFormData] = useState({
-    textLv: "",
-    textEn: "",
-    textRu: "",
+    titleLv: "",
+    titleEn: "",
+    titleRu: "",
+    descriptionLv: "",
+    descriptionEn: "",
+    descriptionRu: "",
     status: "IN_PROGRESS",
     explanationLv: "",
     explanationEn: "",
     explanationRu: "",
     dateOfPromise: "",
+    statusUpdatedAt: "",
     politicianId: "",
     categoryId: "",
     sourceType: "VIDEO",
@@ -49,20 +53,24 @@ export default function NewPromisePage() {
 
     try {
       const payload = {
-        text: { lv: formData.textLv, en: formData.textEn, ru: formData.textRu },
+        title: { lv: formData.titleLv, en: formData.titleEn, ru: formData.titleRu },
+        description: formData.descriptionLv
+          ? { lv: formData.descriptionLv, en: formData.descriptionEn, ru: formData.descriptionRu }
+          : null,
         status: formData.status,
         explanation: formData.explanationLv
           ? { lv: formData.explanationLv, en: formData.explanationEn, ru: formData.explanationRu }
           : null,
         dateOfPromise: new Date(formData.dateOfPromise).toISOString(),
+        statusUpdatedAt: formData.statusUpdatedAt ? new Date(formData.statusUpdatedAt).toISOString() : null,
         politicianId: formData.politicianId,
         categoryId: formData.categoryId,
         sources: formData.sourceUrl
           ? [{
-              type: formData.sourceType,
-              url: formData.sourceUrl,
-              title: formData.sourceTitleLv ? { lv: formData.sourceTitleLv, en: "", ru: "" } : null,
-            }]
+            type: formData.sourceType,
+            url: formData.sourceUrl,
+            title: formData.sourceTitleLv ? { lv: formData.sourceTitleLv, en: "", ru: "" } : null,
+          }]
           : [],
       };
 
@@ -101,7 +109,7 @@ export default function NewPromisePage() {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Promise Text */}
         <div className="glass-card rounded-2xl p-6">
-          <h2 className="text-xl font-bold text-white mb-6">Promise Text</h2>
+          <h2 className="text-xl font-bold text-white mb-6">Promise Title</h2>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -109,12 +117,12 @@ export default function NewPromisePage() {
               </label>
               <textarea
                 required
-                value={formData.textLv}
-                onChange={(e) => setFormData({ ...formData, textLv: e.target.value })}
+                value={formData.titleLv}
+                onChange={(e) => setFormData({ ...formData, titleLv: e.target.value })}
                 rows={3}
                 className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
                   text-white placeholder-gray-500 focus:bg-white/20 transition-all"
-                placeholder="Solījuma teksts latviešu valodā..."
+                placeholder="Solījuma virsraksts latviešu valodā..."
               />
             </div>
             <div>
@@ -122,12 +130,12 @@ export default function NewPromisePage() {
                 English
               </label>
               <textarea
-                value={formData.textEn}
-                onChange={(e) => setFormData({ ...formData, textEn: e.target.value })}
+                value={formData.titleEn}
+                onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
                 rows={3}
                 className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
                   text-white placeholder-gray-500 focus:bg-white/20 transition-all"
-                placeholder="Promise text in English..."
+                placeholder="Promise title in English..."
               />
             </div>
             <div>
@@ -135,12 +143,58 @@ export default function NewPromisePage() {
                 Russian
               </label>
               <textarea
-                value={formData.textRu}
-                onChange={(e) => setFormData({ ...formData, textRu: e.target.value })}
+                value={formData.titleRu}
+                onChange={(e) => setFormData({ ...formData, titleRu: e.target.value })}
                 rows={3}
                 className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
                   text-white placeholder-gray-500 focus:bg-white/20 transition-all"
-                placeholder="Текст обещания на русском..."
+                placeholder="Заголовок обещания на русском..."
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="glass-card rounded-2xl p-6">
+          <h2 className="text-xl font-bold text-white mb-6">Description (Optional)</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Latvian
+              </label>
+              <textarea
+                value={formData.descriptionLv}
+                onChange={(e) => setFormData({ ...formData, descriptionLv: e.target.value })}
+                rows={4}
+                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
+                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                placeholder="Pilns apraksts..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                English
+              </label>
+              <textarea
+                value={formData.descriptionEn}
+                onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value })}
+                rows={4}
+                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
+                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                placeholder="Full description..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Russian
+              </label>
+              <textarea
+                value={formData.descriptionRu}
+                onChange={(e) => setFormData({ ...formData, descriptionRu: e.target.value })}
+                rows={4}
+                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
+                  text-white placeholder-gray-500 focus:bg-white/20 transition-all"
+                placeholder="Полное описание..."
               />
             </div>
           </div>
@@ -213,6 +267,19 @@ export default function NewPromisePage() {
                 required
                 value={formData.dateOfPromise}
                 onChange={(e) => setFormData({ ...formData, dateOfPromise: e.target.value })}
+                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
+                  text-white focus:bg-white/20 transition-all"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Status Updated At
+              </label>
+              <input
+                type="date"
+                value={formData.statusUpdatedAt}
+                onChange={(e) => setFormData({ ...formData, statusUpdatedAt: e.target.value })}
                 className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20
                   text-white focus:bg-white/20 transition-all"
               />

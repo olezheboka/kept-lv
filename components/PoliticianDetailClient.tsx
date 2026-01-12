@@ -108,6 +108,15 @@ export const PoliticianDetailClient = ({ politician, party, promises }: Politici
                                     </span>
                                 )}
                             </div>
+
+                            {/* Row 3: Bio */}
+                            {politician.bio && (
+                                <div className="mt-6 max-w-2xl">
+                                    <p className="text-muted-foreground leading-relaxed">
+                                        {politician.bio}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </motion.div>
                 </div>

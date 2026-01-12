@@ -21,9 +21,12 @@ model User {
 model Party {
   id          String       @id @default(cuid())
   name        Json         // { lv: "", en: "", ru: "" }
+  description Json?        // { lv: "", en: "", ru: "" }
   slug        String       @unique
   color       String       // hex color
   logoUrl     String?
+  websiteUrl  String?
+  isCoalition Boolean      @default(false)
   politicians Politician[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -36,9 +39,11 @@ model Politician {
   name      String
   slug      String    @unique
   imageUrl  String?
-  bio       Json?     // { lv: "", en: "", ru: "" }
-  partyId   String
-  party     Party     @relation(fields: [partyId], references: [id])
+  role      Json?     // { lv: "Minister", en: "Minister", ru: "..." }
+  bio       Json?     // Detailed bio
+  isActive  Boolean   @default(true)
+  partyId   String?
+  party     Party?    @relation(fields: [partyId], references: [id])
   promises  Promise[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -49,8 +54,10 @@ model Politician {
 model Category {
   id        String    @id @default(cuid())
   name      Json      // { lv: "", en: "", ru: "" }
-  slug      String    @unique
-  color     String    // tailwind gradient classes
+  description Json?   // { lv: "", en: "", ru: "" }
+  slug        String    @unique
+  color       String    // tailwind gradient classes
+  icon        String?   // lucide icon name
   promises  Promise[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -59,19 +66,21 @@ model Category {
 }
 
 model Promise {
-  id            String        @id @default(cuid())
-  text          Json          // { lv: "", en: "", ru: "" }
-  status        PromiseStatus @default(IN_PROGRESS)
-  explanation   Json?         // { lv: "", en: "", ru: "" }
-  dateOfPromise DateTime
-  politicianId  String
-  politician    Politician    @relation(fields: [politicianId], references: [id])
-  categoryId    String
-  category      Category      @relation(fields: [categoryId], references: [id])
-  sources       Source[]
-  evidence      Evidence[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id              String        @id @default(cuid())
+  title           Json          // { lv: "", en: "", ru: "" }
+  description     Json?         // { lv: "", en: "", ru: "" }
+  status          PromiseStatus @default(IN_PROGRESS)
+  explanation     Json?         // Justification
+  dateOfPromise   DateTime
+  statusUpdatedAt DateTime?
+  politicianId    String
+  politician      Politician    @relation(fields: [politicianId], references: [id])
+  categoryId      String
+  category        Category      @relation(fields: [categoryId], references: [id])
+  sources         Source[]
+  evidence        Evidence[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   @@map("promises")
 }

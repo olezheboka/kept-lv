@@ -16,7 +16,7 @@ export function PromiseCard({ promise }: PromiseCardProps) {
   const locale = useLocale();
   const t = useTranslations("common");
 
-  const promiseText = getLocalizedText(promise.text, locale);
+  const promiseText = getLocalizedText(promise.title, locale);
   const categoryName = getLocalizedText(promise.category.name, locale);
 
   return (
@@ -57,7 +57,7 @@ export function PromiseCard({ promise }: PromiseCardProps) {
             {promise.politician.name}
           </h3>
           <p className="text-sm text-gray-400">
-            {getLocalizedText(promise.politician.party.name, locale)}
+            {promise.politician.party ? getLocalizedText(promise.politician.party.name, locale) : ""}
           </p>
         </div>
       </div>

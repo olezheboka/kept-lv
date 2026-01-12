@@ -8,7 +8,7 @@ import { PerformanceCard } from '@/components/PerformanceCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PromiseStatus, STATUS_CONFIG } from '@/lib/types';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Globe } from 'lucide-react';
 import { PartyUI, PromiseUI } from '@/lib/db';
 
 interface PartyDetailClientProps {
@@ -103,6 +103,28 @@ export const PartyDetailClient = ({ party, promises }: PartyDetailClientProps) =
                                     </span>
                                 )}
                             </div>
+
+                            {/* Row 3: Description & Link */}
+                            {(party.description || party.websiteUrl) && (
+                                <div className="mt-6 max-w-2xl">
+                                    {party.description && (
+                                        <p className="text-muted-foreground mb-4 leading-relaxed">
+                                            {party.description}
+                                        </p>
+                                    )}
+                                    {party.websiteUrl && (
+                                        <a
+                                            href={party.websiteUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-medium"
+                                        >
+                                            <Globe className="h-4 w-4" />
+                                            Partijas mājaslapa
+                                        </a>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </motion.div>
                 </div>

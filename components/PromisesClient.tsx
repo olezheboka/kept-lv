@@ -59,7 +59,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
 
         // Party filter
         if (selectedParties.length > 0) {
-            result = result.filter(p => selectedParties.includes(p.partyId));
+            result = result.filter(p => p.partyId && selectedParties.includes(p.partyId));
         }
 
         // Category filter

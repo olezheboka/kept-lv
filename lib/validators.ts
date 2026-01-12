@@ -19,6 +19,8 @@ export const createPartySchema = z.object({
   slug: z.string().min(1).max(100),
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
   logoUrl: z.string().url().optional().nullable(),
+  description: localizedTextOptionalSchema,
+  websiteUrl: z.string().url().optional().nullable(),
 });
 
 export const updatePartySchema = createPartySchema.partial();
@@ -28,12 +30,13 @@ export const createPoliticianSchema = z.object({
   name: z.string().min(1).max(200),
   slug: z.string().min(1).max(100),
   imageUrl: z.string().url().optional().nullable(),
+  role: localizedTextOptionalSchema,
   bio: z.object({
     lv: z.string().default(""),
     en: z.string().default(""),
     ru: z.string().default(""),
   }).optional().nullable(),
-  partyId: z.string().cuid(),
+  partyId: z.string().cuid().optional().nullable(),
 });
 
 export const updatePoliticianSchema = z.object({
@@ -51,8 +54,10 @@ export const updatePoliticianSchema = z.object({
 // Category schemas
 export const createCategorySchema = z.object({
   name: localizedTextSchema,
+  description: localizedTextOptionalSchema,
   slug: z.string().min(1).max(100),
   color: z.string().min(1).max(100),
+  icon: z.string().optional().nullable(),
 });
 
 export const updateCategorySchema = createCategorySchema.partial();
@@ -86,7 +91,8 @@ export const evidenceSchema = z.object({
 
 // Promise schemas
 export const createPromiseSchema = z.object({
-  text: localizedTextSchema,
+  title: localizedTextSchema,
+  description: localizedTextOptionalSchema,
   status: z.enum(["KEPT", "NOT_KEPT", "IN_PROGRESS", "ABANDONED", "PARTIAL"]).default("IN_PROGRESS"),
   explanation: z.object({
     lv: z.string().default(""),
@@ -94,6 +100,7 @@ export const createPromiseSchema = z.object({
     ru: z.string().default(""),
   }).optional().nullable(),
   dateOfPromise: z.string().datetime().or(z.date()),
+  statusUpdatedAt: z.string().datetime().optional().nullable(),
   politicianId: z.string().cuid(),
   categoryId: z.string().cuid(),
   sources: z.array(sourceSchema).optional(),

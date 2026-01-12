@@ -5,8 +5,8 @@ import { motion } from 'framer-motion';
 import { PromiseCard } from '@/components/PromiseCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CATEGORIES, STATUS_CONFIG, PromiseStatus, CategoryInfo } from '@/lib/types';
-import { PromiseUI } from '@/lib/db';
+import { STATUS_CONFIG, PromiseStatus } from '@/lib/types';
+import { PromiseUI, CategoryUI } from '@/lib/db';
 import { ArrowLeft, CheckCircle2, Clock, XCircle, CircleDot, HelpCircle, TrendingUp, Heart, GraduationCap, Shield, Globe, Users, Leaf, Train, Scale, Landmark, Wheat, Laptop, Home, HandHeart, Trophy, Briefcase, Cpu, Map } from 'lucide-react';
 
 const iconMap: Record<string, any> = {
@@ -16,12 +16,13 @@ const iconMap: Record<string, any> = {
 };
 
 interface CategoryDetailClientProps {
-    category: CategoryInfo;
+    category: CategoryUI;
     promises: PromiseUI[];
 }
 
 export const CategoryDetailClient = ({ category, promises }: CategoryDetailClientProps) => {
-    const Icon = iconMap[category.icon] || TrendingUp;
+    // If icon string is not found in iconMap, fallback to TrendingUp
+    const Icon = (category.icon && iconMap[category.icon]) || TrendingUp;
 
     const stats = {
         total: promises.length,

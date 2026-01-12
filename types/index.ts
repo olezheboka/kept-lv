@@ -11,9 +11,12 @@ export interface LocalizedText {
 export interface PartyWithRelations {
   id: string;
   name: LocalizedText;
+  description: LocalizedText | null;
   slug: string;
   color: string;
   logoUrl: string | null;
+  websiteUrl: string | null;
+  isCoalition: boolean;
   politicians: PoliticianBasic[];
   createdAt: Date;
   updatedAt: Date;
@@ -31,15 +34,17 @@ export interface PoliticianWithRelations {
   name: string;
   slug: string;
   imageUrl: string | null;
+  role: LocalizedText | null;
   bio: LocalizedText | null;
-  partyId: string;
+  isActive: boolean;
+  partyId: string | null;
   party: {
     id: string;
     name: LocalizedText;
     slug: string;
     color: string;
     logoUrl: string | null;
-  };
+  } | null;
   promises: PromiseBasic[];
   createdAt: Date;
   updatedAt: Date;
@@ -48,8 +53,10 @@ export interface PoliticianWithRelations {
 export interface CategoryWithRelations {
   id: string;
   name: LocalizedText;
+  description: LocalizedText | null;
   slug: string;
   color: string;
+  icon: string | null;
   _count?: {
     promises: number;
   };
@@ -59,17 +66,19 @@ export interface CategoryWithRelations {
 
 export interface PromiseBasic {
   id: string;
-  text: LocalizedText;
+  title: LocalizedText;
   status: PromiseStatus;
   dateOfPromise: Date;
 }
 
 export interface PromiseWithRelations {
   id: string;
-  text: LocalizedText;
+  title: LocalizedText;
+  description: LocalizedText | null;
   status: PromiseStatus;
   explanation: LocalizedText | null;
   dateOfPromise: Date;
+  statusUpdatedAt: Date | null;
   politicianId: string;
   politician: {
     id: string;
@@ -81,7 +90,7 @@ export interface PromiseWithRelations {
       name: LocalizedText;
       slug: string;
       color: string;
-    };
+    } | null;
   };
   categoryId: string;
   category: {

@@ -6,9 +6,11 @@ export interface PartyUI {
     id: string;
     slug: string;
     name: string;
+    description?: string;
     abbreviation: string;
     color: string;
     logoUrl?: string;
+    websiteUrl?: string;
     isInCoalition: boolean;
     mpCount: number;
 }
@@ -18,7 +20,7 @@ export interface PoliticianUI {
     slug: string;
     name: string;
     role: string;
-    partyId: string;
+    partyId?: string;
     photoUrl: string;
     isInOffice: boolean;
     roleStartDate?: string;
@@ -35,9 +37,9 @@ export interface PromiseUI {
     politicianRole: string;
     politicianPhotoUrl: string;
     politicianIsInOffice: boolean;
-    partyId: string;
-    partyAbbreviation: string;
-    partyLogoUrl?: string; // Add this field
+    partyId?: string;
+    partyAbbreviation?: string;
+    partyLogoUrl?: string;
     datePromised: string;
     electionCycle?: string;
     status: "kept" | "partially-kept" | "in-progress" | "broken" | "not-rated";
@@ -58,7 +60,9 @@ export interface CategoryUI {
     id: string;
     slug: string;
     name: string;
+    description?: string;
     color: string;
+    icon?: string;
 }
 
 export interface RankingItem {
@@ -100,8 +104,9 @@ function mapStatusToUI(status: string): PromiseUI["status"] {
     return statusMap[status] || "not-rated";
 }
 
-// Map category slug back to original category id format
+// Map category slug back to original category id format (if needed, or just use slug)
 function mapCategorySlug(slug: string): string {
+    // Current UI seems to expect these mapped slugs for icons or routing
     const categoryMap: Record<string, string> = {
         economy: "economy-finance",
         healthcare: "healthcare",
@@ -134,20 +139,7 @@ const partyAbbreviations: Record<string, string> = {
     sask: "S",
 };
 
-// Party coalition status (since DB doesn't store this)
-const partyCoalitionStatus: Record<string, boolean> = {
-    jv: true,
-    zzs: true,
-    na: true,
-    ap: false,
-    prog: false,
-    lra: false,
-    stab: false,
-    lpv: false,
-    sask: false,
-};
-
-// Party MP counts (since DB doesn't store this)
+// Party MP counts (hardcoded for now as "real world" context)
 const partyMpCounts: Record<string, number> = {
     jv: 26,
     zzs: 16,
@@ -171,10 +163,12 @@ export async function getParties(locale: Locale = "lv"): Promise<PartyUI[]> {
         id: party.slug,
         slug: party.slug,
         name: getLocalizedText(party.name, locale),
+        description: party.description ? getLocalizedText(party.description, locale) : undefined,
         abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
         color: party.color,
         logoUrl: party.logoUrl || undefined,
-        isInCoalition: partyCoalitionStatus[party.slug] ?? false,
+        websiteUrl: party.websiteUrl || undefined,
+        isInCoalition: party.isCoalition, // Use correct field from DB
         mpCount: partyMpCounts[party.slug] ?? 0,
     }));
 }
@@ -193,10 +187,12 @@ export async function getPartyBySlug(
         id: party.slug,
         slug: party.slug,
         name: getLocalizedText(party.name, locale),
+        description: party.description ? getLocalizedText(party.description, locale) : undefined,
         abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
         color: party.color,
         logoUrl: party.logoUrl || undefined,
-        isInCoalition: partyCoalitionStatus[party.slug] ?? false,
+        websiteUrl: party.websiteUrl || undefined,
+        isInCoalition: party.isCoalition,
         mpCount: partyMpCounts[party.slug] ?? 0,
     };
 }
@@ -215,10 +211,10 @@ export async function getPoliticians(
         id: pol.slug,
         slug: pol.slug,
         name: pol.name,
-        role: pol.bio ? getLocalizedText(pol.bio, locale) : "",
-        partyId: pol.party.slug,
+        role: pol.role ? getLocalizedText(pol.role, locale) : (pol.bio ? getLocalizedText(pol.bio, locale) : ""),
+        partyId: pol.party?.slug,
         photoUrl: pol.imageUrl || "",
-        isInOffice: true, // Default to true since DB doesn't track this
+        isInOffice: pol.isActive,
         roleStartDate: undefined,
         roleEndDate: undefined,
         bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
@@ -240,10 +236,10 @@ export async function getPoliticianBySlug(
         id: pol.slug,
         slug: pol.slug,
         name: pol.name,
-        role: pol.bio ? getLocalizedText(pol.bio, locale) : "",
-        partyId: pol.party.slug,
+        role: pol.role ? getLocalizedText(pol.role, locale) : (pol.bio ? getLocalizedText(pol.bio, locale) : ""),
+        partyId: pol.party?.slug,
         photoUrl: pol.imageUrl || "",
-        isInOffice: true,
+        isInOffice: pol.isActive,
         roleStartDate: undefined,
         roleEndDate: undefined,
         bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
@@ -264,26 +260,26 @@ export async function getPromises(locale: Locale = "lv"): Promise<PromiseUI[]> {
 
     return promises.map((p) => ({
         id: p.id,
-        title: getLocalizedText(p.text, locale),
-        fullText: getLocalizedText(p.text, locale),
+        title: getLocalizedText(p.title, locale),
+        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
         politicianId: p.politician.slug,
         politicianName: p.politician.name,
-        politicianRole: p.politician.bio ? getLocalizedText(p.politician.bio, locale) : "",
+        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
         politicianPhotoUrl: p.politician.imageUrl || "",
-        politicianIsInOffice: true,
-        partyId: p.politician.party.slug,
-        partyAbbreviation: partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase(),
-        partyLogoUrl: p.politician.party.logoUrl || undefined,
+        politicianIsInOffice: p.politician.isActive,
+        partyId: p.politician.party?.slug,
+        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
+        partyLogoUrl: p.politician.party?.logoUrl || undefined,
         datePromised: p.dateOfPromise.toISOString().split("T")[0],
         electionCycle: "2022 Saeima Elections",
         status: mapStatusToUI(p.status),
         statusJustification: p.explanation
             ? getLocalizedText(p.explanation, locale)
             : "",
-        statusUpdatedAt: p.updatedAt.toISOString().split("T")[0],
+        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
         statusUpdatedBy: "Kept Analytics Team",
         category: mapCategorySlug(p.category.slug),
-        description: p.explanation ? getLocalizedText(p.explanation, locale) : "",
+        description: p.description ? getLocalizedText(p.description, locale) : undefined,
         importance: undefined,
         deadline: undefined,
         tags: [],
@@ -316,26 +312,26 @@ export async function getPromiseById(
 
     return {
         id: p.id,
-        title: getLocalizedText(p.text, locale),
-        fullText: getLocalizedText(p.text, locale),
+        title: getLocalizedText(p.title, locale),
+        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
         politicianId: p.politician.slug,
         politicianName: p.politician.name,
-        politicianRole: p.politician.bio ? getLocalizedText(p.politician.bio, locale) : "",
+        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
         politicianPhotoUrl: p.politician.imageUrl || "",
-        politicianIsInOffice: true,
-        partyId: p.politician.party.slug,
-        partyAbbreviation: partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase(),
-        partyLogoUrl: p.politician.party.logoUrl || undefined,
+        politicianIsInOffice: p.politician.isActive,
+        partyId: p.politician.party?.slug,
+        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
+        partyLogoUrl: p.politician.party?.logoUrl || undefined,
         datePromised: p.dateOfPromise.toISOString().split("T")[0],
         electionCycle: "2022 Saeima Elections",
         status: mapStatusToUI(p.status),
         statusJustification: p.explanation
             ? getLocalizedText(p.explanation, locale)
             : "",
-        statusUpdatedAt: p.updatedAt.toISOString().split("T")[0],
+        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
         statusUpdatedBy: "Kept Analytics Team",
         category: mapCategorySlug(p.category.slug),
-        description: p.explanation ? getLocalizedText(p.explanation, locale) : "",
+        description: p.description ? getLocalizedText(p.description, locale) : undefined,
         importance: undefined,
         deadline: undefined,
         tags: [],
@@ -372,26 +368,26 @@ export async function getPromisesByPolitician(
 
     return promises.map((p) => ({
         id: p.id,
-        title: getLocalizedText(p.text, locale),
-        fullText: getLocalizedText(p.text, locale),
+        title: getLocalizedText(p.title, locale),
+        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
         politicianId: p.politician.slug,
         politicianName: p.politician.name,
-        politicianRole: p.politician.bio ? getLocalizedText(p.politician.bio, locale) : "",
+        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
         politicianPhotoUrl: p.politician.imageUrl || "",
-        politicianIsInOffice: true,
-        partyId: p.politician.party.slug,
-        partyAbbreviation: partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase(),
-        partyLogoUrl: p.politician.party.logoUrl || undefined,
+        politicianIsInOffice: p.politician.isActive,
+        partyId: p.politician.party?.slug,
+        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
+        partyLogoUrl: p.politician.party?.logoUrl || undefined,
         datePromised: p.dateOfPromise.toISOString().split("T")[0],
         electionCycle: "2022 Saeima Elections",
         status: mapStatusToUI(p.status),
         statusJustification: p.explanation
             ? getLocalizedText(p.explanation, locale)
             : "",
-        statusUpdatedAt: p.updatedAt.toISOString().split("T")[0],
+        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
         statusUpdatedBy: "Kept Analytics Team",
         category: mapCategorySlug(p.category.slug),
-        description: p.explanation ? getLocalizedText(p.explanation, locale) : "",
+        description: p.description ? getLocalizedText(p.description, locale) : undefined,
         importance: undefined,
         deadline: undefined,
         tags: [],
@@ -431,26 +427,26 @@ export async function getPromisesByParty(
 
     return promises.map((p) => ({
         id: p.id,
-        title: getLocalizedText(p.text, locale),
-        fullText: getLocalizedText(p.text, locale),
+        title: getLocalizedText(p.title, locale),
+        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
         politicianId: p.politician.slug,
         politicianName: p.politician.name,
-        politicianRole: p.politician.bio ? getLocalizedText(p.politician.bio, locale) : "",
+        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
         politicianPhotoUrl: p.politician.imageUrl || "",
-        politicianIsInOffice: true,
-        partyId: p.politician.party.slug,
-        partyAbbreviation: partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase(),
-        partyLogoUrl: p.politician.party.logoUrl || undefined,
+        politicianIsInOffice: p.politician.isActive,
+        partyId: p.politician.party?.slug,
+        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
+        partyLogoUrl: p.politician.party?.logoUrl || undefined,
         datePromised: p.dateOfPromise.toISOString().split("T")[0],
         electionCycle: "2022 Saeima Elections",
         status: mapStatusToUI(p.status),
         statusJustification: p.explanation
             ? getLocalizedText(p.explanation, locale)
             : "",
-        statusUpdatedAt: p.updatedAt.toISOString().split("T")[0],
+        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
         statusUpdatedBy: "Kept Analytics Team",
         category: mapCategorySlug(p.category.slug),
-        description: p.explanation ? getLocalizedText(p.explanation, locale) : "",
+        description: p.description ? getLocalizedText(p.description, locale) : undefined,
         importance: undefined,
         deadline: undefined,
         tags: [],
@@ -481,25 +477,25 @@ export async function getPromisesByCategory(
 
     return promises.map((p) => ({
         id: p.id,
-        title: getLocalizedText(p.text, locale),
-        fullText: getLocalizedText(p.text, locale),
+        title: getLocalizedText(p.title, locale),
+        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
         politicianId: p.politician.slug,
         politicianName: p.politician.name,
-        politicianRole: p.politician.bio ? getLocalizedText(p.politician.bio, locale) : "",
+        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
         politicianPhotoUrl: p.politician.imageUrl || "",
-        politicianIsInOffice: true,
-        partyId: p.politician.party.slug,
-        partyAbbreviation: partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase(),
+        politicianIsInOffice: p.politician.isActive,
+        partyId: p.politician.party?.slug,
+        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
         datePromised: p.dateOfPromise.toISOString().split("T")[0],
         electionCycle: "2022 Saeima Elections",
         status: mapStatusToUI(p.status),
         statusJustification: p.explanation
             ? getLocalizedText(p.explanation, locale)
             : "",
-        statusUpdatedAt: p.updatedAt.toISOString().split("T")[0],
+        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
         statusUpdatedBy: "Kept Analytics Team",
         category: mapCategorySlug(p.category.slug),
-        description: p.explanation ? getLocalizedText(p.explanation, locale) : "",
+        description: p.description ? getLocalizedText(p.description, locale) : undefined,
         importance: undefined,
         deadline: undefined,
         tags: [],
@@ -528,20 +524,7 @@ export async function getFeaturedPromises(
     }
 }
 
-// ========== CATEGORIES ==========
 
-export async function getCategories(locale: Locale = "lv"): Promise<CategoryUI[]> {
-    const categories = await prisma.category.findMany({
-        orderBy: { createdAt: "asc" },
-    });
-
-    return categories.map((cat) => ({
-        id: mapCategorySlug(cat.slug),
-        slug: cat.slug,
-        name: getLocalizedText(cat.name, locale),
-        color: cat.color,
-    }));
-}
 
 // ========== RANKINGS ==========
 
@@ -565,9 +548,9 @@ export async function getPoliticianRankings(
                     id: pol.slug,
                     name: pol.name,
                     avatarUrl: pol.imageUrl || undefined,
-                    partyId: pol.party.slug,
-                    role: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
-                    isInOffice: true,
+                    partyId: pol.party?.slug,
+                    role: pol.role ? getLocalizedText(pol.role, locale) : undefined,
+                    isInOffice: pol.isActive,
                     totalPromises,
                     keptPromises,
                     keptPercentage:
@@ -608,7 +591,7 @@ export async function getPartyRankings(locale: Locale = "lv"): Promise<RankingIt
                     avatarUrl: party.logoUrl || undefined,
                     abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
                     color: party.color,
-                    isInCoalition: partyCoalitionStatus[party.slug] ?? false,
+                    isInCoalition: party.isCoalition, // Use correct field from DB
                     totalPromises,
                     keptPromises,
                     keptPercentage:
@@ -623,6 +606,81 @@ export async function getPartyRankings(locale: Locale = "lv"): Promise<RankingIt
         console.error("Error fetching party rankings:", error);
         return [];
     }
+}
+
+// ========== CATEGORIES ==========
+
+export async function getCategories(locale: Locale = "lv"): Promise<(CategoryUI & {
+    stats: {
+        total: number;
+        kept: number;
+        inProgress: number;
+        broken: number;
+    }
+})[]> {
+    const categories = await prisma.category.findMany({
+        include: {
+            promises: {
+                select: { status: true },
+            },
+        },
+        orderBy: { slug: "asc" },
+    });
+
+    return categories.map((cat) => {
+        const total = cat.promises.length;
+        const kept = cat.promises.filter((p) => p.status === "KEPT").length;
+        const inProgress = cat.promises.filter((p) => p.status === "IN_PROGRESS" || p.status === "PARTIAL").length; // group partial with in-progress? Or separate? UI has "inProgressCount". Status config: kept, partially-kept, in-progress, broken.
+        // UI (step 901) has: kept, in-progress, broken. 
+        // Logic in step 901: includes 'partially-kept'...? No, looks like it matches 'partially-kept' explicitly? 
+        // Line 49: `p.status === 'in-progress'`.
+        // Line 47: `p.status === 'kept'`.
+        // Line 48: `p.status === 'broken'`.
+        // What about partial? It might be ignored in the mini-stats or grouped.
+        // Let's group PARTIAL with IN_PROGRESS for simplicity or expose it.
+        // Let's match typical patterns. Kept, In Progress (inc partial), Broken.
+        // Or kept, partial, in progress, broken.
+        // The UI component I'll write can decide. I'll return specific counts.
+
+        const partial = cat.promises.filter((p) => p.status === "PARTIAL").length;
+        const broken = cat.promises.filter((p) => p.status === "NOT_KEPT").length;
+
+        return {
+            id: cat.slug,
+            slug: cat.slug,
+            name: getLocalizedText(cat.name, locale),
+            description: cat.description ? getLocalizedText(cat.description, locale) : undefined,
+            color: cat.color,
+            icon: cat.icon || undefined,
+            stats: {
+                total,
+                kept,
+                inProgress: inProgress + partial, // Combine for "Processing" or return separate.
+                partial,
+                broken,
+            }
+        };
+    });
+}
+
+export async function getCategoryBySlug(
+    slug: string,
+    locale: Locale = "lv"
+): Promise<CategoryUI | null> {
+    const category = await prisma.category.findUnique({
+        where: { slug },
+    });
+
+    if (!category) return null;
+
+    return {
+        id: category.slug, // id as slug
+        slug: category.slug,
+        name: getLocalizedText(category.name, locale),
+        description: category.description ? getLocalizedText(category.description, locale) : undefined,
+        color: category.color,
+        icon: category.icon || undefined,
+    };
 }
 
 // ========== STATS ==========

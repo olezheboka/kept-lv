@@ -34,7 +34,7 @@ const PoliticianDetailPage = async ({ params }: PageProps) => {
     }
 
     // politician.partyId is slug
-    const party = await getPartyBySlug(politician.partyId);
+    const party = politician.partyId ? await getPartyBySlug(politician.partyId) : null;
     const promises = await getPromisesByPolitician(politician.id); // Wait, getPromisesByPolitician takes SLUG or ID?
     // In db.ts: function getPromisesByPolitician(politicianSlug: string, ...) requires slug.
     // politician.id IS slug in PoliticianUI (db.ts line 210: id: pol.slug).

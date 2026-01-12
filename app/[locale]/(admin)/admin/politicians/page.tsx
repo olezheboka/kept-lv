@@ -64,12 +64,18 @@ export default async function AdminPoliticiansPage({ params }: Props) {
                   {politician.name}
                 </td>
                 <td className="px-6 py-4">
-                  <span
-                    className="px-3 py-1 rounded-full text-xs font-bold text-white"
-                    style={{ backgroundColor: politician.party.color }}
-                  >
-                    {(politician.party.name as any).lv || (politician.party.name as any).en}
-                  </span>
+                  {politician.party ? (
+                    <span
+                      className="px-3 py-1 rounded-full text-xs font-bold text-white"
+                      style={{ backgroundColor: politician.party.color }}
+                    >
+                      {(politician.party.name as any).lv || (politician.party.name as any).en}
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-500 text-white">
+                      Independent
+                    </span>
+                  )}
                 </td>
                 <td className="px-6 py-4 text-gray-300">
                   {politician._count.promises}

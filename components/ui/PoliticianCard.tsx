@@ -15,7 +15,7 @@ export function PoliticianCard({ politician }: PoliticianCardProps) {
   const locale = useLocale();
   const t = useTranslations("politicians");
 
-  const partyName = getLocalizedText(politician.party.name, locale);
+  const partyName = politician.party ? getLocalizedText(politician.party.name, locale) : "Independent";
   const promiseCount = politician.promises?.length || 0;
 
   return (
@@ -33,7 +33,7 @@ export function PoliticianCard({ politician }: PoliticianCardProps) {
         {/* Party color accent */}
         <div
           className="absolute top-0 left-0 right-0 h-1"
-          style={{ backgroundColor: politician.party.color }}
+          style={{ backgroundColor: politician.party?.color || "gray" }}
         />
 
         {/* Politician Image */}

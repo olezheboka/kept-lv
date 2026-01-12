@@ -65,7 +65,7 @@ export default async function AdminPromisesPage({ params }: Props) {
               <tr key={promise.id} className="hover:bg-white/5 transition-colors">
                 <td className="px-6 py-4">
                   <p className="text-white font-medium line-clamp-2 max-w-md">
-                    {(promise.text as any).lv || (promise.text as any).en}
+                    {(promise.title as any).lv || (promise.title as any).en}
                   </p>
                 </td>
                 <td className="px-6 py-4 text-gray-300">
@@ -75,9 +75,9 @@ export default async function AdminPromisesPage({ params }: Props) {
                   <span className={`px-3 py-1 rounded-full text-xs font-bold
                     ${promise.status === "KEPT" ? "bg-emerald-500/20 text-emerald-400" :
                       promise.status === "NOT_KEPT" ? "bg-rose-500/20 text-rose-400" :
-                      promise.status === "IN_PROGRESS" ? "bg-amber-500/20 text-amber-400" :
-                      promise.status === "PARTIAL" ? "bg-violet-500/20 text-violet-400" :
-                      "bg-gray-500/20 text-gray-400"
+                        promise.status === "IN_PROGRESS" ? "bg-amber-500/20 text-amber-400" :
+                          promise.status === "PARTIAL" ? "bg-violet-500/20 text-violet-400" :
+                            "bg-gray-500/20 text-gray-400"
                     }`}>
                     {promise.status}
                   </span>
