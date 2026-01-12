@@ -61,7 +61,13 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
             <div className="flex-1 min-w-0 flex flex-col justify-center">
                 <div className="mb-1.5 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap text-sm leading-tight">
-                        <span className="font-semibold text-foreground truncate">{item.name}</span>
+                        <Link
+                            href={type === 'politician' ? `/politicians/${item.id}` : `/parties/${item.id}`}
+                            className="font-semibold text-foreground truncate hover:underline underline-offset-4 decoration-primary/30 hover:decoration-primary transition-all"
+                            suppressHydrationWarning
+                        >
+                            {item.name}
+                        </Link>
                         {type === 'politician' && party && (
                             <PartyBadge
                                 party={party}
