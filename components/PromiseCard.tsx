@@ -9,6 +9,7 @@ import { Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface PromiseCardProps {
   promise: Promise;
@@ -39,26 +40,36 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
             </div>
 
             {/* Author & Party - Top Left */}
-            <div className="flex flex-col gap-1 mb-3 pt-1">
-              <div className="flex items-center gap-2">
-                <span className="text-base font-medium text-foreground">
+            <div className="flex items-start gap-3 mb-4 pt-1 pr-8">
+              <PartyBadge
+                party={party}
+                variant="avatar"
+                size="md"
+                className="flex-shrink-0 mt-0.5"
+              />
+              <div className="flex flex-col min-w-0 flex-1">
+                <span className="text-base font-semibold text-foreground leading-tight truncate">
                   {politician.name}
                 </span>
-                <PartyBadge party={party} />
-              </div>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-xs text-muted-foreground/70">
-                  {politician.role}
-                </span>
-                {politician.isInOffice ? (
-                  <span className="flex-shrink-0 px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] font-medium rounded-full">
-                    Amatā
-                  </span>
-                ) : (
-                  <span className="flex-shrink-0 px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] font-medium rounded-full">
-                    Bijušais
-                  </span>
-                )}
+                <div className="flex items-center gap-2 text-xs text-muted-foreground w-full">
+                  <TooltipProvider>
+                    <Tooltip delayDuration={300}>
+                      <TooltipTrigger asChild>
+                        <span className="truncate cursor-default hover:text-foreground transition-colors">
+                          {politician.role}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-[300px]">
+                        {politician.role}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  {politician.isInOffice && (
+                    <span className="flex-shrink-0 px-1.5 py-0.5 bg-muted/60 text-muted-foreground text-[10px] font-medium rounded-full whitespace-nowrap">
+                      Amatā
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 

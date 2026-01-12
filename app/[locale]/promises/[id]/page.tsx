@@ -7,6 +7,7 @@ import { StatusBadge } from '@/components/StatusBadge';
 import { PartyBadge } from '@/components/PartyBadge';
 import { PromiseCard } from '@/components/PromiseCard';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getPromiseById, getPoliticianById, getPartyById, getPromisesByPolitician, getPromisesByCategory } from '@/lib/data';
 import { CATEGORIES } from '@/lib/types';
@@ -73,29 +74,44 @@ const PromiseDetail = () => {
                         >
                             {/* Header Section: Author & Date */}
                             {politician && party && (
-                                <div className="mb-4 border-b border-border/50 pb-3">
+                                <div className="mb-6 pb-6 border-b border-border/50">
                                     <div className="flex flex-col md:flex-row items-start gap-6">
                                         <div className="flex-1 text-left">
-                                            <div className="flex flex-wrap items-center justify-start gap-4 mb-2">
-                                                <Link href={`/politicians/${politician.id}`} className="group" suppressHydrationWarning>
-                                                    <h2 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-accent transition-colors">
-                                                        {politician.name}
-                                                    </h2>
-                                                </Link>
-                                                {party && <PartyBadge party={party} size="md" showFullName />}
-                                            </div>
+                                            <div className="flex items-start gap-4">
+                                                <PartyBadge
+                                                    party={party}
+                                                    variant="avatar"
+                                                    size="xl"
+                                                    className="flex-shrink-0 mt-1"
+                                                />
+                                                <div className="flex-col">
+                                                    <Link href={`/politicians/${politician.id}`} className="group inline-block" suppressHydrationWarning>
+                                                        <h2 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-accent transition-colors leading-tight mb-1">
+                                                            {politician.name}
+                                                        </h2>
+                                                    </Link>
 
-                                            <div className="flex flex-wrap items-center justify-start gap-3 mb-4 text-base text-muted-foreground">
-                                                <span>{politician.role}</span>
-                                                {politician.isInOffice ? (
-                                                    <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
-                                                        Amatā
-                                                    </span>
-                                                ) : (
-                                                    <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
-                                                        Bijušais
-                                                    </span>
-                                                )}
+                                                    <div className="flex items-center gap-3 text-base text-muted-foreground min-w-0 w-full mt-1">
+                                                        <TooltipProvider>
+                                                            <Tooltip delayDuration={300}>
+                                                                <TooltipTrigger asChild>
+                                                                    <span className="truncate cursor-default hover:text-foreground transition-colors max-w-[200px] md:max-w-[400px]">
+                                                                        {politician.role}
+                                                                    </span>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent side="bottom" className="max-w-[300px]">
+                                                                    {politician.role}
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
+
+                                                        {politician.isInOffice && (
+                                                            <span className="flex-shrink-0 px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full whitespace-nowrap">
+                                                                Amatā
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MultiSelectDropdown } from '@/components/ui/multi-select-dropdown';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { politicians, parties, getPartyById, getPromisesByPolitician } from '@/lib/data';
 import { Search, ArrowUpDown } from 'lucide-react';
 
@@ -91,14 +92,15 @@ const Politicians = () => {
             <section className="py-8">
                 <div className="container-wide">
                     {/* Filters */}
-                    <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                        <div className="relative flex-1 max-w-md">
+                    {/* Filters */}
+                    <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-8">
+                        <div className="relative w-full sm:flex-1 sm:max-w-md">
                             <Input
                                 type="search"
                                 placeholder="Meklēt politiķi..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-10"
+                                className="pl-10 w-full"
                             />
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         </div>
@@ -112,25 +114,27 @@ const Politicians = () => {
                             />
                         </div>
 
-                        <div className="w-full sm:w-[200px]">
-                            <Select value={sortBy} onValueChange={setSortBy}>
-                                <SelectTrigger>
-                                    <div className="flex items-center gap-2">
-                                        <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-                                        <SelectValue placeholder="Kārtot pēc" />
-                                    </div>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="default">Bez kārtošanas</SelectItem>
-                                    <SelectItem value="kept-percentage">% izpildīts</SelectItem>
-                                    <SelectItem value="kept-count"># izpildīts</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
+                        <div className="flex flex-row justify-between items-center w-full sm:w-auto gap-4 flex-wrap">
+                            <div className="flex-1 sm:flex-none sm:w-[200px]">
+                                <Select value={sortBy} onValueChange={setSortBy}>
+                                    <SelectTrigger>
+                                        <div className="flex items-center gap-2">
+                                            <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+                                            <SelectValue placeholder="Kārtot pēc" />
+                                        </div>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="default">Bez kārtošanas</SelectItem>
+                                        <SelectItem value="kept-percentage">% izpildīts</SelectItem>
+                                        <SelectItem value="kept-count"># izpildīts</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
 
-                        <div className="flex items-center space-x-2">
-                            <Switch id="in-office" checked={showInOffice} onCheckedChange={setShowInOffice} />
-                            <Label htmlFor="in-office" className="cursor-pointer">Tikai amatā</Label>
+                            <div className="flex items-center space-x-2 whitespace-nowrap">
+                                <Switch id="in-office" checked={showInOffice} onCheckedChange={setShowInOffice} />
+                                <Label htmlFor="in-office" className="cursor-pointer">Tikai amatā</Label>
+                            </div>
                         </div>
                     </div>
 
@@ -160,33 +164,34 @@ const Politicians = () => {
                                         <Card className="group overflow-hidden border-border/50 hover:shadow-elevated hover:border-border transition-all duration-300">
                                             <CardContent className="p-5">
                                                 <div className="flex items-start gap-4 mb-4">
-                                                    <div className="flex-shrink-0">
-                                                        <div
-                                                            className="h-16 w-16 rounded-xl flex items-center justify-center text-white font-bold text-lg overflow-hidden shadow-md"
-                                                            style={{ backgroundColor: party?.color || '#333' }}
-                                                        >
-                                                            {party?.logoUrl ? (
-                                                                <img src={party.logoUrl} alt={party.name} className="h-full w-full object-cover" />
-                                                            ) : (
-                                                                <span>{party?.abbreviation || '?'}</span>
-                                                            )}
-                                                        </div>
-                                                    </div>
+                                                    {party && (
+                                                        <PartyBadge
+                                                            party={party}
+                                                            variant="avatar"
+                                                            size="lg"
+                                                            className="flex-shrink-0"
+                                                        />
+                                                    )}
                                                     <div className="flex-1 min-w-0">
-                                                        <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors truncate">
+                                                        <h3 className="font-semibold text-foreground text-lg leading-tight group-hover:text-accent transition-colors truncate mb-1">
                                                             {politician.name}
                                                         </h3>
-                                                        <div className="flex items-center gap-1.5 flex-wrap">
-                                                            <span className="text-sm text-muted-foreground truncate">
-                                                                {politician.role}
-                                                            </span>
-                                                            {politician.isInOffice ? (
-                                                                <span className="flex-shrink-0 px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] font-medium rounded-full">
+                                                        <div className="flex items-center gap-2 min-w-0 text-sm text-muted-foreground w-full">
+                                                            <TooltipProvider>
+                                                                <Tooltip delayDuration={300}>
+                                                                    <TooltipTrigger asChild>
+                                                                        <span className="truncate cursor-default hover:text-foreground transition-colors">
+                                                                            {politician.role}
+                                                                        </span>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent side="bottom" className="max-w-[300px]">
+                                                                        {politician.role}
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
+                                                            {politician.isInOffice && (
+                                                                <span className="flex-shrink-0 px-2 py-0.5 bg-muted/60 text-muted-foreground text-xs font-medium rounded-full whitespace-nowrap">
                                                                     Amatā
-                                                                </span>
-                                                            ) : (
-                                                                <span className="flex-shrink-0 px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] font-medium rounded-full">
-                                                                    Bijušais
                                                                 </span>
                                                             )}
                                                         </div>
