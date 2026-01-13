@@ -243,24 +243,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
 
                     <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
                         <h2 className="text-base font-semibold text-foreground">Avots</h2>
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-foreground mb-1.5">
-                                    Tips
-                                </label>
-                                <select
-                                    value={formData.sourceType}
-                                    onChange={(e) => setFormData({ ...formData, sourceType: e.target.value })}
-                                    className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                >
-                                    <option value="VIDEO">Video</option>
-                                    <option value="ARTICLE">Raksts</option>
-                                    <option value="INTERVIEW">Intervija</option>
-                                    <option value="SOCIAL_MEDIA">Sociālie tīkli</option>
-                                    <option value="DOCUMENT">Dokuments</option>
-                                </select>
-                            </div>
-
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-foreground mb-1.5">
                                     URL

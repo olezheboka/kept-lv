@@ -22,6 +22,14 @@ interface PromiseDetailClientProps {
     relatedByCategory: PromiseUI[];
 }
 
+const extractDomain = (url: string) => {
+    try {
+        return new URL(url).hostname.replace('www.', '');
+    } catch {
+        return url;
+    }
+};
+
 export const PromiseDetailClient = ({
     promise,
     politician,
@@ -214,11 +222,22 @@ export const PromiseDetailClient = ({
                                             <span className="opacity-70">Atjaunināts:</span>
                                             <span className="font-medium">{format(new Date(promise.statusUpdatedAt), 'dd.MM.yyyy')}</span>
                                         </div>
-                                        <div className="hidden sm:block w-px h-3 bg-foreground/20"></div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="opacity-70">Avots:</span>
-                                            <span className="font-medium">{promise.statusUpdatedBy}</span>
-                                        </div>
+                                        {promise.sources.length > 0 && (
+                                            <>
+                                                <div className="hidden sm:block w-px h-3 bg-foreground/20"></div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="opacity-70">Avots:</span>
+                                                    <a
+                                                        href={promise.sources[0].url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="font-medium hover:underline text-primary"
+                                                    >
+                                                        {promise.sources[0].title || extractDomain(promise.sources[0].url)}
+                                                    </a>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>
