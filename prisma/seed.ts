@@ -71,8 +71,16 @@ async function main() {
   for (const cat of categoriesData) {
     const created = await prisma.category.upsert({
       where: { slug: cat.slug },
-      update: { name: cat.name, color: cat.color, icon: cat.icon },
-      create: cat,
+      update: {
+        name: cat.name,
+        // description: No description in source data, skip or use default
+      },
+      create: {
+        slug: cat.slug,
+        name: cat.name,
+        description: `Kategorija: ${cat.name}`,
+        // imageUrl: undefined // Optional, can omit
+      },
     });
     categories[cat.slug] = created;
   }
@@ -165,7 +173,14 @@ async function main() {
         websiteUrl: party.websiteUrl,
         isCoalition: party.isCoalition,
       },
-      create: party,
+      create: {
+        slug: party.slug,
+        name: party.name,
+        description: party.description,
+        logoUrl: party.logoUrl,
+        websiteUrl: party.websiteUrl,
+        isCoalition: party.isCoalition,
+      },
     });
     parties[party.slug] = created;
   }

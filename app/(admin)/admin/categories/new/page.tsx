@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { slugify } from "@/lib/utils";
-import { ImageUpload } from "@/components/ui/ImageUpload";
+import { SLUG_ICON_MAP } from "@/lib/categoryIcons";
+import { TrendingUp } from "lucide-react";
 
 export default function NewCategoryPage() {
   /* No translations needed */
@@ -15,7 +16,6 @@ export default function NewCategoryPage() {
     name: "",
     slug: "",
     description: "",
-    imageUrl: "",
   });
 
   useEffect(() => {
@@ -33,7 +33,6 @@ export default function NewCategoryPage() {
         name: formData.name,
         slug: formData.slug || slugify(formData.name),
         description: formData.description,
-        imageUrl: formData.imageUrl,
       };
 
       const res = await fetch("/api/categories", {
@@ -117,15 +116,26 @@ export default function NewCategoryPage() {
         <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
           <h2 className="text-base font-semibold text-foreground mb-6">Icon</h2>
           <div className="max-w-md">
-            <label className="block text-sm font-medium text-foreground mb-1.5">
-              Category Icon
-            </label>
-            <ImageUpload
-              value={formData.imageUrl}
-              onChange={(url) => setFormData({ ...formData, imageUrl: url })}
-            />
-            <p className="text-xs text-muted-foreground mt-2">
-              Upload an SVG or PNG icon. Square aspect ratio recommended.
+            <div className="p-4 border border-border rounded-xl bg-muted/30">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-accent shrink-0">
+                  {(() => {
+                    // Try lookup by current slug (or generated from name)
+                    const currentSlug = formData.slug || slugify(formData.name);
+                    const IconComponent = SLUG_ICON_MAP[currentSlug] || TrendingUp;
+                    return <IconComponent className="w-6 h-6" />;
+                  })()}
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-foreground">Icon Preview</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    The icon is determined automatically by the slug.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground mt-4">
+              Icons are mapped to the category slug (e.g. "agriculture" &rarr; Wheat icon).
             </p>
           </div>
         </div>

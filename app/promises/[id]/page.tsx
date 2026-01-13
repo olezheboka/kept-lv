@@ -48,7 +48,6 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
             id: categoryInfo.id,
             slug: categoryInfo.id,
             name: categoryInfo.name,
-            color: "gray" // Default color or map it
         };
     } else {
         // Fallback or maybe promise.category is just the slug
@@ -56,7 +55,6 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
             id: promise.category,
             slug: promise.category,
             name: promise.category, // Fallback name
-            color: "gray"
         };
     }
 
