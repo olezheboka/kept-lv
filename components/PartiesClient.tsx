@@ -278,58 +278,34 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                 <Link href={`/parties/${party.id}`} className="block h-full">
                                                     <Card className="group overflow-hidden border-border/50 hover:shadow-elevated hover:border-border transition-all duration-300 h-full">
                                                         <CardContent className="p-6">
-                                                            {/* Party Header */}
-                                                            <div className="flex items-start gap-4 mb-6">
-                                                                <div
-                                                                    className={`w-14 h-14 rounded-xl flex items-center justify-center font-bold text-base overflow-hidden relative shrink-0 ${party.logoUrl ? 'bg-transparent' : 'bg-muted text-muted-foreground'}`}
-                                                                >
-                                                                    {party.logoUrl ? (
-                                                                        <img
-                                                                            src={party.logoUrl}
-                                                                            alt={party.abbreviation}
-                                                                            className={`h-full w-full object-contain ${(party.slug === 'prog' || party.slug === 'jv') ? 'p-1.5' : ''
-                                                                                }`}
-                                                                        />
-                                                                    ) : (
-                                                                        party.abbreviation
-                                                                    )}
-                                                                </div>
-                                                                <div className="flex-1 min-w-0">
-                                                                    <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors text-base">
+                                                            {/* Party Header - Politician Card Style */}
+                                                            <div className="flex flex-col gap-1 mb-4">
+                                                                <div className="flex items-center gap-2 flex-wrap max-w-full">
+                                                                    <h3 className="text-sm font-semibold text-foreground leading-tight truncate group-hover:text-accent transition-colors">
                                                                         {party.name}
                                                                     </h3>
-                                                                    <div className="flex items-center gap-2 mt-1">
-                                                                        {party.isInCoalition ? (
-                                                                            <span className="px-2 py-0.5 bg-status-kept-bg text-status-kept text-[10px] font-medium rounded-full">
-                                                                                Koalīcijā
-                                                                            </span>
-                                                                        ) : (
-                                                                            <span className="px-2 py-0.5 bg-muted text-muted-foreground text-[10px] font-medium rounded-full">
-                                                                                Opozīcijā
-                                                                            </span>
-                                                                        )}
-                                                                    </div>
+                                                                    {/* Party badge removed */}
+                                                                </div>
+
+                                                                <div className="flex items-center gap-2 mt-0">
+                                                                    {party.isInCoalition ? (
+                                                                        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
+                                                                            Koalīcijā
+                                                                        </span>
+                                                                    ) : (
+                                                                        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
+                                                                            Opozīcijā
+                                                                        </span>
+                                                                    )}
                                                                 </div>
                                                             </div>
 
-                                                            {/* Stats */}
-                                                            <div className="grid grid-cols-2 gap-4 mb-6">
-                                                                <div className="text-center p-3 bg-muted/30 rounded-lg">
-                                                                    <div className="text-xl font-bold text-foreground">{party.mpCount}</div>
-                                                                    <div className="text-[10px] text-muted-foreground">Deputāti</div>
-                                                                </div>
-                                                                <div className="text-center p-3 bg-muted/30 rounded-lg">
-                                                                    <div className="text-xl font-bold text-foreground">{total}</div>
-                                                                    <div className="text-[10px] text-muted-foreground">Solījumi</div>
-                                                                </div>
-                                                            </div>
-
-                                                            {/* Progress Bar */}
+                                                            {/* Stats Bar */}
                                                             {total > 0 && (
-                                                                <div>
+                                                                <div className="mt-auto">
                                                                     <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-2">
-                                                                        <span>Solījumu izpilde</span>
-                                                                        <span>{Math.round((keptCount / total) * 100)}%</span>
+                                                                        <span>{total} solījumi</span>
+                                                                        <span>{Math.round((keptCount / total) * 100)}% izpildīti</span>
                                                                     </div>
                                                                     <div className="h-2 bg-muted rounded-full overflow-hidden flex">
                                                                         {keptCount > 0 && (
@@ -354,11 +330,8 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                                 </div>
                                                             )}
 
-                                                            {/* Politicians count */}
-                                                            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border/50 text-xs text-muted-foreground">
-                                                                <Users className="h-4 w-4" />
-                                                                <span>{partyPoliticians.length} politiķi</span>
-                                                            </div>
+                                                            {/* Politicians count (Optional - keeping generic icon style for now or removing if strictly following politician card which has no extra footer) */}
+                                                            {/* Removed User icon footer to match PoliticianCard exact style which ends with progress bar */}
                                                         </CardContent>
                                                     </Card>
                                                 </Link>

@@ -43,20 +43,6 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
                 <span className="text-sm font-semibold text-foreground leading-tight truncate">
                   {promise.politicianName}
                 </span>
-                {promise.partyLogoUrl ? (
-                  <div className="h-5 w-auto min-w-[20px] relative flex items-center justify-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={promise.partyLogoUrl}
-                      alt={promise.partyAbbreviation}
-                      className="h-full w-auto object-contain opacity-40"
-                    />
-                  </div>
-                ) : (
-                  <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-muted text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                    {promise.partyAbbreviation}
-                  </span>
-                )}
               </div>
 
               <div className="flex items-center gap-2 mt-0">

@@ -20,6 +20,9 @@ export const Footer = () => {
 
           {/* Navigation - Inline */}
           <nav className="flex flex-wrap items-center gap-6">
+            <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
+              Sākums
+            </Link>
             <Link href="/promises" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
               Solījumi
             </Link>

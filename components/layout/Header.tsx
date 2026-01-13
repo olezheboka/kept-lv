@@ -25,7 +25,7 @@ export function Header() {
       className="sticky top-0 z-50 glass border-b border-white/10"
     >
       <div className="container-wide py-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between relative">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2" suppressHydrationWarning>
             <motion.div
@@ -38,7 +38,7 @@ export function Header() {
           </Link>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-8 absolute left-1/2 transform -translate-x-1/2">
             {navItems.map((item) => (
               <Link key={item.href} href={item.href} suppressHydrationWarning>
                 <motion.span

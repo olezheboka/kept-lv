@@ -288,7 +288,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                                 <option value="KEPT">Kept</option>
                                 <option value="NOT_KEPT">Not Kept</option>
                                 <option value="PARTIAL">Partially Kept</option>
-                                <option value="ABANDONED">Abandoned</option>
+                                <option value="ABANDONED">Not Rated (Nav novērtēts)</option>
                             </select>
                         </div>
 

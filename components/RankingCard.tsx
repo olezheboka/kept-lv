@@ -58,7 +58,7 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
-            className="flex items-center gap-4 relative py-2 min-h-[3.5rem]"
+            className="flex items-center gap-4 relative py-2 min-h-[3.5rem] group"
         >
             <div className="flex-shrink-0 w-6 flex justify-center">
                 {getRankIcon(index)}
@@ -78,16 +78,8 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                         >
                             {item.name}
                         </Link>
-                        {type === 'politician' && item.partyLogoUrl && (
-                            <div className="h-5 w-auto min-w-[20px] relative flex items-center justify-center flex-shrink-0">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src={item.partyLogoUrl}
-                                    alt={item.partyId || 'Party'}
-                                    className="h-full w-auto object-contain opacity-40"
-                                />
-                            </div>
-                        )}
+                        {/* Logo rendering for both Politician and Party */}
+                        {/* Party badge removed */}
                     </div>
                     {type === 'politician' && item.role && (
                         <div className="flex items-center gap-2 text-xs text-muted-foreground w-full mt-0.5">
@@ -113,11 +105,11 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                     {type === 'party' && (
                         <div className="flex items-center gap-2 text-xs text-muted-foreground w-full mt-0.5">
                             {item.isInCoalition ? (
-                                <span className="flex-shrink-0 px-1.5 py-0 bg-muted/60 text-muted-foreground text-[10px] font-medium rounded-full whitespace-nowrap border border-border/50">
+                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
                                     Koalīcijā
                                 </span>
                             ) : (
-                                <span className="flex-shrink-0 px-1.5 py-0 bg-muted/60 text-muted-foreground text-[10px] font-medium rounded-full whitespace-nowrap border border-border/50">
+                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
                                     Opozīcijā
                                 </span>
                             )}

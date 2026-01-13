@@ -100,7 +100,7 @@ function mapStatusToUI(status: string): PromiseUI["status"] {
         NOT_KEPT: "broken",
         IN_PROGRESS: "in-progress",
         PARTIAL: "partially-kept",
-        ABANDONED: "broken",
+        ABANDONED: "not-rated",
     };
     return statusMap[status] || "not-rated";
 }
@@ -633,6 +633,7 @@ export async function getPoliticianRankings(
                     keptPromises,
                     keptPercentage:
                         totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0,
+                    abbreviation: pol.party ? (partyAbbreviations[pol.party.slug] || pol.party.slug.toUpperCase()) : undefined,
                 };
             })
             .filter((item) => item.totalPromises > 0)

@@ -294,24 +294,18 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                     <Card className="group overflow-hidden border-border/50 hover:shadow-elevated hover:border-border transition-all duration-300">
                                                         <CardContent className="p-5">
                                                             <div className="flex flex-col gap-1 mb-4">
-                                                                <div className="flex items-center gap-2 flex-wrap">
-                                                                    <h3 className="font-semibold text-foreground text-base leading-tight group-hover:text-accent transition-colors truncate">
+                                                                <div className="flex items-center gap-2 flex-wrap max-w-full">
+                                                                    <h3 className="text-sm font-semibold text-foreground leading-tight truncate group-hover:text-accent transition-colors">
                                                                         {politician.name}
                                                                     </h3>
-                                                                    {party && (
-                                                                        <PartyBadge
-                                                                            party={party}
-                                                                            size="md"
-                                                                            variant="avatar"
-                                                                            className="opacity-90 hover:opacity-100"
-                                                                        />
-                                                                    )}
+                                                                    {/* Party badge removed */}
                                                                 </div>
-                                                                <div className="flex items-center gap-2 min-w-0 text-xs text-muted-foreground w-full">
+
+                                                                <div className="flex items-center gap-2 mt-0">
                                                                     <TooltipProvider>
                                                                         <Tooltip delayDuration={300}>
                                                                             <TooltipTrigger asChild>
-                                                                                <span className="truncate cursor-default hover:text-foreground transition-colors">
+                                                                                <span className="text-xs text-muted-foreground truncate max-w-[200px] hover:text-foreground transition-colors">
                                                                                     {politician.role}
                                                                                 </span>
                                                                             </TooltipTrigger>
@@ -321,7 +315,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                                         </Tooltip>
                                                                     </TooltipProvider>
                                                                     {politician.isInOffice && (
-                                                                        <span className="flex-shrink-0 px-2 py-0.5 bg-muted/60 text-muted-foreground text-[10px] font-medium rounded-full whitespace-nowrap">
+                                                                        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
                                                                             Amatā
                                                                         </span>
                                                                     )}

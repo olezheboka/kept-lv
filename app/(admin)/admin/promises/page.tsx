@@ -78,7 +78,7 @@ export default async function AdminPromisesPage() {
                           promise.status === "PARTIAL" ? "bg-amber-50 text-amber-700 border-amber-200" :
                             "bg-gray-50 text-gray-600 border-gray-200"
                     }`}>
-                    {promise.status}
+                    {promise.status === 'ABANDONED' ? 'Not Rated' : promise.status}
                   </span>
                 </td>
                 <td className="px-4 py-3 align-top text-muted-foreground">
