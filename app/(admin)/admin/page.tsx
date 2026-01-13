@@ -1,4 +1,3 @@
-import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import {
@@ -61,13 +60,13 @@ async function getDashboardStats() {
 }
 
 export default async function AdminDashboard() {
-  const t = await getTranslations({ locale: "lv", namespace: "admin" });
+  /* No translations needed */
   const stats = await getDashboardStats();
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">{t("dashboard")}</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
         <p className="text-muted-foreground mt-2">Overview of the Solījums.lv platform data.</p>
       </div>
 
@@ -79,7 +78,7 @@ export default async function AdminDashboard() {
               <FileText className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{t("stats.totalPromises")}</p>
+              <p className="text-sm font-medium text-muted-foreground">Total Promises</p>
               <p className="text-2xl font-bold text-foreground">{stats.totalPromises}</p>
             </div>
           </div>
@@ -91,7 +90,7 @@ export default async function AdminDashboard() {
               <Users className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{t("stats.totalPoliticians")}</p>
+              <p className="text-sm font-medium text-muted-foreground">Total Politicians</p>
               <p className="text-2xl font-bold text-foreground">{stats.totalPoliticians}</p>
             </div>
           </div>
@@ -103,7 +102,7 @@ export default async function AdminDashboard() {
               <Building2 className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{t("stats.totalParties")}</p>
+              <p className="text-sm font-medium text-muted-foreground">Total Parties</p>
               <p className="text-2xl font-bold text-foreground">{stats.totalParties}</p>
             </div>
           </div>
@@ -115,7 +114,7 @@ export default async function AdminDashboard() {
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">{t("stats.keptRate")}</p>
+              <p className="text-sm font-medium text-muted-foreground">Kept Rate</p>
               <p className="text-2xl font-bold text-foreground">{stats.keptRate}%</p>
             </div>
           </div>

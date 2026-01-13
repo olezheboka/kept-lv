@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -9,7 +8,6 @@ import { slugify } from "@/lib/utils";
 
 export default function EditPartyPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
-    const t = useTranslations("admin");
     const router = useRouter();
 
     const [loading, setLoading] = useState(true);
@@ -109,7 +107,7 @@ export default function EditPartyPage({ params }: { params: Promise<{ id: string
                         <ArrowLeft className="w-5 h-5 text-muted-foreground" />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("edit")} Party</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Edit Party</h1>
                         <p className="text-sm text-muted-foreground mt-1">Update party details.</p>
                     </div>
                 </div>

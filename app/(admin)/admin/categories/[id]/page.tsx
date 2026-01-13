@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -9,7 +8,6 @@ import { slugify } from "@/lib/utils";
 
 export default function EditCategoryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
-    const t = useTranslations("admin");
     const router = useRouter();
 
     const [loading, setLoading] = useState(true);
@@ -116,7 +114,7 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
                         <ArrowLeft className="w-5 h-5 text-muted-foreground" />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("edit")} Category</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Edit Category</h1>
                         <p className="text-sm text-muted-foreground mt-1">Update category details.</p>
                     </div>
                 </div>
@@ -136,7 +134,7 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                placeholder="Kategorijas nosaukums"
+                                placeholder="Category name"
                             />
                         </div>
 

@@ -1,7 +1,6 @@
 "use client";
 
 
-import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -13,7 +12,6 @@ interface Party {
 }
 
 export default function NewPoliticianPage() {
-  const t = useTranslations("admin");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [parties, setParties] = useState<Party[]>([]);
@@ -78,7 +76,7 @@ export default function NewPoliticianPage() {
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">{t("addNew")} Politician</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Add New Politician</h1>
           <p className="text-muted-foreground mt-1">Create a new politician profile.</p>
         </div>
         <Link href="/admin/politicians" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">

@@ -1,13 +1,12 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { slugify } from "@/lib/utils";
 
 export default function NewPartyPage() {
-  const t = useTranslations("admin");
+  /* No translations */
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -60,7 +59,7 @@ export default function NewPartyPage() {
     <div className="max-w-xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">{t("addNew")} Party</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Add New Party</h1>
           <p className="text-muted-foreground mt-1">Create a new political party.</p>
         </div>
         <Link href="/admin/parties" className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium">

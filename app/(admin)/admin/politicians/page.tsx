@@ -1,4 +1,4 @@
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { DeleteButton } from "@/components/ui/DeleteButton";
@@ -21,14 +21,14 @@ async function getPoliticians() {
 }
 
 export default async function AdminPoliticiansPage() {
-  const t = await getTranslations({ locale: "lv", namespace: "admin" });
+  /* No translations needed */
   const politicians = await getPoliticians();
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("managePoliticians")}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Manage Politicians</h1>
           <p className="text-sm text-muted-foreground mt-1">Manage politicians and their affiliations.</p>
         </div>
         <Link
@@ -36,7 +36,7 @@ export default async function AdminPoliticiansPage() {
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
         >
           <Plus className="w-4 h-4" />
-          {t("addNew")}
+          Add New
         </Link>
       </div>
 

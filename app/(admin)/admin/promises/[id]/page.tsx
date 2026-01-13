@@ -143,13 +143,13 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                     <Link
                         href="/admin/promises"
                         className="p-2 -ml-2 rounded-lg hover:bg-muted transition-colors"
-                        title="Atpakaļ"
+                        title="Back"
                     >
                         <ArrowLeft className="w-5 h-5 text-muted-foreground" />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Labot Solījumu</h1>
-                        <p className="text-sm text-muted-foreground mt-1">Atjauniniet solījuma informāciju un statusu.</p>
+                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Edit Promise</h1>
+                        <p className="text-sm text-muted-foreground mt-1">Update promise details and status.</p>
                     </div>
                 </div>
             </div>
@@ -157,11 +157,11 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
             <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Promise Text */}
                 <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
-                    <h2 className="text-base font-semibold text-foreground">Pamatinformācija</h2>
+                    <h2 className="text-base font-semibold text-foreground">Basic Info</h2>
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Nosaukums <span className="text-red-500">*</span>
+                                Title <span className="text-red-500">*</span>
                             </label>
                             <textarea
                                 required
@@ -169,12 +169,12 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                 rows={2}
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
-                                placeholder="Solījuma virsraksts..."
+                                placeholder="Promise title..."
                             />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Apraksts <span className="text-red-500">*</span>
+                                Description <span className="text-red-500">*</span>
                             </label>
                             <textarea
                                 required
@@ -182,7 +182,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 rows={4}
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                placeholder="Detalizēts apraksts..."
+                                placeholder="Detailed description..."
                             />
                         </div>
                     </div>
@@ -190,11 +190,11 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
 
                 {/* Metadati - Full Width */}
                 <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
-                    <h2 className="text-base font-semibold text-foreground">Metadati</h2>
+                    <h2 className="text-base font-semibold text-foreground">Metadata</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Politiķis <span className="text-red-500">*</span>
+                                Politician <span className="text-red-500">*</span>
                             </label>
                             <select
                                 required
@@ -202,7 +202,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                                 onChange={(e) => setFormData({ ...formData, politicianId: e.target.value })}
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                             >
-                                <option value="">Izvēlieties politiķi...</option>
+                                <option value="">Select politician...</option>
                                 {politicians.map((p) => (
                                     <option key={p.id} value={p.id}>{p.name}</option>
                                 ))}
@@ -211,7 +211,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
 
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Kategorija <span className="text-red-500">*</span>
+                                Category <span className="text-red-500">*</span>
                             </label>
                             <select
                                 required
@@ -219,7 +219,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                                 onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                             >
-                                <option value="">Izvēlieties kategoriju...</option>
+                                <option value="">Select category...</option>
                                 {categories.map((c) => (
                                     <option key={c.id} value={c.id}>{c.name}</option>
                                 ))}
@@ -228,7 +228,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
 
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Solījuma datums <span className="text-red-500">*</span>
+                                Date of Promise <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="date"
@@ -244,14 +244,14 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                 {/* Status, Source & Explanation - Combined */}
                 <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
                     <div className="flex items-center justify-between border-b border-border/50 pb-4 mb-4">
-                        <h2 className="text-base font-semibold text-foreground">Statuss</h2>
+                        <h2 className="text-base font-semibold text-foreground">Status</h2>
                     </div>
 
                     {/* Status Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Pašreizējais statuss <span className="text-red-500">*</span>
+                                Current Status <span className="text-red-500">*</span>
                             </label>
                             <select
                                 required
@@ -267,17 +267,17 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                                 }}
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                             >
-                                <option value="IN_PROGRESS">Procesā</option>
-                                <option value="KEPT">Izpildīts</option>
-                                <option value="NOT_KEPT">Neizpildīts</option>
-                                <option value="PARTIAL">Daļēji izpildīts</option>
-                                <option value="ABANDONED">Pamests</option>
+                                <option value="IN_PROGRESS">In Progress</option>
+                                <option value="KEPT">Kept</option>
+                                <option value="NOT_KEPT">Not Kept</option>
+                                <option value="PARTIAL">Partially Kept</option>
+                                <option value="ABANDONED">Abandoned</option>
                             </select>
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Statusa atjaunināšanas datums
+                                Status Updated At
                             </label>
                             <input
                                 type="date"
@@ -292,7 +292,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-border/50">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Avota URL
+                                Source URL
                             </label>
                             <input
                                 type="url"
@@ -304,14 +304,14 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Avota nosaukums
+                                Source Title
                             </label>
                             <input
                                 type="text"
                                 value={formData.sourceTitle}
                                 onChange={(e) => setFormData({ ...formData, sourceTitle: e.target.value })}
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                placeholder="Avota nosaukums..."
+                                placeholder="Source title..."
                             />
                         </div>
                     </div>
@@ -319,15 +319,15 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                     {/* Explanation */}
                     <div className="pt-2 border-t border-border/50">
                         <label className="block text-sm font-medium text-foreground mb-1.5">
-                            Paskaidrojums
+                            Explanation
                         </label>
-                        <p className="text-sm text-muted-foreground mb-2">Kāpēc šis solījums ir izpildīts, neizpildīts vai procesā?</p>
+                        <p className="text-sm text-muted-foreground mb-2">Why is this promise kept, not kept, or in progress?</p>
                         <textarea
                             value={formData.explanation}
                             onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
                             rows={4}
                             className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                            placeholder="Paskaidrojums..."
+                            placeholder="Explanation..."
                         />
                     </div>
                 </div>
@@ -338,7 +338,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                         href="/admin/promises"
                         className="px-4 py-2 rounded-lg border border-input bg-background text-sm font-medium hover:bg-muted transition-colors"
                     >
-                        Atcelt
+                        Cancel
                     </Link>
                     <button
                         type="submit"
@@ -346,7 +346,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 shadow-sm"
                     >
                         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-                        {saving ? "Saglabāt izmaiņas" : "Atjaunināt Solījumu"}
+                        {saving ? "Saving Changes..." : "Update Promise"}
                     </button>
                 </div>
             </form>

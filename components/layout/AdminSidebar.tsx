@@ -15,11 +15,11 @@ import {
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/admin", icon: LayoutDashboard, label: "Panelis" },
-  { href: "/admin/promises", icon: FileText, label: "Solījumi" },
-  { href: "/admin/politicians", icon: Users, label: "Politiķi" },
-  { href: "/admin/parties", icon: Building2, label: "Partijas" },
-  { href: "/admin/categories", icon: Tag, label: "Kategorijas" },
+  { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/admin/promises", icon: FileText, label: "Promises" },
+  { href: "/admin/politicians", icon: Users, label: "Politicians" },
+  { href: "/admin/parties", icon: Building2, label: "Parties" },
+  { href: "/admin/categories", icon: Tag, label: "Categories" },
 ];
 
 export function AdminSidebar() {
@@ -77,7 +77,7 @@ export function AdminSidebar() {
           className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 rounded-md transition-colors text-left"
         >
           <LogOut className="w-4 h-4" />
-          <span>Iziet</span>
+          <span>Logout</span>
         </button>
       </div>
     </aside>
