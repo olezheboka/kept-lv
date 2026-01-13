@@ -27,7 +27,7 @@ export function CTASection() {
                         <p className="text-muted-foreground mb-8 leading-relaxed">
                             Zini solījumu, kas šeit trūkst? Iesniedz to mums izskatīšanai un palīdzi veidot pilnīgāku ainu par politisko atbildību.
                         </p>
-                        <Link href="mailto:info@kept.lv?subject=Jauns%20solījums" className="mt-auto" suppressHydrationWarning>
+                        <Link href="mailto:info@solijums.lv?subject=Jauns%20solījums" className="mt-auto" suppressHydrationWarning>
                             <Button size="lg" className="font-semibold">
                                 Iesniegt priekšlikumu
                             </Button>
@@ -45,7 +45,7 @@ export function CTASection() {
                         <p className="text-muted-foreground mb-8 leading-relaxed">
                             Pamanīji neprecizitāti datos vai tehnisku kļūdu? Dod mums ziņu, lai varam to pēc iespējas ātrāk novērst.
                         </p>
-                        <Link href="mailto:support@kept.lv?subject=Kļūda%20vai%20problēma" className="mt-auto" suppressHydrationWarning>
+                        <Link href="mailto:support@solijums.lv?subject=Kļūda%20vai%20problēma" className="mt-auto" suppressHydrationWarning>
                             <Button size="lg" variant="outline" className="font-semibold text-[#DC2626] border-[#DC2626] hover:bg-[#DC2626] hover:text-white">
                                 Ziņot par kļūdu
                             </Button>

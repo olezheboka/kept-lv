@@ -33,7 +33,7 @@ async function main() {
   const adminPassword = await hash("17191719", 12);
 
   // Cleanup old default admin if exists
-  await prisma.user.deleteMany({ where: { email: "admin@kept.lv" } });
+  await prisma.user.deleteMany({ where: { email: "admin@solijums.lv" } });
 
   const admin = await prisma.user.upsert({
     where: { email: "oleg.jar@gmail.com" },

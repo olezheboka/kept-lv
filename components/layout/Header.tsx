@@ -34,7 +34,7 @@ export function Header() {
               className="text-3xl font-black bg-gradient-to-r from-blue-400 to-purple-500
                 bg-clip-text text-transparent"
             >
-              KEPT
+              SOLĪJUMS
             </motion.div>
           </Link>
 

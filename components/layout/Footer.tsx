@@ -15,7 +15,7 @@ export function Footer() {
               className="text-2xl font-black bg-gradient-to-r from-blue-400 to-purple-500
                 bg-clip-text text-transparent inline-block mb-4"
             >
-              KEPT
+              SOLĪJUMS
             </motion.div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-md">
               Politisko solījumu uzskaite
@@ -70,7 +70,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 mt-8 pt-8 text-center">
           <p className="text-gray-500 text-sm">
-            {currentYear} KEPT - Politisko solījumu uzskaite
+            {currentYear} solījums.lv - Politisko solījumu uzskaite
           </p>
         </div>
       </div>

@@ -50,7 +50,7 @@ export const Footer = () => {
             <ul className="space-y-2.5">
               <li>
                 <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
-                  Par Kept
+                  Par solījums.lv
                 </Link>
               </li>
               <li>

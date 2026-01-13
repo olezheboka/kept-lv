@@ -279,7 +279,7 @@ export async function getPromises(locale: Locale = "lv"): Promise<PromiseUI[]> {
             status: mapStatusToUI(p.status),
             statusJustification: p.explanation ? getLocalizedText(p.explanation, locale) : "",
             statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
-            statusUpdatedBy: "Kept Analytics Team",
+            statusUpdatedBy: "Solījums.lv Team",
             category: p.category.name ? getLocalizedText(p.category.name, locale) : "",
             description: p.description ? getLocalizedText(p.description, locale) : undefined,
             importance: undefined,
@@ -707,7 +707,7 @@ export async function getRandomPromises(count: number, excludeId?: string, local
             status: mappedStatus,
             statusJustification: p.explanation ? getLocalizedText(p.explanation, locale) : "",
             statusUpdatedAt: p.statusUpdatedAt?.toISOString() || p.updatedAt.toISOString(),
-            statusUpdatedBy: "Kept.lv",
+            statusUpdatedBy: "Solījums.lv",
             category: p.category.slug,
             tags: [], // Tags handling needed if schema has tags? Schema had no tags on Promise model, wait.
             // checking Schema again... Promise model has no tags.

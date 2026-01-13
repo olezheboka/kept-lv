@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "KEPT",
+    "appName": "SOLĪJUMS",
     "tagline": "Political Promise Accountability",
     "home": "Home",
     "promises": "Promises",
@@ -79,10 +79,10 @@
     "other": "Other"
   },
   "about": {
-    "title": "About KEPT",
+    "title": "About solījums.lv",
     "subtitle": "Our mission is to make the political process more transparent",
     "mission": "Mission",
-    "missionText": "KEPT is an independent platform that tracks political promises and their fulfillment. We believe transparency is the foundation of democracy.",
+    "missionText": "solījums.lv is an independent platform that tracks political promises and their fulfillment. We believe transparency is the foundation of democracy.",
     "howItWorks": "How It Works",
     "howItWorksText": "We collect political promises from various sources - interviews, press conferences, social media - and track their fulfillment.",
     "contact": "Contact"
@@ -113,7 +113,7 @@
     "logoutSuccess": "You have been logged out"
   },
   "footer": {
-    "copyright": "KEPT - Political Promise Accountability",
+    "copyright": "solījums.lv - Political Promise Accountability",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service"
   }

@@ -37,7 +37,7 @@ export function AdminSidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-border">
         <Link href="/admin" className="flex items-center gap-2">
-          <span className="font-bold text-xl tracking-tight text-foreground">KEPT Admin</span>
+          <span className="font-bold text-xl tracking-tight text-foreground">SOLĪJUMS Admin</span>
         </Link>
       </div>
 
