@@ -67,7 +67,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                     status: promiseData.status,
                     explanation: typeof promiseData.explanation === 'string' ? promiseData.explanation : promiseData.explanation?.lv || "",
                     dateOfPromise: promiseData.dateOfPromise ? new Date(promiseData.dateOfPromise).toISOString().split('T')[0] : "",
-                    statusUpdatedAt: promiseData.statusUpdatedAt ? new Date(promiseData.statusUpdatedAt).toISOString().split('T')[0] : "",
+                    statusUpdatedAt: (promiseData.statusUpdatedAt || promiseData.updatedAt) ? new Date(promiseData.statusUpdatedAt || promiseData.updatedAt).toISOString().split('T')[0] : "",
                     politicianId: promiseData.politicianId,
                     categoryId: promiseData.categoryId,
                     sourceType: source.type || "VIDEO",
@@ -174,9 +174,10 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Apraksts
+                                Apraksts <span className="text-red-500">*</span>
                             </label>
                             <textarea
+                                required
                                 value={formData.description}
                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 rows={4}
@@ -250,9 +251,10 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Pašreizējais statuss
+                                Pašreizējais statuss <span className="text-red-500">*</span>
                             </label>
                             <select
+                                required
                                 value={formData.status}
                                 onChange={(e) => {
                                     const newStatus = e.target.value;
