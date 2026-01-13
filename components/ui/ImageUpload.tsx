@@ -29,14 +29,15 @@ export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
             });
 
             if (!response.ok) {
-                throw new Error("Upload failed");
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || "Upload failed");
             }
 
             const data = await response.json();
             onChange(data.url);
         } catch (error) {
             console.error("Error uploading image:", error);
-            alert("Failed to upload image. Please try again.");
+            alert(error instanceof Error ? error.message : "Failed to upload image.");
         } finally {
             setIsUploading(false);
             // Reset input so valid change events fire even if selecting same file
