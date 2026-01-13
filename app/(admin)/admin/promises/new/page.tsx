@@ -22,6 +22,7 @@ export default function NewPromisePage() {
 
   const [formData, setFormData] = useState({
     title: "",
+    slug: "",
     description: "",
     status: "IN_PROGRESS",
     explanation: "",
@@ -49,6 +50,7 @@ export default function NewPromisePage() {
     try {
       const payload = {
         title: formData.title,
+        slug: formData.slug,
         description: formData.description || null,
         status: formData.status,
         explanation: formData.explanation || null,
@@ -117,6 +119,20 @@ export default function NewPromisePage() {
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
                 placeholder="Promise title..."
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                URL Slug <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.slug}
+                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                placeholder="promise-url-slug"
+              />
+              <p className="text-xs text-muted-foreground mt-1">Used in the promise URL.</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">

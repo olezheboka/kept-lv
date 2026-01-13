@@ -26,6 +26,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
 
     const [formData, setFormData] = useState({
         title: "",
+        slug: "",
         description: "",
         status: "IN_PROGRESS",
         explanation: "",
@@ -63,6 +64,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
 
                 setFormData({
                     title: typeof promiseData.title === 'string' ? promiseData.title : promiseData.title?.lv || "",
+                    slug: promiseData.slug || "",
                     description: typeof promiseData.description === 'string' ? promiseData.description : promiseData.description?.lv || "",
                     status: promiseData.status,
                     explanation: typeof promiseData.explanation === 'string' ? promiseData.explanation : promiseData.explanation?.lv || "",
@@ -92,6 +94,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
         try {
             const payload = {
                 title: formData.title,
+                slug: formData.slug,
                 description: formData.description || null,
                 status: formData.status,
                 explanation: formData.explanation || null,
@@ -171,6 +174,20 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
                                 placeholder="Promise title..."
                             />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
+                                URL Slug <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                required
+                                value={formData.slug}
+                                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                                placeholder="promise-url-slug"
+                            />
+                            <p className="text-xs text-muted-foreground mt-1">Used in the promise URL.</p>
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">

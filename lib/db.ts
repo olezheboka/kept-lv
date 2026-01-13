@@ -30,6 +30,8 @@ export interface PoliticianUI {
 
 export interface PromiseUI {
     id: string;
+    slug: string;
+    categorySlug: string;
     title: string;
     fullText: string;
     politicianId: string;
@@ -70,6 +72,7 @@ export interface RankingItem {
     avatarUrl?: string;
     role?: string;
     partyId?: string;
+    partyLogoUrl?: string;
     totalPromises: number;
     keptPromises: number;
     keptPercentage: number;
@@ -264,6 +267,8 @@ export async function getPromises(locale: Locale = "lv"): Promise<PromiseUI[]> {
 
         return promises.map((p) => ({
             id: p.id,
+            slug: (p as any).slug || p.id,
+            categorySlug: p.category.slug,
             title: getLocalizedText(p.title, locale),
             fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
             politicianId: p.politician.slug,
@@ -318,6 +323,66 @@ export async function getPromiseById(
 
     return {
         id: p.id,
+        slug: (p as any).slug || p.id,
+        categorySlug: p.category.slug,
+        title: getLocalizedText(p.title, locale),
+        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
+        politicianId: p.politician.slug,
+        politicianName: p.politician.name,
+        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
+        politicianPhotoUrl: p.politician.imageUrl || "",
+        politicianIsInOffice: p.politician.isActive,
+        partyId: p.politician.party?.slug,
+        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
+        partyLogoUrl: p.politician.party?.logoUrl || undefined,
+        datePromised: p.dateOfPromise.toISOString().split("T")[0],
+        electionCycle: "2022 Saeima Elections",
+        status: mapStatusToUI(p.status),
+        statusJustification: p.explanation
+            ? getLocalizedText(p.explanation, locale)
+            : "",
+        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
+        statusUpdatedBy: "Kept Analytics Team",
+        category: mapCategorySlug(p.category.slug),
+        description: p.description ? getLocalizedText(p.description, locale) : undefined,
+        importance: undefined,
+        deadline: undefined,
+        tags: [],
+        sources: p.sources.map((s) => ({
+            title: s.title ? getLocalizedText(s.title, locale) : "",
+            url: s.url,
+            publication: "",
+            date: s.createdAt.toISOString().split("T")[0],
+        })),
+        viewCount: 0,
+        featured: false,
+    };
+}
+
+export async function getPromiseBySlug(
+    categorySlug: string,
+    promiseSlug: string,
+    locale: Locale = "lv"
+): Promise<PromiseUI | null> {
+    const p = await prisma.promise.findFirst({
+        where: {
+            slug: promiseSlug,
+            category: { slug: categorySlug },
+        },
+        include: {
+            politician: { include: { party: true } },
+            category: true,
+            sources: true,
+            evidence: true,
+        },
+    });
+
+    if (!p) return null;
+
+    return {
+        id: p.id,
+        slug: p.slug || p.id,
+        categorySlug: p.category.slug,
         title: getLocalizedText(p.title, locale),
         fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
         politicianId: p.politician.slug,
@@ -374,6 +439,8 @@ export async function getPromisesByPolitician(
 
     return promises.map((p) => ({
         id: p.id,
+        slug: (p as any).slug || p.id,
+        categorySlug: p.category.slug,
         title: getLocalizedText(p.title, locale),
         fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
         politicianId: p.politician.slug,
@@ -433,6 +500,8 @@ export async function getPromisesByParty(
 
     return promises.map((p) => ({
         id: p.id,
+        slug: (p as any).slug || p.id,
+        categorySlug: p.category.slug,
         title: getLocalizedText(p.title, locale),
         fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
         politicianId: p.politician.slug,
@@ -483,6 +552,8 @@ export async function getPromisesByCategory(
 
     return promises.map((p) => ({
         id: p.id,
+        slug: (p as any).slug || p.id,
+        categorySlug: p.category.slug,
         title: getLocalizedText(p.title, locale),
         fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
         politicianId: p.politician.slug,
@@ -555,6 +626,7 @@ export async function getPoliticianRankings(
                     name: pol.name,
                     avatarUrl: pol.imageUrl || undefined,
                     partyId: pol.party?.slug,
+                    partyLogoUrl: pol.party?.logoUrl || undefined,
                     role: pol.role ? getLocalizedText(pol.role, locale) : undefined,
                     isInOffice: pol.isActive,
                     totalPromises,
@@ -692,6 +764,8 @@ export async function getRandomPromises(count: number, excludeId?: string, local
 
         return {
             id: p.id,
+            slug: (p as any).slug || p.id,
+            categorySlug: p.category.slug,
             title: getLocalizedText(p.title, locale),
             fullText: p.description ? getLocalizedText(p.description, locale) : "",
             description: p.description ? getLocalizedText(p.description, locale) : undefined,

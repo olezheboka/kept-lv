@@ -71,35 +71,35 @@ export const PartyDetailClient = ({ party, promises }: PartyDetailClientProps) =
                         className="flex flex-col md:flex-row items-start gap-6"
                     >
                         <div className="flex-1 text-left">
-                            {/* Row 1: Name + Initial */}
+                            {/* Row 1: Name + Logo */}
                             <div className="flex flex-wrap items-center justify-start gap-4 mb-2">
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">
                                     {party.name}
                                 </h1>
                                 {party.logoUrl ? (
-                                    <div className="h-10 w-auto min-w-[40px] relative flex items-center justify-center">
+                                    <div className="h-8 w-auto min-w-[32px] relative flex items-center justify-center flex-shrink-0">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img
                                             src={party.logoUrl}
                                             alt={party.abbreviation}
-                                            className={`h-full w-auto object-contain ${(party.slug === 'prog' || party.slug === 'jv') ? 'p-1' : ''
-                                                }`}
+                                            className="h-full w-auto object-contain opacity-40"
                                         />
                                     </div>
                                 ) : (
-                                    <span className="text-2xl font-bold text-muted-foreground bg-muted px-3 py-1 rounded-lg">
+                                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-muted text-[10px] font-medium text-muted-foreground uppercase tracking-wider opacity-40">
                                         {party.abbreviation}
                                     </span>
                                 )}
                             </div>
 
                             {/* Row 2: Status Badge */}
-                            <div className="flex flex-wrap items-center justify-start gap-3 mt-4">
+                            <div className="flex flex-wrap items-center justify-start gap-3 text-lg text-muted-foreground">
                                 {party.isInCoalition ? (
-                                    <span className="px-3 py-1 bg-muted/60 text-muted-foreground text-sm font-medium rounded-full border border-border/50">
+                                    <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
                                         Koalīcijā
                                     </span>
                                 ) : (
-                                    <span className="px-3 py-1 bg-muted/60 text-muted-foreground text-sm font-medium rounded-full border border-border/50">
+                                    <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
                                         Opozīcijā
                                     </span>
                                 )}

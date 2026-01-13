@@ -92,40 +92,37 @@ export const PromiseDetailClient = ({
                                 <div className="mb-6 pb-6 border-b border-border/50">
                                     <div className="flex flex-col md:flex-row items-start gap-6">
                                         <div className="flex-1 text-left">
-                                            <div className="flex flex-col gap-1 w-full">
-                                                <div className="flex items-center gap-2 flex-wrap">
-                                                    <Link href={`/politicians/${politician.id}`} className="group inline-block" suppressHydrationWarning>
-                                                        <h2 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-accent transition-colors leading-tight">
-                                                            {politician.name}
-                                                        </h2>
-                                                    </Link>
-                                                    <PartyBadge
-                                                        party={party}
-                                                        size="md"
-                                                        className="opacity-90 flex-shrink-0 mt-1"
-                                                    />
-                                                </div>
+                                            {/* Row 1: Name + Party Badge */}
+                                            <div className="flex flex-wrap items-center justify-start gap-4 mb-2">
+                                                <Link href={`/politicians/${politician.id}`} className="group inline-block" suppressHydrationWarning>
+                                                    <h2 className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-accent transition-colors">
+                                                        {politician.name}
+                                                    </h2>
+                                                </Link>
+                                                {party.logoUrl ? (
+                                                    <div className="h-8 w-auto min-w-[32px] relative flex items-center justify-center flex-shrink-0">
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                        <img
+                                                            src={party.logoUrl}
+                                                            alt={party.abbreviation}
+                                                            className="h-full w-auto object-contain opacity-40"
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-muted text-[10px] font-medium text-muted-foreground uppercase tracking-wider opacity-40">
+                                                        {party.abbreviation}
+                                                    </span>
+                                                )}
+                                            </div>
 
-                                                <div className="flex items-center gap-3 text-base text-muted-foreground min-w-0 w-full mt-1">
-                                                    <TooltipProvider>
-                                                        <Tooltip delayDuration={300}>
-                                                            <TooltipTrigger asChild>
-                                                                <span className="truncate cursor-default hover:text-foreground transition-colors max-w-[200px] md:max-w-[400px]">
-                                                                    {politician.role}
-                                                                </span>
-                                                            </TooltipTrigger>
-                                                            <TooltipContent side="bottom" className="max-w-[300px]">
-                                                                {politician.role}
-                                                            </TooltipContent>
-                                                        </Tooltip>
-                                                    </TooltipProvider>
-
-                                                    {politician.isInOffice && (
-                                                        <span className="flex-shrink-0 px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full whitespace-nowrap">
-                                                            Amatā
-                                                        </span>
-                                                    )}
-                                                </div>
+                                            {/* Row 2: Role + Amatā Badge */}
+                                            <div className="flex flex-wrap items-center justify-start gap-3 text-lg text-muted-foreground">
+                                                <span>{politician.role}</span>
+                                                {politician.isInOffice && (
+                                                    <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
+                                                        Amatā
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -201,19 +198,6 @@ export const PromiseDetailClient = ({
                                     <div className="text-lg text-foreground leading-relaxed">
                                         <span className="font-bold block mb-2 text-foreground/80">Pamatojums:</span>
                                         {promise.statusJustification}
-                                        {promise.sources.map((source, index) => (
-                                            <a
-                                                key={index}
-                                                href={source.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center justify-center h-5 px-1.5 ml-1 text-[10px] font-bold tracking-wide uppercase rounded bg-white/50 hover:bg-white text-foreground/70 hover:text-foreground transition-colors align-middle -translate-y-0.5 border border-black/5"
-                                                title={source.title}
-                                                suppressHydrationWarning
-                                            >
-                                                {source.publication}
-                                            </a>
-                                        ))}
                                     </div>
 
                                     <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-black/5 text-xs text-foreground/70">

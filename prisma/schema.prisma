@@ -67,6 +67,7 @@ model Category {
 model Promise {
   id              String        @id @default(cuid())
   title           String
+  slug            String?       @unique
   description     String?
   status          PromiseStatus @default(IN_PROGRESS)
   explanation     String?

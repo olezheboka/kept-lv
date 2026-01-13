@@ -78,12 +78,15 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                         >
                             {item.name}
                         </Link>
-                        {type === 'politician' && partyBadgeData && (
-                            <PartyBadge
-                                party={partyBadgeData}
-                                size="sm"
-                                className="opacity-90 flex-shrink-0 scale-90 origin-left"
-                            />
+                        {type === 'politician' && item.partyLogoUrl && (
+                            <div className="h-5 w-auto min-w-[20px] relative flex items-center justify-center flex-shrink-0">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={item.partyLogoUrl}
+                                    alt={item.partyId || 'Party'}
+                                    className="h-full w-auto object-contain opacity-40"
+                                />
+                            </div>
                         )}
                     </div>
                     {type === 'politician' && item.role && (
@@ -101,7 +104,7 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                                 </Tooltip>
                             </TooltipProvider>
                             {item.isInOffice && (
-                                <span className="flex-shrink-0 px-1.5 py-0 bg-muted/60 text-muted-foreground text-[10px] font-medium rounded-full whitespace-nowrap border border-border/50">
+                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
                                     Amatā
                                 </span>
                             )}

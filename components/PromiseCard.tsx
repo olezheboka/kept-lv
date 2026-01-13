@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { PromiseUI, PartyUI, PoliticianUI } from '@/lib/db';
+import { getPromiseUrl } from '@/lib/promise-url';
 
 interface PromiseCardProps {
   promise: PromiseUI;
@@ -28,7 +29,7 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
       transition={{ duration: 0.4, delay: index * 0.05 }}
       className="h-full"
     >
-      <Link href={`/promises/${promise.id}`} className="block h-full" suppressHydrationWarning>
+      <Link href={getPromiseUrl(promise)} className="block h-full" suppressHydrationWarning>
         <Card className="group h-full flex flex-col overflow-hidden border-border/50 bg-card hover:shadow-elevated hover:border-border transition-all duration-300 cursor-pointer">
           <CardContent className="p-5 relative pt-8 flex flex-col h-full">
             {/* Status Badge - Absolute Top Right */}
@@ -43,12 +44,12 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
                   {promise.politicianName}
                 </span>
                 {promise.partyLogoUrl ? (
-                  <div className="h-6 w-auto min-w-[24px] relative flex items-center justify-center">
+                  <div className="h-5 w-auto min-w-[20px] relative flex items-center justify-center">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={promise.partyLogoUrl}
                       alt={promise.partyAbbreviation}
-                      className="h-full w-auto object-contain"
+                      className="h-full w-auto object-contain opacity-40"
                     />
                   </div>
                 ) : (
