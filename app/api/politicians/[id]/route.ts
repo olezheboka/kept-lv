@@ -67,7 +67,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { bio, ...rest } = parsed.data;
+    const { bio, education, isActive, ...rest } = parsed.data;
 
     const politician = await prisma.politician.update({
       where: { id },
@@ -77,7 +77,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         imageUrl: rest.imageUrl,
         role: rest.role,
         bio: bio || null, // Handle null explicitly
+        education: education || null,
+        isActive: isActive !== undefined ? isActive : undefined,
         partyId: rest.partyId !== undefined ? (rest.partyId || null) : undefined,
+
       },
       include: {
         party: true,

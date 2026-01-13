@@ -55,12 +55,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { bio, ...rest } = parsed.data;
+    const { bio, education, isActive, ...rest } = parsed.data;
+
 
     const politician = await prisma.politician.create({
       data: {
         ...rest,
         bio: bio || null,
+        education: education || null,
+        isActive: isActive !== undefined ? isActive : true,
       },
       include: {
         party: true,

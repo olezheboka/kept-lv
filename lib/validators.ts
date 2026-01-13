@@ -19,6 +19,8 @@ export const createPoliticianSchema = z.object({
   imageUrl: z.string().url().optional().nullable(),
   role: z.string().optional().nullable(),
   bio: z.string().optional().nullable(),
+  education: z.string().optional().nullable(),
+  isActive: z.boolean().default(true),
   partyId: z.string().cuid().optional().nullable(),
 });
 
@@ -28,6 +30,8 @@ export const updatePoliticianSchema = z.object({
   imageUrl: z.string().url().optional().nullable(),
   role: z.string().optional().nullable(),
   bio: z.string().optional().nullable(),
+  education: z.string().optional().nullable(),
+  isActive: z.boolean().optional(),
   partyId: z.string().cuid().optional(),
 });
 

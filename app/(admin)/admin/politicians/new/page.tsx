@@ -21,8 +21,12 @@ export default function NewPoliticianPage() {
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
-    imageUrl: "",
+    name: "",
+    slug: "",
+    role: "", // Position
     bio: "",
+    education: "",
+    isActive: true, // In Office
     partyId: "",
   });
 
@@ -44,8 +48,10 @@ export default function NewPoliticianPage() {
       const payload = {
         name: formData.name,
         slug: formData.slug || slugify(formData.name),
-        imageUrl: formData.imageUrl || null,
+        role: formData.role || null,
         bio: formData.bio || null,
+        education: formData.education || null,
+        isActive: formData.isActive,
         partyId: formData.partyId || null,
       };
 
@@ -131,15 +137,41 @@ export default function NewPoliticianPage() {
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">
-                Image URL
+                Position (Role)
               </label>
               <input
-                type="url"
-                value={formData.imageUrl}
-                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                type="text"
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                placeholder="https://..."
+                placeholder="e.g. Health Minister"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Education
+              </label>
+              <input
+                type="text"
+                value={formData.education}
+                onChange={(e) => setFormData({ ...formData, education: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                placeholder="e.g. PhD in Economics"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 pt-8">
+              <input
+                type="checkbox"
+                id="inOffice"
+                checked={formData.isActive}
+                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <label htmlFor="inOffice" className="text-sm font-medium text-foreground cursor-pointer">
+                In Office / In Charge
+              </label>
             </div>
           </div>
         </div>

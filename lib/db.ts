@@ -26,6 +26,7 @@ export interface PoliticianUI {
     roleStartDate?: string;
     roleEndDate?: string;
     bio?: string;
+    education?: string;
 }
 
 export interface PromiseUI {
@@ -217,7 +218,9 @@ export async function getPoliticians(
         isInOffice: pol.isActive,
         roleStartDate: undefined,
         roleEndDate: undefined,
+        roleEndDate: undefined,
         bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
+        education: pol.education || undefined,
     }));
 }
 
@@ -242,7 +245,9 @@ export async function getPoliticianBySlug(
         isInOffice: pol.isActive,
         roleStartDate: undefined,
         roleEndDate: undefined,
+        roleEndDate: undefined,
         bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
+        education: pol.education || undefined,
     };
 }
 
