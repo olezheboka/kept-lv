@@ -4,10 +4,10 @@ import { z } from "zod";
 export const createPartySchema = z.object({
   name: z.string().min(1),
   slug: z.string().min(1).max(100),
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
-  logoUrl: z.string().url().optional().nullable(),
   description: z.string().optional().nullable(),
-  websiteUrl: z.string().url().optional().nullable(),
+  logoUrl: z.string().url("Valid URL required").min(1, "Logo is required"),
+  websiteUrl: z.string().url("Valid URL required").min(1, "Website URL is required"),
+  isCoalition: z.boolean().default(false),
 });
 
 export const updatePartySchema = createPartySchema.partial();

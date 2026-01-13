@@ -8,7 +8,6 @@ export interface PartyUI {
     name: string;
     description?: string;
     abbreviation: string;
-    color: string;
     logoUrl?: string;
     websiteUrl?: string;
     isInCoalition: boolean;
@@ -70,7 +69,6 @@ export interface RankingItem {
     id: string;
     name: string;
     avatarUrl?: string;
-    color?: string;
     role?: string;
     partyId?: string;
     totalPromises: number;
@@ -166,7 +164,6 @@ export async function getParties(locale: Locale = "lv"): Promise<PartyUI[]> {
         name: getLocalizedText(party.name, locale),
         description: party.description ? getLocalizedText(party.description, locale) : undefined,
         abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
-        color: party.color,
         logoUrl: party.logoUrl || undefined,
         websiteUrl: party.websiteUrl || undefined,
         isInCoalition: party.isCoalition, // Use correct field from DB
@@ -190,7 +187,6 @@ export async function getPartyBySlug(
         name: getLocalizedText(party.name, locale),
         description: party.description ? getLocalizedText(party.description, locale) : undefined,
         abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
-        color: party.color,
         logoUrl: party.logoUrl || undefined,
         websiteUrl: party.websiteUrl || undefined,
         isInCoalition: party.isCoalition,
@@ -601,7 +597,6 @@ export async function getPartyRankings(locale: Locale = "lv"): Promise<RankingIt
                     name: getLocalizedText(party.name, locale),
                     avatarUrl: party.logoUrl || undefined,
                     abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
-                    color: party.color,
                     isInCoalition: party.isCoalition, // Use correct field from DB
                     totalPromises,
                     keptPromises,

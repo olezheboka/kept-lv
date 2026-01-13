@@ -47,7 +47,7 @@ export default async function AdminPartiesPage() {
                 Name
               </th>
               <th className="px-4 py-3 font-medium text-muted-foreground">
-                Color
+                In Coalition
               </th>
               <th className="px-4 py-3 font-medium text-muted-foreground">
                 Politicians
@@ -64,13 +64,11 @@ export default async function AdminPartiesPage() {
                   {(party.name as any)}
                 </td>
                 <td className="px-4 py-3 align-top">
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-4 h-4 rounded-full border border-black/10 shadow-sm"
-                      style={{ backgroundColor: party.color }}
-                    />
-                    <span className="text-muted-foreground font-mono text-xs uppercase">{party.color}</span>
-                  </div>
+                  {party.isCoalition ? (
+                    <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Yes</span>
+                  ) : (
+                    <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">No</span>
+                  )}
                 </td>
                 <td className="px-4 py-3 align-top text-muted-foreground">
                   {party._count.politicians}

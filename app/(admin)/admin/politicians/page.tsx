@@ -13,7 +13,7 @@ type Props = {
 async function getPoliticians() {
   return prisma.politician.findMany({
     include: {
-      party: { select: { name: true, color: true } },
+      party: { select: { name: true } },
       _count: { select: { promises: true } },
     },
     orderBy: { name: "asc" },
@@ -76,8 +76,7 @@ export default async function AdminPoliticiansPage() {
                 <td className="px-4 py-3 align-top">
                   {politician.party ? (
                     <span
-                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-white"
-                      style={{ backgroundColor: (politician.party.color as any) }}
+                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-secondary text-secondary-foreground"
                     >
                       {(politician.party.name as any)}
                     </span>

@@ -23,7 +23,6 @@ model Party {
   name        String
   description String?
   slug        String       @unique
-  color       String       // hex color
   logoUrl     String?
   websiteUrl  String?
   isCoalition Boolean      @default(false)

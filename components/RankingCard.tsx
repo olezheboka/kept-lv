@@ -42,7 +42,6 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
         slug: item.id,
         name: item.name,
         abbreviation: item.abbreviation || item.id.toUpperCase(),
-        color: item.color || '#888',
         isInCoalition: item.isInCoalition || false,
         mpCount: 0,
     } : item.partyId ? {
@@ -50,7 +49,6 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
         slug: item.partyId,
         name: item.partyId,
         abbreviation: item.partyId.toUpperCase(),
-        color: '#888',
         isInCoalition: false,
         mpCount: 0,
     } : null;

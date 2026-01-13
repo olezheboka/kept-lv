@@ -66,8 +66,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                 {/* Party Header */}
                                                 <div className="flex items-start gap-4 mb-6">
                                                     <div
-                                                        className="w-14 h-14 rounded-xl flex items-center justify-center text-white font-bold text-lg overflow-hidden relative shrink-0"
-                                                        style={{ backgroundColor: party.logoUrl ? 'transparent' : party.color }}
+                                                        className={`w-14 h-14 rounded-xl flex items-center justify-center font-bold text-lg overflow-hidden relative shrink-0 ${party.logoUrl ? 'bg-transparent' : 'bg-muted text-muted-foreground'}`}
                                                     >
                                                         {party.logoUrl ? (
                                                             <img

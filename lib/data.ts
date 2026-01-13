@@ -6,7 +6,6 @@ export const parties: Party[] = [
     id: 'jv',
     name: 'Jaunā Vienotība',
     abbreviation: 'JV',
-    color: '#8AB73E',
     isInCoalition: true,
     mpCount: 26
   },
@@ -14,7 +13,6 @@ export const parties: Party[] = [
     id: 'zzs',
     name: 'Zaļo un Zemnieku savienība',
     abbreviation: 'ZZS',
-    color: '#026036',
     isInCoalition: true,
     mpCount: 16
   },
@@ -22,7 +20,6 @@ export const parties: Party[] = [
     id: 'na',
     name: 'Nacionālā apvienība',
     abbreviation: 'NA',
-    color: '#932330',
     isInCoalition: true,
     mpCount: 13
   },
@@ -30,7 +27,6 @@ export const parties: Party[] = [
     id: 'ap',
     name: 'Attīstībai/Par!',
     abbreviation: 'AP!',
-    color: '#000000',
     isInCoalition: false,
     mpCount: 0
   },
@@ -38,7 +34,6 @@ export const parties: Party[] = [
     id: 'prog',
     name: 'Progresīvie',
     abbreviation: 'P',
-    color: '#E63915',
     isInCoalition: false,
     mpCount: 10
   },
@@ -46,7 +41,6 @@ export const parties: Party[] = [
     id: 'lra',
     name: 'Latvijas Reģionu apvienība',
     abbreviation: 'LRA',
-    color: '#982632',
     isInCoalition: false,
     mpCount: 8
   },
@@ -54,7 +48,6 @@ export const parties: Party[] = [
     id: 'stab',
     name: 'Stabilitātei!',
     abbreviation: 'S!',
-    color: '#fd7e14',
     isInCoalition: false,
     mpCount: 11
   },
@@ -62,7 +55,6 @@ export const parties: Party[] = [
     id: 'lpv',
     name: 'Latvija pirmajā vietā',
     abbreviation: 'LPV',
-    color: '#9E3139',
     isInCoalition: false,
     mpCount: 9
   },
@@ -70,7 +62,6 @@ export const parties: Party[] = [
     id: 'sask',
     name: 'Saskaņa',
     abbreviation: 'S',
-    color: '#E31D23',
     isInCoalition: false,
     mpCount: 0
   }
@@ -607,7 +598,6 @@ export interface RankingItem {
   id: string;
   name: string;
   avatarUrl?: string; // photoUrl for politician, logoUrl for party
-  color?: string; // For fallback party avatar or party color
   role?: string; // Only for politician
   partyId?: string; // Only for politician
   totalPromises: number;
@@ -653,7 +643,6 @@ export const getPartyRankings = (): RankingItem[] => {
         name: party.name,
         avatarUrl: party.logoUrl,
         abbreviation: party.abbreviation,
-        color: party.color,
         isInCoalition: party.isInCoalition,
         totalPromises,
         keptPromises,

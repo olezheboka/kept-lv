@@ -116,7 +116,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
 
                         <div className="w-full sm:w-[250px]">
                             <MultiSelectDropdown
-                                options={parties.map(p => ({ label: p.name, value: p.id, color: p.color }))}
+                                options={parties.map(p => ({ label: p.name, value: p.id }))}
                                 selected={selectedParties}
                                 onChange={setSelectedParties}
                                 placeholder="Visas partijas"

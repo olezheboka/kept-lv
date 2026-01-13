@@ -35,7 +35,6 @@ export interface Party {
   name: string;
   abbreviation: string;
   logoUrl?: string;
-  color: string;
   isInCoalition: boolean;
   mpCount: number;
 }
