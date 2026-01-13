@@ -16,6 +16,9 @@ interface CategoriesClientProps {
     })[];
 }
 
+import { TrendingUp } from 'lucide-react';
+import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
+
 export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
     return (
         <div className="flex flex-col bg-background">
@@ -55,34 +58,22 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                         <Card className="group overflow-hidden border-border/50 hover:shadow-elevated hover:border-accent/50 transition-all duration-300 h-full">
                                             <CardContent className="p-5">
                                                 <div className="flex items-start justify-between mb-4">
-                                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center overflow-hidden shrink-0">
-                                                        {category.imageUrl ? (
+                                                    {category.imageUrl ? (
+                                                        <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center overflow-hidden shrink-0">
                                                             <img
                                                                 src={category.imageUrl}
                                                                 alt={category.name}
                                                                 className="w-full h-full object-cover"
                                                             />
-                                                        ) : (
-                                                            <div className="flex items-center justify-center w-full h-full text-accent group-hover:text-accent-foreground transition-colors">
-                                                                {/* Fallback Icon */}
-                                                                <svg
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 24 24"
-                                                                    fill="none"
-                                                                    stroke="currentColor"
-                                                                    strokeWidth="2"
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    className="w-6 h-6"
-                                                                >
-                                                                    <rect width="7" height="7" x="3" y="3" rx="1" />
-                                                                    <rect width="7" height="7" x="14" y="3" rx="1" />
-                                                                    <rect width="7" height="7" x="14" y="14" rx="1" />
-                                                                    <rect width="7" height="7" x="3" y="14" rx="1" />
-                                                                </svg>
-                                                            </div>
-                                                        )}
-                                                    </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-colors duration-300">
+                                                            {(() => {
+                                                                const IconComponent = SLUG_ICON_MAP[category.slug] || TrendingUp;
+                                                                return <IconComponent className="h-6 w-6" />;
+                                                            })()}
+                                                        </div>
+                                                    )}
                                                     <span className="text-sm font-medium text-muted-foreground">
                                                         {total} solījumi
                                                     </span>

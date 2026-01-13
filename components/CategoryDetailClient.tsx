@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { STATUS_CONFIG, PromiseStatus } from '@/lib/types';
 import { PromiseUI, CategoryUI } from '@/lib/db';
-import { ArrowLeft, CheckCircle2, Clock, XCircle, CircleDot } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Clock, XCircle, CircleDot, TrendingUp } from 'lucide-react';
+import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
 
 interface CategoryDetailClientProps {
     category: CategoryUI;
@@ -66,22 +67,10 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
                                 />
                             ) : (
                                 <div className="flex items-center justify-center w-full h-full">
-                                    {/* Fallback Icon */}
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="h-8 w-8"
-                                    >
-                                        <rect width="7" height="7" x="3" y="3" rx="1" />
-                                        <rect width="7" height="7" x="14" y="3" rx="1" />
-                                        <rect width="7" height="7" x="14" y="14" rx="1" />
-                                        <rect width="7" height="7" x="3" y="14" rx="1" />
-                                    </svg>
+                                    {(() => {
+                                        const IconComponent = SLUG_ICON_MAP[category.slug] || TrendingUp;
+                                        return <IconComponent className="h-8 w-8" />;
+                                    })()}
                                 </div>
                             )}
                         </div>

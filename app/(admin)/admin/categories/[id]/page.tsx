@@ -3,9 +3,10 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Check, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, Loader2, TrendingUp } from "lucide-react";
 import { slugify } from "@/lib/utils";
 import { ImageUpload } from "@/components/ui/ImageUpload";
+import { SLUG_ICON_MAP } from "@/lib/categoryIcons";
 
 export default function EditCategoryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -173,6 +174,27 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
                         <p className="text-xs text-muted-foreground mt-2">
                             Upload an SVG or PNG icon. Square aspect ratio recommended.
                         </p>
+
+                        {!formData.imageUrl && (
+                            <div className="mt-6 p-4 border border-border rounded-xl bg-muted/30">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-accent shrink-0">
+                                        {(() => {
+                                            // Try lookup by current slug (or generated from name)
+                                            const currentSlug = formData.slug || slugify(formData.name);
+                                            const IconComponent = SLUG_ICON_MAP[currentSlug] || TrendingUp;
+                                            return <IconComponent className="w-6 h-6" />;
+                                        })()}
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-medium text-foreground">Default Fallback Icon</h3>
+                                        <p className="text-xs text-muted-foreground mt-0.5">
+                                            This icon will be displayed if no custom image is uploaded.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
