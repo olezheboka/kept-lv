@@ -52,7 +52,7 @@ export default async function AdminPromisesPage() {
                 Category
               </th>
               <th className="px-4 py-3 font-medium text-muted-foreground w-[120px]">
-                Last Updated
+                Updated
               </th>
               <th className="px-4 py-3 font-medium text-muted-foreground text-right">
                 Actions
