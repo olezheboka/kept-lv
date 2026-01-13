@@ -83,16 +83,16 @@ export const PoliticianDetailClient = ({ politician, party, promises }: Politici
                                     {politician.name}
                                 </h1>
                                 {party && party.logoUrl ? (
-                                    <div className="h-8 w-auto min-w-[32px] relative flex items-center justify-center flex-shrink-0">
+                                    <div className="h-9 w-auto min-w-[36px] relative flex items-center justify-center flex-shrink-0">
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img
                                             src={party.logoUrl}
                                             alt={party.abbreviation}
-                                            className="h-full w-auto object-contain opacity-40"
+                                            className="h-full w-auto object-contain"
                                         />
                                     </div>
                                 ) : party ? (
-                                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-muted text-[10px] font-medium text-muted-foreground uppercase tracking-wider opacity-40">
+                                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-muted text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
                                         {party.abbreviation}
                                     </span>
                                 ) : null}
