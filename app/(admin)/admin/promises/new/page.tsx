@@ -102,8 +102,8 @@ export default function NewPromisePage() {
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Promise Text */}
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-foreground mb-6">Solījuma informācija</h2>
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
+          <h2 className="text-base font-semibold text-foreground">Pamatinformācija</h2>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">
@@ -113,30 +113,31 @@ export default function NewPromisePage() {
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                rows={3}
-                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                rows={2}
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
                 placeholder="Solījuma virsraksts..."
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">
-                Apraksts (neobligāts)
+                Apraksts <span className="text-red-500">*</span>
               </label>
               <textarea
+                required
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={4}
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                placeholder="Pilns apraksts..."
+                placeholder="Detalizēts apraksts..."
               />
             </div>
           </div>
         </div>
 
-        {/* Details */}
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-foreground mb-6">Detaļas</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Metadati - Full Width */}
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
+          <h2 className="text-base font-semibold text-foreground">Metadati</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">
                 Politiķis <span className="text-red-500">*</span>
@@ -173,11 +174,43 @@ export default function NewPromisePage() {
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">
-                Statuss
+                Solījuma datums <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                required
+                value={formData.dateOfPromise}
+                onChange={(e) => setFormData({ ...formData, dateOfPromise: e.target.value })}
+                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Status, Source & Explanation - Combined */}
+        <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
+          <div className="flex items-center justify-between border-b border-border/50 pb-4 mb-4">
+            <h2 className="text-base font-semibold text-foreground">Statuss, Avots un Paskaidrojums</h2>
+          </div>
+
+          {/* Status Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Pašreizējais statuss <span className="text-red-500">*</span>
               </label>
               <select
+                required
                 value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                onChange={(e) => {
+                  const newStatus = e.target.value;
+                  setFormData(prev => ({
+                    ...prev,
+                    status: newStatus,
+                    // Auto-set date to today if empty when changing status
+                    statusUpdatedAt: prev.statusUpdatedAt || new Date().toISOString().split('T')[0]
+                  }));
+                }}
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
               >
                 <option value="IN_PROGRESS">Procesā</option>
@@ -190,18 +223,6 @@ export default function NewPromisePage() {
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">
-                Datums <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="date"
-                required
-                value={formData.dateOfPromise}
-                onChange={(e) => setFormData({ ...formData, dateOfPromise: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">
                 Statusa atjaunināšanas datums
               </label>
               <input
@@ -212,32 +233,12 @@ export default function NewPromisePage() {
               />
             </div>
           </div>
-        </div>
 
-        {/* Source */}
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-foreground mb-6">Avots (Neobligāts)</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Source Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-border/50">
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">
-                Avota tips
-              </label>
-              <select
-                value={formData.sourceType}
-                onChange={(e) => setFormData({ ...formData, sourceType: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-              >
-                <option value="VIDEO">Video</option>
-                <option value="ARTICLE">Raksts</option>
-                <option value="INTERVIEW">Intervija</option>
-                <option value="SOCIAL_MEDIA">Sociālie tīkli</option>
-                <option value="DOCUMENT">Dokuments</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">
-                URL
+                Avota URL
               </label>
               <input
                 type="url"
@@ -260,21 +261,22 @@ export default function NewPromisePage() {
               />
             </div>
           </div>
-        </div>
 
-        {/* Explanation */}
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-foreground mb-6">Paskaidrojums (Neobligāts)</h2>
-          <textarea
-            value={formData.explanation}
-            onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
-            rows={4}
-            className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-            placeholder="Kāpēc statuss ir šāds?..."
-          />
-        </div>
-
-        {/* Submit */}
+          {/* Explanation */}
+          <div className="pt-2 border-t border-border/50">
+            <label className="block text-sm font-medium text-foreground mb-1.5">
+              Paskaidrojums
+            </label>
+            <p className="text-sm text-muted-foreground mb-2">Kāpēc šis solījums ir izpildīts, neizpildīts vai procesā?</p>
+            <textarea
+              value={formData.explanation}
+              onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
+              rows={4}
+              className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+              placeholder="Paskaidrojums..."
+            />
+          </div>
+        </div>   {/* Submit */}
         <div className="flex justify-end gap-3 pt-4 border-t border-border">
           <Link
             href="/admin/promises"
