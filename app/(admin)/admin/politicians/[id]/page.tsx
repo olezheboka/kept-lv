@@ -130,7 +130,7 @@ export default function EditPoliticianPage({ params }: { params: Promise<{ id: s
                         <ArrowLeft className="w-5 h-5 text-muted-foreground" />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Edit Politician</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Edit {formData.name || "Politician"}</h1>
                         <p className="text-sm text-muted-foreground mt-1">Update politician details.</p>
                     </div>
                 </div>

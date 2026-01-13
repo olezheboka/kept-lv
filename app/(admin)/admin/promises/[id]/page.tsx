@@ -148,7 +148,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                         <ArrowLeft className="w-5 h-5 text-muted-foreground" />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Edit Promise</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Edit {formData.title || "Promise"}</h1>
                         <p className="text-sm text-muted-foreground mt-1">Update promise details and status.</p>
                     </div>
                 </div>

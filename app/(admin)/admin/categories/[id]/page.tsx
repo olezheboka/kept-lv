@@ -105,7 +105,7 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
                         <ArrowLeft className="w-5 h-5 text-muted-foreground" />
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Edit Category</h1>
+                        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Edit {formData.name || "Category"}</h1>
                         <p className="text-sm text-muted-foreground mt-1">Update category details.</p>
                     </div>
                 </div>
