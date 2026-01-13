@@ -264,8 +264,10 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                         const partyPromises = getPromisesByParty(party.id);
                                         const partyPoliticians = getPoliticiansByParty(party.id);
                                         const keptCount = partyPromises.filter(p => p.status === 'kept').length;
-                                        const brokenCount = partyPromises.filter(p => p.status === 'broken').length;
+                                        const partiallyKeptCount = partyPromises.filter(p => p.status === 'partially-kept').length;
                                         const inProgressCount = partyPromises.filter(p => p.status === 'in-progress').length;
+                                        const brokenCount = partyPromises.filter(p => p.status === 'broken').length;
+                                        const notRatedCount = partyPromises.filter(p => p.status === 'not-rated').length;
                                         const total = partyPromises.length;
 
                                         return (
@@ -300,35 +302,45 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                                 </div>
                                                             </div>
 
-                                                            {/* Stats Bar */}
-                                                            {total > 0 && (
-                                                                <div className="mt-auto">
-                                                                    <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-2">
-                                                                        <span>{total} solījumi</span>
-                                                                        <span>{Math.round((keptCount / total) * 100)}% izpildīti</span>
-                                                                    </div>
-                                                                    <div className="h-2 bg-muted rounded-full overflow-hidden flex">
-                                                                        {keptCount > 0 && (
-                                                                            <div
-                                                                                className="h-full bg-status-kept"
-                                                                                style={{ width: `${(keptCount / total) * 100}%` }}
-                                                                            />
-                                                                        )}
-                                                                        {inProgressCount > 0 && (
-                                                                            <div
-                                                                                className="h-full bg-status-progress"
-                                                                                style={{ width: `${(inProgressCount / total) * 100}%` }}
-                                                                            />
-                                                                        )}
-                                                                        {brokenCount > 0 && (
-                                                                            <div
-                                                                                className="h-full bg-status-broken"
-                                                                                style={{ width: `${(brokenCount / total) * 100}%` }}
-                                                                            />
-                                                                        )}
-                                                                    </div>
+                                                            {/* Stats Bar (Always Visible) */}
+                                                            <div className="mt-auto">
+                                                                <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-2">
+                                                                    <span>{total} solījumi</span>
+                                                                    <span>{total > 0 ? Math.round((keptCount / total) * 100) : 0}% izpildīti</span>
                                                                 </div>
-                                                            )}
+                                                                <div className="h-2 bg-muted rounded-full overflow-hidden flex">
+                                                                    {keptCount > 0 && (
+                                                                        <div
+                                                                            className="h-full bg-status-kept"
+                                                                            style={{ width: `${(keptCount / total) * 100}%` }}
+                                                                        />
+                                                                    )}
+                                                                    {partiallyKeptCount > 0 && (
+                                                                        <div
+                                                                            className="h-full bg-status-partially"
+                                                                            style={{ width: `${(partiallyKeptCount / total) * 100}%` }}
+                                                                        />
+                                                                    )}
+                                                                    {inProgressCount > 0 && (
+                                                                        <div
+                                                                            className="h-full bg-status-progress"
+                                                                            style={{ width: `${(inProgressCount / total) * 100}%` }}
+                                                                        />
+                                                                    )}
+                                                                    {brokenCount > 0 && (
+                                                                        <div
+                                                                            className="h-full bg-status-broken"
+                                                                            style={{ width: `${(brokenCount / total) * 100}%` }}
+                                                                        />
+                                                                    )}
+                                                                    {notRatedCount > 0 && (
+                                                                        <div
+                                                                            className="h-full bg-status-unrated"
+                                                                            style={{ width: `${(notRatedCount / total) * 100}%` }}
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                            </div>
 
                                                             {/* Politicians count (Optional - keeping generic icon style for now or removing if strictly following politician card which has no extra footer) */}
                                                             {/* Removed User icon footer to match PoliticianCard exact style which ends with progress bar */}
