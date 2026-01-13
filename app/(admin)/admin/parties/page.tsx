@@ -73,6 +73,9 @@ export default async function AdminPartiesPage() {
                     <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">No</span>
                   )}
                 </td>
+                <td className="px-4 py-3 align-top text-muted-foreground">
+                  {party._count.politicians}
+                </td>
                 <td className="px-4 py-3 align-top text-muted-foreground text-nowrap">
                   {new Date(party.updatedAt).toLocaleString("lv-LV", {
                     day: "2-digit",
@@ -81,9 +84,6 @@ export default async function AdminPartiesPage() {
                     hour: "2-digit",
                     minute: "2-digit"
                   })}
-                </td>
-                <td className="px-4 py-3 align-top text-muted-foreground">
-                  {party._count.politicians}
                 </td>
                 <td className="px-4 py-3 align-top text-right">
                   <div className="flex items-center justify-end gap-2">

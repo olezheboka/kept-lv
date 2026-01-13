@@ -77,6 +77,9 @@ export default async function AdminCategoriesPage() {
                   <span className={`inline-block w-4 h-4 rounded-full bg-gradient-to-r mr-2 align-middle ${category.color}`}></span>
                   {category.color}
                 </td>
+                <td className="px-4 py-3 align-top text-muted-foreground">
+                  {category._count.promises}
+                </td>
                 <td className="px-4 py-3 align-top text-muted-foreground text-nowrap">
                   {new Date(category.updatedAt).toLocaleString("lv-LV", {
                     day: "2-digit",
@@ -85,9 +88,6 @@ export default async function AdminCategoriesPage() {
                     hour: "2-digit",
                     minute: "2-digit"
                   })}
-                </td>
-                <td className="px-4 py-3 align-top text-muted-foreground">
-                  {category._count.promises}
                 </td>
                 <td className="px-4 py-3 align-top text-right">
                   <div className="flex items-center justify-end gap-2">
