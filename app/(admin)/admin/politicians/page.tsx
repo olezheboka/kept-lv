@@ -44,13 +44,19 @@ export default async function AdminPoliticiansPage() {
         <table className="w-full text-sm text-left">
           <thead className="bg-muted/50 border-b border-border">
             <tr>
-              <th className="px-4 py-3 font-medium text-muted-foreground">
+              <th className="px-4 py-3 font-medium text-muted-foreground w-[200px]">
                 Name
+              </th>
+              <th className="px-4 py-3 font-medium text-muted-foreground">
+                Position
               </th>
               <th className="px-4 py-3 font-medium text-muted-foreground">
                 Party
               </th>
-              <th className="px-4 py-3 font-medium text-muted-foreground">
+              <th className="px-4 py-3 font-medium text-muted-foreground w-[100px]">
+                Updated
+              </th>
+              <th className="px-4 py-3 font-medium text-muted-foreground text-center">
                 Promises
               </th>
               <th className="px-4 py-3 font-medium text-muted-foreground text-right">
@@ -63,6 +69,9 @@ export default async function AdminPoliticiansPage() {
               <tr key={politician.id} className="hover:bg-muted/50 transition-colors">
                 <td className="px-4 py-3 align-top font-medium text-foreground">
                   {politician.name}
+                </td>
+                <td className="px-4 py-3 align-top text-muted-foreground">
+                  {politician.role || "-"}
                 </td>
                 <td className="px-4 py-3 align-top">
                   {politician.party ? (
@@ -78,7 +87,14 @@ export default async function AdminPoliticiansPage() {
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-3 align-top text-muted-foreground">
+                <td className="px-4 py-3 align-top text-muted-foreground whitespace-nowrap">
+                  {new Date(politician.updatedAt).toLocaleDateString("lv-LV", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
+                </td>
+                <td className="px-4 py-3 align-top text-muted-foreground text-center">
                   {politician._count.promises}
                 </td>
                 <td className="px-4 py-3 align-top text-right">
