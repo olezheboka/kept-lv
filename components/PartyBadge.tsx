@@ -33,7 +33,14 @@ export const PartyBadge = ({
         )}
       >
         {party.logoUrl ? (
-          <img src={party.logoUrl} alt={party.name} className="h-full w-full object-cover" />
+          <img
+            src={party.logoUrl}
+            alt={party.name}
+            className={cn(
+              "h-full w-full object-cover",
+              (party.id === 'prog' || party.id === 'jv') && "p-1"
+            )}
+          />
         ) : (
           <span>{party.abbreviation}</span>
         )}

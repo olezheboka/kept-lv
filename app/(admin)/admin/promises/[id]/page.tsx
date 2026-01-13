@@ -187,7 +187,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                     </div>
                 </div>
 
-                {/* Details - 2 Columns */}
+                {/* Details & Source Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
                         <h2 className="text-base font-semibold text-foreground">Metadati</h2>
@@ -242,99 +242,100 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                     </div>
 
                     <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
-                        <h2 className="text-base font-semibold text-foreground">Statuss</h2>
+                        <h2 className="text-base font-semibold text-foreground">Avots</h2>
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-foreground mb-1.5">
-                                    Pašreizējais statuss
+                                    Tips
                                 </label>
                                 <select
-                                    value={formData.status}
-                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                    value={formData.sourceType}
+                                    onChange={(e) => setFormData({ ...formData, sourceType: e.target.value })}
                                     className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                                 >
-                                    <option value="IN_PROGRESS">Procesā</option>
-                                    <option value="KEPT">Izpildīts</option>
-                                    <option value="NOT_KEPT">Neizpildīts</option>
-                                    <option value="PARTIAL">Daļēji izpildīts</option>
-                                    <option value="ABANDONED">Pamests</option>
+                                    <option value="VIDEO">Video</option>
+                                    <option value="ARTICLE">Raksts</option>
+                                    <option value="INTERVIEW">Intervija</option>
+                                    <option value="SOCIAL_MEDIA">Sociālie tīkli</option>
+                                    <option value="DOCUMENT">Dokuments</option>
                                 </select>
                             </div>
 
                             <div>
                                 <label className="block text-sm font-medium text-foreground mb-1.5">
-                                    Statusa atjaunināšanas datums
+                                    URL
                                 </label>
                                 <input
-                                    type="date"
-                                    value={formData.statusUpdatedAt}
-                                    onChange={(e) => setFormData({ ...formData, statusUpdatedAt: e.target.value })}
+                                    type="url"
+                                    value={formData.sourceUrl}
+                                    onChange={(e) => setFormData({ ...formData, sourceUrl: e.target.value })}
                                     className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                                    placeholder="https://..."
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-1.5">
+                                    Nosaukums
+                                </label>
+                                <input
+                                    type="text"
+                                    value={formData.sourceTitle}
+                                    onChange={(e) => setFormData({ ...formData, sourceTitle: e.target.value })}
+                                    className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                                    placeholder="Avota nosaukums..."
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Source */}
+                {/* Status & Explanation */}
                 <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
-                    <h2 className="text-base font-semibold text-foreground">Avots</h2>
+                    <h2 className="text-base font-semibold text-foreground">Statuss un Paskaidrojums</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Tips
+                                Pašreizējais statuss
                             </label>
                             <select
-                                value={formData.sourceType}
-                                onChange={(e) => setFormData({ ...formData, sourceType: e.target.value })}
+                                value={formData.status}
+                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                             >
-                                <option value="VIDEO">Video</option>
-                                <option value="ARTICLE">Raksts</option>
-                                <option value="INTERVIEW">Intervija</option>
-                                <option value="SOCIAL_MEDIA">Sociālie tīkli</option>
-                                <option value="DOCUMENT">Dokuments</option>
+                                <option value="IN_PROGRESS">Procesā</option>
+                                <option value="KEPT">Izpildīts</option>
+                                <option value="NOT_KEPT">Neizpildīts</option>
+                                <option value="PARTIAL">Daļēji izpildīts</option>
+                                <option value="ABANDONED">Pamests</option>
                             </select>
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                URL
+                                Statusa atjaunināšanas datums
                             </label>
                             <input
-                                type="url"
-                                value={formData.sourceUrl}
-                                onChange={(e) => setFormData({ ...formData, sourceUrl: e.target.value })}
+                                type="date"
+                                value={formData.statusUpdatedAt}
+                                onChange={(e) => setFormData({ ...formData, statusUpdatedAt: e.target.value })}
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                placeholder="https://..."
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Nosaukums
-                            </label>
-                            <input
-                                type="text"
-                                value={formData.sourceTitle}
-                                onChange={(e) => setFormData({ ...formData, sourceTitle: e.target.value })}
-                                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                placeholder="Avota nosaukums..."
                             />
                         </div>
                     </div>
-                </div>
 
-                {/* Explanation */}
-                <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
-                    <h2 className="text-base font-semibold text-foreground">Paskaidrojums</h2>
-                    <p className="text-sm text-muted-foreground -mt-4 mb-4">Kāpēc šis solījums ir izpildīts, neizpildīts vai procesā?</p>
-                    <textarea
-                        value={formData.explanation}
-                        onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
-                        rows={4}
-                        className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                        placeholder="Paskaidrojums..."
-                    />
+                    <div className="pt-2">
+                        <label className="block text-sm font-medium text-foreground mb-1.5">
+                            Paskaidrojums
+                        </label>
+                        <p className="text-sm text-muted-foreground mb-2">Kāpēc šis solījums ir izpildīts, neizpildīts vai procesā?</p>
+                        <textarea
+                            value={formData.explanation}
+                            onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
+                            rows={4}
+                            className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                            placeholder="Paskaidrojums..."
+                        />
+                    </div>
                 </div>
 
                 {/* Submit */}

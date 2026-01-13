@@ -73,7 +73,8 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                             <img
                                                                 src={party.logoUrl}
                                                                 alt={party.abbreviation}
-                                                                className="h-full w-full object-contain"
+                                                                className={`h-full w-full object-contain ${(party.slug === 'prog' || party.slug === 'jv') ? 'p-1.5' : ''
+                                                                    }`}
                                                             />
                                                         ) : (
                                                             party.abbreviation

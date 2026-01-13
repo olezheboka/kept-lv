@@ -81,7 +81,8 @@ export const PartyDetailClient = ({ party, promises }: PartyDetailClientProps) =
                                         <img
                                             src={party.logoUrl}
                                             alt={party.abbreviation}
-                                            className="h-full w-auto object-contain"
+                                            className={`h-full w-auto object-contain ${(party.slug === 'prog' || party.slug === 'jv') ? 'p-1' : ''
+                                                }`}
                                         />
                                     </div>
                                 ) : (
