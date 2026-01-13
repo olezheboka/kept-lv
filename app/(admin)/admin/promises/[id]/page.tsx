@@ -187,94 +187,66 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                     </div>
                 </div>
 
-                {/* Details & Source Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
-                        <h2 className="text-base font-semibold text-foreground">Metadati</h2>
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-foreground mb-1.5">
-                                    Politiķis <span className="text-red-500">*</span>
-                                </label>
-                                <select
-                                    required
-                                    value={formData.politicianId}
-                                    onChange={(e) => setFormData({ ...formData, politicianId: e.target.value })}
-                                    className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                >
-                                    <option value="">Izvēlieties politiķi...</option>
-                                    {politicians.map((p) => (
-                                        <option key={p.id} value={p.id}>{p.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-foreground mb-1.5">
-                                    Kategorija <span className="text-red-500">*</span>
-                                </label>
-                                <select
-                                    required
-                                    value={formData.categoryId}
-                                    onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                                    className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                >
-                                    <option value="">Izvēlieties kategoriju...</option>
-                                    {categories.map((c) => (
-                                        <option key={c.id} value={c.id}>{c.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-foreground mb-1.5">
-                                    Solījuma datums <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="date"
-                                    required
-                                    value={formData.dateOfPromise}
-                                    onChange={(e) => setFormData({ ...formData, dateOfPromise: e.target.value })}
-                                    className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                />
-                            </div>
+                {/* Metadati - Full Width */}
+                <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
+                    <h2 className="text-base font-semibold text-foreground">Metadati</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
+                                Politiķis <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                                required
+                                value={formData.politicianId}
+                                onChange={(e) => setFormData({ ...formData, politicianId: e.target.value })}
+                                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                            >
+                                <option value="">Izvēlieties politiķi...</option>
+                                {politicians.map((p) => (
+                                    <option key={p.id} value={p.id}>{p.name}</option>
+                                ))}
+                            </select>
                         </div>
-                    </div>
 
-                    <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
-                        <h2 className="text-base font-semibold text-foreground">Avots</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-medium text-foreground mb-1.5">
-                                    URL
-                                </label>
-                                <input
-                                    type="url"
-                                    value={formData.sourceUrl}
-                                    onChange={(e) => setFormData({ ...formData, sourceUrl: e.target.value })}
-                                    className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                    placeholder="https://..."
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-foreground mb-1.5">
-                                    Nosaukums
-                                </label>
-                                <input
-                                    type="text"
-                                    value={formData.sourceTitle}
-                                    onChange={(e) => setFormData({ ...formData, sourceTitle: e.target.value })}
-                                    className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                    placeholder="Avota nosaukums..."
-                                />
-                            </div>
+                        <div>
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
+                                Kategorija <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                                required
+                                value={formData.categoryId}
+                                onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                            >
+                                <option value="">Izvēlieties kategoriju...</option>
+                                {categories.map((c) => (
+                                    <option key={c.id} value={c.id}>{c.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
+                                Solījuma datums <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="date"
+                                required
+                                value={formData.dateOfPromise}
+                                onChange={(e) => setFormData({ ...formData, dateOfPromise: e.target.value })}
+                                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                            />
                         </div>
                     </div>
                 </div>
 
-                {/* Status & Explanation */}
+                {/* Status, Source & Explanation - Combined */}
                 <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
-                    <h2 className="text-base font-semibold text-foreground">Statuss un Paskaidrojums</h2>
+                    <div className="flex items-center justify-between border-b border-border/50 pb-4 mb-4">
+                        <h2 className="text-base font-semibold text-foreground">Statuss, Avots un Paskaidrojums</h2>
+                    </div>
+
+                    {/* Status Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
@@ -282,7 +254,15 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                             </label>
                             <select
                                 value={formData.status}
-                                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                                onChange={(e) => {
+                                    const newStatus = e.target.value;
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        status: newStatus,
+                                        // Auto-set date to today if empty when changing status
+                                        statusUpdatedAt: prev.statusUpdatedAt || new Date().toISOString().split('T')[0]
+                                    }));
+                                }}
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
                             >
                                 <option value="IN_PROGRESS">Procesā</option>
@@ -306,7 +286,36 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                         </div>
                     </div>
 
-                    <div className="pt-2">
+                    {/* Source Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-border/50">
+                        <div>
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
+                                Avota URL
+                            </label>
+                            <input
+                                type="url"
+                                value={formData.sourceUrl}
+                                onChange={(e) => setFormData({ ...formData, sourceUrl: e.target.value })}
+                                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                                placeholder="https://..."
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
+                                Avota nosaukums
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.sourceTitle}
+                                onChange={(e) => setFormData({ ...formData, sourceTitle: e.target.value })}
+                                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                                placeholder="Avota nosaukums..."
+                            />
+                        </div>
+                    </div>
+
+                    {/* Explanation */}
+                    <div className="pt-2 border-t border-border/50">
                         <label className="block text-sm font-medium text-foreground mb-1.5">
                             Paskaidrojums
                         </label>
