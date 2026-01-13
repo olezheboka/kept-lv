@@ -21,8 +21,7 @@ export default function NewPoliticianPage() {
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
-    name: "",
-    slug: "",
+    // imageUrl: "", // Removed from UI
     role: "", // Position
     bio: "",
     education: "",
