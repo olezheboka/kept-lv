@@ -170,10 +170,11 @@ export default function EditPoliticianPage({ params }: { params: Promise<{ id: s
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Position (Role)
+                                Position (Role) <span className="text-red-500">*</span>
                             </label>
                             <input
                                 type="text"
+                                required
                                 value={formData.role}
                                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                                 className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
