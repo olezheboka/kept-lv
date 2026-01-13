@@ -5,7 +5,7 @@ export const createPartySchema = z.object({
   name: z.string().min(1),
   slug: z.string().min(1).max(100),
   description: z.string().optional().nullable(),
-  logoUrl: z.string().url("Valid URL required").min(1, "Logo is required"),
+  logoUrl: z.string().min(1, "Logo is required"),
   websiteUrl: z.string().url("Valid URL required").min(1, "Website URL is required"),
   isCoalition: z.boolean().default(false),
 });
