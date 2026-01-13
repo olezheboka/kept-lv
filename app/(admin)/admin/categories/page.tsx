@@ -44,13 +44,16 @@ export default async function AdminCategoriesPage() {
           <thead className="bg-muted/50 border-b border-border">
             <tr>
               <th className="px-4 py-3 font-medium text-muted-foreground">
+                Icon
+              </th>
+              <th className="px-4 py-3 font-medium text-muted-foreground">
                 Name
               </th>
               <th className="px-4 py-3 font-medium text-muted-foreground">
                 Slug
               </th>
-              <th className="px-4 py-3 font-medium text-muted-foreground">
-                Color Class
+              <th className="px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">
+                Description
               </th>
               <th className="px-4 py-3 font-medium text-muted-foreground">
                 Promises
@@ -66,16 +69,29 @@ export default async function AdminCategoriesPage() {
           <tbody className="divide-y divide-border">
             {categories.map((category) => (
               <tr key={category.id} className="hover:bg-muted/50 transition-colors">
+                <td className="px-4 py-3 align-top">
+                  {category.imageUrl ? (
+                    <div className="relative w-8 h-8 rounded-md overflow-hidden bg-muted">
+                      <img
+                        src={category.imageUrl}
+                        alt={category.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 rounded-md bg-muted flex items-center justify-center">
+                      <Tag className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                  )}
+                </td>
                 <td className="px-4 py-3 align-top font-medium text-foreground">
                   {(category.name as any)}
                 </td>
                 <td className="px-4 py-3 align-top text-muted-foreground">
                   {category.slug}
                 </td>
-                <td className="px-4 py-3 align-top text-muted-foreground text-xs font-mono">
-                  {/* Visual preview of gradient/color class */}
-                  <span className={`inline-block w-4 h-4 rounded-full bg-gradient-to-r mr-2 align-middle ${category.color}`}></span>
-                  {category.color}
+                <td className="px-4 py-3 align-top text-muted-foreground text-xs hidden md:table-cell max-w-[200px] truncate">
+                  {category.description || "-"}
                 </td>
                 <td className="px-4 py-3 align-top text-muted-foreground">
                   {category._count.promises}

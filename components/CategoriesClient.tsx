@@ -3,18 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-    TrendingUp, Heart, GraduationCap, Shield, Globe, Users,
-    Leaf, Train, Scale, Landmark, Wheat, Laptop, Home,
-    HandHeart, Trophy, Briefcase, Cpu, Map
-} from 'lucide-react';
 import { CategoryUI } from '@/lib/db';
-
-const iconMap: Record<string, any> = {
-    TrendingUp, Heart, GraduationCap, Shield, Globe, Users,
-    Leaf, Train, Scale, Landmark, Wheat, Laptop, Home,
-    HandHeart, Trophy, Briefcase, Cpu, Map
-};
 
 interface CategoriesClientProps {
     categories: (CategoryUI & {
@@ -27,7 +16,7 @@ interface CategoriesClientProps {
     })[];
 }
 
-export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
+const CategoriesClient = ({ categories }: CategoriesClientProps) => {
     return (
         <div className="flex flex-col bg-background">
             {/* Page Header */}
@@ -55,9 +44,6 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                         {categories.map((category, index) => {
                             const { total, kept, inProgress, broken } = category.stats;
 
-                            // If icon string is not found in iconMap, fallback to TrendingUp
-                            const Icon = (category.icon && iconMap[category.icon]) || TrendingUp;
-
                             return (
                                 <motion.div
                                     key={category.id}
@@ -69,8 +55,33 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                         <Card className="group overflow-hidden border-border/50 hover:shadow-elevated hover:border-accent/50 transition-all duration-300 h-full">
                                             <CardContent className="p-5">
                                                 <div className="flex items-start justify-between mb-4">
-                                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
-                                                        <Icon className="h-6 w-6" />
+                                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center overflow-hidden shrink-0">
+                                                        {category.imageUrl ? (
+                                                            <img
+                                                                src={category.imageUrl}
+                                                                alt={category.name}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex items-center justify-center w-full h-full text-accent group-hover:text-accent-foreground transition-colors">
+                                                                {/* Fallback Icon */}
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="2"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    className="w-6 h-6"
+                                                                >
+                                                                    <rect width="7" height="7" x="3" y="3" rx="1" />
+                                                                    <rect width="7" height="7" x="14" y="3" rx="1" />
+                                                                    <rect width="7" height="7" x="14" y="14" rx="1" />
+                                                                    <rect width="7" height="7" x="3" y="14" rx="1" />
+                                                                </svg>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <span className="text-sm font-medium text-muted-foreground">
                                                         {total} solījumi
@@ -81,9 +92,11 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                                     {category.name}
                                                 </h3>
 
-                                                <p className="text-xs text-muted-foreground line-clamp-2 mb-4">
-                                                    {category.description}
-                                                </p>
+                                                {category.description && (
+                                                    <p className="text-xs text-muted-foreground line-clamp-2 mb-4">
+                                                        {category.description}
+                                                    </p>
+                                                )}
 
                                                 {/* Mini Stats */}
                                                 {total > 0 && (

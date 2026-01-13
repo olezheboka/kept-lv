@@ -53,9 +53,17 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // Construct payload from parsed data, including description and imageUrl
+    const payload = {
+      name: parsed.data.name,
+      slug: parsed.data.slug,
+      description: parsed.data.description,
+      imageUrl: parsed.data.imageUrl,
+    };
+
     const category = await prisma.category.update({
       where: { id },
-      data: parsed.data,
+      data: payload,
     });
 
     return NextResponse.json(category);

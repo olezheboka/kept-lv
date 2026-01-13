@@ -61,8 +61,7 @@ export interface CategoryUI {
     slug: string;
     name: string;
     description?: string;
-    color: string;
-    icon?: string;
+    imageUrl?: string;
 }
 
 export interface RankingItem {
@@ -656,8 +655,7 @@ export async function getCategories(locale: Locale = "lv"): Promise<(CategoryUI 
             slug: cat.slug,
             name: getLocalizedText(cat.name, locale),
             description: cat.description ? getLocalizedText(cat.description, locale) : undefined,
-            color: cat.color,
-            icon: cat.icon || undefined,
+            imageUrl: cat.imageUrl || undefined,
             stats: {
                 total,
                 kept,
@@ -746,8 +744,7 @@ export async function getCategoryBySlug(
         slug: category.slug,
         name: getLocalizedText(category.name, locale),
         description: category.description ? getLocalizedText(category.description, locale) : undefined,
-        color: category.color,
-        icon: category.icon || undefined,
+        imageUrl: category.imageUrl || undefined,
     };
 }
 

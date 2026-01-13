@@ -32,17 +32,22 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const parsed = createCategorySchema.safeParse(body);
+    const payload = {
+      name: body.name,
+      slug: body.slug,
+      description: body.description,
+      imageUrl: body.imageUrl,
+    };
 
-    if (!parsed.success) {
+    if (!payload.name || !payload.slug) {
       return NextResponse.json(
-        { error: "Invalid input", details: parsed.error.issues },
+        { error: "Name and slug are required" },
         { status: 400 }
       );
     }
 
     const category = await prisma.category.create({
-      data: parsed.data,
+      data: payload,
     });
 
     return NextResponse.json(category, { status: 201 });

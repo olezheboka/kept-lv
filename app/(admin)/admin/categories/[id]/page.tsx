@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Check, Loader2 } from "lucide-react";
 import { slugify } from "@/lib/utils";
+import { ImageUpload } from "@/components/ui/ImageUpload";
 
 export default function EditCategoryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -16,18 +17,9 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
     const [formData, setFormData] = useState({
         name: "",
         slug: "",
-        color: "from-blue-500 to-blue-600",
+        description: "",
+        imageUrl: "",
     });
-
-    const colorOptions = [
-        { value: "from-blue-500 to-blue-600", label: "Blue (Economy)" },
-        { value: "from-pink-500 to-rose-600", label: "Pink (Healthcare)" },
-        { value: "from-green-500 to-emerald-600", label: "Green (Environment)" },
-        { value: "from-cyan-500 to-teal-600", label: "Cyan (Infrastructure)" },
-        { value: "from-purple-500 to-violet-600", label: "Purple (Education)" },
-        { value: "from-red-500 to-orange-600", label: "Red (Security)" },
-        { value: "from-slate-500 to-gray-600", label: "Gray (Other)" },
-    ];
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,7 +36,8 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
                 setFormData({
                     name: categoryData.name || "",
                     slug: categoryData.slug || "",
-                    color: categoryData.color || "from-blue-500 to-blue-600",
+                    description: categoryData.description || "",
+                    imageUrl: categoryData.imageUrl || "",
                 });
 
                 setLoading(false);
@@ -71,7 +64,8 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
             const payload = {
                 name: formData.name,
                 slug: formData.slug || slugify(formData.name),
-                color: formData.color,
+                description: formData.description,
+                imageUrl: formData.imageUrl,
             };
 
             const res = await fetch(`/api/categories/${id}`, {
@@ -154,19 +148,31 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
 
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Color Theme
+                                Description
                             </label>
-                            <select
-                                value={formData.color}
-                                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                            >
-                                {colorOptions.map((opt) => (
-                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                ))}
-                            </select>
-                            <div className={`mt-2 h-8 rounded-md bg-gradient-to-r ${formData.color}`} />
+                            <textarea
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all min-h-[100px]"
+                                placeholder="Brief description of the category..."
+                            />
                         </div>
+                    </div>
+                </div>
+
+                <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
+                    <h2 className="text-base font-semibold text-foreground mb-6">Icon</h2>
+                    <div className="max-w-md">
+                        <label className="block text-sm font-medium text-foreground mb-1.5">
+                            Category Icon
+                        </label>
+                        <ImageUpload
+                            value={formData.imageUrl}
+                            onChange={(url) => setFormData({ ...formData, imageUrl: url })}
+                        />
+                        <p className="text-xs text-muted-foreground mt-2">
+                            Upload an SVG or PNG icon. Square aspect ratio recommended.
+                        </p>
                     </div>
                 </div>
 

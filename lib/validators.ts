@@ -37,10 +37,10 @@ export const updatePoliticianSchema = z.object({
 
 // Category schemas
 export const createCategorySchema = z.object({
-  name: z.string().min(1),
-  description: z.string().optional().nullable(),
-  slug: z.string().min(1).max(100),
-  color: z.string().min(1).max(100),
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  slug: z.string().min(1, "Slug is required").max(100),
+  imageUrl: z.string().optional(),
   icon: z.string().optional().nullable(),
 });
 

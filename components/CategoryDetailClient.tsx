@@ -7,13 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { STATUS_CONFIG, PromiseStatus } from '@/lib/types';
 import { PromiseUI, CategoryUI } from '@/lib/db';
-import { ArrowLeft, CheckCircle2, Clock, XCircle, CircleDot, HelpCircle, TrendingUp, Heart, GraduationCap, Shield, Globe, Users, Leaf, Train, Scale, Landmark, Wheat, Laptop, Home, HandHeart, Trophy, Briefcase, Cpu, Map } from 'lucide-react';
-
-const iconMap: Record<string, any> = {
-    TrendingUp, Heart, GraduationCap, Shield, Globe, Users,
-    Leaf, Train, Scale, Landmark, Wheat, Laptop, Home,
-    HandHeart, Trophy, Briefcase, Cpu, Map
-};
+import { ArrowLeft, CheckCircle2, Clock, XCircle, CircleDot } from 'lucide-react';
 
 interface CategoryDetailClientProps {
     category: CategoryUI;
@@ -21,8 +15,6 @@ interface CategoryDetailClientProps {
 }
 
 export const CategoryDetailClient = ({ category, promises }: CategoryDetailClientProps) => {
-    // If icon string is not found in iconMap, fallback to TrendingUp
-    const Icon = (category.icon && iconMap[category.icon]) || TrendingUp;
 
     const stats = {
         total: promises.length,
@@ -65,8 +57,33 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
                         transition={{ duration: 0.4 }}
                         className="flex items-start gap-6"
                     >
-                        <div className="w-16 h-16 rounded-2xl bg-accent flex items-center justify-center text-accent-foreground">
-                            <Icon className="h-8 w-8" />
+                        <div className="w-16 h-16 rounded-2xl bg-accent flex items-center justify-center text-accent-foreground overflow-hidden shrink-0">
+                            {category.imageUrl ? (
+                                <img
+                                    src={category.imageUrl}
+                                    alt={category.name}
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="flex items-center justify-center w-full h-full">
+                                    {/* Fallback Icon */}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="h-8 w-8"
+                                    >
+                                        <rect width="7" height="7" x="3" y="3" rx="1" />
+                                        <rect width="7" height="7" x="14" y="3" rx="1" />
+                                        <rect width="7" height="7" x="14" y="14" rx="1" />
+                                        <rect width="7" height="7" x="3" y="14" rx="1" />
+                                    </svg>
+                                </div>
+                            )}
                         </div>
                         <div>
                             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
