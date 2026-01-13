@@ -55,6 +55,9 @@ export default async function AdminCategoriesPage() {
               <th className="px-4 py-3 font-medium text-muted-foreground">
                 Promises
               </th>
+              <th className="px-4 py-3 font-medium text-muted-foreground w-[130px]">
+                Updated
+              </th>
               <th className="px-4 py-3 font-medium text-muted-foreground text-right">
                 Actions
               </th>
@@ -73,6 +76,15 @@ export default async function AdminCategoriesPage() {
                   {/* Visual preview of gradient/color class */}
                   <span className={`inline-block w-4 h-4 rounded-full bg-gradient-to-r mr-2 align-middle ${category.color}`}></span>
                   {category.color}
+                </td>
+                <td className="px-4 py-3 align-top text-muted-foreground text-nowrap">
+                  {new Date(category.updatedAt).toLocaleString("lv-LV", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                  })}
                 </td>
                 <td className="px-4 py-3 align-top text-muted-foreground">
                   {category._count.promises}

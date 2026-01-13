@@ -87,10 +87,12 @@ export default async function AdminPoliticiansPage() {
                   )}
                 </td>
                 <td className="px-4 py-3 align-top text-muted-foreground whitespace-nowrap">
-                  {new Date(politician.updatedAt).toLocaleDateString("lv-LV", {
+                  {new Date(politician.updatedAt).toLocaleString("lv-LV", {
                     day: "2-digit",
                     month: "2-digit",
                     year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
                   })}
                 </td>
                 <td className="px-4 py-3 align-top text-muted-foreground text-center">
