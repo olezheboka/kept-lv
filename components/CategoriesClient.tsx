@@ -16,7 +16,7 @@ interface CategoriesClientProps {
     })[];
 }
 
-const CategoriesClient = ({ categories }: CategoriesClientProps) => {
+export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
     return (
         <div className="flex flex-col bg-background">
             {/* Page Header */}
