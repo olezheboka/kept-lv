@@ -35,7 +35,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
     const [selectedParties, setSelectedParties] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-    const [sortBy, setSortBy] = useState<'updated' | 'date' | 'views'>('updated');
+    const [sortBy, setSortBy] = useState<'updated-desc' | 'updated-asc' | 'date-desc' | 'date-asc'>('updated-desc');
 
     const filteredPromises = useMemo(() => {
         let result = [...initialPromises];
@@ -69,14 +69,17 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
 
         // Sorting
         switch (sortBy) {
-            case 'updated':
+            case 'updated-desc':
                 result.sort((a, b) => new Date(b.statusUpdatedAt).getTime() - new Date(a.statusUpdatedAt).getTime());
                 break;
-            case 'date':
+            case 'updated-asc':
+                result.sort((a, b) => new Date(a.statusUpdatedAt).getTime() - new Date(b.statusUpdatedAt).getTime());
+                break;
+            case 'date-desc':
                 result.sort((a, b) => new Date(b.datePromised).getTime() - new Date(a.datePromised).getTime());
                 break;
-            case 'views':
-                result.sort((a, b) => b.viewCount - a.viewCount);
+            case 'date-asc':
+                result.sort((a, b) => new Date(a.datePromised).getTime() - new Date(b.datePromised).getTime());
                 break;
         }
 
@@ -200,7 +203,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                 <div className="container-wide">
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Desktop Sidebar */}
-                        <aside className="hidden lg:block w-64 flex-shrink-0">
+                        <aside className="hidden lg:block w-72 flex-shrink-0">
                             <Card className="sticky top-24 border-border/50">
                                 <CardContent className="p-5">
                                     <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -215,7 +218,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                         {/* Main Content */}
                         <div className="flex-1 min-w-0">
                             {/* Search & Sort Bar */}
-                            <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                            <div className="flex flex-col md:flex-row gap-4 mb-6">
                                 {/* Search */}
                                 <div className="relative flex-1">
                                     <Input
@@ -231,7 +234,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                 {/* Mobile Filter Button */}
                                 <Sheet>
                                     <SheetTrigger asChild>
-                                        <Button variant="outline" className="lg:hidden gap-2">
+                                        <Button variant="outline" className="lg:hidden gap-2 w-full md:w-auto">
                                             <SlidersHorizontal className="h-4 w-4" />
                                             Filtri
                                             {hasActiveFilters && (
@@ -249,39 +252,19 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                     </SheetContent>
                                 </Sheet>
 
-                                {/* Sort & View */}
-                                <div className="flex items-center gap-2 w-full sm:w-auto">
-                                    <div className="relative flex-1 sm:flex-none">
-                                        <select
-                                            value={sortBy}
-                                            onChange={(e) => setSortBy(e.target.value as 'updated' | 'date' | 'views')}
-                                            className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-                                        >
-                                            <option value="updated">Pēdējie atjaunināti</option>
-                                            <option value="date">Datums</option>
-                                            <option value="views">Populārākie</option>
-                                        </select>
-                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                                    </div>
-
-                                    <div className="flex items-center border border-input rounded-lg overflow-hidden flex-shrink-0">
-                                        <Button
-                                            variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-                                            size="icon"
-                                            className="h-10 w-10 rounded-none"
-                                            onClick={() => setViewMode('grid')}
-                                        >
-                                            <Grid3X3 className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                            variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-                                            size="icon"
-                                            className="h-10 w-10 rounded-none"
-                                            onClick={() => setViewMode('list')}
-                                        >
-                                            <List className="h-4 w-4" />
-                                        </Button>
-                                    </div>
+                                {/* Sort */}
+                                <div className="relative w-full md:w-auto min-w-[200px]">
+                                    <select
+                                        value={sortBy}
+                                        onChange={(e) => setSortBy(e.target.value as any)}
+                                        className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                                    >
+                                        <option value="updated-desc">Pēdējie atjaunināti ↓</option>
+                                        <option value="updated-asc">Pēdējie atjaunināti ↑</option>
+                                        <option value="date-desc">Datums ↓</option>
+                                        <option value="date-asc">Datums ↑</option>
+                                    </select>
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                                 </div>
                             </div>
 
@@ -338,10 +321,9 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                 Atrasti {filteredPromises.length} solījumi
                             </p>
 
-                            {/* Promise Grid */}
                             {filteredPromises.length > 0 ? (
                                 <div className={viewMode === 'grid'
-                                    ? 'grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-5'
+                                    ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'
                                     : 'space-y-4'
                                 }>
                                     {filteredPromises.map((promise, index) => (
@@ -363,7 +345,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                         </div>
                     </div>
                 </div>
-            </section>
-        </div>
+            </section >
+        </div >
     );
 }

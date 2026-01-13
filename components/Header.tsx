@@ -16,7 +16,7 @@ const navLinks = [
   { href: '/politicians', label: 'Politiķi' },
   { href: '/parties', label: 'Partijas' },
   { href: '/categories', label: 'Kategorijas' },
-  { href: '/about', label: 'Par mums' },
+
 ];
 
 export const Header = () => {

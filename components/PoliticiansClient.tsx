@@ -26,7 +26,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedParties, setSelectedParties] = useState<string[]>([]);
     const [showInOffice, setShowInOffice] = useState(false);
-    const [sortBy, setSortBy] = useState('default');
+    const [sortBy, setSortBy] = useState('kept-percentage-desc');
 
     // Helper to get party by ID
     const getPartyById = (partyId: string | undefined) => parties.find(p => p.id === partyId);
@@ -55,34 +55,32 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
         }
 
         // Sorting
-        if (sortBy !== 'default') {
-            result.sort((a, b) => {
-                const aPromises = getPromisesByPolitician(a.id);
-                const aKept = aPromises.filter(p => p.status === 'kept').length;
-                const aTotal = aPromises.length;
-                const aPercentage = aTotal > 0 ? (aKept / aTotal) * 100 : 0;
+        result.sort((a, b) => {
+            const aPromises = getPromisesByPolitician(a.id);
+            const aKept = aPromises.filter(p => p.status === 'kept').length;
+            const aTotal = aPromises.length;
+            const aPercentage = aTotal > 0 ? (aKept / aTotal) * 100 : 0;
 
-                const bPromises = getPromisesByPolitician(b.id);
-                const bKept = bPromises.filter(p => p.status === 'kept').length;
-                const bTotal = bPromises.length;
-                const bPercentage = bTotal > 0 ? (bKept / bTotal) * 100 : 0;
+            const bPromises = getPromisesByPolitician(b.id);
+            const bKept = bPromises.filter(p => p.status === 'kept').length;
+            const bTotal = bPromises.length;
+            const bPercentage = bTotal > 0 ? (bKept / bTotal) * 100 : 0;
 
-                if (sortBy === 'kept-percentage-asc') {
-                    // sort by percentage asc
-                    return aPercentage - bPercentage;
-                } else if (sortBy === 'kept-percentage-desc') {
-                    // sort by percentage desc
-                    return bPercentage - aPercentage;
-                } else if (sortBy === 'kept-count-asc') {
-                    // sort by count asc
-                    return aKept - bKept;
-                } else if (sortBy === 'kept-count-desc') {
-                    // sort by count desc
-                    return bKept - aKept;
-                }
-                return 0;
-            });
-        }
+            if (sortBy === 'kept-percentage-asc') {
+                // sort by percentage asc
+                return aPercentage - bPercentage;
+            } else if (sortBy === 'kept-percentage-desc') {
+                // sort by percentage desc
+                return bPercentage - aPercentage;
+            } else if (sortBy === 'kept-count-asc') {
+                // sort by count asc
+                return aKept - bKept;
+            } else if (sortBy === 'kept-count-desc') {
+                // sort by count desc
+                return bKept - aKept;
+            }
+            return 0;
+        });
 
         return result;
     }, [searchQuery, selectedParties, showInOffice, sortBy, politicians, promises]);
@@ -170,7 +168,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                 <div className="container-wide">
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Desktop Sidebar */}
-                        <aside className="hidden lg:block w-64 flex-shrink-0">
+                        <aside className="hidden lg:block w-72 flex-shrink-0">
                             <Card className="sticky top-24 border-border/50">
                                 <CardContent className="p-5">
                                     <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -185,12 +183,12 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                         {/* Main Content */}
                         <div className="flex-1 min-w-0">
                             {/* Search & Sort Bar */}
-                            <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                            <div className="flex flex-col md:flex-row gap-4 mb-6">
                                 {/* Search */}
                                 <div className="relative flex-1">
                                     <Input
                                         type="search"
-                                        placeholder="Meklēt politiķi..."
+                                        placeholder="Meklēt politiķus..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         className="pl-10"
@@ -201,7 +199,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                 {/* Mobile Filter Button */}
                                 <Sheet>
                                     <SheetTrigger asChild>
-                                        <Button variant="outline" className="lg:hidden gap-2">
+                                        <Button variant="outline" className="lg:hidden gap-2 w-full md:w-auto">
                                             <SlidersHorizontal className="h-4 w-4" />
                                             Filtri
                                             {hasActiveFilters && (
@@ -220,21 +218,18 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                 </Sheet>
 
                                 {/* Sort */}
-                                <div className="w-full sm:w-auto min-w-[180px]">
-                                    <div className="relative">
-                                        <select
-                                            value={sortBy}
-                                            onChange={(e) => setSortBy(e.target.value)}
-                                            className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-                                        >
-                                            <option value="default">Bez kārtošanas</option>
-                                            <option value="kept-percentage-asc">% izpildīts ↑</option>
-                                            <option value="kept-percentage-desc">% izpildīts ↓</option>
-                                            <option value="kept-count-asc"># izpildīts ↑</option>
-                                            <option value="kept-count-desc"># izpildīts ↓</option>
-                                        </select>
-                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                                    </div>
+                                <div className="relative w-full md:w-auto min-w-[200px]">
+                                    <select
+                                        value={sortBy}
+                                        onChange={(e) => setSortBy(e.target.value)}
+                                        className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                                    >
+                                        <option value="kept-percentage-desc">% izpildīts ↓</option>
+                                        <option value="kept-percentage-asc">% izpildīts ↑</option>
+                                        <option value="kept-count-desc"># izpildīts ↓</option>
+                                        <option value="kept-count-asc"># izpildīts ↑</option>
+                                    </select>
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                                 </div>
                             </div>
 
@@ -279,7 +274,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
 
                             {/* Politicians Grid */}
                             {filteredPoliticians.length > 0 ? (
-                                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                                     {filteredPoliticians.map((politician, index) => {
                                         const party = getPartyById(politician.partyId);
                                         const politicianPromises = getPromisesByPolitician(politician.id);
@@ -300,7 +295,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                         <CardContent className="p-5">
                                                             <div className="flex flex-col gap-1 mb-4">
                                                                 <div className="flex items-center gap-2 flex-wrap">
-                                                                    <h3 className="font-semibold text-foreground text-lg leading-tight group-hover:text-accent transition-colors truncate">
+                                                                    <h3 className="font-semibold text-foreground text-base leading-tight group-hover:text-accent transition-colors truncate">
                                                                         {politician.name}
                                                                     </h3>
                                                                     {party && (
@@ -312,7 +307,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                                         />
                                                                     )}
                                                                 </div>
-                                                                <div className="flex items-center gap-2 min-w-0 text-sm text-muted-foreground w-full">
+                                                                <div className="flex items-center gap-2 min-w-0 text-xs text-muted-foreground w-full">
                                                                     <TooltipProvider>
                                                                         <Tooltip delayDuration={300}>
                                                                             <TooltipTrigger asChild>
@@ -326,7 +321,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                                         </Tooltip>
                                                                     </TooltipProvider>
                                                                     {politician.isInOffice && (
-                                                                        <span className="flex-shrink-0 px-2 py-0.5 bg-muted/60 text-muted-foreground text-xs font-medium rounded-full whitespace-nowrap">
+                                                                        <span className="flex-shrink-0 px-2 py-0.5 bg-muted/60 text-muted-foreground text-[10px] font-medium rounded-full whitespace-nowrap">
                                                                             Amatā
                                                                         </span>
                                                                     )}
@@ -336,7 +331,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                             {/* Stats Bar */}
                                                             {total > 0 && (
                                                                 <div>
-                                                                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                                                                    <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-2">
                                                                         <span>{total} solījumi</span>
                                                                         <span>{Math.round((keptCount / total) * 100)}% izpildīti</span>
                                                                     </div>

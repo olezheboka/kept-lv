@@ -46,13 +46,9 @@ export const Footer = () => {
 
           {/* About */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Par mums</h4>
+            <h4 className="font-semibold text-foreground mb-4">Informācija</h4>
             <ul className="space-y-2.5">
-              <li>
-                <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
-                  Par solījums.lv
-                </Link>
-              </li>
+
               <li>
                 <Link href="/methodology" className="text-sm text-muted-foreground hover:text-foreground transition-colors" suppressHydrationWarning>
                   Metodoloģija

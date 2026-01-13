@@ -154,7 +154,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                 <div className="container-wide">
                     <div className="flex flex-col lg:flex-row gap-8">
                         {/* Desktop Sidebar */}
-                        <aside className="hidden lg:block w-64 flex-shrink-0">
+                        <aside className="hidden lg:block w-72 flex-shrink-0">
                             <Card className="sticky top-24 border-border/50">
                                 <CardContent className="p-5">
                                     <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -169,12 +169,12 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                         {/* Main Content */}
                         <div className="flex-1 min-w-0">
                             {/* Search & Sort Bar */}
-                            <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                            <div className="flex flex-col md:flex-row gap-4 mb-6">
                                 {/* Search */}
                                 <div className="relative flex-1">
                                     <Input
                                         type="search"
-                                        placeholder="Meklēt partiju..."
+                                        placeholder="Meklēt partijas..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         className="pl-10"
@@ -185,7 +185,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                 {/* Mobile Filter Button */}
                                 <Sheet>
                                     <SheetTrigger asChild>
-                                        <Button variant="outline" className="lg:hidden gap-2">
+                                        <Button variant="outline" className="lg:hidden gap-2 w-full md:w-auto">
                                             <SlidersHorizontal className="h-4 w-4" />
                                             Filtri
                                             {hasActiveFilters && (
@@ -204,24 +204,22 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                 </Sheet>
 
                                 {/* Sort */}
-                                <div className="w-full sm:w-auto min-w-[200px]">
-                                    <div className="relative">
-                                        <select
-                                            value={sortBy}
-                                            onChange={(e) => setSortBy(e.target.value)}
-                                            className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-                                        >
-                                            <option value="alphabetical-asc">A↑Z</option>
-                                            <option value="alphabetical-desc">Z↓A</option>
-                                            <option value="mps-asc">1↑99</option>
-                                            <option value="mps-desc">99↓1</option>
-                                            <option value="kept-percentage-asc">% izpildīts ↑</option>
-                                            <option value="kept-percentage-desc">% izpildīts ↓</option>
-                                            <option value="kept-count-asc"># izpildīts ↑</option>
-                                            <option value="kept-count-desc"># izpildīts ↓</option>
-                                        </select>
-                                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                                    </div>
+                                <div className="relative w-full md:w-auto min-w-[200px]">
+                                    <select
+                                        value={sortBy}
+                                        onChange={(e) => setSortBy(e.target.value)}
+                                        className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                                    >
+                                        <option value="alphabetical-asc">A↑Z</option>
+                                        <option value="alphabetical-desc">Z↓A</option>
+                                        <option value="mps-asc">1↑99</option>
+                                        <option value="mps-desc">99↓1</option>
+                                        <option value="kept-percentage-asc">% izpildīts ↑</option>
+                                        <option value="kept-percentage-desc">% izpildīts ↓</option>
+                                        <option value="kept-count-asc"># izpildīts ↑</option>
+                                        <option value="kept-count-desc"># izpildīts ↓</option>
+                                    </select>
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                                 </div>
                             </div>
 
@@ -260,9 +258,8 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                 Atrastas {filteredParties.length} partijas
                             </p>
 
-                            {/* Parties Grid */}
                             {filteredParties.length > 0 ? (
-                                <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                                     {filteredParties.map((party, index) => {
                                         const partyPromises = getPromisesByParty(party.id);
                                         const partyPoliticians = getPoliticiansByParty(party.id);
@@ -284,7 +281,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                             {/* Party Header */}
                                                             <div className="flex items-start gap-4 mb-6">
                                                                 <div
-                                                                    className={`w-14 h-14 rounded-xl flex items-center justify-center font-bold text-lg overflow-hidden relative shrink-0 ${party.logoUrl ? 'bg-transparent' : 'bg-muted text-muted-foreground'}`}
+                                                                    className={`w-14 h-14 rounded-xl flex items-center justify-center font-bold text-base overflow-hidden relative shrink-0 ${party.logoUrl ? 'bg-transparent' : 'bg-muted text-muted-foreground'}`}
                                                                 >
                                                                     {party.logoUrl ? (
                                                                         <img
@@ -298,16 +295,16 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                                     )}
                                                                 </div>
                                                                 <div className="flex-1 min-w-0">
-                                                                    <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors text-lg">
+                                                                    <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors text-base">
                                                                         {party.name}
                                                                     </h3>
                                                                     <div className="flex items-center gap-2 mt-1">
                                                                         {party.isInCoalition ? (
-                                                                            <span className="px-2 py-0.5 bg-status-kept-bg text-status-kept text-xs font-medium rounded-full">
+                                                                            <span className="px-2 py-0.5 bg-status-kept-bg text-status-kept text-[10px] font-medium rounded-full">
                                                                                 Koalīcijā
                                                                             </span>
                                                                         ) : (
-                                                                            <span className="px-2 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
+                                                                            <span className="px-2 py-0.5 bg-muted text-muted-foreground text-[10px] font-medium rounded-full">
                                                                                 Opozīcijā
                                                                             </span>
                                                                         )}
@@ -318,19 +315,19 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                             {/* Stats */}
                                                             <div className="grid grid-cols-2 gap-4 mb-6">
                                                                 <div className="text-center p-3 bg-muted/30 rounded-lg">
-                                                                    <div className="text-2xl font-bold text-foreground">{party.mpCount}</div>
-                                                                    <div className="text-xs text-muted-foreground">Deputāti</div>
+                                                                    <div className="text-xl font-bold text-foreground">{party.mpCount}</div>
+                                                                    <div className="text-[10px] text-muted-foreground">Deputāti</div>
                                                                 </div>
                                                                 <div className="text-center p-3 bg-muted/30 rounded-lg">
-                                                                    <div className="text-2xl font-bold text-foreground">{total}</div>
-                                                                    <div className="text-xs text-muted-foreground">Solījumi</div>
+                                                                    <div className="text-xl font-bold text-foreground">{total}</div>
+                                                                    <div className="text-[10px] text-muted-foreground">Solījumi</div>
                                                                 </div>
                                                             </div>
 
                                                             {/* Progress Bar */}
                                                             {total > 0 && (
                                                                 <div>
-                                                                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                                                                    <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-2">
                                                                         <span>Solījumu izpilde</span>
                                                                         <span>{Math.round((keptCount / total) * 100)}%</span>
                                                                     </div>
@@ -358,7 +355,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                             )}
 
                                                             {/* Politicians count */}
-                                                            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border/50 text-sm text-muted-foreground">
+                                                            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border/50 text-xs text-muted-foreground">
                                                                 <Users className="h-4 w-4" />
                                                                 <span>{partyPoliticians.length} politiķi</span>
                                                             </div>

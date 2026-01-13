@@ -77,7 +77,7 @@ export const PromiseDetailClient = ({
 
             {/* Main Content */}
             <div className="container-wide py-8 md:py-12">
-                <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 w-full">
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-8 w-full">
                     {/* Main Column */}
                     <div className="flex-1 min-w-0 space-y-8">
                         {/* Header */}
@@ -273,7 +273,7 @@ export const PromiseDetailClient = ({
                     </div>
 
                     {/* Sidebar: Always Render (with fallback content if needed) */}
-                    <div className="w-full lg:w-[480px] flex-shrink-0 space-y-6">
+                    <div className="w-full lg:w-80 flex-shrink-0 space-y-6">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}

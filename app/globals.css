@@ -183,14 +183,12 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
 
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
-  --animate-fade-in: fade-in 0.5s ease-out forwards;
-  --animate-fade-up: fade-up 0.6s ease-out forwards;
-  --animate-scale-in: scale-in 0.3s ease-out forwards;
-  --animate-slide-in-right: slide-in-right 0.3s ease-out;
-  --animate-shimmer: shimmer 2s infinite;
-  --animate-count-up: count-up 0.5s ease-out forwards;
+  /* Custom Breakpoints */
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1440px;
 
   @keyframes accordion-down {
     from {
@@ -428,7 +426,39 @@
   }
 
   .container-wide {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply mx-auto px-4 w-full;
+  }
+
+  @media (min-width: 480px) {
+    .container-wide {
+      max-width: 460px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .container-wide {
+      max-width: 720px;
+      @apply px-6;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-wide {
+      max-width: 960px;
+      @apply px-8;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .container-wide {
+      max-width: 1140px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .container-wide {
+      max-width: 1360px;
+    }
   }
 }
 

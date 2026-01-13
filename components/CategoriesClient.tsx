@@ -43,7 +43,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
             {/* Categories Grid */}
             <section className="py-8 md:py-12">
                 <div className="container-wide">
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                         {categories.map((category, index) => {
                             const { total, kept, inProgress, broken } = category.stats;
 

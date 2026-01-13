@@ -9,7 +9,6 @@ export function Header() {
     { href: "/", label: "Sākums" },
     { href: "/promises", label: "Solījumi" },
     { href: "/politicians", label: "Politiķi" },
-    { href: "/about", label: "Par mums" },
   ];
 
   const isActive = (href: string) => {
@@ -25,7 +24,7 @@ export function Header() {
       animate={{ opacity: 1, y: 0 }}
       className="sticky top-0 z-50 glass border-b border-white/10"
     >
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className="container-wide py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2" suppressHydrationWarning>
