@@ -203,24 +203,29 @@ export async function getPartyBySlug(
 export async function getPoliticians(
     locale: Locale = "lv"
 ): Promise<PoliticianUI[]> {
-    const politicians = await prisma.politician.findMany({
-        include: { party: true },
-        orderBy: { createdAt: "asc" },
-    });
+    try {
+        const politicians = await prisma.politician.findMany({
+            include: { party: true },
+            orderBy: { createdAt: "asc" },
+        });
 
-    return politicians.map((pol) => ({
-        id: pol.slug,
-        slug: pol.slug,
-        name: pol.name,
-        role: pol.role ? getLocalizedText(pol.role, locale) : (pol.bio ? getLocalizedText(pol.bio, locale) : ""),
-        partyId: pol.party?.slug,
-        photoUrl: pol.imageUrl || "",
-        isInOffice: pol.isActive,
-        roleStartDate: undefined,
-        roleEndDate: undefined,
-        bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
-        education: pol.education || undefined,
-    }));
+        return politicians.map((pol) => ({
+            id: pol.slug,
+            slug: pol.slug,
+            name: pol.name,
+            role: pol.role ? getLocalizedText(pol.role, locale) : (pol.bio ? getLocalizedText(pol.bio, locale) : ""),
+            partyId: pol.party?.slug,
+            photoUrl: pol.imageUrl || "",
+            isInOffice: pol.isActive,
+            roleStartDate: undefined,
+            roleEndDate: undefined,
+            bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
+            education: pol.education || undefined,
+        }));
+    } catch (error) {
+        console.error("Error fetching politicians:", error);
+        return [];
+    }
 }
 
 export async function getPoliticianBySlug(
@@ -252,49 +257,52 @@ export async function getPoliticianBySlug(
 // ========== PROMISES ==========
 
 export async function getPromises(locale: Locale = "lv"): Promise<PromiseUI[]> {
-    const promises = await prisma.promise.findMany({
-        include: {
-            politician: { include: { party: true } },
-            category: true,
-            sources: true,
-        },
-        orderBy: { updatedAt: "desc" },
-    });
+    try {
+        const promises = await prisma.promise.findMany({
+            include: {
+                politician: { include: { party: true } },
+                category: true,
+                sources: true,
+            },
+            orderBy: { updatedAt: "desc" },
+        });
 
-    return promises.map((p) => ({
-        id: p.id,
-        title: getLocalizedText(p.title, locale),
-        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
-        politicianId: p.politician.slug,
-        politicianName: p.politician.name,
-        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
-        politicianPhotoUrl: p.politician.imageUrl || "",
-        politicianIsInOffice: p.politician.isActive,
-        partyId: p.politician.party?.slug,
-        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
-        partyLogoUrl: p.politician.party?.logoUrl || undefined,
-        datePromised: p.dateOfPromise.toISOString().split("T")[0],
-        electionCycle: "2022 Saeima Elections",
-        status: mapStatusToUI(p.status),
-        statusJustification: p.explanation
-            ? getLocalizedText(p.explanation, locale)
-            : "",
-        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
-        statusUpdatedBy: "Kept Analytics Team",
-        category: mapCategorySlug(p.category.slug),
-        description: p.description ? getLocalizedText(p.description, locale) : undefined,
-        importance: undefined,
-        deadline: undefined,
-        tags: [],
-        sources: p.sources.map((s) => ({
-            title: s.title ? getLocalizedText(s.title, locale) : "",
-            url: s.url,
-            publication: "",
-            date: s.createdAt.toISOString().split("T")[0],
-        })),
-        viewCount: 0,
-        featured: false,
-    }));
+        return promises.map((p) => ({
+            id: p.id,
+            title: getLocalizedText(p.title, locale),
+            fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
+            politicianId: p.politician.slug,
+            politicianName: p.politician.name,
+            politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
+            politicianPhotoUrl: p.politician.imageUrl || "",
+            politicianIsInOffice: p.politician.isActive,
+            partyId: p.politician.party?.slug,
+            partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
+            partyLogoUrl: p.politician.party?.logoUrl || undefined,
+            datePromised: p.dateOfPromise.toISOString().split("T")[0],
+            electionCycle: "2022 Saeima Elections",
+            status: mapStatusToUI(p.status),
+            statusJustification: p.explanation ? getLocalizedText(p.explanation, locale) : "",
+            statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
+            statusUpdatedBy: "Kept Analytics Team",
+            category: p.category.name ? getLocalizedText(p.category.name, locale) : "",
+            description: p.description ? getLocalizedText(p.description, locale) : undefined,
+            importance: undefined,
+            deadline: undefined,
+            tags: [],
+            sources: p.sources.map((s) => ({
+                title: s.title ? getLocalizedText(s.title, locale) : "",
+                url: s.url,
+                publication: "",
+                date: s.createdAt.toISOString().split("T")[0],
+            })),
+            viewCount: 0,
+            featured: false,
+        }));
+    } catch (error) {
+        console.error("Error fetching promises:", error);
+        return [];
+    }
 }
 
 export async function getPromiseById(
