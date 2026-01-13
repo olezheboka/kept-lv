@@ -52,6 +52,9 @@ export default async function AdminPromisesPage() {
               <th className="px-4 py-3 font-medium text-muted-foreground">
                 Category
               </th>
+              <th className="px-4 py-3 font-medium text-muted-foreground w-[120px]">
+                Last Updated
+              </th>
               <th className="px-4 py-3 font-medium text-muted-foreground text-right">
                 Actions
               </th>
@@ -81,6 +84,9 @@ export default async function AdminPromisesPage() {
                 </td>
                 <td className="px-4 py-3 align-top text-muted-foreground">
                   {promise.category.name}
+                </td>
+                <td className="px-4 py-3 align-top text-muted-foreground text-sm">
+                  {new Date(promise.updatedAt).toLocaleDateString("lv-LV")}
                 </td>
                 <td className="px-4 py-3 align-top text-right">
                   <div className="flex items-center justify-end gap-2">

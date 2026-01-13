@@ -244,7 +244,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                 {/* Status, Source & Explanation - Combined */}
                 <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
                     <div className="flex items-center justify-between border-b border-border/50 pb-4 mb-4">
-                        <h2 className="text-base font-semibold text-foreground">Statuss, Avots un Paskaidrojums</h2>
+                        <h2 className="text-base font-semibold text-foreground">Statuss</h2>
                     </div>
 
                     {/* Status Row */}
