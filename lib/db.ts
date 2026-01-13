@@ -218,7 +218,6 @@ export async function getPoliticians(
         isInOffice: pol.isActive,
         roleStartDate: undefined,
         roleEndDate: undefined,
-        roleEndDate: undefined,
         bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
         education: pol.education || undefined,
     }));
@@ -244,7 +243,6 @@ export async function getPoliticianBySlug(
         photoUrl: pol.imageUrl || "",
         isInOffice: pol.isActive,
         roleStartDate: undefined,
-        roleEndDate: undefined,
         roleEndDate: undefined,
         bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
         education: pol.education || undefined,
