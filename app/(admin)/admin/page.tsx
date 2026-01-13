@@ -61,7 +61,20 @@ async function getDashboardStats() {
 
 export default async function AdminDashboard() {
   /* No translations needed */
-  const stats = await getDashboardStats();
+  let stats;
+  try {
+    stats = await getDashboardStats();
+  } catch (error) {
+    console.error("Dashboard error:", error);
+    return (
+      <div className="p-8 text-center text-red-500">
+        <h2 className="text-xl font-bold mb-2">Dashboard Error</h2>
+        <p className="font-mono text-sm bg-muted p-4 rounded text-left overflow-auto max-w-2xl mx-auto">
+          {error instanceof Error ? error.stack : JSON.stringify(error)}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
