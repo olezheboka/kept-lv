@@ -297,7 +297,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                         <CardContent className="p-5">
                                                             <div className="flex flex-col gap-1 mb-4">
                                                                 <div className="flex items-center gap-2 flex-wrap max-w-full">
-                                                                    <h3 className="text-sm font-semibold text-foreground leading-tight truncate group-hover:text-accent transition-colors">
+                                                                    <h3 className="text-base font-semibold text-foreground leading-tight truncate group-hover:text-accent transition-colors">
                                                                         {politician.name}
                                                                     </h3>
                                                                     {/* Party badge removed */}
@@ -307,7 +307,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                                     <TooltipProvider>
                                                                         <Tooltip delayDuration={300}>
                                                                             <TooltipTrigger asChild>
-                                                                                <span className="text-xs text-muted-foreground truncate max-w-[200px] hover:text-foreground transition-colors">
+                                                                                <span className="text-sm text-muted-foreground truncate max-w-[200px] hover:text-foreground transition-colors">
                                                                                     {politician.role}
                                                                                 </span>
                                                                             </TooltipTrigger>
@@ -317,7 +317,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                                         </Tooltip>
                                                                     </TooltipProvider>
                                                                     {politician.isInOffice && (
-                                                                        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
+                                                                        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
                                                                             Amatā
                                                                         </span>
                                                                     )}
@@ -326,7 +326,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
 
                                                             {/* Stats Bar (Always Visible) */}
                                                             <div>
-                                                                <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-2">
+                                                                <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
                                                                     <span>{total} solījumi</span>
                                                                     <span>{total > 0 ? Math.round((keptCount / total) * 100) : 0}% izpildīti</span>
                                                                 </div>

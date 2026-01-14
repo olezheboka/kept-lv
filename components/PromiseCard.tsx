@@ -40,17 +40,17 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
             {/* Author & Party - Top Left */}
             <div className="flex flex-col gap-1 mb-4 pt-1 pr-8">
               <div className="flex items-center gap-2 flex-wrap max-w-full">
-                <span className="text-sm font-semibold text-foreground leading-tight truncate">
+                <span className="text-base font-semibold text-foreground leading-tight truncate">
                   {promise.politicianName}
                 </span>
               </div>
 
               <div className="flex items-center gap-2 mt-0">
-                <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+                <span className="text-sm text-muted-foreground truncate max-w-[200px]">
                   {promise.politicianRole}
                 </span>
                 {promise.politicianIsInOffice && (
-                  <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
+                  <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
                     Amatā
                   </span>
                 )}
@@ -58,14 +58,14 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
             </div>
 
             {/* Title */}
-            <h3 className="font-semibold text-base text-foreground leading-snug mb-4 line-clamp-3 group-hover:text-accent transition-colors flex-1">
+            <h3 className="font-semibold text-lg text-foreground leading-snug mb-4 line-clamp-3 group-hover:text-accent transition-colors flex-1">
               {promise.title}
             </h3>
 
             {/* FooterContainer - pushed to bottom */}
             <div className="mt-auto space-y-3">
               {/* Footer: Timeline */}
-              <div className="pt-3 border-t border-border/50 text-[10px] text-muted-foreground flex items-center gap-2">
+              <div className="pt-3 border-t border-border/50 text-xs text-muted-foreground flex items-center gap-2">
                 <Calendar size={12} className="text-muted-foreground/70" />
                 <span>Solīts <span className="font-medium text-foreground">{new Date(promise.datePromised).toLocaleDateString('lv-LV')}</span></span>
               </div>
