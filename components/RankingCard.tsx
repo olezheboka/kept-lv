@@ -8,7 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { Trophy, Medal, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { PartyBadge } from './PartyBadge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
 import { motion } from "framer-motion";
 import type { RankingItem, PartyUI } from '@/lib/db';
 
@@ -83,18 +83,9 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                     </div>
                     {type === 'politician' && item.role && (
                         <div className="flex items-center gap-2 text-xs text-muted-foreground w-full mt-0.5">
-                            <TooltipProvider>
-                                <Tooltip delayDuration={300}>
-                                    <TooltipTrigger asChild>
-                                        <span className="truncate cursor-default hover:text-foreground transition-colors max-w-[150px]">
-                                            {item.role}
-                                        </span>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="bottom" className="max-w-[250px]">
-                                        {item.role}
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
+                            <span className="truncate max-w-[150px]">
+                                {item.role}
+                            </span>
                             {item.isInOffice && (
                                 <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
                                     Amatā
