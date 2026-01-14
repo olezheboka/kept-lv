@@ -53,7 +53,8 @@ export const PromiseDetailClient = ({
             toast({
                 title: "Saite nokopēta",
                 description: "Saite veiksmīgi nokopēta starpliktuvē",
-                duration: 2000,
+                duration: 4000,
+                variant: "success",
             });
         }
     };
