@@ -57,11 +57,7 @@ const FilterPanel = memo(({
             </div>
         </div>
 
-        {hasActiveFilters && (
-            <Button variant="outline" onClick={clearFilters} className="w-full">
-                Notīrīt filtrus
-            </Button>
-        )}
+        {/* Clear Filters - Hidden in FilterPanel, shown separately in mobile sheet */}
     </div>
 ));
 
@@ -187,6 +183,11 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                         hasActiveFilters={hasActiveFilters}
                                         clearFilters={clearFilters}
                                     />
+                                    {hasActiveFilters && (
+                                        <Button variant="outline" onClick={clearFilters} className="w-full mt-4">
+                                            Notīrīt filtrus
+                                        </Button>
+                                    )}
                                 </CardContent>
                             </Card>
                         </aside>
@@ -218,11 +219,11 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                             )}
                                         </Button>
                                     </SheetTrigger>
-                                    <SheetContent side="left" className="w-80">
+                                    <SheetContent side="left" className="w-80 flex flex-col">
                                         <SheetHeader>
                                             <SheetTitle>Filtri</SheetTitle>
                                         </SheetHeader>
-                                        <div className="mt-6 overflow-y-auto max-h-[calc(100vh-8rem)]">
+                                        <div className="mt-6 overflow-y-auto flex-1">
                                             <FilterPanel
                                                 filterCoalition={filterCoalition}
                                                 setFilterCoalition={setFilterCoalition}
@@ -232,6 +233,13 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                 clearFilters={clearFilters}
                                             />
                                         </div>
+                                        {hasActiveFilters && (
+                                            <div className="sticky bottom-0 pt-4 pb-2 bg-background border-t border-border">
+                                                <Button variant="outline" onClick={clearFilters} className="w-full">
+                                                    Notīrīt filtrus
+                                                </Button>
+                                            </div>
+                                        )}
                                     </SheetContent>
                                 </Sheet>
 

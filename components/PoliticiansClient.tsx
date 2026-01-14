@@ -73,12 +73,7 @@ const FilterPanel = memo(({
             </div>
         </div>
 
-        {/* Clear Filters */}
-        {hasActiveFilters && (
-            <Button variant="outline" onClick={clearFilters} className="w-full">
-                Notīrīt filtrus
-            </Button>
-        )}
+        {/* Clear Filters - Hidden in FilterPanel, shown separately in mobile sheet */}
     </div>
 ));
 
@@ -204,6 +199,11 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                         hasActiveFilters={hasActiveFilters}
                                         clearFilters={clearFilters}
                                     />
+                                    {hasActiveFilters && (
+                                        <Button variant="outline" onClick={clearFilters} className="w-full mt-4">
+                                            Notīrīt filtrus
+                                        </Button>
+                                    )}
                                 </CardContent>
                             </Card>
                         </aside>
@@ -235,11 +235,11 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                             )}
                                         </Button>
                                     </SheetTrigger>
-                                    <SheetContent side="left" className="w-80">
+                                    <SheetContent side="left" className="w-80 flex flex-col">
                                         <SheetHeader>
                                             <SheetTitle>Filtri</SheetTitle>
                                         </SheetHeader>
-                                        <div className="mt-6 overflow-y-auto max-h-[calc(100vh-8rem)]">
+                                        <div className="mt-6 overflow-y-auto flex-1">
                                             <FilterPanel
                                                 showInOffice={showInOffice}
                                                 setShowInOffice={setShowInOffice}
@@ -250,6 +250,13 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                 clearFilters={clearFilters}
                                             />
                                         </div>
+                                        {hasActiveFilters && (
+                                            <div className="sticky bottom-0 pt-4 pb-2 bg-background border-t border-border">
+                                                <Button variant="outline" onClick={clearFilters} className="w-full">
+                                                    Notīrīt filtrus
+                                                </Button>
+                                            </div>
+                                        )}
                                     </SheetContent>
                                 </Sheet>
 
