@@ -93,7 +93,7 @@ export const Header = () => {
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80 p-0">
+              <SheetContent side="right" className="w-80 p-0 [&>button]:hidden">
                 <SheetTitle className="sr-only">Navigācijas izvēlne</SheetTitle>
                 <div className="flex flex-col h-full">
                   <div className="flex items-center justify-between p-4 border-b border-border">

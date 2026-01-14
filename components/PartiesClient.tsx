@@ -18,6 +18,53 @@ interface PartiesClientProps {
     promises: PromiseUI[];
 }
 
+interface FilterPanelProps {
+    filterCoalition: boolean;
+    setFilterCoalition: (val: boolean) => void;
+    filterOpposition: boolean;
+    setFilterOpposition: (val: boolean) => void;
+    hasActiveFilters: boolean;
+    clearFilters: () => void;
+}
+
+const FilterPanel = ({
+    filterCoalition,
+    setFilterCoalition,
+    filterOpposition,
+    setFilterOpposition,
+    hasActiveFilters,
+    clearFilters,
+}: FilterPanelProps) => (
+    <div className="space-y-6">
+        {/* Coalition/Opposition Filter */}
+        <div>
+            <h4 className="font-semibold text-foreground mb-3">Statuss</h4>
+            <div className="space-y-3">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                    <Checkbox
+                        checked={filterCoalition}
+                        onCheckedChange={(c) => setFilterCoalition(!!c)}
+                    />
+                    <span className="text-sm text-foreground">Koalīcijā</span>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                    <Checkbox
+                        checked={filterOpposition}
+                        onCheckedChange={(c) => setFilterOpposition(!!c)}
+                    />
+                    <span className="text-sm text-foreground">Opozīcijā</span>
+                </label>
+            </div>
+        </div>
+
+        {hasActiveFilters && (
+            <Button variant="outline" onClick={clearFilters} className="w-full">
+                Notīrīt filtrus
+            </Button>
+        )}
+    </div>
+);
+
 export function PartiesClient({ parties, politicians, promises }: PartiesClientProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [filterCoalition, setFilterCoalition] = useState(false);
@@ -96,38 +143,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
         setFilterOpposition(false);
     };
 
-    const hasActiveFilters = searchQuery || filterCoalition || filterOpposition;
-
-    const FilterPanel = () => (
-        <div className="space-y-6">
-            {/* Coalition/Opposition Filter */}
-            <div>
-                <h4 className="font-semibold text-foreground mb-3">Statuss</h4>
-                <div className="space-y-3">
-                    <label className="flex items-center gap-3 cursor-pointer group">
-                        <Checkbox
-                            checked={filterCoalition}
-                            onCheckedChange={(c) => setFilterCoalition(!!c)}
-                        />
-                        <span className="text-sm text-foreground">Koalīcijā</span>
-                    </label>
-                    <label className="flex items-center gap-3 cursor-pointer group">
-                        <Checkbox
-                            checked={filterOpposition}
-                            onCheckedChange={(c) => setFilterOpposition(!!c)}
-                        />
-                        <span className="text-sm text-foreground">Opozīcijā</span>
-                    </label>
-                </div>
-            </div>
-
-            {hasActiveFilters && (
-                <Button variant="outline" onClick={clearFilters} className="w-full">
-                    Notīrīt filtrus
-                </Button>
-            )}
-        </div>
-    );
+    const hasActiveFilters = !!searchQuery || filterCoalition || filterOpposition;
 
     return (
         <div className="flex flex-col bg-background">
@@ -161,7 +177,14 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                         <Filter className="h-4 w-4" />
                                         Filtri
                                     </h3>
-                                    <FilterPanel />
+                                    <FilterPanel
+                                        filterCoalition={filterCoalition}
+                                        setFilterCoalition={setFilterCoalition}
+                                        filterOpposition={filterOpposition}
+                                        setFilterOpposition={setFilterOpposition}
+                                        hasActiveFilters={hasActiveFilters}
+                                        clearFilters={clearFilters}
+                                    />
                                 </CardContent>
                             </Card>
                         </aside>
@@ -197,8 +220,15 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                         <SheetHeader>
                                             <SheetTitle>Filtri</SheetTitle>
                                         </SheetHeader>
-                                        <div className="mt-6">
-                                            <FilterPanel />
+                                        <div className="mt-6 overflow-y-auto max-h-[calc(100vh-8rem)]">
+                                            <FilterPanel
+                                                filterCoalition={filterCoalition}
+                                                setFilterCoalition={setFilterCoalition}
+                                                filterOpposition={filterOpposition}
+                                                setFilterOpposition={setFilterOpposition}
+                                                hasActiveFilters={hasActiveFilters}
+                                                clearFilters={clearFilters}
+                                            />
                                         </div>
                                     </SheetContent>
                                 </Sheet>

@@ -21,6 +21,87 @@ interface PromisesClientProps {
     parties: PartyUI[];
 }
 
+interface FilterPanelProps {
+    selectedStatuses: PromiseStatus[];
+    toggleStatus: (status: PromiseStatus) => void;
+    parties: PartyUI[];
+    selectedParties: string[];
+    toggleParty: (partyId: string) => void;
+    selectedCategories: string[];
+    toggleCategory: (categoryId: string) => void;
+    hasActiveFilters: boolean;
+    clearFilters: () => void;
+}
+
+const FilterPanel = ({
+    selectedStatuses,
+    toggleStatus,
+    parties,
+    selectedParties,
+    toggleParty,
+    selectedCategories,
+    toggleCategory,
+    hasActiveFilters,
+    clearFilters
+}: FilterPanelProps) => (
+    <div className="space-y-6">
+        {/* Status Filter */}
+        <div>
+            <h4 className="font-semibold text-foreground mb-3">Statuss</h4>
+            <div className="space-y-2">
+                {STATUSES.map(status => (
+                    <label key={status} className="flex items-center gap-3 cursor-pointer group">
+                        <Checkbox
+                            checked={selectedStatuses.includes(status)}
+                            onCheckedChange={() => toggleStatus(status)}
+                        />
+                        <StatusBadge status={status} size="sm" />
+                    </label>
+                ))}
+            </div>
+        </div>
+
+        {/* Party Filter */}
+        <div>
+            <h4 className="font-semibold text-foreground mb-3">Partija</h4>
+            <div className="space-y-2">
+                {parties.map(party => (
+                    <label key={party.id} className="flex items-center gap-3 cursor-pointer group">
+                        <Checkbox
+                            checked={selectedParties.includes(party.id)}
+                            onCheckedChange={() => toggleParty(party.id)}
+                        />
+                        <span className="text-sm text-foreground">{party.name}</span>
+                    </label>
+                ))}
+            </div>
+        </div>
+
+        {/* Category Filter */}
+        <div>
+            <h4 className="font-semibold text-foreground mb-3">Kategorija</h4>
+            <div className="space-y-2">
+                {CATEGORIES.map(category => (
+                    <label key={category.id} className="flex items-center gap-3 cursor-pointer group">
+                        <Checkbox
+                            checked={selectedCategories.includes(category.id)}
+                            onCheckedChange={() => toggleCategory(category.id)}
+                        />
+                        <span className="text-sm text-foreground">{category.name}</span>
+                    </label>
+                ))}
+            </div>
+        </div>
+
+        {/* Clear Filters */}
+        {hasActiveFilters && (
+            <Button variant="outline" onClick={clearFilters} className="w-full">
+                Notīrīt filtrus
+            </Button>
+        )}
+    </div>
+);
+
 export function PromisesClient({ initialPromises, parties }: PromisesClientProps) {
     const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
@@ -117,66 +198,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
         setSearchQuery('');
     };
 
-    const hasActiveFilters = selectedStatuses.length > 0 || selectedParties.length > 0 || selectedCategories.length > 0 || searchQuery;
-
-    const FilterPanel = () => (
-        <div className="space-y-6">
-            {/* Status Filter */}
-            <div>
-                <h4 className="font-semibold text-foreground mb-3">Statuss</h4>
-                <div className="space-y-2">
-                    {STATUSES.map(status => (
-                        <label key={status} className="flex items-center gap-3 cursor-pointer group">
-                            <Checkbox
-                                checked={selectedStatuses.includes(status)}
-                                onCheckedChange={() => toggleStatus(status)}
-                            />
-                            <StatusBadge status={status} size="sm" />
-                        </label>
-                    ))}
-                </div>
-            </div>
-
-            {/* Party Filter */}
-            <div>
-                <h4 className="font-semibold text-foreground mb-3">Partija</h4>
-                <div className="space-y-2">
-                    {parties.map(party => (
-                        <label key={party.id} className="flex items-center gap-3 cursor-pointer group">
-                            <Checkbox
-                                checked={selectedParties.includes(party.id)}
-                                onCheckedChange={() => toggleParty(party.id)}
-                            />
-                            <span className="text-sm text-foreground">{party.name}</span>
-                        </label>
-                    ))}
-                </div>
-            </div>
-
-            {/* Category Filter */}
-            <div>
-                <h4 className="font-semibold text-foreground mb-3">Kategorija</h4>
-                <div className="space-y-2">
-                    {CATEGORIES.map(category => (
-                        <label key={category.id} className="flex items-center gap-3 cursor-pointer group">
-                            <Checkbox
-                                checked={selectedCategories.includes(category.id)}
-                                onCheckedChange={() => toggleCategory(category.id)}
-                            />
-                            <span className="text-sm text-foreground">{category.name}</span>
-                        </label>
-                    ))}
-                </div>
-            </div>
-
-            {/* Clear Filters */}
-            {hasActiveFilters && (
-                <Button variant="outline" onClick={clearFilters} className="w-full">
-                    Notīrīt filtrus
-                </Button>
-            )}
-        </div>
-    );
+    const hasActiveFilters = selectedStatuses.length > 0 || selectedParties.length > 0 || selectedCategories.length > 0 || !!searchQuery;
 
     return (
         <div className="flex flex-col bg-background">
@@ -210,7 +232,17 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                         <Filter className="h-4 w-4" />
                                         Filtri
                                     </h3>
-                                    <FilterPanel />
+                                    <FilterPanel
+                                        selectedStatuses={selectedStatuses}
+                                        toggleStatus={toggleStatus}
+                                        parties={parties}
+                                        selectedParties={selectedParties}
+                                        toggleParty={toggleParty}
+                                        selectedCategories={selectedCategories}
+                                        toggleCategory={toggleCategory}
+                                        hasActiveFilters={hasActiveFilters}
+                                        clearFilters={clearFilters}
+                                    />
                                 </CardContent>
                             </Card>
                         </aside>
@@ -246,8 +278,18 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                         <SheetHeader>
                                             <SheetTitle>Filtri</SheetTitle>
                                         </SheetHeader>
-                                        <div className="mt-6">
-                                            <FilterPanel />
+                                        <div className="mt-6 overflow-y-auto max-h-[calc(100vh-8rem)]">
+                                            <FilterPanel
+                                                selectedStatuses={selectedStatuses}
+                                                toggleStatus={toggleStatus}
+                                                parties={parties}
+                                                selectedParties={selectedParties}
+                                                toggleParty={toggleParty}
+                                                selectedCategories={selectedCategories}
+                                                toggleCategory={toggleCategory}
+                                                hasActiveFilters={hasActiveFilters}
+                                                clearFilters={clearFilters}
+                                            />
                                         </div>
                                     </SheetContent>
                                 </Sheet>

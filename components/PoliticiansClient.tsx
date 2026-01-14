@@ -22,6 +22,66 @@ interface PoliticiansClientProps {
     promises: PromiseUI[];
 }
 
+interface FilterPanelProps {
+    showInOffice: boolean;
+    setShowInOffice: (val: boolean) => void;
+    parties: PartyUI[];
+    selectedParties: string[];
+    toggleParty: (partyId: string) => void;
+    hasActiveFilters: boolean;
+    clearFilters: () => void;
+}
+
+const FilterPanel = ({
+    showInOffice,
+    setShowInOffice,
+    parties,
+    selectedParties,
+    toggleParty,
+    hasActiveFilters,
+    clearFilters,
+}: FilterPanelProps) => (
+    <div className="space-y-6">
+        {/* In Office Filter */}
+        <div>
+            <h4 className="font-semibold text-foreground mb-3">Statuss</h4>
+            <div className="flex items-center space-x-2">
+                <Switch
+                    id="in-office-filter"
+                    checked={showInOffice}
+                    onCheckedChange={setShowInOffice}
+                />
+                <Label htmlFor="in-office-filter" className="cursor-pointer font-normal">
+                    Tikai amatā esošie
+                </Label>
+            </div>
+        </div>
+
+        {/* Party Filter */}
+        <div>
+            <h4 className="font-semibold text-foreground mb-3">Partija</h4>
+            <div className="space-y-2">
+                {parties.map(party => (
+                    <label key={party.id} className="flex items-center gap-3 cursor-pointer group">
+                        <Checkbox
+                            checked={selectedParties.includes(party.id)}
+                            onCheckedChange={() => toggleParty(party.id)}
+                        />
+                        <span className="text-sm text-foreground">{party.name}</span>
+                    </label>
+                ))}
+            </div>
+        </div>
+
+        {/* Clear Filters */}
+        {hasActiveFilters && (
+            <Button variant="outline" onClick={clearFilters} className="w-full">
+                Notīrīt filtrus
+            </Button>
+        )}
+    </div>
+);
+
 export function PoliticiansClient({ politicians, parties, promises }: PoliticiansClientProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedParties, setSelectedParties] = useState<string[]>([]);
@@ -99,49 +159,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
         setSearchQuery('');
     };
 
-    const hasActiveFilters = selectedParties.length > 0 || showInOffice || searchQuery;
-
-    const FilterPanel = () => (
-        <div className="space-y-6">
-            {/* In Office Filter */}
-            <div>
-                <h4 className="font-semibold text-foreground mb-3">Statuss</h4>
-                <div className="flex items-center space-x-2">
-                    <Switch
-                        id="in-office-filter"
-                        checked={showInOffice}
-                        onCheckedChange={setShowInOffice}
-                    />
-                    <Label htmlFor="in-office-filter" className="cursor-pointer font-normal">
-                        Tikai amatā esošie
-                    </Label>
-                </div>
-            </div>
-
-            {/* Party Filter */}
-            <div>
-                <h4 className="font-semibold text-foreground mb-3">Partija</h4>
-                <div className="space-y-2">
-                    {parties.map(party => (
-                        <label key={party.id} className="flex items-center gap-3 cursor-pointer group">
-                            <Checkbox
-                                checked={selectedParties.includes(party.id)}
-                                onCheckedChange={() => toggleParty(party.id)}
-                            />
-                            <span className="text-sm text-foreground">{party.name}</span>
-                        </label>
-                    ))}
-                </div>
-            </div>
-
-            {/* Clear Filters */}
-            {hasActiveFilters && (
-                <Button variant="outline" onClick={clearFilters} className="w-full">
-                    Notīrīt filtrus
-                </Button>
-            )}
-        </div>
-    );
+    const hasActiveFilters = selectedParties.length > 0 || showInOffice || !!searchQuery;
 
     return (
         <div className="flex flex-col bg-background">
@@ -175,7 +193,15 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                         <Filter className="h-4 w-4" />
                                         Filtri
                                     </h3>
-                                    <FilterPanel />
+                                    <FilterPanel
+                                        showInOffice={showInOffice}
+                                        setShowInOffice={setShowInOffice}
+                                        parties={parties}
+                                        selectedParties={selectedParties}
+                                        toggleParty={toggleParty}
+                                        hasActiveFilters={hasActiveFilters}
+                                        clearFilters={clearFilters}
+                                    />
                                 </CardContent>
                             </Card>
                         </aside>
@@ -211,8 +237,16 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                         <SheetHeader>
                                             <SheetTitle>Filtri</SheetTitle>
                                         </SheetHeader>
-                                        <div className="mt-6">
-                                            <FilterPanel />
+                                        <div className="mt-6 overflow-y-auto max-h-[calc(100vh-8rem)]">
+                                            <FilterPanel
+                                                showInOffice={showInOffice}
+                                                setShowInOffice={setShowInOffice}
+                                                parties={parties}
+                                                selectedParties={selectedParties}
+                                                toggleParty={toggleParty}
+                                                hasActiveFilters={hasActiveFilters}
+                                                clearFilters={clearFilters}
+                                            />
                                         </div>
                                     </SheetContent>
                                 </Sheet>
