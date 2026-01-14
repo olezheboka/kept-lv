@@ -55,8 +55,8 @@ const Toast = React.forwardRef<
       </div>
       <style jsx global>{`
         @keyframes toast-progress {
-          from { width: 100%; }
-          to { width: 0%; }
+          from { width: 0%; }
+          to { width: 100%; }
         }
       `}</style>
     </ToastPrimitives.Root>
