@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { PromiseCard } from '@/components/PromiseCard';
 import { StatusBadge } from '@/components/StatusBadge';
 import { Button } from '@/components/ui/button';
@@ -102,20 +102,69 @@ FilterPanel.displayName = 'FilterPanel';
 
 export function PromisesClient({ initialPromises, parties }: PromisesClientProps) {
     const searchParams = useSearchParams();
-    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+    const router = useRouter();
+    const pathname = usePathname();
 
-    useEffect(() => {
-        const query = searchParams.get('q');
-        if (query !== null) {
-            setSearchQuery(query);
-        }
-    }, [searchParams]);
-    const [selectedStatuses, setSelectedStatuses] = useState<PromiseStatus[]>([]);
-    const [selectedParties, setSelectedParties] = useState<string[]>([]);
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    // Initialize state from URL
+    const initialPage = Number(searchParams.get('page')) || 1;
+    const initialStatus = searchParams.get('status')?.split(',').filter(Boolean) as PromiseStatus[] || [];
+    const initialParties = searchParams.get('party')?.split(',').filter(Boolean) || [];
+    const initialCategories = searchParams.get('category')?.split(',').filter(Boolean) || [];
+    const initialSort = (searchParams.get('sort') as any) || 'updated-desc';
+
+    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+    const [selectedStatuses, setSelectedStatuses] = useState<PromiseStatus[]>(initialStatus);
+    const [selectedParties, setSelectedParties] = useState<string[]>(initialParties);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-    const [sortBy, setSortBy] = useState<'updated-desc' | 'updated-asc' | 'date-desc' | 'date-asc'>('updated-desc');
-    const [currentPage, setCurrentPage] = useState(1);
+    const [sortBy, setSortBy] = useState<'updated-desc' | 'updated-asc' | 'date-desc' | 'date-asc'>(initialSort);
+    const [currentPage, setCurrentPage] = useState(initialPage);
+
+    // Sync state to URL
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (searchQuery) params.set('q', searchQuery);
+        else params.delete('q');
+
+        if (selectedStatuses.length > 0) params.set('status', selectedStatuses.join(','));
+        else params.delete('status');
+
+        if (selectedParties.length > 0) params.set('party', selectedParties.join(','));
+        else params.delete('party');
+
+        if (selectedCategories.length > 0) params.set('category', selectedCategories.join(','));
+        else params.delete('category');
+
+        if (sortBy !== 'updated-desc') params.set('sort', sortBy);
+        else params.delete('sort');
+
+        if (currentPage > 1) params.set('page', currentPage.toString());
+        else params.delete('page');
+
+        const queryString = params.toString();
+        const url = queryString ? `${pathname}?${queryString}` : pathname;
+
+        // Use replace to avoid bloating history during fast typing/filtering
+        router.replace(url, { scroll: false });
+    }, [searchQuery, selectedStatuses, selectedParties, selectedCategories, sortBy, currentPage, pathname, router, searchParams]);
+
+    // Handle back/forward buttons
+    useEffect(() => {
+        const query = searchParams.get('q') || '';
+        const page = Number(searchParams.get('page')) || 1;
+        const status = searchParams.get('status')?.split(',').filter(Boolean) as PromiseStatus[] || [];
+        const party = searchParams.get('party')?.split(',').filter(Boolean) || [];
+        const category = searchParams.get('category')?.split(',').filter(Boolean) || [];
+        const sort = (searchParams.get('sort') as any) || 'updated-desc';
+
+        setSearchQuery(query);
+        setCurrentPage(page);
+        setSelectedStatuses(status);
+        setSelectedParties(party);
+        setSelectedCategories(category);
+        setSortBy(sort);
+    }, [searchParams]);
 
     const filteredPromises = useMemo(() => {
         let result = [...initialPromises];

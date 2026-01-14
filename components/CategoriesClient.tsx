@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CategoryUI } from '@/lib/db';
@@ -27,7 +28,29 @@ interface CategoriesClientProps {
 const ITEMS_PER_PAGE = 30;
 
 export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
-    const [currentPage, setCurrentPage] = useState(1);
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const initialPage = Number(searchParams.get('page')) || 1;
+    const [currentPage, setCurrentPage] = useState(initialPage);
+
+    // Sync state to URL
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (currentPage > 1) params.set('page', currentPage.toString());
+        else params.delete('page');
+
+        const queryString = params.toString();
+        const url = queryString ? `${pathname}?${queryString}` : pathname;
+        router.replace(url, { scroll: false });
+    }, [currentPage, pathname, router, searchParams]);
+
+    // Handle back/forward buttons
+    useEffect(() => {
+        const page = Number(searchParams.get('page')) || 1;
+        setCurrentPage(page);
+    }, [searchParams]);
 
     const totalPages = Math.ceil(categories.length / ITEMS_PER_PAGE);
     const paginatedCategories = useMemo(() => {

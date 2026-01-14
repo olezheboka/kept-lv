@@ -14,6 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Search, ArrowUpDown, Filter, SlidersHorizontal, ChevronDown, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import type { PoliticianUI, PartyUI, PromiseUI } from '@/lib/db';
 
 const ITEMS_PER_PAGE = 30;
@@ -82,11 +83,61 @@ const FilterPanel = memo(({
 FilterPanel.displayName = 'FilterPanel';
 
 export function PoliticiansClient({ politicians, parties, promises }: PoliticiansClientProps) {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedParties, setSelectedParties] = useState<string[]>([]);
-    const [showInOffice, setShowInOffice] = useState(false);
-    const [sortBy, setSortBy] = useState('kept-percentage-desc');
-    const [currentPage, setCurrentPage] = useState(1);
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+
+    // Initialize state from URL
+    const initialPage = Number(searchParams.get('page')) || 1;
+    const initialParties = searchParams.get('party')?.split(',').filter(Boolean) || [];
+    const initialInOffice = searchParams.get('inOffice') === 'true';
+    const initialSort = searchParams.get('sort') || 'kept-percentage-desc';
+
+    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+    const [selectedParties, setSelectedParties] = useState<string[]>(initialParties);
+    const [showInOffice, setShowInOffice] = useState(initialInOffice);
+    const [sortBy, setSortBy] = useState(initialSort);
+    const [currentPage, setCurrentPage] = useState(initialPage);
+
+    // Sync state to URL
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (searchQuery) params.set('q', searchQuery);
+        else params.delete('q');
+
+        if (selectedParties.length > 0) params.set('party', selectedParties.join(','));
+        else params.delete('party');
+
+        if (showInOffice) params.set('inOffice', 'true');
+        else params.delete('inOffice');
+
+        if (sortBy !== 'kept-percentage-desc') params.set('sort', sortBy);
+        else params.delete('sort');
+
+        if (currentPage > 1) params.set('page', currentPage.toString());
+        else params.delete('page');
+
+        const queryString = params.toString();
+        const url = queryString ? `${pathname}?${queryString}` : pathname;
+
+        router.replace(url, { scroll: false });
+    }, [searchQuery, selectedParties, showInOffice, sortBy, currentPage, pathname, router, searchParams]);
+
+    // Handle back/forward buttons
+    useEffect(() => {
+        const query = searchParams.get('q') || '';
+        const page = Number(searchParams.get('page')) || 1;
+        const party = searchParams.get('party')?.split(',').filter(Boolean) || [];
+        const inOffice = searchParams.get('inOffice') === 'true';
+        const sort = searchParams.get('sort') || 'kept-percentage-desc';
+
+        setSearchQuery(query);
+        setCurrentPage(page);
+        setSelectedParties(party);
+        setShowInOffice(inOffice);
+        setSortBy(sort);
+    }, [searchParams]);
 
     // Helper to get party by ID
     const getPartyById = (partyId: string | undefined) => parties.find(p => p.id === partyId);

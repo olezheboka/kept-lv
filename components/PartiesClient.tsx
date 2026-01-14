@@ -10,6 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Filter, Search, SlidersHorizontal, ChevronDown, X, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import type { PartyUI, PoliticianUI, PromiseUI } from '@/lib/db';
 
 const ITEMS_PER_PAGE = 30;
@@ -66,11 +67,61 @@ const FilterPanel = memo(({
 FilterPanel.displayName = 'FilterPanel';
 
 export function PartiesClient({ parties, politicians, promises }: PartiesClientProps) {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [filterCoalition, setFilterCoalition] = useState(false);
-    const [filterOpposition, setFilterOpposition] = useState(false);
-    const [sortBy, setSortBy] = useState('alphabetical-asc');
-    const [currentPage, setCurrentPage] = useState(1);
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+
+    // Initialize state from URL
+    const initialPage = Number(searchParams.get('page')) || 1;
+    const initialCoalition = searchParams.get('coalition') === 'true';
+    const initialOpposition = searchParams.get('opposition') === 'true';
+    const initialSort = searchParams.get('sort') || 'alphabetical-asc';
+
+    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+    const [filterCoalition, setFilterCoalition] = useState(initialCoalition);
+    const [filterOpposition, setFilterOpposition] = useState(initialOpposition);
+    const [sortBy, setSortBy] = useState(initialSort);
+    const [currentPage, setCurrentPage] = useState(initialPage);
+
+    // Sync state to URL
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (searchQuery) params.set('q', searchQuery);
+        else params.delete('q');
+
+        if (filterCoalition) params.set('coalition', 'true');
+        else params.delete('coalition');
+
+        if (filterOpposition) params.set('opposition', 'true');
+        else params.delete('opposition');
+
+        if (sortBy !== 'alphabetical-asc') params.set('sort', sortBy);
+        else params.delete('sort');
+
+        if (currentPage > 1) params.set('page', currentPage.toString());
+        else params.delete('page');
+
+        const queryString = params.toString();
+        const url = queryString ? `${pathname}?${queryString}` : pathname;
+
+        router.replace(url, { scroll: false });
+    }, [searchQuery, filterCoalition, filterOpposition, sortBy, currentPage, pathname, router, searchParams]);
+
+    // Handle back/forward buttons
+    useEffect(() => {
+        const query = searchParams.get('q') || '';
+        const page = Number(searchParams.get('page')) || 1;
+        const coalition = searchParams.get('coalition') === 'true';
+        const opposition = searchParams.get('opposition') === 'true';
+        const sort = searchParams.get('sort') || 'alphabetical-asc';
+
+        setSearchQuery(query);
+        setCurrentPage(page);
+        setFilterCoalition(coalition);
+        setFilterOpposition(opposition);
+        setSortBy(sort);
+    }, [searchParams]);
 
     // Helper to get promises by party
     const getPromisesByParty = (partyId: string) =>
