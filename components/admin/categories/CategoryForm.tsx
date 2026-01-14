@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
+import { Loader2, TrendingUp } from "lucide-react";
+import { SLUG_ICON_MAP } from "@/lib/categoryIcons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

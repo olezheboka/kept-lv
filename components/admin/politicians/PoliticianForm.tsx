@@ -24,7 +24,7 @@ interface Politician {
     slug: string;
     partyId?: string | null;
     role?: string | null;
-    inOffice: boolean;
+    isActive: boolean;
     bio?: string | null;
 }
 
@@ -44,7 +44,7 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
         partyId: "",
         role: "Member of Parliament",
         email: "",
-        inOffice: true,
+        isActive: true,
         bio: "",
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -57,7 +57,7 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
                 partyId: initialData.partyId || "",
                 role: initialData.role || "Member of Parliament",
                 email: "",
-                inOffice: initialData.inOffice ?? true,
+                isActive: initialData.isActive ?? true,
                 bio: initialData.bio || "",
             });
         } else {
@@ -67,7 +67,7 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
                 partyId: "",
                 role: "Member of Parliament",
                 email: "",
-                inOffice: true,
+                isActive: true,
                 bio: "",
             });
         }
@@ -217,12 +217,12 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
 
                 <div className="flex items-center gap-3 p-3 border rounded-md bg-muted/20">
                     <Checkbox
-                        id="inOffice"
-                        checked={formData.inOffice}
-                        onCheckedChange={(checked) => setFormData({ ...formData, inOffice: checked as boolean })}
+                        id="isActive"
+                        checked={formData.isActive}
+                        onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked as boolean })}
                     />
                     <div>
-                        <Label htmlFor="inOffice" className="cursor-pointer font-medium">Currently in Office</Label>
+                        <Label htmlFor="isActive" className="cursor-pointer font-medium">Currently in Office</Label>
                         <p className="text-xs text-muted-foreground">
                             Check if this politician is currently holding this position.
                         </p>
