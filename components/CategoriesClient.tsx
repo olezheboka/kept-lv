@@ -178,7 +178,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                 disabled={currentPage === 1}
                             >
                                 <ChevronLeft className="h-4 w-4" />
-                                Iepriekšējā
+                                <span className="hidden sm:inline ml-1">Iepriekšējā</span>
                             </Button>
                             <div className="flex items-center gap-1">
                                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -211,7 +211,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                 onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                                 disabled={currentPage === totalPages}
                             >
-                                Nākamā
+                                <span className="hidden sm:inline mr-1">Nākamā</span>
                                 <ChevronRight className="h-4 w-4" />
                             </Button>
                         </div>

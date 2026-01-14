@@ -347,6 +347,16 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                             {/* Active Filters Display */}
                             {hasActiveFilters && (
                                 <div className="flex flex-wrap gap-2 mb-6">
+                                    {!!searchQuery && (
+                                        <button
+                                            onClick={() => handleSearchChange('')}
+                                            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground hover:bg-muted/80"
+                                        >
+                                            <Search className="h-3 w-3" />
+                                            {searchQuery}
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                    )}
                                     {filterCoalition && (
                                         <button
                                             onClick={() => handleCoalitionChange(false)}
@@ -367,7 +377,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                     )}
                                     <button
                                         onClick={clearFilters}
-                                        className="text-xs text-accent hover:underline"
+                                        className="text-xs text-red-600 hover:text-red-700 hover:underline font-medium ml-2"
                                     >
                                         Notīrīt visus
                                     </button>
@@ -486,7 +496,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                 disabled={currentPage === 1}
                                             >
                                                 <ChevronLeft className="h-4 w-4" />
-                                                Iepriekšējā
+                                                <span className="hidden sm:inline ml-1">Iepriekšējā</span>
                                             </Button>
                                             <div className="flex items-center gap-1">
                                                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -519,7 +529,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                 onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                                                 disabled={currentPage === totalPages}
                                             >
-                                                Nākamā
+                                                <span className="hidden sm:inline mr-1">Nākamā</span>
                                                 <ChevronRight className="h-4 w-4" />
                                             </Button>
                                         </div>
