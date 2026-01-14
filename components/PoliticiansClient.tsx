@@ -87,57 +87,40 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
     const router = useRouter();
     const pathname = usePathname();
 
-    // Initialize state from URL
-    const initialPage = Number(searchParams.get('page')) || 1;
-    const initialParties = searchParams.get('party')?.split(',').filter(Boolean) || [];
-    const initialInOffice = searchParams.get('inOffice') === 'true';
-    const initialSort = searchParams.get('sort') || 'kept-percentage-desc';
+    // Derived state from URL
+    const currentPage = Number(searchParams.get('page')) || 1;
+    const selectedParties = useMemo(() => searchParams.get('party')?.split(',').filter(Boolean) || [], [searchParams]);
+    const showInOffice = searchParams.get('inOffice') === 'true';
+    const sortBy = searchParams.get('sort') || 'kept-percentage-desc';
+    const searchQuery = searchParams.get('q') || '';
 
-    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
-    const [selectedParties, setSelectedParties] = useState<string[]>(initialParties);
-    const [showInOffice, setShowInOffice] = useState(initialInOffice);
-    const [sortBy, setSortBy] = useState(initialSort);
-    const [currentPage, setCurrentPage] = useState(initialPage);
+    // Local state only for search input
+    const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
-    // Sync state to URL
+    // Sync local search query when URL changes
     useEffect(() => {
-        const params = new URLSearchParams(searchParams.toString());
+        setLocalSearchQuery(searchQuery);
+    }, [searchQuery]);
 
-        if (searchQuery) params.set('q', searchQuery);
-        else params.delete('q');
-
-        if (selectedParties.length > 0) params.set('party', selectedParties.join(','));
-        else params.delete('party');
-
-        if (showInOffice) params.set('inOffice', 'true');
-        else params.delete('inOffice');
-
-        if (sortBy !== 'kept-percentage-desc') params.set('sort', sortBy);
-        else params.delete('sort');
-
-        if (currentPage > 1) params.set('page', currentPage.toString());
-        else params.delete('page');
-
-        const queryString = params.toString();
+    // Helper to update URL with new params
+    const updateUrl = useCallback((newParams: URLSearchParams) => {
+        const queryString = newParams.toString();
         const url = queryString ? `${pathname}?${queryString}` : pathname;
-
         router.replace(url, { scroll: false });
-    }, [searchQuery, selectedParties, showInOffice, sortBy, currentPage, pathname, router, searchParams]);
+    }, [pathname, router]);
 
-    // Handle back/forward buttons
-    useEffect(() => {
-        const query = searchParams.get('q') || '';
-        const page = Number(searchParams.get('page')) || 1;
-        const party = searchParams.get('party')?.split(',').filter(Boolean) || [];
-        const inOffice = searchParams.get('inOffice') === 'true';
-        const sort = searchParams.get('sort') || 'kept-percentage-desc';
-
-        setSearchQuery(query);
-        setCurrentPage(page);
-        setSelectedParties(party);
-        setShowInOffice(inOffice);
-        setSortBy(sort);
-    }, [searchParams]);
+    // Update URL when search input changes
+    const handleSearchChange = (value: string) => {
+        setLocalSearchQuery(value);
+        const params = new URLSearchParams(searchParams.toString());
+        if (value) {
+            params.set('q', value);
+        } else {
+            params.delete('q');
+        }
+        params.delete('page'); // Reset pagination on search
+        updateUrl(params);
+    };
 
     // Helper to get party by ID
     const getPartyById = (partyId: string | undefined) => parties.find(p => p.id === partyId);
@@ -203,23 +186,53 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
         return filteredPoliticians.slice(start, start + ITEMS_PER_PAGE);
     }, [filteredPoliticians, currentPage]);
 
-    // Reset to page 1 when filters change
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchQuery, selectedParties, showInOffice, sortBy]);
 
-    const toggleParty = (partyId: string) => {
-        setSelectedParties(prev =>
-            prev.includes(partyId)
-                ? prev.filter(p => p !== partyId)
-                : [...prev, partyId]
-        );
+
+    const toggleParty = useCallback((partyId: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        const current = new Set(params.get('party')?.split(',').filter(Boolean) || []);
+
+        if (current.has(partyId)) current.delete(partyId);
+        else current.add(partyId);
+
+        if (current.size > 0) params.set('party', Array.from(current).join(','));
+        else params.delete('party');
+
+        params.delete('page'); // Reset pagination
+        updateUrl(params);
+    }, [searchParams, updateUrl]);
+
+    const handleInOfficeChange = useCallback((checked: boolean) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (checked) params.set('inOffice', 'true');
+        else params.delete('inOffice');
+        params.delete('page'); // Reset pagination
+        updateUrl(params);
+    }, [searchParams, updateUrl]);
+
+    const clearFilters = useCallback(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('party');
+        params.delete('inOffice');
+        params.delete('q');
+        params.delete('page');
+        setLocalSearchQuery('');
+        updateUrl(params);
+    }, [searchParams, updateUrl]);
+
+    const handleSortChange = (value: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (value !== 'kept-percentage-desc') params.set('sort', value);
+        else params.delete('sort');
+        params.delete('page'); // Reset pagination
+        updateUrl(params);
     };
 
-    const clearFilters = () => {
-        setSelectedParties([]);
-        setShowInOffice(false);
-        setSearchQuery('');
+    const handlePageChange = (page: number) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (page > 1) params.set('page', page.toString());
+        else params.delete('page');
+        updateUrl(params);
     };
 
     const hasActiveFilters = selectedParties.length > 0 || showInOffice || !!searchQuery;
@@ -258,7 +271,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                     </h3>
                                     <FilterPanel
                                         showInOffice={showInOffice}
-                                        setShowInOffice={setShowInOffice}
+                                        setShowInOffice={handleInOfficeChange}
                                         parties={parties}
                                         selectedParties={selectedParties}
                                         toggleParty={toggleParty}
@@ -283,8 +296,8 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                     <Input
                                         type="search"
                                         placeholder="Meklēt politiķus..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        value={localSearchQuery}
+                                        onChange={(e) => handleSearchChange(e.target.value)}
                                         className="pl-10"
                                     />
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -308,7 +321,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                         <div className="mt-6 overflow-y-auto flex-1">
                                             <FilterPanel
                                                 showInOffice={showInOffice}
-                                                setShowInOffice={setShowInOffice}
+                                                setShowInOffice={handleInOfficeChange}
                                                 parties={parties}
                                                 selectedParties={selectedParties}
                                                 toggleParty={toggleParty}
@@ -330,7 +343,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                 <div className="relative w-full md:w-auto min-w-[200px]">
                                     <select
                                         value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value)}
+                                        onChange={(e) => handleSortChange(e.target.value)}
                                         className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                                     >
                                         <option value="kept-percentage-desc">% izpildīts ↓</option>
@@ -347,7 +360,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                 <div className="flex flex-wrap gap-2 mb-6">
                                     {showInOffice && (
                                         <button
-                                            onClick={() => setShowInOffice(false)}
+                                            onClick={() => handleInOfficeChange(false)}
                                             className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground hover:bg-muted/80"
                                         >
                                             Tikai amatā
@@ -486,7 +499,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                                                 disabled={currentPage === 1}
                                             >
                                                 <ChevronLeft className="h-4 w-4" />
@@ -509,7 +522,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                             key={pageNum}
                                                             variant={currentPage === pageNum ? 'default' : 'outline'}
                                                             size="sm"
-                                                            onClick={() => setCurrentPage(pageNum)}
+                                                            onClick={() => handlePageChange(pageNum)}
                                                             className="w-10"
                                                         >
                                                             {pageNum}
@@ -520,7 +533,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                                                 disabled={currentPage === totalPages}
                                             >
                                                 Nākamā

@@ -32,25 +32,16 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
     const router = useRouter();
     const pathname = usePathname();
 
-    const initialPage = Number(searchParams.get('page')) || 1;
-    const [currentPage, setCurrentPage] = useState(initialPage);
+    const currentPage = Number(searchParams.get('page')) || 1;
 
-    // Sync state to URL
-    useEffect(() => {
+    const handlePageChange = (page: number) => {
         const params = new URLSearchParams(searchParams.toString());
-        if (currentPage > 1) params.set('page', currentPage.toString());
+        if (page > 1) params.set('page', page.toString());
         else params.delete('page');
-
         const queryString = params.toString();
         const url = queryString ? `${pathname}?${queryString}` : pathname;
         router.replace(url, { scroll: false });
-    }, [currentPage, pathname, router, searchParams]);
-
-    // Handle back/forward buttons
-    useEffect(() => {
-        const page = Number(searchParams.get('page')) || 1;
-        setCurrentPage(page);
-    }, [searchParams]);
+    };
 
     const totalPages = Math.ceil(categories.length / ITEMS_PER_PAGE);
     const paginatedCategories = useMemo(() => {
@@ -183,7 +174,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                                 disabled={currentPage === 1}
                             >
                                 <ChevronLeft className="h-4 w-4" />
@@ -206,7 +197,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                             key={pageNum}
                                             variant={currentPage === pageNum ? 'default' : 'outline'}
                                             size="sm"
-                                            onClick={() => setCurrentPage(pageNum)}
+                                            onClick={() => handlePageChange(pageNum)}
                                             className="w-10"
                                         >
                                             {pageNum}
@@ -217,7 +208,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                                 disabled={currentPage === totalPages}
                             >
                                 Nākamā

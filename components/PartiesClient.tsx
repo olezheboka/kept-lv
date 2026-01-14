@@ -71,57 +71,40 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
     const router = useRouter();
     const pathname = usePathname();
 
-    // Initialize state from URL
-    const initialPage = Number(searchParams.get('page')) || 1;
-    const initialCoalition = searchParams.get('coalition') === 'true';
-    const initialOpposition = searchParams.get('opposition') === 'true';
-    const initialSort = searchParams.get('sort') || 'alphabetical-asc';
+    // Derived state from URL
+    const currentPage = Number(searchParams.get('page')) || 1;
+    const filterCoalition = searchParams.get('coalition') === 'true';
+    const filterOpposition = searchParams.get('opposition') === 'true';
+    const sortBy = searchParams.get('sort') || 'alphabetical-asc';
+    const searchQuery = searchParams.get('q') || '';
 
-    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
-    const [filterCoalition, setFilterCoalition] = useState(initialCoalition);
-    const [filterOpposition, setFilterOpposition] = useState(initialOpposition);
-    const [sortBy, setSortBy] = useState(initialSort);
-    const [currentPage, setCurrentPage] = useState(initialPage);
+    // Local state only for search input
+    const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
-    // Sync state to URL
+    // Sync local search query when URL changes
     useEffect(() => {
-        const params = new URLSearchParams(searchParams.toString());
+        setLocalSearchQuery(searchQuery);
+    }, [searchQuery]);
 
-        if (searchQuery) params.set('q', searchQuery);
-        else params.delete('q');
-
-        if (filterCoalition) params.set('coalition', 'true');
-        else params.delete('coalition');
-
-        if (filterOpposition) params.set('opposition', 'true');
-        else params.delete('opposition');
-
-        if (sortBy !== 'alphabetical-asc') params.set('sort', sortBy);
-        else params.delete('sort');
-
-        if (currentPage > 1) params.set('page', currentPage.toString());
-        else params.delete('page');
-
-        const queryString = params.toString();
+    // Helper to update URL with new params
+    const updateUrl = useCallback((newParams: URLSearchParams) => {
+        const queryString = newParams.toString();
         const url = queryString ? `${pathname}?${queryString}` : pathname;
-
         router.replace(url, { scroll: false });
-    }, [searchQuery, filterCoalition, filterOpposition, sortBy, currentPage, pathname, router, searchParams]);
+    }, [pathname, router]);
 
-    // Handle back/forward buttons
-    useEffect(() => {
-        const query = searchParams.get('q') || '';
-        const page = Number(searchParams.get('page')) || 1;
-        const coalition = searchParams.get('coalition') === 'true';
-        const opposition = searchParams.get('opposition') === 'true';
-        const sort = searchParams.get('sort') || 'alphabetical-asc';
-
-        setSearchQuery(query);
-        setCurrentPage(page);
-        setFilterCoalition(coalition);
-        setFilterOpposition(opposition);
-        setSortBy(sort);
-    }, [searchParams]);
+    // Update URL when search input changes
+    const handleSearchChange = (value: string) => {
+        setLocalSearchQuery(value);
+        const params = new URLSearchParams(searchParams.toString());
+        if (value) {
+            params.set('q', value);
+        } else {
+            params.delete('q');
+        }
+        params.delete('page'); // Reset pagination on search
+        updateUrl(params);
+    };
 
     // Helper to get promises by party
     const getPromisesByParty = (partyId: string) =>
@@ -196,15 +179,47 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
         return filteredParties.slice(start, start + ITEMS_PER_PAGE);
     }, [filteredParties, currentPage]);
 
-    // Reset to page 1 when filters change
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchQuery, filterCoalition, filterOpposition, sortBy]);
 
-    const clearFilters = () => {
-        setSearchQuery('');
-        setFilterCoalition(false);
-        setFilterOpposition(false);
+
+    const handleCoalitionChange = useCallback((checked: boolean) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (checked) params.set('coalition', 'true');
+        else params.delete('coalition');
+        params.delete('page'); // Reset pagination
+        updateUrl(params);
+    }, [searchParams, updateUrl]);
+
+    const handleOppositionChange = useCallback((checked: boolean) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (checked) params.set('opposition', 'true');
+        else params.delete('opposition');
+        params.delete('page'); // Reset pagination
+        updateUrl(params);
+    }, [searchParams, updateUrl]);
+
+    const clearFilters = useCallback(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('coalition');
+        params.delete('opposition');
+        params.delete('q');
+        params.delete('page');
+        setLocalSearchQuery('');
+        updateUrl(params);
+    }, [searchParams, updateUrl]);
+
+    const handleSortChange = (value: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (value !== 'alphabetical-asc') params.set('sort', value);
+        else params.delete('sort');
+        params.delete('page'); // Reset pagination
+        updateUrl(params);
+    };
+
+    const handlePageChange = (page: number) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (page > 1) params.set('page', page.toString());
+        else params.delete('page');
+        updateUrl(params);
     };
 
     const hasActiveFilters = !!searchQuery || filterCoalition || filterOpposition;
@@ -243,9 +258,9 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                     </h3>
                                     <FilterPanel
                                         filterCoalition={filterCoalition}
-                                        setFilterCoalition={setFilterCoalition}
+                                        setFilterCoalition={handleCoalitionChange}
                                         filterOpposition={filterOpposition}
-                                        setFilterOpposition={setFilterOpposition}
+                                        setFilterOpposition={handleOppositionChange}
                                         hasActiveFilters={hasActiveFilters}
                                         clearFilters={clearFilters}
                                     />
@@ -267,8 +282,8 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                     <Input
                                         type="search"
                                         placeholder="Meklēt partijas..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        value={localSearchQuery}
+                                        onChange={(e) => handleSearchChange(e.target.value)}
                                         className="pl-10"
                                     />
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -292,9 +307,9 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                         <div className="mt-6 overflow-y-auto flex-1">
                                             <FilterPanel
                                                 filterCoalition={filterCoalition}
-                                                setFilterCoalition={setFilterCoalition}
+                                                setFilterCoalition={handleCoalitionChange}
                                                 filterOpposition={filterOpposition}
-                                                setFilterOpposition={setFilterOpposition}
+                                                setFilterOpposition={handleOppositionChange}
                                                 hasActiveFilters={hasActiveFilters}
                                                 clearFilters={clearFilters}
                                             />
@@ -313,7 +328,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                 <div className="relative w-full md:w-auto min-w-[200px]">
                                     <select
                                         value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value)}
+                                        onChange={(e) => handleSortChange(e.target.value)}
                                         className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                                     >
                                         <option value="alphabetical-asc">A↑Z</option>
@@ -334,7 +349,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                 <div className="flex flex-wrap gap-2 mb-6">
                                     {filterCoalition && (
                                         <button
-                                            onClick={() => setFilterCoalition(false)}
+                                            onClick={() => handleCoalitionChange(false)}
                                             className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground hover:bg-muted/80"
                                         >
                                             Koalīcijā
@@ -343,7 +358,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                     )}
                                     {filterOpposition && (
                                         <button
-                                            onClick={() => setFilterOpposition(false)}
+                                            onClick={() => handleOppositionChange(false)}
                                             className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground hover:bg-muted/80"
                                         >
                                             Opozīcijā
@@ -467,7 +482,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                                                 disabled={currentPage === 1}
                                             >
                                                 <ChevronLeft className="h-4 w-4" />
@@ -490,7 +505,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                             key={pageNum}
                                                             variant={currentPage === pageNum ? 'default' : 'outline'}
                                                             size="sm"
-                                                            onClick={() => setCurrentPage(pageNum)}
+                                                            onClick={() => handlePageChange(pageNum)}
                                                             className="w-10"
                                                         >
                                                             {pageNum}
@@ -501,7 +516,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                                                 disabled={currentPage === totalPages}
                                             >
                                                 Nākamā

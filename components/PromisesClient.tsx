@@ -105,66 +105,41 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
     const router = useRouter();
     const pathname = usePathname();
 
-    // Initialize state from URL
-    const initialPage = Number(searchParams.get('page')) || 1;
-    const initialStatus = searchParams.get('status')?.split(',').filter(Boolean) as PromiseStatus[] || [];
-    const initialParties = searchParams.get('party')?.split(',').filter(Boolean) || [];
-    const initialCategories = searchParams.get('category')?.split(',').filter(Boolean) || [];
-    const initialSort = (searchParams.get('sort') as any) || 'updated-desc';
+    // Derived state from URL
+    const currentPage = Number(searchParams.get('page')) || 1;
+    const selectedStatuses = useMemo(() => searchParams.get('status')?.split(',').filter(Boolean) as PromiseStatus[] || [], [searchParams]);
+    const selectedParties = useMemo(() => searchParams.get('party')?.split(',').filter(Boolean) || [], [searchParams]);
+    const selectedCategories = useMemo(() => searchParams.get('category')?.split(',').filter(Boolean) || [], [searchParams]);
+    const sortBy = (searchParams.get('sort') as any) || 'updated-desc';
+    const searchQuery = searchParams.get('q') || '';
 
-    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
-    const [selectedStatuses, setSelectedStatuses] = useState<PromiseStatus[]>(initialStatus);
-    const [selectedParties, setSelectedParties] = useState<string[]>(initialParties);
-    const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories);
-    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-    const [sortBy, setSortBy] = useState<'updated-desc' | 'updated-asc' | 'date-desc' | 'date-asc'>(initialSort);
-    const [currentPage, setCurrentPage] = useState(initialPage);
+    // Local state only for search input to avoid stuttering
+    const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
-    // Sync state to URL
+    // Sync local search query when URL changes (e.g. back button)
     useEffect(() => {
-        const params = new URLSearchParams(searchParams.toString());
+        setLocalSearchQuery(searchQuery);
+    }, [searchQuery]);
 
-        if (searchQuery) params.set('q', searchQuery);
-        else params.delete('q');
-
-        if (selectedStatuses.length > 0) params.set('status', selectedStatuses.join(','));
-        else params.delete('status');
-
-        if (selectedParties.length > 0) params.set('party', selectedParties.join(','));
-        else params.delete('party');
-
-        if (selectedCategories.length > 0) params.set('category', selectedCategories.join(','));
-        else params.delete('category');
-
-        if (sortBy !== 'updated-desc') params.set('sort', sortBy);
-        else params.delete('sort');
-
-        if (currentPage > 1) params.set('page', currentPage.toString());
-        else params.delete('page');
-
-        const queryString = params.toString();
+    // Helper to update URL with new params
+    const updateUrl = useCallback((newParams: URLSearchParams) => {
+        const queryString = newParams.toString();
         const url = queryString ? `${pathname}?${queryString}` : pathname;
-
-        // Use replace to avoid bloating history during fast typing/filtering
         router.replace(url, { scroll: false });
-    }, [searchQuery, selectedStatuses, selectedParties, selectedCategories, sortBy, currentPage, pathname, router, searchParams]);
+    }, [pathname, router]);
 
-    // Handle back/forward buttons
-    useEffect(() => {
-        const query = searchParams.get('q') || '';
-        const page = Number(searchParams.get('page')) || 1;
-        const status = searchParams.get('status')?.split(',').filter(Boolean) as PromiseStatus[] || [];
-        const party = searchParams.get('party')?.split(',').filter(Boolean) || [];
-        const category = searchParams.get('category')?.split(',').filter(Boolean) || [];
-        const sort = (searchParams.get('sort') as any) || 'updated-desc';
-
-        setSearchQuery(query);
-        setCurrentPage(page);
-        setSelectedStatuses(status);
-        setSelectedParties(party);
-        setSelectedCategories(category);
-        setSortBy(sort);
-    }, [searchParams]);
+    // Update URL when search input changes (debounced could be added here, but direct for now)
+    const handleSearchChange = (value: string) => {
+        setLocalSearchQuery(value);
+        const params = new URLSearchParams(searchParams.toString());
+        if (value) {
+            params.set('q', value);
+        } else {
+            params.delete('q');
+        }
+        params.delete('page'); // Reset pagination on search
+        updateUrl(params);
+    };
 
     const filteredPromises = useMemo(() => {
         let result = [...initialPromises];
@@ -222,41 +197,76 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
         return filteredPromises.slice(start, start + ITEMS_PER_PAGE);
     }, [filteredPromises, currentPage]);
 
-    // Reset to page 1 when filters change
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchQuery, selectedStatuses, selectedParties, selectedCategories, sortBy]);
+    // View mode local state
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
     const toggleStatus = useCallback((status: PromiseStatus) => {
-        setSelectedStatuses(prev =>
-            prev.includes(status)
-                ? prev.filter(s => s !== status)
-                : [...prev, status]
-        );
-    }, []);
+        const params = new URLSearchParams(searchParams.toString());
+        const current = new Set(params.get('status')?.split(',').filter(Boolean) || []);
+
+        if (current.has(status)) current.delete(status);
+        else current.add(status);
+
+        if (current.size > 0) params.set('status', Array.from(current).join(','));
+        else params.delete('status');
+
+        params.delete('page'); // Reset pagination
+        updateUrl(params);
+    }, [searchParams, updateUrl]);
 
     const toggleParty = useCallback((partyId: string) => {
-        setSelectedParties(prev =>
-            prev.includes(partyId)
-                ? prev.filter(p => p !== partyId)
-                : [...prev, partyId]
-        );
-    }, []);
+        const params = new URLSearchParams(searchParams.toString());
+        const current = new Set(params.get('party')?.split(',').filter(Boolean) || []);
+
+        if (current.has(partyId)) current.delete(partyId);
+        else current.add(partyId);
+
+        if (current.size > 0) params.set('party', Array.from(current).join(','));
+        else params.delete('party');
+
+        params.delete('page'); // Reset pagination
+        updateUrl(params);
+    }, [searchParams, updateUrl]);
 
     const toggleCategory = useCallback((categoryId: string) => {
-        setSelectedCategories(prev =>
-            prev.includes(categoryId)
-                ? prev.filter(c => c !== categoryId)
-                : [...prev, categoryId]
-        );
-    }, []);
+        const params = new URLSearchParams(searchParams.toString());
+        const current = new Set(params.get('category')?.split(',').filter(Boolean) || []);
+
+        if (current.has(categoryId)) current.delete(categoryId);
+        else current.add(categoryId);
+
+        if (current.size > 0) params.set('category', Array.from(current).join(','));
+        else params.delete('category');
+
+        params.delete('page'); // Reset pagination
+        updateUrl(params);
+    }, [searchParams, updateUrl]);
 
     const clearFilters = useCallback(() => {
-        setSelectedStatuses([]);
-        setSelectedParties([]);
-        setSelectedCategories([]);
-        setSearchQuery('');
-    }, []);
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('status');
+        params.delete('party');
+        params.delete('category');
+        params.delete('q');
+        params.delete('page');
+        setLocalSearchQuery('');
+        updateUrl(params);
+    }, [searchParams, updateUrl]);
+
+    const handleSortChange = (value: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (value !== 'updated-desc') params.set('sort', value);
+        else params.delete('sort');
+        params.delete('page'); // Reset pagination
+        updateUrl(params);
+    };
+
+    const handlePageChange = (page: number) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (page > 1) params.set('page', page.toString());
+        else params.delete('page');
+        updateUrl(params);
+    };
 
     const hasActiveFilters = selectedStatuses.length > 0 || selectedParties.length > 0 || selectedCategories.length > 0 || !!searchQuery;
 
@@ -321,8 +331,8 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                     <Input
                                         type="search"
                                         placeholder="Meklēt solījumus..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        value={localSearchQuery}
+                                        onChange={(e) => handleSearchChange(e.target.value)}
                                         className="pl-10"
                                     />
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -370,7 +380,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                 <div className="relative w-full md:w-auto min-w-[200px]">
                                     <select
                                         value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value as any)}
+                                        onChange={(e) => handleSortChange(e.target.value)}
                                         className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                                     >
                                         <option value="updated-desc">Pēdējie atjaunināti ↓</option>
@@ -453,7 +463,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                                onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                                                 disabled={currentPage === 1}
                                             >
                                                 <ChevronLeft className="h-4 w-4" />
@@ -476,7 +486,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                                             key={pageNum}
                                                             variant={currentPage === pageNum ? 'default' : 'outline'}
                                                             size="sm"
-                                                            onClick={() => setCurrentPage(pageNum)}
+                                                            onClick={() => handlePageChange(pageNum)}
                                                             className="w-10"
                                                         >
                                                             {pageNum}
@@ -487,7 +497,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                             <Button
                                                 variant="outline"
                                                 size="sm"
-                                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                                onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                                                 disabled={currentPage === totalPages}
                                             >
                                                 Nākamā
