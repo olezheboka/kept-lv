@@ -45,9 +45,9 @@ const Toast = React.forwardRef<
   return (
     <ToastPrimitives.Root ref={ref} className={cn(toastVariants({ variant }), className)} {...props}>
       {props.children}
-      <div className="absolute bottom-0 left-0 h-1 bg-primary/20 w-full">
+      <div className={cn("absolute bottom-0 left-0 h-1 w-full", variant === 'success' ? "bg-emerald-950/5 dark:bg-emerald-50/10" : "bg-primary/20")}>
         <div
-          className="h-full bg-primary"
+          className={cn("h-full", variant === 'success' ? "bg-emerald-800 dark:bg-emerald-500" : "bg-primary")}
           style={{
             width: '100%',
             animation: `toast-progress ${duration || 5000}ms linear forwards`
