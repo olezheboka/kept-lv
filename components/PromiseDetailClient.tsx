@@ -152,7 +152,7 @@ export const PromiseDetailClient = ({
                                         </>
                                     )}
 
-                                    <Button variant="ghost" size="sm" className="ml-auto gap-2 text-muted-foreground hover:text-foreground hover:bg-muted h-8 px-2">
+                                    <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground hover:bg-muted h-8 px-2">
                                         <Share2 className="h-4 w-4" />
                                         <span>Dalīties</span>
                                     </Button>
