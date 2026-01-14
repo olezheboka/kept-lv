@@ -11,10 +11,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { CATEGORIES, PromiseStatus, STATUS_CONFIG } from '@/lib/types';
-import { Search, Filter, Grid3X3, List, X, SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { Search, Filter, Grid3X3, List, X, SlidersHorizontal, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { PromiseUI, PartyUI } from '@/lib/db';
 
 const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'in-progress', 'broken', 'not-rated'];
+const ITEMS_PER_PAGE = 30;
 
 interface PromisesClientProps {
     initialPromises: PromiseUI[];
@@ -114,6 +115,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [sortBy, setSortBy] = useState<'updated-desc' | 'updated-asc' | 'date-desc' | 'date-asc'>('updated-desc');
+    const [currentPage, setCurrentPage] = useState(1);
 
     const filteredPromises = useMemo(() => {
         let result = [...initialPromises];
@@ -163,6 +165,18 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
 
         return result;
     }, [searchQuery, selectedStatuses, selectedParties, selectedCategories, sortBy, initialPromises]);
+
+    // Pagination calculations
+    const totalPages = Math.ceil(filteredPromises.length / ITEMS_PER_PAGE);
+    const paginatedPromises = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredPromises.slice(start, start + ITEMS_PER_PAGE);
+    }, [filteredPromises, currentPage]);
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, selectedStatuses, selectedParties, selectedCategories, sortBy]);
 
     const toggleStatus = useCallback((status: PromiseStatus) => {
         setSelectedStatuses(prev =>
@@ -370,17 +384,69 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                             {/* Results Count */}
                             <p className="text-sm text-muted-foreground mb-6">
                                 Atrasti {filteredPromises.length} solījumi
+                                {totalPages > 1 && ` • Lapa ${currentPage} no ${totalPages}`}
                             </p>
 
-                            {filteredPromises.length > 0 ? (
-                                <div className={viewMode === 'grid'
-                                    ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'
-                                    : 'space-y-4'
-                                }>
-                                    {filteredPromises.map((promise, index) => (
-                                        <PromiseCard key={promise.id} promise={promise} index={index} />
-                                    ))}
-                                </div>
+                            {paginatedPromises.length > 0 ? (
+                                <>
+                                    <div className={viewMode === 'grid'
+                                        ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'
+                                        : 'space-y-4'
+                                    }>
+                                        {paginatedPromises.map((promise, index) => (
+                                            <PromiseCard key={promise.id} promise={promise} index={index} />
+                                        ))}
+                                    </div>
+
+                                    {/* Pagination Controls */}
+                                    {totalPages > 1 && (
+                                        <div className="flex items-center justify-center gap-2 mt-8">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                                disabled={currentPage === 1}
+                                            >
+                                                <ChevronLeft className="h-4 w-4" />
+                                                Iepriekšējā
+                                            </Button>
+                                            <div className="flex items-center gap-1">
+                                                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                                    let pageNum: number;
+                                                    if (totalPages <= 5) {
+                                                        pageNum = i + 1;
+                                                    } else if (currentPage <= 3) {
+                                                        pageNum = i + 1;
+                                                    } else if (currentPage >= totalPages - 2) {
+                                                        pageNum = totalPages - 4 + i;
+                                                    } else {
+                                                        pageNum = currentPage - 2 + i;
+                                                    }
+                                                    return (
+                                                        <Button
+                                                            key={pageNum}
+                                                            variant={currentPage === pageNum ? 'default' : 'outline'}
+                                                            size="sm"
+                                                            onClick={() => setCurrentPage(pageNum)}
+                                                            className="w-10"
+                                                        >
+                                                            {pageNum}
+                                                        </Button>
+                                                    );
+                                                })}
+                                            </div>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                                disabled={currentPage === totalPages}
+                                            >
+                                                Nākamā
+                                                <ChevronRight className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    )}
+                                </>
                             ) : (
                                 <Card className="border-border/50">
                                     <CardContent className="py-16 text-center">

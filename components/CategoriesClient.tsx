@@ -1,10 +1,12 @@
 "use client";
 
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { CategoryUI } from '@/lib/db';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
 
 interface CategoriesClientProps {
@@ -22,7 +24,17 @@ interface CategoriesClientProps {
     })[];
 }
 
+const ITEMS_PER_PAGE = 30;
+
 export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const totalPages = Math.ceil(categories.length / ITEMS_PER_PAGE);
+    const paginatedCategories = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return categories.slice(start, start + ITEMS_PER_PAGE);
+    }, [categories, currentPage]);
+
     return (
         <div className="flex flex-col bg-background">
             {/* Page Header */}
@@ -47,7 +59,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
             <section className="py-8 md:py-12">
                 <div className="container-wide">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                        {categories.map((category, index) => {
+                        {paginatedCategories.map((category, index) => {
                             const { total, kept, partiallyKept, inProgress, broken, notRated } = category.stats;
 
                             return (
@@ -141,6 +153,55 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                             );
                         })}
                     </div>
+
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-center gap-2 mt-8">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                disabled={currentPage === 1}
+                            >
+                                <ChevronLeft className="h-4 w-4" />
+                                Iepriekšējā
+                            </Button>
+                            <div className="flex items-center gap-1">
+                                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                    let pageNum: number;
+                                    if (totalPages <= 5) {
+                                        pageNum = i + 1;
+                                    } else if (currentPage <= 3) {
+                                        pageNum = i + 1;
+                                    } else if (currentPage >= totalPages - 2) {
+                                        pageNum = totalPages - 4 + i;
+                                    } else {
+                                        pageNum = currentPage - 2 + i;
+                                    }
+                                    return (
+                                        <Button
+                                            key={pageNum}
+                                            variant={currentPage === pageNum ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => setCurrentPage(pageNum)}
+                                            className="w-10"
+                                        >
+                                            {pageNum}
+                                        </Button>
+                                    );
+                                })}
+                            </div>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                disabled={currentPage === totalPages}
+                            >
+                                Nākamā
+                                <ChevronRight className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </section>
         </div>

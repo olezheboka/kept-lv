@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, memo } from 'react';
+import { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,8 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Filter, Search, SlidersHorizontal, ChevronDown, X, Users } from 'lucide-react';
+import { Filter, Search, SlidersHorizontal, ChevronDown, X, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { PartyUI, PoliticianUI, PromiseUI } from '@/lib/db';
+
+const ITEMS_PER_PAGE = 30;
 
 interface PartiesClientProps {
     parties: PartyUI[];
@@ -68,6 +70,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
     const [filterCoalition, setFilterCoalition] = useState(false);
     const [filterOpposition, setFilterOpposition] = useState(false);
     const [sortBy, setSortBy] = useState('alphabetical-asc');
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Helper to get promises by party
     const getPromisesByParty = (partyId: string) =>
@@ -134,6 +137,18 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
 
         return result;
     }, [parties, searchQuery, filterCoalition, filterOpposition, sortBy, promises]);
+
+    // Pagination calculations
+    const totalPages = Math.ceil(filteredParties.length / ITEMS_PER_PAGE);
+    const paginatedParties = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredParties.slice(start, start + ITEMS_PER_PAGE);
+    }, [filteredParties, currentPage]);
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, filterCoalition, filterOpposition, sortBy]);
 
     const clearFilters = () => {
         setSearchQuery('');
@@ -296,115 +311,158 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                             {/* Results Count */}
                             <p className="text-sm text-muted-foreground mb-6">
                                 Atrastas {filteredParties.length} partijas
+                                {totalPages > 1 && ` • Lapa ${currentPage} no ${totalPages}`}
                             </p>
 
-                            {filteredParties.length > 0 ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                                    {filteredParties.map((party, index) => {
-                                        const partyPromises = getPromisesByParty(party.id);
-                                        const partyPoliticians = getPoliticiansByParty(party.id);
-                                        const keptCount = partyPromises.filter(p => p.status === 'kept').length;
-                                        const partiallyKeptCount = partyPromises.filter(p => p.status === 'partially-kept').length;
-                                        const inProgressCount = partyPromises.filter(p => p.status === 'in-progress').length;
-                                        const brokenCount = partyPromises.filter(p => p.status === 'broken').length;
-                                        const notRatedCount = partyPromises.filter(p => p.status === 'not-rated').length;
-                                        const total = partyPromises.length;
+                            {paginatedParties.length > 0 ? (
+                                <>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                                        {paginatedParties.map((party, index) => {
+                                            const partyPromises = getPromisesByParty(party.id);
+                                            const partyPoliticians = getPoliticiansByParty(party.id);
+                                            const keptCount = partyPromises.filter(p => p.status === 'kept').length;
+                                            const partiallyKeptCount = partyPromises.filter(p => p.status === 'partially-kept').length;
+                                            const inProgressCount = partyPromises.filter(p => p.status === 'in-progress').length;
+                                            const brokenCount = partyPromises.filter(p => p.status === 'broken').length;
+                                            const notRatedCount = partyPromises.filter(p => p.status === 'not-rated').length;
+                                            const total = partyPromises.length;
 
-                                        return (
-                                            <motion.div
-                                                key={party.id}
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ duration: 0.4, delay: index * 0.05 }}
+                                            return (
+                                                <motion.div
+                                                    key={party.id}
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ duration: 0.4, delay: index * 0.05 }}
+                                                >
+                                                    <Link href={`/parties/${party.id}`} className="block h-full">
+                                                        <Card className="group overflow-hidden border-border/50 hover:shadow-elevated hover:border-border transition-all duration-300 h-full">
+                                                            <CardContent className="p-6">
+                                                                {/* Party Header - Politician Card Style */}
+                                                                <div className="flex flex-col gap-1 mb-4">
+                                                                    <div className="flex items-center gap-2 flex-wrap max-w-full">
+                                                                        <h3 className="text-sm font-semibold text-foreground leading-tight truncate group-hover:text-accent transition-colors">
+                                                                            {party.name}
+                                                                        </h3>
+                                                                    </div>
+
+                                                                    <div className="flex items-center gap-2 mt-0">
+                                                                        {party.description && (
+                                                                            <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+                                                                                {party.description}
+                                                                            </span>
+                                                                        )}
+                                                                        {party.isInCoalition ? (
+                                                                            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
+                                                                                Koalīcijā
+                                                                            </span>
+                                                                        ) : (
+                                                                            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
+                                                                                Opozīcijā
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Stats Bar (Always Visible) */}
+                                                                <div className="mt-auto">
+                                                                    <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-2">
+                                                                        <span>{total} solījumi</span>
+                                                                        <span>{total > 0 ? Math.round((keptCount / total) * 100) : 0}% izpildīti</span>
+                                                                    </div>
+                                                                    <div className="h-2 bg-muted rounded-full overflow-hidden flex">
+                                                                        {keptCount > 0 && (
+                                                                            <div
+                                                                                className="h-full bg-status-kept"
+                                                                                style={{ width: `${(keptCount / total) * 100}%` }}
+                                                                            />
+                                                                        )}
+                                                                        {partiallyKeptCount > 0 && (
+                                                                            <div
+                                                                                className="h-full bg-status-partially"
+                                                                                style={{ width: `${(partiallyKeptCount / total) * 100}%` }}
+                                                                            />
+                                                                        )}
+                                                                        {inProgressCount > 0 && (
+                                                                            <div
+                                                                                className="h-full bg-status-progress"
+                                                                                style={{ width: `${(inProgressCount / total) * 100}%` }}
+                                                                            />
+                                                                        )}
+                                                                        {brokenCount > 0 && (
+                                                                            <div
+                                                                                className="h-full bg-status-broken"
+                                                                                style={{ width: `${(brokenCount / total) * 100}%` }}
+                                                                            />
+                                                                        )}
+                                                                        {notRatedCount > 0 && (
+                                                                            <div
+                                                                                className="h-full bg-status-unrated"
+                                                                                style={{ width: `${(notRatedCount / total) * 100}%` }}
+                                                                            />
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </CardContent>
+                                                        </Card>
+                                                    </Link>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </div>
+
+                                    {/* Pagination Controls */}
+                                    {totalPages > 1 && (
+                                        <div className="flex items-center justify-center gap-2 mt-8">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                                disabled={currentPage === 1}
                                             >
-                                                <Link href={`/parties/${party.id}`} className="block h-full">
-                                                    <Card className="group overflow-hidden border-border/50 hover:shadow-elevated hover:border-border transition-all duration-300 h-full">
-                                                        <CardContent className="p-6">
-                                                            {/* Party Header - Politician Card Style */}
-                                                            <div className="flex flex-col gap-1 mb-4">
-                                                                <div className="flex items-center gap-2 flex-wrap max-w-full">
-                                                                    <h3 className="text-sm font-semibold text-foreground leading-tight truncate group-hover:text-accent transition-colors">
-                                                                        {party.name}
-                                                                    </h3>
-                                                                    {/* Party badge removed */}
-                                                                </div>
-
-                                                                <div className="flex items-center gap-2 mt-0">
-                                                                    {party.description && (
-                                                                        <span className="text-xs text-muted-foreground truncate max-w-[200px]">
-                                                                            {party.description}
-                                                                        </span>
-                                                                    )}
-                                                                    {party.isInCoalition ? (
-                                                                        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
-                                                                            Koalīcijā
-                                                                        </span>
-                                                                    ) : (
-                                                                        <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
-                                                                            Opozīcijā
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-
-                                                            {/* Stats Bar (Always Visible) */}
-                                                            <div className="mt-auto">
-                                                                <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-2">
-                                                                    <span>{total} solījumi</span>
-                                                                    <span>{total > 0 ? Math.round((keptCount / total) * 100) : 0}% izpildīti</span>
-                                                                </div>
-                                                                <div className="h-2 bg-muted rounded-full overflow-hidden flex">
-                                                                    {keptCount > 0 && (
-                                                                        <div
-                                                                            className="h-full bg-status-kept"
-                                                                            style={{ width: `${(keptCount / total) * 100}%` }}
-                                                                        />
-                                                                    )}
-                                                                    {partiallyKeptCount > 0 && (
-                                                                        <div
-                                                                            className="h-full bg-status-partially"
-                                                                            style={{ width: `${(partiallyKeptCount / total) * 100}%` }}
-                                                                        />
-                                                                    )}
-                                                                    {inProgressCount > 0 && (
-                                                                        <div
-                                                                            className="h-full bg-status-progress"
-                                                                            style={{ width: `${(inProgressCount / total) * 100}%` }}
-                                                                        />
-                                                                    )}
-                                                                    {brokenCount > 0 && (
-                                                                        <div
-                                                                            className="h-full bg-status-broken"
-                                                                            style={{ width: `${(brokenCount / total) * 100}%` }}
-                                                                        />
-                                                                    )}
-                                                                    {notRatedCount > 0 && (
-                                                                        <div
-                                                                            className="h-full bg-status-unrated"
-                                                                            style={{ width: `${(notRatedCount / total) * 100}%` }}
-                                                                        />
-                                                                    )}
-                                                                </div>
-                                                            </div>
-
-                                                            {/* Politicians count (Optional - keeping generic icon style for now or removing if strictly following politician card which has no extra footer) */}
-                                                            {/* Removed User icon footer to match PoliticianCard exact style which ends with progress bar */}
-                                                        </CardContent>
-                                                    </Card>
-                                                </Link>
-                                            </motion.div>
-                                        );
-                                    })}
-                                </div>
+                                                <ChevronLeft className="h-4 w-4" />
+                                                Iepriekšējā
+                                            </Button>
+                                            <div className="flex items-center gap-1">
+                                                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                                    let pageNum: number;
+                                                    if (totalPages <= 5) {
+                                                        pageNum = i + 1;
+                                                    } else if (currentPage <= 3) {
+                                                        pageNum = i + 1;
+                                                    } else if (currentPage >= totalPages - 2) {
+                                                        pageNum = totalPages - 4 + i;
+                                                    } else {
+                                                        pageNum = currentPage - 2 + i;
+                                                    }
+                                                    return (
+                                                        <Button
+                                                            key={pageNum}
+                                                            variant={currentPage === pageNum ? 'default' : 'outline'}
+                                                            size="sm"
+                                                            onClick={() => setCurrentPage(pageNum)}
+                                                            className="w-10"
+                                                        >
+                                                            {pageNum}
+                                                        </Button>
+                                                    );
+                                                })}
+                                            </div>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                                disabled={currentPage === totalPages}
+                                            >
+                                                Nākamā
+                                                <ChevronRight className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    )}
+                                </>
                             ) : (
                                 <Card className="border-border/50">
-                                    <CardContent className="py-16 text-center">
-                                        <p className="text-muted-foreground">
-                                            Nav atrastas partijas ar izvēlētajiem filtriem.
-                                        </p>
-                                        <Button variant="outline" onClick={clearFilters} className="mt-4">
-                                            Notīrīt filtrus
-                                        </Button>
+                                    <CardContent className="py-16 text-center text-muted-foreground">
+                                        Nav atrastas partijas ar izvēlētajiem filtriem.
                                     </CardContent>
                                 </Card>
                             )}
