@@ -49,7 +49,7 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
     const politician = await getPoliticianBySlug(promise.politicianId);
     const party = promise.partyId ? await getPartyBySlug(promise.partyId) : null;
 
-    const categoryInfo = CATEGORIES.find(c => c.id === promise.category);
+    const categoryInfo = CATEGORIES.find(c => c.id === promise.categorySlug);
 
     let category: CategoryUI | undefined = undefined;
     if (categoryInfo) {
