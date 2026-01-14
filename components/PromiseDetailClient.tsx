@@ -39,9 +39,7 @@ export const PromiseDetailClient = ({
     relatedByCategory
 }: PromiseDetailClientProps) => {
 
-    console.log("PromiseDetailClient Debug:", promise?.id);
-    console.log("Related Pol:", relatedByPolitician.length);
-    console.log("Related Cat:", relatedByCategory.length);
+
 
     if (!promise) {
         return (
@@ -105,11 +103,11 @@ export const PromiseDetailClient = ({
                                                         <img
                                                             src={party.logoUrl}
                                                             alt={party.abbreviation}
-                                                            className="h-full w-auto object-contain opacity-40"
+                                                            className="h-full w-auto object-contain"
                                                         />
                                                     </div>
                                                 ) : (
-                                                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-muted text-[10px] font-medium text-muted-foreground uppercase tracking-wider opacity-40">
+                                                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-muted text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
                                                         {party.abbreviation}
                                                     </span>
                                                 )}
@@ -148,7 +146,7 @@ export const PromiseDetailClient = ({
                                     {category && (
                                         <>
                                             <span className="text-muted-foreground/30">•</span>
-                                            <span className="text-xs text-muted-foreground/70">
+                                            <span className="text-sm text-muted-foreground/70">
                                                 {category.name}
                                             </span>
                                         </>
@@ -227,8 +225,7 @@ export const PromiseDetailClient = ({
                             </Card>
                         </motion.div>
 
-                        {/* Meta Info (Tags) */}
-                        {promise.tags.length > 0 && (
+                        {promise.tags && promise.tags.length > 0 && (
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -243,9 +240,13 @@ export const PromiseDetailClient = ({
                                         </div>
                                         <div className="flex flex-wrap gap-2">
                                             {promise.tags.map(tag => (
-                                                <span key={tag} className="px-2 py-1 bg-muted rounded-full text-xs font-medium text-muted-foreground">
+                                                <Link
+                                                    key={tag}
+                                                    href={`/promises?q=${encodeURIComponent(tag)}`}
+                                                    className="px-2 py-1 bg-muted rounded-full text-xs font-medium text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                                                >
                                                     #{tag}
-                                                </span>
+                                                </Link>
                                             ))}
                                         </div>
                                     </CardContent>

@@ -5,6 +5,7 @@ import { StatusBadge } from './StatusBadge';
 import { PartyBadge } from './PartyBadge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar } from 'lucide-react';
+import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -67,7 +68,7 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
               {/* Footer: Timeline */}
               <div className="pt-3 border-t border-border/50 text-xs text-muted-foreground flex items-center gap-2">
                 <Calendar size={12} className="text-muted-foreground/70" />
-                <span>Solīts <span className="font-medium text-foreground">{new Date(promise.datePromised).toLocaleDateString('lv-LV')}</span></span>
+                <span>Solīts <span className="font-medium text-foreground">{format(new Date(promise.datePromised), 'dd.MM.yyyy')}</span></span>
               </div>
             </div>
           </CardContent>

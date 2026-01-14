@@ -289,7 +289,7 @@ export async function getPromises(locale: Locale = "lv"): Promise<PromiseUI[]> {
             description: p.description ? getLocalizedText(p.description, locale) : undefined,
             importance: undefined,
             deadline: undefined,
-            tags: [],
+            tags: p.tags,
             sources: p.sources.map((s) => ({
                 title: s.title ? getLocalizedText(s.title, locale) : "",
                 url: s.url,
@@ -347,7 +347,7 @@ export async function getPromiseById(
         description: p.description ? getLocalizedText(p.description, locale) : undefined,
         importance: undefined,
         deadline: undefined,
-        tags: [],
+        tags: p.tags,
         sources: p.sources.map((s) => ({
             title: s.title ? getLocalizedText(s.title, locale) : "",
             url: s.url,
@@ -405,7 +405,7 @@ export async function getPromiseBySlug(
         description: p.description ? getLocalizedText(p.description, locale) : undefined,
         importance: undefined,
         deadline: undefined,
-        tags: [],
+        tags: p.tags,
         sources: p.sources.map((s) => ({
             title: s.title ? getLocalizedText(s.title, locale) : "",
             url: s.url,
@@ -463,7 +463,7 @@ export async function getPromisesByPolitician(
         description: p.description ? getLocalizedText(p.description, locale) : undefined,
         importance: undefined,
         deadline: undefined,
-        tags: [],
+        tags: p.tags,
         sources: p.sources.map((s) => ({
             title: s.title ? getLocalizedText(s.title, locale) : "",
             url: s.url,
@@ -524,7 +524,7 @@ export async function getPromisesByParty(
         description: p.description ? getLocalizedText(p.description, locale) : undefined,
         importance: undefined,
         deadline: undefined,
-        tags: [],
+        tags: p.tags,
         sources: p.sources.map((s) => ({
             title: s.title ? getLocalizedText(s.title, locale) : "",
             url: s.url,
@@ -575,7 +575,7 @@ export async function getPromisesByCategory(
         description: p.description ? getLocalizedText(p.description, locale) : undefined,
         importance: undefined,
         deadline: undefined,
-        tags: [],
+        tags: p.tags,
         sources: p.sources.map((s) => ({
             title: s.title ? getLocalizedText(s.title, locale) : "",
             url: s.url,
@@ -777,7 +777,7 @@ export async function getRandomPromises(count: number, excludeId?: string, local
             statusUpdatedAt: p.statusUpdatedAt?.toISOString() || p.updatedAt.toISOString(),
             statusUpdatedBy: "Solījums.lv",
             category: p.category.slug,
-            tags: [], // Tags handling needed if schema has tags? Schema had no tags on Promise model, wait.
+            tags: p.tags,
             // checking Schema again... Promise model has no tags.
             // But PromiseUI has tags: string[]. I'll return empty array.
             sources: p.sources.map(s => ({

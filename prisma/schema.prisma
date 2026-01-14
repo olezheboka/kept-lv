@@ -71,6 +71,7 @@ model Promise {
   description     String?
   status          PromiseStatus @default(IN_PROGRESS)
   explanation     String?
+  tags            String[]      @default([])
   dateOfPromise   DateTime
   statusUpdatedAt DateTime?
   politicianId    String

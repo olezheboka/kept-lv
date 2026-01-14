@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { hash } from "bcryptjs";
 import { config } from "dotenv";
+import { slugify } from "../lib/slugify";
 
 // Load environment variables
 config({ path: ".env.local" });
@@ -242,6 +243,7 @@ async function main() {
       dateOfPromise: new Date("2023-01-01"),
       politicianSlug: "anda-caksa",
       categorySlug: "education",
+      tags: ["izglītība", "algas", "pedagogi"],
     },
     {
       title: "Pāreja uz mācībām valsts valodā",
@@ -582,6 +584,7 @@ async function main() {
       dateOfPromise: new Date("2022-10-01"),
       politicianSlug: "nils-usakovs",
       categorySlug: "social-welfare",
+      tags: ["senioriem", "pensijas", "atbalsts"],
     },
     {
       title: "Mājokļu atbalsta programma",
@@ -599,15 +602,47 @@ async function main() {
       console.error(`Politician not found: ${promise.politicianSlug}`);
       continue;
     }
+
+    const category = categories[promise.categorySlug];
+
+    // Generate relevant tags based on category if none exist
+    let tags = promise.tags || [];
+    if (tags.length === 0) {
+      const commonTags = ["solījums", "2022", "Saeima"];
+      const categoryTags: Record<string, string[]> = {
+        "education": ["izglītība", "skola", "algas", "reforma"],
+        "security": ["drošība", "aizsardzība", "nato", "budžets"],
+        "economy": ["ekonomika", "nodokļi", "izaugsme", "finanses"],
+        "healthcare": ["veselība", "ārstniecība", "zāles", "slimnīcas"],
+        "infrastructure": ["satiksme", "ceļi", "vilcieni", "transports"],
+        "social-welfare": ["labklājība", "pabalsti", "pensijas", "atbalsts"],
+        "foreign-affairs": ["ārlietas", "eiropa", "diplomātija"],
+        "justice": ["tieslietas", "likums", "tiesības"],
+        "culture": ["kultūra", "tradīcijas", "valoda"],
+        "agriculture": ["lauksaimniecība", "zeme", "meži"],
+        "digital": ["tehnoloģijas", "digitāls", "inovācijas"],
+        "regional": ["reģioni", "pašvaldības", "attīstība"],
+        "youth": ["jaunatne", "sports", "nākotne"]
+      };
+
+      const specificTags = categoryTags[promise.categorySlug] || ["politika"];
+
+      // Pick 2 random tags + 1 common
+      const randomSpecific = specificTags.sort(() => 0.5 - Math.random()).slice(0, 2);
+      tags = [...randomSpecific, ...commonTags.slice(0, 1)];
+    }
+
     await prisma.promise.create({
       data: {
         title: promise.title,
+        slug: slugify(promise.title),
         description: promise.description,
         status: mapStatus(promise.status),
         explanation: promise.explanation,
         dateOfPromise: promise.dateOfPromise,
         politicianId: politicians[promise.politicianSlug].id,
         categoryId: categories[promise.categorySlug].id,
+        tags: tags,
       },
     });
   }
