@@ -241,7 +241,7 @@ export const PromiseDetailClient = ({
                                 promise.status === 'partially-kept' ? "bg-status-partially-bg border-status-partially/30" :
                                     promise.status === 'in-progress' ? "bg-status-progress-bg border-status-progress/30" :
                                         promise.status === 'broken' ? "bg-status-broken-bg border-status-broken/30" :
-                                            "bg-status-unrated-bg border-status-unrated/30"
+                                            "bg-[#F4F5F7] border-[#C9CED7]"
                                 }`}>
                                 <CardContent className="p-6 space-y-4">
                                     <div className="flex justify-start">

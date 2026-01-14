@@ -78,7 +78,7 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                                     { key: 'partially-kept', value: stats.partiallyKept, color: 'text-status-partially' },
                                     { key: 'in-progress', value: stats.inProgress, color: 'text-status-progress' },
                                     { key: 'broken', value: stats.broken, color: 'text-status-broken' },
-                                    { key: 'not-rated', value: stats.notRated, color: 'text-status-unrated' },
+                                    { key: 'not-rated', value: stats.notRated, color: 'text-[#66758B]' },
                                 ];
 
                                 let accumulatedPercentage = 0;
@@ -172,8 +172,8 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                                             : 'bg-background border-border/50 hover:bg-muted/50 hover:border-border'}
                                     `}
                                 >
-                                    <div className={`mb-1.5 p-1 w-fit rounded-md ${config.bg} bg-opacity-20`}>
-                                        <Icon className={`h-3.5 w-3.5 ${config.color}`} />
+                                    <div className={`mb-1.5 p-1 w-fit rounded-full flex items-center justify-center ${status === 'not-rated' ? 'bg-[#F4F5F7] text-[#66758B]' : `${config.bg} bg-opacity-20`}`}>
+                                        <Icon className={`h-3.5 w-3.5 ${status === 'not-rated' ? 'text-[#66758B]' : config.color}`} />
                                     </div>
                                     <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-0.5 group-hover:text-foreground transition-colors truncate w-full">
                                         {STATUS_CONFIG[status].label}
