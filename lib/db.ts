@@ -692,8 +692,10 @@ export async function getCategories(locale: Locale = "lv"): Promise<(CategoryUI 
     stats: {
         total: number;
         kept: number;
+        partiallyKept: number;
         inProgress: number;
         broken: number;
+        notRated: number;
     }
 })[]> {
     const categories = await prisma.category.findMany({
