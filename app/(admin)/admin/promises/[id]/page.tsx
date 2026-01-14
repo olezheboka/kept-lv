@@ -37,6 +37,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
         sourceType: "VIDEO",
         sourceUrl: "",
         sourceTitle: "",
+        tags: "",
     });
 
     useEffect(() => {
@@ -75,6 +76,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                     sourceType: source.type || "VIDEO",
                     sourceUrl: source.url || "",
                     sourceTitle: typeof source.title === 'string' ? source.title : source.title?.lv || "",
+                    tags: Array.isArray(promiseData.tags) ? promiseData.tags.join(', ') : "",
                 });
 
                 setLoading(false);
@@ -102,6 +104,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                 statusUpdatedAt: formData.statusUpdatedAt ? new Date(formData.statusUpdatedAt).toISOString() : null,
                 politicianId: formData.politicianId,
                 categoryId: formData.categoryId,
+                tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
                 sources: formData.sourceUrl
                     ? [{
                         type: formData.sourceType,
@@ -203,10 +206,23 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                             />
                         </div>
                     </div>
+                    <div>
+                        <label className="block text-sm font-medium text-foreground mb-1.5">
+                            Tags (comma separated)
+                        </label>
+                        <input
+                            type="text"
+                            value={formData.tags}
+                            onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                            className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                            placeholder="politics, budget, 2024..."
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">Enter tags separated by commas.</p>
+                    </div>
                 </div>
 
                 {/* Metadati - Full Width */}
-                <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
+                <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6" >
                     <h2 className="text-base font-semibold text-foreground">Metadata</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
@@ -259,7 +275,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                 </div>
 
                 {/* Status, Source & Explanation - Combined */}
-                <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6">
+                <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-6" >
                     <div className="flex items-center justify-between border-b border-border/50 pb-4 mb-4">
                         <h2 className="text-base font-semibold text-foreground">Status</h2>
                     </div>
@@ -350,7 +366,7 @@ export default function EditPromisePage({ params }: { params: Promise<{ id: stri
                 </div>
 
                 {/* Submit */}
-                <div className="flex justify-end gap-3 pt-4 border-t border-border">
+                <div className="flex justify-end gap-3 pt-4 border-t border-border" >
                     <Link
                         href="/admin/promises"
                         className="px-4 py-2 rounded-lg border border-input bg-background text-sm font-medium hover:bg-muted transition-colors"

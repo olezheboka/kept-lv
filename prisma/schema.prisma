@@ -122,6 +122,7 @@ enum PromiseStatus {
   IN_PROGRESS
   ABANDONED
   PARTIAL
+  NOT_RATED
 }
 
 enum SourceType {

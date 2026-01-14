@@ -97,6 +97,14 @@ export const statusConfig = {
     border: "border-violet-400/50",
     text: "text-violet-400",
   },
+  NOT_RATED: {
+    icon: "?",
+    label: { lv: "NAV NOVĒRTĒTS", en: "NOT RATED", ru: "НЕ ОЦЕНЕНО" },
+    gradient: "from-gray-500 to-slate-600",
+    bg: "bg-gray-500/20",
+    border: "border-gray-400/50",
+    text: "text-gray-400",
+  },
 } as const;
 
 export type PromiseStatusType = keyof typeof statusConfig;

@@ -129,6 +129,7 @@ export async function POST(request: NextRequest) {
     const promise = await prisma.promise.create({
       data: {
         ...promiseData,
+        tags: promiseData.tags || [],
         dateOfPromise: new Date(dateOfPromise),
         sources: sources?.length
           ? {

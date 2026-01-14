@@ -101,6 +101,7 @@ function mapStatusToUI(status: string): PromiseUI["status"] {
         IN_PROGRESS: "in-progress",
         PARTIAL: "partially-kept",
         ABANDONED: "not-rated",
+        NOT_RATED: "not-rated",
     };
     return statusMap[status] || "not-rated";
 }
@@ -713,7 +714,7 @@ export async function getCategories(locale: Locale = "lv"): Promise<(CategoryUI 
         const partiallyKept = cat.promises.filter((p) => p.status === "PARTIAL").length;
         const inProgress = cat.promises.filter((p) => p.status === "IN_PROGRESS").length;
         const broken = cat.promises.filter((p) => p.status === "NOT_KEPT").length;
-        const notRated = cat.promises.filter((p) => p.status === "ABANDONED").length;
+        const notRated = cat.promises.filter((p) => p.status === "ABANDONED" || p.status === "NOT_RATED").length;
 
         return {
             id: cat.slug,

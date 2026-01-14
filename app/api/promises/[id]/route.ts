@@ -86,6 +86,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       where: { id },
       data: {
         ...promiseData,
+        tags: promiseData.tags,
         dateOfPromise: dateOfPromise ? new Date(dateOfPromise) : undefined,
         sources: sources?.length
           ? {

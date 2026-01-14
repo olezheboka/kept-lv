@@ -33,6 +33,7 @@ export default function NewPromisePage() {
     sourceType: "VIDEO",
     sourceUrl: "",
     sourceTitle: "",
+    tags: "",
   });
 
   useEffect(() => {
@@ -58,6 +59,7 @@ export default function NewPromisePage() {
         statusUpdatedAt: formData.statusUpdatedAt ? new Date(formData.statusUpdatedAt).toISOString() : null,
         politicianId: formData.politicianId,
         categoryId: formData.categoryId,
+        tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
         sources: formData.sourceUrl
           ? [{
             type: formData.sourceType,
@@ -148,6 +150,20 @@ export default function NewPromisePage() {
               />
             </div>
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-1.5">
+            Tags (comma separated)
+          </label>
+          <input
+            type="text"
+            value={formData.tags}
+            onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+            className="w-full px-3 py-2 rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+            placeholder="politics, budget, 2024..."
+          />
+          <p className="text-xs text-muted-foreground mt-1">Enter tags separated by commas.</p>
         </div>
 
         {/* Metadati - Full Width */}
@@ -292,7 +308,9 @@ export default function NewPromisePage() {
               placeholder="Explanation..."
             />
           </div>
-        </div>   {/* Submit */}
+        </div>
+
+        {/* Submit */}
         <div className="flex justify-end gap-3 pt-4 border-t border-border">
           <Link
             href="/admin/promises"

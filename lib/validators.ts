@@ -74,6 +74,7 @@ export const createPromiseSchema = z.object({
   categoryId: z.string().cuid(),
   sources: z.array(sourceSchema).optional(),
   evidence: z.array(evidenceSchema).optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 export const updatePromiseSchema = createPromiseSchema.partial();
