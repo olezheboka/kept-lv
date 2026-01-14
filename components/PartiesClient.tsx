@@ -283,7 +283,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                             {/* Party Header - Politician Card Style */}
                                                             <div className="flex flex-col gap-1 mb-4">
                                                                 <div className="flex items-center gap-2 flex-wrap max-w-full">
-                                                                    <h3 className="text-base font-semibold text-foreground leading-tight truncate group-hover:text-accent transition-colors">
+                                                                    <h3 className="text-sm font-semibold text-foreground leading-tight truncate group-hover:text-accent transition-colors">
                                                                         {party.name}
                                                                     </h3>
                                                                     {/* Party badge removed */}
@@ -304,7 +304,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
 
                                                             {/* Stats Bar (Always Visible) */}
                                                             <div className="mt-auto">
-                                                                <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                                                                <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-2">
                                                                     <span>{total} solījumi</span>
                                                                     <span>{total > 0 ? Math.round((keptCount / total) * 100) : 0}% izpildīti</span>
                                                                 </div>

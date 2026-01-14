@@ -84,7 +84,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
 
                                                     {/* Title */}
                                                     <div>
-                                                        <h3 className="text-base font-semibold text-foreground leading-tight group-hover:text-accent transition-colors mb-1">
+                                                        <h3 className="text-sm font-semibold text-foreground leading-tight group-hover:text-accent transition-colors mb-1">
                                                             {category.name}
                                                         </h3>
                                                         {category.description && (
@@ -97,7 +97,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
 
                                                 {/* Stats Bar (Always Visible) */}
                                                 <div className="mt-auto">
-                                                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                                                    <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-2">
                                                         <span>{total} solījumi</span>
                                                         <span>{total > 0 ? Math.round((kept / total) * 100) : 0}% izpildīti</span>
                                                     </div>

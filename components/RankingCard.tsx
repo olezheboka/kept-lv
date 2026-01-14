@@ -70,7 +70,7 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
 
             <div className="flex-1 min-w-0 flex flex-col justify-center">
                 <div className="mb-1.5 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap text-base leading-tight">
+                    <div className="flex items-center gap-2 flex-wrap text-sm leading-tight">
                         <Link
                             href={type === 'politician' ? `/politicians/${item.id}` : `/parties/${item.id}`}
                             className="font-semibold text-foreground truncate hover:underline underline-offset-4 decoration-primary/30 hover:decoration-primary transition-all"
@@ -82,7 +82,7 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                         {/* Party badge removed */}
                     </div>
                     {type === 'politician' && item.role && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground w-full mt-0.5">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground w-full mt-0.5">
                             <TooltipProvider>
                                 <Tooltip delayDuration={300}>
                                     <TooltipTrigger asChild>
@@ -103,7 +103,7 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                         </div>
                     )}
                     {type === 'party' && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground w-full mt-0.5">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground w-full mt-0.5">
                             {item.isInCoalition ? (
                                 <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
                                     Koalīcijā
@@ -121,9 +121,9 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
 
             <div className="flex-shrink-0 text-right min-w-[3rem]">
                 {viewMode === 'percentage' ? (
-                    <span className="text-base font-bold text-foreground">{item.keptPercentage}%</span>
+                    <span className="text-sm font-bold text-foreground">{item.keptPercentage}%</span>
                 ) : (
-                    <span className="text-base font-bold text-foreground">{item.keptPromises}<span className="text-muted-foreground font-normal text-sm">/{item.totalPromises}</span></span>
+                    <span className="text-sm font-bold text-foreground">{item.keptPromises}<span className="text-muted-foreground font-normal text-xs">/{item.totalPromises}</span></span>
                 )}
             </div>
         </motion.div>
@@ -151,7 +151,7 @@ export const RankingCard = ({ title, type, data }: RankingCardProps) => {
             case 2:
                 return <Medal className="h-5 w-5 text-amber-600" />;
             default:
-                return <span className="text-base font-medium text-muted-foreground w-4 text-center">{index + 1}</span>;
+                return <span className="text-sm font-medium text-muted-foreground w-4 text-center">{index + 1}</span>;
         }
     };
 
@@ -165,7 +165,7 @@ export const RankingCard = ({ title, type, data }: RankingCardProps) => {
         >
             <Card className="border-border/50 h-full flex flex-col">
                 <CardHeader className="pb-3 flex flex-row items-center justify-between space-y-0">
-                    <CardTitle className="text-2xl font-bold">{title}</CardTitle>
+                    <CardTitle className="text-xl font-bold">{title}</CardTitle>
                     <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'percentage' | 'count')} className="w-auto">
                         <TabsList className="h-8 p-0.5">
                             <TabsTrigger value="percentage" className="h-7 text-sm px-2.5">%</TabsTrigger>
