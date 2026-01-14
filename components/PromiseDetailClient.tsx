@@ -8,7 +8,7 @@ import { PromiseCard } from '@/components/PromiseCard';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent } from '@/components/ui/card';
-import { Clock, ArrowLeft, Share2, Calendar, User, Tag } from 'lucide-react';
+import { Clock, ArrowLeft, Share2, Calendar, User, Tag, Link2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { PromiseUI, PoliticianUI, PartyUI, CategoryUI } from '@/lib/db';
 import { CATEGORIES } from '@/lib/types';
@@ -208,6 +208,7 @@ export const PromiseDetailClient = ({
                                             <>
                                                 <div className="hidden sm:block w-px h-3 bg-foreground/20"></div>
                                                 <div className="flex items-center gap-2">
+                                                    <Link2 className="h-3.5 w-3.5 opacity-70" />
                                                     <span className="opacity-70">Avots:</span>
                                                     <a
                                                         href={promise.sources[0].url}
