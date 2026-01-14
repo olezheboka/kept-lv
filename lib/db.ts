@@ -1,5 +1,6 @@
 import { prisma } from "./prisma";
 import { Prisma } from "@prisma/client";
+import { unstable_cache } from "next/cache";
 
 // Types for transformed data (matching UI expectations)
 export interface PartyUI {
@@ -156,7 +157,7 @@ const partyMpCounts: Record<string, number> = {
 
 // ========== PARTIES ==========
 
-export async function getParties(locale: Locale = "lv"): Promise<PartyUI[]> {
+const getPartiesFromDb = async (locale: Locale): Promise<PartyUI[]> => {
     const parties = await prisma.party.findMany({
         orderBy: { createdAt: "asc" },
     });
@@ -169,9 +170,18 @@ export async function getParties(locale: Locale = "lv"): Promise<PartyUI[]> {
         abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
         logoUrl: party.logoUrl || undefined,
         websiteUrl: party.websiteUrl || undefined,
-        isInCoalition: party.isCoalition, // Use correct field from DB
+        isInCoalition: party.isCoalition,
         mpCount: partyMpCounts[party.slug] ?? 0,
     }));
+};
+
+export async function getParties(locale: Locale = "lv"): Promise<PartyUI[]> {
+    const getCachedParties = unstable_cache(
+        () => getPartiesFromDb(locale),
+        [`parties-${locale}`],
+        { revalidate: 60, tags: ['parties'] }
+    );
+    return getCachedParties();
 }
 
 export async function getPartyBySlug(
@@ -199,9 +209,7 @@ export async function getPartyBySlug(
 
 // ========== POLITICIANS ==========
 
-export async function getPoliticians(
-    locale: Locale = "lv"
-): Promise<PoliticianUI[]> {
+const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianUI[]> => {
     try {
         const politicians = await prisma.politician.findMany({
             include: { party: true },
@@ -225,6 +233,15 @@ export async function getPoliticians(
         console.error("Error fetching politicians:", error);
         return [];
     }
+};
+
+export async function getPoliticians(locale: Locale = "lv"): Promise<PoliticianUI[]> {
+    const getCachedPoliticians = unstable_cache(
+        () => getPoliticiansFromDb(locale),
+        [`politicians-${locale}`],
+        { revalidate: 60, tags: ['politicians'] }
+    );
+    return getCachedPoliticians();
 }
 
 export async function getPoliticianBySlug(
@@ -255,7 +272,7 @@ export async function getPoliticianBySlug(
 
 // ========== PROMISES ==========
 
-export async function getPromises(locale: Locale = "lv"): Promise<PromiseUI[]> {
+const getPromisesFromDb = async (locale: Locale): Promise<PromiseUI[]> => {
     try {
         const promises = await prisma.promise.findMany({
             include: {
@@ -304,6 +321,15 @@ export async function getPromises(locale: Locale = "lv"): Promise<PromiseUI[]> {
         console.error("Error fetching promises:", error);
         return [];
     }
+};
+
+export async function getPromises(locale: Locale = "lv"): Promise<PromiseUI[]> {
+    const getCachedPromises = unstable_cache(
+        () => getPromisesFromDb(locale),
+        [`promises-${locale}`],
+        { revalidate: 60, tags: ['promises'] }
+    );
+    return getCachedPromises();
 }
 
 export async function getPromiseById(
@@ -689,7 +715,7 @@ export async function getPartyRankings(locale: Locale = "lv"): Promise<RankingIt
 
 // ========== CATEGORIES ==========
 
-export async function getCategories(locale: Locale = "lv"): Promise<(CategoryUI & {
+type CategoryWithStats = CategoryUI & {
     stats: {
         total: number;
         kept: number;
@@ -698,7 +724,9 @@ export async function getCategories(locale: Locale = "lv"): Promise<(CategoryUI 
         broken: number;
         notRated: number;
     }
-})[]> {
+};
+
+const getCategoriesFromDb = async (locale: Locale): Promise<CategoryWithStats[]> => {
     const categories = await prisma.category.findMany({
         include: {
             promises: {
@@ -732,6 +760,15 @@ export async function getCategories(locale: Locale = "lv"): Promise<(CategoryUI 
             }
         };
     });
+};
+
+export async function getCategories(locale: Locale = "lv"): Promise<CategoryWithStats[]> {
+    const getCachedCategories = unstable_cache(
+        () => getCategoriesFromDb(locale),
+        [`categories-${locale}`],
+        { revalidate: 60, tags: ['categories'] }
+    );
+    return getCachedCategories();
 }
 
 export async function getRandomPromises(count: number, excludeId?: string, locale: Locale = 'lv'): Promise<PromiseUI[]> {
