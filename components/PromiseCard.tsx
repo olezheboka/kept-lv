@@ -68,7 +68,7 @@ const PromiseCardComponent = ({ promise, index = 0, hideLastUpdated = false }: P
             {/* FooterContainer - pushed to bottom */}
             <div className="mt-auto space-y-3">
               {/* Footer: Timeline */}
-              <div className="pt-3 border-t border-border/50 text-[10px] text-muted-foreground flex items-center gap-2">
+              <div className="pt-3 border-t border-border/50 text-xs text-muted-foreground flex items-center gap-2">
                 <Calendar size={12} className="text-muted-foreground/70" />
                 <span>Solīts <span className="font-medium text-foreground">{format(new Date(promise.datePromised), 'dd.MM.yyyy')}</span></span>
               </div>

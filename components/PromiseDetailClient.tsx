@@ -198,7 +198,7 @@ export const PromiseDetailClient = ({
                                         {promise.statusJustification}
                                     </div>
 
-                                    <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-black/5 text-xs text-foreground/70">
+                                    <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-black/5 text-sm text-foreground/70">
                                         <div className="flex items-center gap-2">
                                             <Calendar className="h-3.5 w-3.5 opacity-70" />
                                             <span className="opacity-70">Atjaunināts:</span>
