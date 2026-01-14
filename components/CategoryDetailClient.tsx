@@ -15,7 +15,16 @@ interface CategoryDetailClientProps {
     promises: PromiseUI[];
 }
 
+import { useState } from 'react';
+import { PerformanceCard } from '@/components/PerformanceCard';
+
+interface CategoryDetailClientProps {
+    category: CategoryUI;
+    promises: PromiseUI[];
+}
+
 export const CategoryDetailClient = ({ category, promises }: CategoryDetailClientProps) => {
+    const [filterStatus, setFilterStatus] = useState<PromiseStatus | 'all'>('all');
 
     const stats = {
         total: promises.length,
@@ -26,12 +35,9 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
         notRated: promises.filter(p => p.status === 'not-rated').length,
     };
 
-    const statCards = [
-        { status: 'kept' as PromiseStatus, count: stats.kept, icon: CheckCircle2, color: 'text-status-kept', bg: 'bg-status-kept-bg' },
-        { status: 'partially-kept' as PromiseStatus, count: stats.partiallyKept, icon: CircleDot, color: 'text-status-partially', bg: 'bg-status-partially-bg' },
-        { status: 'in-progress' as PromiseStatus, count: stats.inProgress, icon: Clock, color: 'text-status-progress', bg: 'bg-status-progress-bg' },
-        { status: 'broken' as PromiseStatus, count: stats.broken, icon: XCircle, color: 'text-status-broken', bg: 'bg-status-broken-bg' },
-    ];
+    const filteredPromises = filterStatus === 'all'
+        ? promises
+        : promises.filter(p => p.status === filterStatus);
 
     return (
         <div className="flex flex-col bg-background">
@@ -58,7 +64,7 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
                         transition={{ duration: 0.4 }}
                         className="flex items-start gap-6"
                     >
-                        <div className="w-16 h-16 rounded-2xl bg-accent flex items-center justify-center text-accent-foreground overflow-hidden shrink-0">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-accent flex items-center justify-center text-accent-foreground overflow-hidden shrink-0">
                             {category.imageUrl ? (
                                 <img
                                     src={category.imageUrl}
@@ -69,7 +75,7 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
                                 <div className="flex items-center justify-center w-full h-full">
                                     {(() => {
                                         const IconComponent = SLUG_ICON_MAP[category.slug] || TrendingUp;
-                                        return <IconComponent className="h-8 w-8" />;
+                                        return <IconComponent className="h-5 w-5 md:h-6 md:w-6" />;
                                     })()}
                                 </div>
                             )}
@@ -88,29 +94,11 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
             {/* Stats */}
             <section className="py-8 border-b border-border/50">
                 <div className="container-wide">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        {statCards.map((stat, index) => {
-                            const StatIcon = stat.icon;
-                            return (
-                                <motion.div
-                                    key={stat.status}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.4, delay: index * 0.05 }}
-                                >
-                                    <Card className="border-border/50">
-                                        <CardContent className="p-4 text-center">
-                                            <div className={`inline-flex items-center justify-center w-10 h-10 rounded-full ${stat.bg} mb-2`}>
-                                                <StatIcon className={`h-5 w-5 ${stat.color}`} />
-                                            </div>
-                                            <div className="text-2xl font-bold text-foreground">{stat.count}</div>
-                                            <div className="text-xs text-muted-foreground">{STATUS_CONFIG[stat.status].label}</div>
-                                        </CardContent>
-                                    </Card>
-                                </motion.div>
-                            );
-                        })}
-                    </div>
+                    <PerformanceCard
+                        stats={stats}
+                        filterStatus={filterStatus}
+                        onFilterChange={setFilterStatus}
+                    />
                 </div>
             </section>
 
@@ -118,12 +106,14 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
             <section className="py-8 md:py-12">
                 <div className="container-wide">
                     <h2 className="text-2xl font-bold text-foreground mb-6">
-                        Visi solījumi ({stats.total})
+                        {filterStatus === 'all'
+                            ? `Visi solījumi (${stats.total})`
+                            : `${STATUS_CONFIG[filterStatus].label} (${filteredPromises.length})`}
                     </h2>
 
-                    {promises.length > 0 ? (
+                    {filteredPromises.length > 0 ? (
                         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                            {promises.map((promise, index) => (
+                            {filteredPromises.map((promise, index) => (
                                 <PromiseCard key={promise.id} promise={promise} index={index} />
                             ))}
                         </div>

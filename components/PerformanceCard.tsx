@@ -56,6 +56,7 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
             <div className="flex flex-col lg:flex-row">
                 {/* Left: Hero (Kept Promises) */}
                 <div className="lg:w-5/12 p-4 border-b lg:border-b-0 lg:border-r border-border/50 bg-gradient-to-br from-muted to-background flex flex-col items-center justify-center text-center">
+                    <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">Efektivitātes rādītājs</h3>
                     <div className="relative w-32 h-32 mb-2">
                         {/* Circular Progress */}
                         <svg className="w-full h-full transform -rotate-90" viewBox="0 0 128 128">
@@ -110,10 +111,10 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                             })()}
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center flex-col">
-                            <span className="text-2xl font-bold text-foreground leading-none">
+                            <span className="text-3xl font-bold text-foreground leading-none">
                                 {Math.round(keptPercentage)}%
                             </span>
-                            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mt-0.5">Izpildīti</span>
+                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider mt-0.5">Izpildīti</span>
                         </div>
                     </div>
 
@@ -138,7 +139,7 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                             <div className="mb-1.5 p-1 w-fit rounded-md bg-primary/10 text-primary">
                                 <List className="h-3.5 w-3.5" />
                             </div>
-                            <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-wider mb-0.5 group-hover:text-primary transition-colors truncate w-full">
+                            <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-0.5 group-hover:text-primary transition-colors truncate w-full">
                                 Visi solījumi
                             </span>
                             <span className="text-lg font-bold text-foreground">
@@ -174,7 +175,7 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                                     <div className={`mb-1.5 p-1 w-fit rounded-md ${config.bg} bg-opacity-20`}>
                                         <Icon className={`h-3.5 w-3.5 ${config.color}`} />
                                     </div>
-                                    <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-wider mb-0.5 group-hover:text-foreground transition-colors truncate w-full">
+                                    <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-0.5 group-hover:text-foreground transition-colors truncate w-full">
                                         {STATUS_CONFIG[status].label}
                                     </span>
                                     <div className="flex items-baseline gap-1">

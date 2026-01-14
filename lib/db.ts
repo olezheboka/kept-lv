@@ -708,20 +708,10 @@ export async function getCategories(locale: Locale = "lv"): Promise<(CategoryUI 
     return categories.map((cat) => {
         const total = cat.promises.length;
         const kept = cat.promises.filter((p) => p.status === "KEPT").length;
-        const inProgress = cat.promises.filter((p) => p.status === "IN_PROGRESS" || p.status === "PARTIAL").length; // group partial with in-progress? Or separate? UI has "inProgressCount". Status config: kept, partially-kept, in-progress, broken.
-        // UI (step 901) has: kept, in-progress, broken. 
-        // Logic in step 901: includes 'partially-kept'...? No, looks like it matches 'partially-kept' explicitly? 
-        // Line 49: `p.status === 'in-progress'`.
-        // Line 47: `p.status === 'kept'`.
-        // Line 48: `p.status === 'broken'`.
-        // What about partial? It might be ignored in the mini-stats or grouped.
-        // Let's group PARTIAL with IN_PROGRESS for simplicity or expose it.
-        // Let's match typical patterns. Kept, In Progress (inc partial), Broken.
-        // Or kept, partial, in progress, broken.
-        // The UI component I'll write can decide. I'll return specific counts.
-
-        const partial = cat.promises.filter((p) => p.status === "PARTIAL").length;
+        const partiallyKept = cat.promises.filter((p) => p.status === "PARTIAL").length;
+        const inProgress = cat.promises.filter((p) => p.status === "IN_PROGRESS").length;
         const broken = cat.promises.filter((p) => p.status === "NOT_KEPT").length;
+        const notRated = cat.promises.filter((p) => p.status === "ABANDONED").length;
 
         return {
             id: cat.slug,
@@ -732,9 +722,10 @@ export async function getCategories(locale: Locale = "lv"): Promise<(CategoryUI 
             stats: {
                 total,
                 kept,
-                inProgress: inProgress + partial, // Combine for "Processing" or return separate.
-                partial,
+                partiallyKept,
+                inProgress,
                 broken,
+                notRated,
             }
         };
     });
