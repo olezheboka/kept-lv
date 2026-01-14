@@ -88,7 +88,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                                             {category.name}
                                                         </h3>
                                                         {category.description && (
-                                                            <p className="text-xs text-muted-foreground line-clamp-1 hidden">
+                                                            <p className="text-xs text-muted-foreground line-clamp-1">
                                                                 {category.description}
                                                             </p>
                                                         )}

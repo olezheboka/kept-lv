@@ -290,6 +290,11 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                                                 </div>
 
                                                                 <div className="flex items-center gap-2 mt-0">
+                                                                    {party.description && (
+                                                                        <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+                                                                            {party.description}
+                                                                        </span>
+                                                                    )}
                                                                     {party.isInCoalition ? (
                                                                         <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
                                                                             Koalīcijā

@@ -202,6 +202,38 @@ async function main() {
       websiteUrl: "https://saskana.eu",
       isCoalition: false,
     },
+    {
+      slug: "lks",
+      name: "Latvijas Krievu savienība",
+      description: "Politiska partija",
+      logoUrl: "/logos/lks.jpg",
+      websiteUrl: "https://rusojuz.lv",
+      isCoalition: false,
+    },
+    {
+      slug: "sv",
+      name: "Suverēnā vara",
+      description: "Politiska partija",
+      logoUrl: "/logos/sv.png",
+      websiteUrl: "https://suverenavara.lv",
+      isCoalition: false,
+    },
+    {
+      slug: "as",
+      name: "Apvienotais saraksts",
+      description: "Latvijas Zaļā partija, Latvijas Reģionu Apvienība, Liepājas partija",
+      logoUrl: "/logos/as.png",
+      websiteUrl: "https://apvienotaissaraksts.lv",
+      isCoalition: false,
+    },
+    {
+      slug: "kons",
+      name: "Konservatīvie",
+      description: "Konservatīva politiskā partija",
+      logoUrl: "/logos/kons.png",
+      websiteUrl: "https://konservativie.lv",
+      isCoalition: false,
+    },
   ];
 
   const parties: Record<string, { id: string }> = {};
@@ -239,7 +271,7 @@ async function main() {
     { slug: "raimonds-bergmanis", name: "Raimonds Bergmanis", role: "Saeimas deputāts", bio: "Saeimas deputāts, bijušais aizsardzības ministrs.", education: "Rīgas Tehniskā universitāte, Inženierzinātnes.", partySlug: "zzs", isActive: true },
     { slug: "raivis-dzintars", name: "Raivis Dzintars", role: "NA priekšsēdētājs", bio: "Nacionālās apvienības līderis.", education: "Latvijas Universitāte, Politikas zinātne.", partySlug: "na", isActive: true },
     { slug: "kaspars-briskens", name: "Kaspars Briškens", role: "Satiksmes ministrs", bio: "Satiksmes ministrs, Progresīvie.", education: "Stokholmas Ekonomikas augstskola, Ekonomikas maģistrs.", partySlug: "prog", isActive: true },
-    { slug: "edvards-smiltens", name: "Edvards Smiltēns", role: "Saeimas sekretārs", bio: "Saeimas prezidija loceklis, AS līderis.", education: "Latvijas Universitāte, Juridiskā fakultāte.", partySlug: "lra", isActive: true },
+    { slug: "edvards-smiltens", name: "Edvards Smiltēns", role: "Saeimas sekretārs", bio: "Saeimas prezidija loceklis, AS līderis.", education: "Latvijas Universitāte, Juridiskā fakultāte.", partySlug: "as", isActive: true }, // Moved to AS
     { slug: "rihards-kozlovskis", name: "Rihards Kozlovskis", role: "Iekšlietu ministrs", bio: "Iekšlietu ministrs, Saeimas deputāts.", education: "Latvijas Policijas akadēmija, Jurists.", partySlug: "jv", isActive: true },
     { slug: "inese-libina-egnere", name: "Inese Lībiņa-Egnere", role: "Tieslietu ministre", bio: "Tieslietu ministre, juriste.", education: "Latvijas Universitāte, Tiesību zinātņu doktore.", partySlug: "jv", isActive: true },
     { slug: "viktors-valainis", name: "Viktors Valainis", role: "Ekonomikas ministrs", bio: "Ekonomikas ministrs, ZZS valdes priekšsēdētājs.", education: "Rīgas Tehniskā universitāte, Būvniecība.", partySlug: "zzs", isActive: true },
@@ -251,6 +283,19 @@ async function main() {
     { slug: "nils-usakovs", name: "Nils Ušakovs", role: "Eiroparlamenta deputāts", bio: "Bijušais Rīgas mērs, 'Saskaņa' līderis.", education: "Latvijas Universitāte, Ekonomika.", partySlug: "sask", isActive: true },
     { slug: "kristjanis-karins", name: "Krišjānis Kariņš", role: "Bijušais Ministru prezidents", bio: "Bijušais premjers, tagad ierindas deputāts.", education: "Pensilvānijas Universitāte, Lingvistika.", partySlug: "jv", isActive: false }, // Inactive 2
     { slug: "egils-levits", name: "Egils Levits", role: "Bijušais Valsts Prezidents", bio: "Bijušais Valsts prezidents, jurists.", education: "Hamburgas Universitāte, Tiesību zinātne.", partySlug: "na", isActive: false }, // Inactive 3
+    // LRA (New to ensure promises)
+    { slug: "janis-vilnitis", name: "Jānis Vilnītis", role: "LRA valdes priekšsēdētājs", bio: "Bijušais Liepājas domes priekšsēdētājs.", education: "Latvijas Lauksaimniecības kameras neklātienes lauksaimniecības tehnikums.", partySlug: "lra", isActive: true },
+    // LKS
+    { slug: "miroslavs-mitrofanovs", name: "Miroslavs Mitrofanovs", role: "LKS līdzpriekšsēdētājs", bio: "Bijušais Saeimas un Eiroparlamenta deputāts.", education: "Latvijas Universitāte, Bioloģija.", partySlug: "lks", isActive: true },
+    { slug: "tatjana-zdanoka", name: "Tatjana Ždanoka", role: "LKS līdere", bio: "Bijušā Eiroparlamenta deputāte.", education: "Latvijas Valsts universitāte, Matemātika.", partySlug: "lks", isActive: false },
+    // SV
+    { slug: "julija-stepanenko", name: "Jūlija Stepaņenko", role: "Partijas vadītāja", bio: "Saeimas deputāte, juriste.", education: "Latvijas Universitāte, Tiesību zinātnes.", partySlug: "sv", isActive: true },
+    { slug: "lubova-svecova", name: "Ļubova Švecova", role: "Saeimas deputāte", bio: "Juriste, bijusī deputāte.", education: "Latvijas Policijas akadēmija, Tiesību zinātnes.", partySlug: "sv", isActive: true },
+    // AS
+    { slug: "maris-kucinskis", name: "Māris Kučinskis", role: "Saeimas deputāts", bio: "Bijušais Ministru prezidents.", education: "Latvijas Universitāte, Ekonomika.", partySlug: "as", isActive: true },
+    // Konservatīvie
+    { slug: "janis-bordans", name: "Jānis Bordāns", role: "Bijušais Ministrs", bio: "Bijušais Tieslietu ministrs.", education: "Latvijas Universitāte, Tiesību zinātnes.", partySlug: "kons", isActive: false },
+    { slug: "gatis-eglitis", name: "Gatis Eglītis", role: "Valdes loceklis", bio: "Bijušais Labklājības ministrs.", education: "Vīnes Diplomātiskā akadēmija.", partySlug: "kons", isActive: true },
   ];
 
   const politicians: Record<string, { id: string }> = {};
@@ -274,7 +319,7 @@ async function main() {
 
 
   // Generate Promises
-  // Constraints: 5 per politician, 5 per status, relevant tags, long texts.
+  // Constraints: 20 per politician to ensure 4 per status.
   const promiseTemplates = [
     { title: "Paaugstināt skolotāju algas", categorySlug: "education", tags: ["algas", "skola", "izglītība", "pedagogi"] },
     { title: "Samazināt PVN pārtikai", categorySlug: "economy", tags: ["nodokļi", "pārtika", "PVN", "ekonomika"] },
@@ -303,8 +348,8 @@ async function main() {
   let promisesCreated = 0;
 
   for (const pol of politiciansData) {
-    // Generate exactly 5 promises per politician
-    for (let i = 0; i < 5; i++) {
+    // Generate exactly 20 promises per politician (4 per status)
+    for (let i = 0; i < 20; i++) {
       // Round robin status to ensure distribution
       const status = statuses[(promisesCreated) % statuses.length];
       const template = randomItem(promiseTemplates);
