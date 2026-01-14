@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from 'react';
+
 import { CATEGORIES } from '@/lib/types';
 import { StatusBadge } from './StatusBadge';
 import { PartyBadge } from './PartyBadge';
@@ -20,14 +22,14 @@ interface PromiseCardProps {
   party?: PartyUI;
 }
 
-export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: PromiseCardProps) => {
-  const category = CATEGORIES.find(c => c.id === promise.category);
+const PromiseCardComponent = ({ promise, index = 0, hideLastUpdated = false }: PromiseCardProps) => {
+  const category = CATEGORIES.find(c => c.id === promise.categorySlug);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
       className="h-full"
     >
       <Link href={getPromiseUrl(promise)} className="block h-full" suppressHydrationWarning>
@@ -77,3 +79,5 @@ export const PromiseCard = ({ promise, index = 0, hideLastUpdated = false }: Pro
     </motion.div>
   );
 };
+
+export const PromiseCard = memo(PromiseCardComponent);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,7 +27,7 @@ interface FilterPanelProps {
     clearFilters: () => void;
 }
 
-const FilterPanel = ({
+const FilterPanel = memo(({
     filterCoalition,
     setFilterCoalition,
     filterOpposition,
@@ -63,7 +63,9 @@ const FilterPanel = ({
             </Button>
         )}
     </div>
-);
+));
+
+FilterPanel.displayName = 'FilterPanel';
 
 export function PartiesClient({ parties, politicians, promises }: PartiesClientProps) {
     const [searchQuery, setSearchQuery] = useState('');

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { PartyBadge } from '@/components/PartyBadge';
@@ -32,7 +32,7 @@ interface FilterPanelProps {
     clearFilters: () => void;
 }
 
-const FilterPanel = ({
+const FilterPanel = memo(({
     showInOffice,
     setShowInOffice,
     parties,
@@ -80,7 +80,9 @@ const FilterPanel = ({
             </Button>
         )}
     </div>
-);
+));
+
+FilterPanel.displayName = 'FilterPanel';
 
 export function PoliticiansClient({ politicians, parties, promises }: PoliticiansClientProps) {
     const [searchQuery, setSearchQuery] = useState('');

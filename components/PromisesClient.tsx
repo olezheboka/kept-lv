@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
 import { PromiseCard } from '@/components/PromiseCard';
@@ -33,7 +33,7 @@ interface FilterPanelProps {
     clearFilters: () => void;
 }
 
-const FilterPanel = ({
+const FilterPanel = memo(({
     selectedStatuses,
     toggleStatus,
     parties,
@@ -100,7 +100,9 @@ const FilterPanel = ({
             </Button>
         )}
     </div>
-);
+));
+
+FilterPanel.displayName = 'FilterPanel';
 
 export function PromisesClient({ initialPromises, parties }: PromisesClientProps) {
     const searchParams = useSearchParams();
@@ -145,7 +147,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
 
         // Category filter
         if (selectedCategories.length > 0) {
-            result = result.filter(p => selectedCategories.includes(p.category));
+            result = result.filter(p => selectedCategories.includes(p.categorySlug));
         }
 
         // Sorting
@@ -167,36 +169,36 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
         return result;
     }, [searchQuery, selectedStatuses, selectedParties, selectedCategories, sortBy, initialPromises]);
 
-    const toggleStatus = (status: PromiseStatus) => {
+    const toggleStatus = useCallback((status: PromiseStatus) => {
         setSelectedStatuses(prev =>
             prev.includes(status)
                 ? prev.filter(s => s !== status)
                 : [...prev, status]
         );
-    };
+    }, []);
 
-    const toggleParty = (partyId: string) => {
+    const toggleParty = useCallback((partyId: string) => {
         setSelectedParties(prev =>
             prev.includes(partyId)
                 ? prev.filter(p => p !== partyId)
                 : [...prev, partyId]
         );
-    };
+    }, []);
 
-    const toggleCategory = (categoryId: string) => {
+    const toggleCategory = useCallback((categoryId: string) => {
         setSelectedCategories(prev =>
             prev.includes(categoryId)
                 ? prev.filter(c => c !== categoryId)
                 : [...prev, categoryId]
         );
-    };
+    }, []);
 
-    const clearFilters = () => {
+    const clearFilters = useCallback(() => {
         setSelectedStatuses([]);
         setSelectedParties([]);
         setSelectedCategories([]);
         setSearchQuery('');
-    };
+    }, []);
 
     const hasActiveFilters = selectedStatuses.length > 0 || selectedParties.length > 0 || selectedCategories.length > 0 || !!searchQuery;
 
