@@ -8,7 +8,14 @@ import { PromiseCard } from '@/components/PromiseCard';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent } from '@/components/ui/card';
-import { Clock, ArrowLeft, Share2, Calendar, User, Tag, Link2 } from 'lucide-react';
+import { Clock, ArrowLeft, Share2, Calendar, User, Tag, Link2, MessageCircle, Send, Check, Copy } from 'lucide-react';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 import { format } from 'date-fns';
 import { PromiseUI, PoliticianUI, PartyUI, CategoryUI } from '@/lib/db';
 import { CATEGORIES } from '@/lib/types';
@@ -38,6 +45,34 @@ export const PromiseDetailClient = ({
     relatedByPolitician,
     relatedByCategory
 }: PromiseDetailClientProps) => {
+    const { toast } = useToast();
+
+    const handleCopyLink = () => {
+        if (typeof window !== 'undefined') {
+            navigator.clipboard.writeText(window.location.href);
+            toast({
+                title: "Saite nokopēta",
+                description: "Saite veiksmīgi nokopēta starpliktuvē",
+                duration: 2000,
+            });
+        }
+    };
+
+    const handleShareWhatsApp = () => {
+        if (typeof window !== 'undefined') {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(`${promise?.title || 'Solījums'} - ${politician?.name || ''}`);
+            window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+        }
+    };
+
+    const handleShareTelegram = () => {
+        if (typeof window !== 'undefined') {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(`${promise?.title || 'Solījums'} - ${politician?.name || ''}`);
+            window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+        }
+    };
 
 
 
@@ -152,10 +187,28 @@ export const PromiseDetailClient = ({
                                         </>
                                     )}
 
-                                    <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground hover:bg-muted h-8 px-2">
-                                        <Share2 className="h-4 w-4" />
-                                        <span>Dalīties</span>
-                                    </Button>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground hover:bg-muted h-8 px-2">
+                                                <Share2 className="h-4 w-4" />
+                                                <span>Dalīties</span>
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem onClick={handleCopyLink}>
+                                                <Copy className="mr-2 h-4 w-4" />
+                                                <span>Kopēt saiti</span>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={handleShareWhatsApp}>
+                                                <MessageCircle className="mr-2 h-4 w-4" />
+                                                <span>WhatsApp</span>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={handleShareTelegram}>
+                                                <Send className="mr-2 h-4 w-4" />
+                                                <span>Telegram</span>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </div>
 
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight">
