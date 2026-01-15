@@ -31,7 +31,7 @@ interface Category {
 }
 
 interface Source {
-    type: "VIDEO" | "TEXT" | "IMAGE";
+    type: "VIDEO" | "ARTICLE" | "DOCUMENT" | "SOCIAL_MEDIA" | "INTERVIEW" | "TEXT" | "IMAGE";
     url: string;
     title?: string | null;
 }
@@ -115,7 +115,7 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
             statusUpdatedAt: "",
             politicianId: "",
             categoryId: "",
-            sourceType: "VIDEO",
+            sourceType: "VIDEO" as const,
             sourceUrl: "",
             sourceTitle: "",
             tags: [] as string[],

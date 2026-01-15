@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useMemo } from "react";
+import Link from "next/link";
 import { DeleteButton } from "@/components/ui/DeleteButton";
-import { Plus, Search } from "lucide-react";
-import { PageHeader } from "@/components/admin/PageHeader";
+import { Plus, Search, Eye, Pencil, Trash2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -17,30 +16,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import { PromiseForm } from "@/components/admin/promises/PromiseForm";
-
-interface Politician {
-    id: string;
-    name: string;
-}
-
-interface Category {
-    id: string;
-    name: string;
-}
-
-interface Source {
-    type: "VIDEO" | "TEXT" | "IMAGE";
-    url: string;
-    title?: string | null;
-}
 
 interface PromiseData {
     id: string;
@@ -54,7 +29,6 @@ interface PromiseData {
     politicianId: string;
     categoryId: string;
     tags: string[];
-    sources?: Source[];
     politician: { name: string };
     category: { name: string };
     updatedAt: Date | string;
@@ -62,162 +36,210 @@ interface PromiseData {
 
 interface PromiseClientPageProps {
     initialPromises: PromiseData[];
-    politicians: Politician[];
-    categories: Category[];
 }
 
-export default function PromiseClientPage({ initialPromises, politicians, categories }: PromiseClientPageProps) {
-    const router = useRouter();
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
-    const [editingPromise, setEditingPromise] = useState<PromiseData | null>(null);
+export default function PromiseClientPage({ initialPromises }: PromiseClientPageProps) {
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
 
-    const handleCreateSuccess = () => {
-        setIsCreateOpen(false);
-        router.refresh();
+    const sortedPromises = useMemo(() => {
+        let sortablePromises = [...initialPromises];
+        if (sortConfig !== null) {
+            sortablePromises.sort((a, b) => {
+                let aValue: any = a[sortConfig.key as keyof PromiseData];
+                let bValue: any = b[sortConfig.key as keyof PromiseData];
+
+                // Handle nested properties
+                if (sortConfig.key === 'politician') {
+                    aValue = a.politician.name;
+                    bValue = b.politician.name;
+                } else if (sortConfig.key === 'category') {
+                    aValue = a.category.name;
+                    bValue = b.category.name;
+                }
+
+                if (aValue < bValue) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+                if (aValue > bValue) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return sortablePromises;
+    }, [initialPromises, sortConfig]);
+
+    const requestSort = (key: string) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
     };
 
-    const handleEditSuccess = () => {
-        setEditingPromise(null);
-        router.refresh();
+    const getSortIcon = (key: string) => {
+        if (!sortConfig || sortConfig.key !== key) {
+            return <ArrowUpDown className="w-3 h-3 text-gray-400" />;
+        }
+        if (sortConfig.direction === 'asc') {
+            return <ArrowUp className="w-3 h-3 text-gray-900" />;
+        }
+        return <ArrowDown className="w-3 h-3 text-gray-900" />;
     };
 
     return (
         <div className="space-y-6">
-            <PageHeader
-                title="Promises"
-                description="Manage and track all promise entries across politicians."
-                breadcrumbs={[
-                    { label: "Overview", href: "/admin" },
-                    { label: "Promises" },
-                ]}
-                actions={
-                    <Button onClick={() => setIsCreateOpen(true)} className="gap-2">
-                        <Plus className="w-4 h-4" />
-                        Add Promise
-                    </Button>
-                }
-            />
-
-            {/* Create Dialog */}
-            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                <DialogContent className="max-w-[720px] lg:max-w-[1200px] w-full p-0 overflow-hidden gap-0">
-                    <DialogHeader className="p-6 pb-2">
-                        <DialogTitle>Add New Promise</DialogTitle>
-                        <DialogDescription>
-                            Record a new commitment.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="p-6 pt-2 h-[80vh] overflow-y-auto">
-                        <PromiseForm
-                            politicians={politicians}
-                            categories={categories}
-                            onSuccess={handleCreateSuccess}
-                            onCancel={() => setIsCreateOpen(false)}
-                        />
+            {/* Custom Header */}
+            <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-2xl font-bold tracking-tight text-gray-900">Promises</h1>
+                        <Badge variant="secondary" className="rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-100">
+                            {initialPromises.length}
+                        </Badge>
                     </div>
-                </DialogContent>
-            </Dialog>
-
-            {/* Edit Dialog */}
-            <Dialog open={!!editingPromise} onOpenChange={(open) => !open && setEditingPromise(null)}>
-                <DialogContent className="max-w-[720px] lg:max-w-[1200px] w-full p-0 overflow-hidden gap-0">
-                    <DialogHeader className="p-6 pb-2">
-                        <DialogTitle>Edit Promise</DialogTitle>
-                        <DialogDescription>
-                            Update promise details and status.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="p-6 pt-2 h-[80vh] overflow-y-auto">
-                        {editingPromise && (
-                            <PromiseForm
-                                key={editingPromise.id}
-                                initialData={editingPromise as any}
-                                politicians={politicians}
-                                categories={categories}
-                                onSuccess={handleEditSuccess}
-                                onCancel={() => setEditingPromise(null)}
-                            />
-                        )}
-                    </div>
-                </DialogContent>
-            </Dialog>
-
-            <div className="flex items-center gap-4 mb-6">
-                <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Search promises..."
-                        className="pl-9 bg-background"
-                    />
+                    <Link href="/admin/promises/new">
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2 font-medium">
+                            <Plus className="w-4 h-4" />
+                            Add Promise
+                        </Button>
+                    </Link>
                 </div>
+                <p className="text-muted-foreground text-sm">
+                    Track and manage political promises
+                </p>
             </div>
 
-            <div className="border rounded-lg bg-card">
+            <div className="border rounded-lg bg-white shadow-sm overflow-hidden">
                 <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-[40%]">Promise</TableHead>
-                            <TableHead>Politician</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Category</TableHead>
-                            <TableHead className="w-[120px]">Updated</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                    <TableHeader className="bg-[#F9FAFB] border-b border-gray-100">
+                        <TableRow className="hover:bg-transparent border-none">
+                            <TableHead className="w-[40%] font-medium text-xs uppercase tracking-wider text-gray-500 py-3 pl-6">
+                                <div
+                                    className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
+                                    onClick={() => requestSort('title')}
+                                >
+                                    TITLE
+                                    {getSortIcon('title')}
+                                </div>
+                            </TableHead>
+                            <TableHead className="font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
+                                <div
+                                    className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
+                                    onClick={() => requestSort('category')}
+                                >
+                                    CATEGORY
+                                    {getSortIcon('category')}
+                                </div>
+                            </TableHead>
+                            <TableHead className="font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
+                                <div
+                                    className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
+                                    onClick={() => requestSort('status')}
+                                >
+                                    STATUS
+                                    {getSortIcon('status')}
+                                </div>
+                            </TableHead>
+                            <TableHead className="font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
+                                <div
+                                    className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
+                                    onClick={() => requestSort('updatedAt')}
+                                >
+                                    LAST UPDATED
+                                    {getSortIcon('updatedAt')}
+                                </div>
+                            </TableHead>
+                            <TableHead className="text-right py-3 pr-6"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {initialPromises.map((promise) => (
-                            <TableRow key={promise.id}>
-                                <TableCell className="align-top py-3">
-                                    <span className="font-medium text-foreground line-clamp-2 leading-snug">
-                                        {promise.title}
-                                    </span>
-                                </TableCell>
-                                <TableCell className="align-top py-3 text-muted-foreground">
-                                    {promise.politician.name}
-                                </TableCell>
-                                <TableCell className="align-top py-3">
-                                    <Badge
-                                        variant="outline"
-                                        className={cn(
-                                            "font-normal border-0",
-                                            promise.status === "KEPT" && "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/20",
-                                            (promise.status === "NOT_KEPT" || promise.status === "ABANDONED") && "bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20",
-                                            promise.status === "IN_PROGRESS" && "bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-700/10",
-                                            promise.status === "PARTIAL" && "bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20",
-                                            promise.status === "NOT_RATED" && "bg-gray-50 text-gray-600 ring-1 ring-inset ring-gray-500/10"
-                                        )}
-                                    >
-                                        {promise.status === 'ABANDONED' ? 'Not Kept' : promise.status}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell className="align-top py-3 text-muted-foreground">
-                                    {(promise.category as any)?.name || '—'}
-                                </TableCell>
-                                <TableCell className="align-top py-3 text-muted-foreground text-sm whitespace-nowrap">
-                                    {new Date(promise.updatedAt).toLocaleDateString("lv-LV", {
-                                        day: "2-digit",
-                                        month: "2-digit",
-                                        year: "numeric"
-                                    })}
-                                </TableCell>
-                                <TableCell className="align-top py-3 text-right">
-                                    <div className="flex items-center justify-end gap-2">
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-8 px-2 text-muted-foreground hover:text-foreground"
-                                            onClick={() => setEditingPromise(promise)}
+                        {sortedPromises.map((promise) => {
+                            // Status Styles Mapping
+                            let statusBadgeClass = "bg-gray-100 text-gray-700 hover:bg-gray-100"; // Default Not Rated
+                            if (promise.status === "KEPT") statusBadgeClass = "bg-green-500 text-white hover:bg-green-600 border-transparent";
+                            if (promise.status === "IN_PROGRESS") statusBadgeClass = "bg-blue-500 text-white hover:bg-blue-600 border-transparent";
+                            if (promise.status === "PARTIAL") statusBadgeClass = "bg-orange-500 text-white hover:bg-orange-600 border-transparent";
+                            if (promise.status === "NOT_KEPT") statusBadgeClass = "bg-red-500 text-white hover:bg-red-600 border-transparent";
+                            if (promise.status === "ABANDONED") statusBadgeClass = "bg-red-500 text-white hover:bg-red-600 border-transparent";
+                            if (promise.status === "NOT_RATED") statusBadgeClass = "bg-gray-200 text-gray-700 hover:bg-gray-300 border-transparent";
+
+                            const statusLabel = promise.status === 'ABANDONED' ? 'Not Kept' :
+                                promise.status === 'PARTIAL' ? 'Partially Kept' :
+                                    promise.status === 'IN_PROGRESS' ? 'In Progress' :
+                                        promise.status === 'NOT_RATED' ? 'Not Rated' :
+                                            promise.status === 'KEPT' ? 'Kept' :
+                                                promise.status === 'NOT_KEPT' ? 'Not Kept' : promise.status;
+
+                            return (
+                                <TableRow key={promise.id} className="group hover:bg-gray-50 border-gray-200">
+                                    <TableCell className="align-middle py-4 pl-6">
+                                        <div className="flex flex-col gap-0.5">
+                                            <span className="font-medium text-gray-900 line-clamp-1 text-sm">
+                                                {promise.title}
+                                            </span>
+                                            <span className="text-xs text-gray-500">
+                                                {promise.politician.name}
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="align-middle py-4">
+                                        <Badge variant="secondary" className="font-normal bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-md px-2.5">
+                                            {(promise.category as any)?.name || 'General'}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell className="align-middle py-4">
+                                        <Badge
+                                            className={cn(
+                                                "font-medium rounded-full px-3 py-0.5 shadow-none",
+                                                statusBadgeClass
+                                            )}
                                         >
-                                            Edit
-                                        </Button>
-                                        <DeleteButton id={promise.id} type="promises" />
-                                    </div>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                        {initialPromises.length === 0 && (
+                                            {statusLabel}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell className="align-middle py-4 text-gray-500 text-xs whitespace-nowrap">
+                                        {new Date(promise.updatedAt).toLocaleString("lv-LV", {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            hour12: false
+                                        })}
+                                    </TableCell>
+                                    <TableCell className="align-middle py-4 text-right pr-6">
+                                        <div className="flex items-center justify-end gap-1">
+                                            <Link
+                                                href={`/admin/promises/${promise.id ?? '#'}`}
+                                                title="View"
+                                                className="p-1.5 rounded-md text-black hover:bg-gray-100 transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </Link>
+                                            <Link
+                                                href={`/admin/promises/${promise.id ?? '#'}`}
+                                                title="Edit"
+                                                className="p-1.5 rounded-md text-black hover:bg-gray-100 transition-colors"
+                                            >
+                                                <Pencil className="w-4 h-4" />
+                                            </Link>
+                                            <div title="Delete">
+                                                <DeleteButton
+                                                    id={promise.id}
+                                                    type="promises"
+                                                    variant="icon"
+                                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                />
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
+                        {sortedPromises.length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
                                     No promises found.
                                 </TableCell>
                             </TableRow>
@@ -228,3 +250,4 @@ export default function PromiseClientPage({ initialPromises, politicians, catego
         </div>
     );
 }
+

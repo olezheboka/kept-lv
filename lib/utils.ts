@@ -107,4 +107,17 @@ export const statusConfig = {
   },
 } as const;
 
+// Map Prisma status to UI status
+export function mapStatusToUI(status: string): "kept" | "partially-kept" | "in-progress" | "broken" | "not-rated" {
+  const statusMap: Record<string, "kept" | "partially-kept" | "in-progress" | "broken" | "not-rated"> = {
+    KEPT: "kept",
+    NOT_KEPT: "broken",
+    IN_PROGRESS: "in-progress",
+    PARTIAL: "partially-kept",
+    ABANDONED: "not-rated",
+    NOT_RATED: "not-rated",
+  };
+  return statusMap[status] || "not-rated";
+}
+
 export type PromiseStatusType = keyof typeof statusConfig;

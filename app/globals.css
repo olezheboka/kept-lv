@@ -244,6 +244,28 @@
     --breakpoint-xl: 1200px;
     --breakpoint-2xl: 1440px;
 
+    /* Admin Scope Custom Colors (GitHub Palette) */
+    --color-g-gray-50: #F9FAFB;
+    --color-g-gray-100: #F3F4F6;
+    --color-g-gray-200: #E5E7EB;
+    --color-g-gray-300: #D1D5DB;
+    --color-g-gray-400: #9CA3AF;
+    --color-g-gray-500: #6B7280;
+    --color-g-gray-600: #4B5563;
+    --color-g-gray-700: #374151;
+    --color-g-gray-800: #1F2937;
+    --color-g-gray-900: #111827;
+    --color-g-gray-950: #030712;
+
+    --color-g-blue-50: #eff6ff;
+    --color-g-blue-100: #dbeafe;
+    --color-g-blue-600: #0969DA;
+    --color-g-blue-700: #005CC5;
+
+    --color-g-success: #2da44e;
+    --color-g-attention: #bf8700;
+    --color-g-danger: #cf222e;
+
     @keyframes accordion-down {
       from {
         height: 0;

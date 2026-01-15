@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { Search, Menu, X, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { NavLink } from '@/components/NavLink';
 
 const navLinks = [
@@ -22,14 +22,63 @@ const navLinks = [
 export const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<{
+    promises: {
+      id: string;
+      title: string;
+      slug?: string;
+      dateOfPromise: string;
+      category: { slug: string }
+    }[];
+    politicians: { id: string; name: string; slug?: string }[];
+    parties: { id: string; name: string; slug?: string }[];
+    categories: { id: string; name: string; slug?: string }[];
+  } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (query.length >= 2) {
+        setIsLoading(true);
+        try {
+          const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+          if (!res.ok) throw new Error('Search failed');
+          const data = await res.json();
+          setResults(data);
+        } catch (error) {
+          console.error("Search failed", error);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setResults(null);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Close search results on click outside (simplified for now, mostly handled by navigation)
+  useEffect(() => {
+    const handleClick = () => setResults(null);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, []);
+
+  const handleSearchKeys = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       setIsSearchOpen(false);
-      router.push(`/promises?q=${encodeURIComponent(searchValue)}`);
+      setResults(null);
+      router.push(`/promises?q=${encodeURIComponent(query)}`);
     }
+  };
+
+  const handleLinkClick = () => {
+    setResults(null);
+    setIsSearchOpen(false);
+    setQuery('');
   };
 
   return (
@@ -64,16 +113,111 @@ export const Header = () => {
           {/* Search & Actions */}
           <div className="flex items-center gap-2">
             {/* Desktop Search */}
-            <div className="hidden md:flex relative">
+            <div className="hidden md:flex relative" onClick={(e) => e.stopPropagation()}>
               <Input
                 type="search"
-                placeholder="Meklēt solījumus..."
+                placeholder="Meklēt solījumus, politiķus..."
                 className="w-64 pl-9 h-9 bg-muted/50 border-transparent focus:border-border focus:bg-background"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onKeyDown={handleSearch}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleSearchKeys}
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+
+              {/* Results Dropdown */}
+              <AnimatePresence>
+                {query.length >= 2 && results && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full right-0 mt-2 w-80 bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-xl overflow-hidden z-50 max-h-[70vh] overflow-y-auto"
+                  >
+                    {isLoading ? (
+                      <div className="p-4 text-center text-sm text-muted-foreground">Meklē...</div>
+                    ) : (
+                      <>
+                        {(!results.promises.length && !results.politicians.length && !results.parties.length && !results.categories.length) && (
+                          <div className="p-4 text-center text-sm text-muted-foreground">Nekas netika atrasts</div>
+                        )}
+
+                        {results.promises.length > 0 && (
+                          <div className="py-2">
+                            <div className="px-4 py-1 text-xs font-semibold text-muted-foreground uppercase">Solījumi</div>
+                            {results.promises.map(item => {
+                              const date = new Date(item.dateOfPromise);
+                              const day = date.getDate().toString().padStart(2, '0');
+                              const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                              const year = date.getFullYear();
+                              const dateSlug = `${day}-${month}-${year}`;
+                              const href = `/promises/${item.category.slug}/${dateSlug}-${item.slug}`;
+
+                              return (
+                                <Link
+                                  key={item.id}
+                                  href={href}
+                                  onClick={handleLinkClick}
+                                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
+                                >
+                                  {item.title}
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {results.politicians.length > 0 && (
+                          <div className="py-2 border-t border-border">
+                            <div className="px-4 py-1 text-xs font-semibold text-muted-foreground uppercase">Politiķi</div>
+                            {results.politicians.map(item => (
+                              <Link
+                                key={item.id}
+                                href={`/politicians/${item.slug || item.id}`}
+                                onClick={handleLinkClick}
+                                className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
+                              >
+                                {item.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+
+                        {results.parties.length > 0 && (
+                          <div className="py-2 border-t border-border">
+                            <div className="px-4 py-1 text-xs font-semibold text-muted-foreground uppercase">Partijas</div>
+                            {results.parties.map(item => (
+                              <Link
+                                key={item.id}
+                                href={`/parties/${item.slug || item.id}`}
+                                onClick={handleLinkClick}
+                                className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
+                              >
+                                {item.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+
+                        {results.categories.length > 0 && (
+                          <div className="py-2 border-t border-border">
+                            <div className="px-4 py-1 text-xs font-semibold text-muted-foreground uppercase">Kategorijas</div>
+                            {results.categories.map(item => (
+                              <Link
+                                key={item.id}
+                                href={`/categories/${item.slug || item.id}`}
+                                onClick={handleLinkClick}
+                                className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
+                              >
+                                {item.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Mobile Search Button */}
@@ -139,17 +283,112 @@ export const Header = () => {
             exit={{ height: 0, opacity: 0 }}
             className="md:hidden pb-4"
           >
-            <div className="relative">
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
               <Input
                 type="search"
                 placeholder="Meklēt solījumus, politiķus..."
                 className="w-full pl-9 bg-muted/50"
                 autoFocus
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onKeyDown={handleSearch}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleSearchKeys}
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+
+              {/* Mobile Results Dropdown */}
+              <AnimatePresence>
+                {query.length >= 2 && results && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full left-0 right-0 mt-2 bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-xl overflow-hidden z-50 max-h-[60vh] overflow-y-auto"
+                  >
+                    {isLoading ? (
+                      <div className="p-4 text-center text-sm text-muted-foreground">Meklē...</div>
+                    ) : (
+                      <>
+                        {(!results.promises.length && !results.politicians.length && !results.parties.length && !results.categories.length) && (
+                          <div className="p-4 text-center text-sm text-muted-foreground">Nekas netika atrasts</div>
+                        )}
+
+                        {results.promises.length > 0 && (
+                          <div className="py-2">
+                            <div className="px-4 py-1 text-xs font-semibold text-muted-foreground uppercase">Solījumi</div>
+                            {results.promises.map(item => {
+                              const date = new Date(item.dateOfPromise);
+                              const day = date.getDate().toString().padStart(2, '0');
+                              const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                              const year = date.getFullYear();
+                              const dateSlug = `${day}-${month}-${year}`;
+                              const href = `/promises/${item.category.slug}/${dateSlug}-${item.slug}`;
+
+                              return (
+                                <Link
+                                  key={item.id}
+                                  href={href}
+                                  onClick={handleLinkClick}
+                                  className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
+                                >
+                                  {item.title}
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {results.politicians.length > 0 && (
+                          <div className="py-2 border-t border-border">
+                            <div className="px-4 py-1 text-xs font-semibold text-muted-foreground uppercase">Politiķi</div>
+                            {results.politicians.map(item => (
+                              <Link
+                                key={item.id}
+                                href={`/politicians/${item.slug || item.id}`}
+                                onClick={handleLinkClick}
+                                className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
+                              >
+                                {item.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+
+                        {results.parties.length > 0 && (
+                          <div className="py-2 border-t border-border">
+                            <div className="px-4 py-1 text-xs font-semibold text-muted-foreground uppercase">Partijas</div>
+                            {results.parties.map(item => (
+                              <Link
+                                key={item.id}
+                                href={`/parties/${item.slug || item.id}`}
+                                onClick={handleLinkClick}
+                                className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
+                              >
+                                {item.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+
+                        {results.categories.length > 0 && (
+                          <div className="py-2 border-t border-border">
+                            <div className="px-4 py-1 text-xs font-semibold text-muted-foreground uppercase">Kategorijas</div>
+                            {results.categories.map(item => (
+                              <Link
+                                key={item.id}
+                                href={`/categories/${item.slug || item.id}`}
+                                onClick={handleLinkClick}
+                                className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
+                              >
+                                {item.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         )}

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { DeleteButton } from "@/components/ui/DeleteButton";
@@ -17,14 +16,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import { PartyForm } from "@/components/admin/parties/PartyForm";
 
 interface Party {
     id: string;
@@ -44,18 +35,6 @@ interface PartyClientPageProps {
 
 export default function PartyClientPage({ initialParties }: PartyClientPageProps) {
     const router = useRouter();
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
-    const [editingParty, setEditingParty] = useState<Party | null>(null);
-
-    const handleCreateSuccess = () => {
-        setIsCreateOpen(false);
-        router.refresh();
-    };
-
-    const handleEditSuccess = () => {
-        setEditingParty(null);
-        router.refresh();
-    };
 
     return (
         <div className="space-y-6">
@@ -67,51 +46,14 @@ export default function PartyClientPage({ initialParties }: PartyClientPageProps
                     { label: "Parties" },
                 ]}
                 actions={
-                    <Button onClick={() => setIsCreateOpen(true)} className="gap-2">
-                        <Plus className="w-4 h-4" />
-                        Add Party
-                    </Button>
+                    <Link href="/admin/parties/new">
+                        <Button className="gap-2">
+                            <Plus className="w-4 h-4" />
+                            Add Party
+                        </Button>
+                    </Link>
                 }
             />
-
-            {/* Create Dialog */}
-            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                <DialogContent className="max-w-[720px] lg:max-w-[1200px] w-full p-0 overflow-hidden gap-0">
-                    <DialogHeader className="p-6 pb-2">
-                        <DialogTitle>Add New Party</DialogTitle>
-                        <DialogDescription>
-                            Enter the details of the party below.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="p-6 pt-2 h-[80vh] overflow-y-auto">
-                        <PartyForm
-                            onSuccess={handleCreateSuccess}
-                            onCancel={() => setIsCreateOpen(false)}
-                        />
-                    </div>
-                </DialogContent>
-            </Dialog>
-
-            {/* Edit Dialog */}
-            <Dialog open={!!editingParty} onOpenChange={(open) => !open && setEditingParty(null)}>
-                <DialogContent className="max-w-[720px] lg:max-w-[1200px] w-full p-0 overflow-hidden gap-0">
-                    <DialogHeader className="p-6 pb-2">
-                        <DialogTitle>Edit Party</DialogTitle>
-                        <DialogDescription>
-                            Update party information.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="p-6 pt-2 h-[80vh] overflow-y-auto">
-                        {editingParty && (
-                            <PartyForm
-                                initialData={editingParty}
-                                onSuccess={handleEditSuccess}
-                                onCancel={() => setEditingParty(null)}
-                            />
-                        )}
-                    </div>
-                </DialogContent>
-            </Dialog>
 
             <div className="flex items-center gap-4 mb-6">
                 <div className="relative flex-1 max-w-sm">
@@ -159,14 +101,15 @@ export default function PartyClientPage({ initialParties }: PartyClientPageProps
                                 </TableCell>
                                 <TableCell className="text-right">
                                     <div className="flex items-center justify-end gap-2">
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-8 px-2 text-muted-foreground hover:text-foreground"
-                                            onClick={() => setEditingParty(party)}
-                                        >
-                                            Edit
-                                        </Button>
+                                        <Link href={`/admin/parties/${party.id}`}>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                                            >
+                                                Edit
+                                            </Button>
+                                        </Link>
                                         <DeleteButton id={party.id} type="parties" />
                                     </div>
                                 </TableCell>
@@ -185,3 +128,4 @@ export default function PartyClientPage({ initialParties }: PartyClientPageProps
         </div>
     );
 }
+

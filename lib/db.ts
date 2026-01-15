@@ -1,6 +1,7 @@
 import { prisma } from "./prisma";
 import { Prisma } from "@prisma/client";
 import { unstable_cache } from "next/cache";
+import { mapStatusToUI } from "./utils";
 
 // Types for transformed data (matching UI expectations)
 export interface PartyUI {
@@ -94,18 +95,7 @@ function getLocalizedText(json: Prisma.JsonValue, locale: Locale = "lv"): string
     return String(json || "");
 }
 
-// Map Prisma status to UI status
-function mapStatusToUI(status: string): PromiseUI["status"] {
-    const statusMap: Record<string, PromiseUI["status"]> = {
-        KEPT: "kept",
-        NOT_KEPT: "broken",
-        IN_PROGRESS: "in-progress",
-        PARTIAL: "partially-kept",
-        ABANDONED: "not-rated",
-        NOT_RATED: "not-rated",
-    };
-    return statusMap[status] || "not-rated";
-}
+
 
 // Map category slug back to original category id format (if needed, or just use slug)
 function mapCategorySlug(slug: string): string {

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { DeleteButton } from "@/components/ui/DeleteButton";
 import { Plus, Tag, Search, Pencil } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
@@ -15,14 +15,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import { CategoryForm } from "@/components/admin/categories/CategoryForm";
 
 interface Category {
     id: string;
@@ -40,19 +32,6 @@ interface CategoryClientPageProps {
 
 export default function CategoryClientPage({ initialCategories }: CategoryClientPageProps) {
     const router = useRouter();
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
-    const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-
-    const handleCreateSuccess = () => {
-        setIsCreateOpen(false);
-        // Router refresh handled in form, but good to be safe
-        router.refresh();
-    };
-
-    const handleEditSuccess = () => {
-        setEditingCategory(null);
-        router.refresh();
-    };
 
     return (
         <div className="space-y-6">
@@ -64,48 +43,14 @@ export default function CategoryClientPage({ initialCategories }: CategoryClient
                     { label: "Categories" },
                 ]}
                 actions={
-                    <Button onClick={() => setIsCreateOpen(true)} className="gap-2">
-                        <Plus className="w-4 h-4" />
-                        Add Category
-                    </Button>
+                    <Link href="/admin/categories/new">
+                        <Button className="gap-2">
+                            <Plus className="w-4 h-4" />
+                            Add Category
+                        </Button>
+                    </Link>
                 }
             />
-
-            {/* Create Dialog */}
-            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                <DialogContent className="max-w-[720px] lg:max-w-[1200px] w-full p-0 overflow-hidden gap-0">
-                    <DialogHeader className="p-6 pb-2">
-                        <DialogTitle>Create new category</DialogTitle>
-                    </DialogHeader>
-                    <div className="p-6 pt-2">
-                        <CategoryForm
-                            onSuccess={handleCreateSuccess}
-                            onCancel={() => setIsCreateOpen(false)}
-                        />
-                    </div>
-                </DialogContent>
-            </Dialog>
-
-            {/* Edit Dialog */}
-            <Dialog open={!!editingCategory} onOpenChange={(open) => !open && setEditingCategory(null)}>
-                <DialogContent className="max-w-[720px] lg:max-w-[1200px] w-full p-0 overflow-hidden gap-0">
-                    <DialogHeader className="p-6 pb-2">
-                        <DialogTitle>Edit category</DialogTitle>
-                        <DialogDescription>
-                            Make changes to the category details below.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="p-6 pt-2">
-                        {editingCategory && (
-                            <CategoryForm
-                                initialData={editingCategory}
-                                onSuccess={handleEditSuccess}
-                                onCancel={() => setEditingCategory(null)}
-                            />
-                        )}
-                    </div>
-                </DialogContent>
-            </Dialog>
 
             <div className="flex items-center gap-4 mb-6">
                 <div className="relative flex-1 max-w-sm">
@@ -169,14 +114,15 @@ export default function CategoryClientPage({ initialCategories }: CategoryClient
                                 </TableCell>
                                 <TableCell className="text-right">
                                     <div className="flex items-center justify-end gap-2">
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-8 px-2 text-muted-foreground hover:text-foreground"
-                                            onClick={() => setEditingCategory(category)}
-                                        >
-                                            Edit
-                                        </Button>
+                                        <Link href={`/admin/categories/${category.id}`}>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                                            >
+                                                Edit
+                                            </Button>
+                                        </Link>
                                         <DeleteButton id={category.id} type="categories" />
                                     </div>
                                 </TableCell>
@@ -195,3 +141,4 @@ export default function CategoryClientPage({ initialCategories }: CategoryClient
         </div>
     );
 }
+

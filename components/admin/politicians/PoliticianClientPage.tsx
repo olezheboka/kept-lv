@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { DeleteButton } from "@/components/ui/DeleteButton";
 import { Plus, Search } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
@@ -17,14 +17,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import { PoliticianForm } from "@/components/admin/politicians/PoliticianForm";
 
 interface Party {
     id: string;
@@ -48,23 +40,10 @@ interface Politician {
 
 interface PoliticianClientPageProps {
     initialPoliticians: Politician[];
-    parties: Party[];
 }
 
-export default function PoliticianClientPage({ initialPoliticians, parties }: PoliticianClientPageProps) {
+export default function PoliticianClientPage({ initialPoliticians }: PoliticianClientPageProps) {
     const router = useRouter();
-    const [isCreateOpen, setIsCreateOpen] = useState(false);
-    const [editingPolitician, setEditingPolitician] = useState<Politician | null>(null);
-
-    const handleCreateSuccess = () => {
-        setIsCreateOpen(false);
-        router.refresh();
-    };
-
-    const handleEditSuccess = () => {
-        setEditingPolitician(null);
-        router.refresh();
-    };
 
     return (
         <div className="space-y-6">
@@ -76,53 +55,14 @@ export default function PoliticianClientPage({ initialPoliticians, parties }: Po
                     { label: "Politicians" },
                 ]}
                 actions={
-                    <Button onClick={() => setIsCreateOpen(true)} className="gap-2">
-                        <Plus className="w-4 h-4" />
-                        Add Politician
-                    </Button>
+                    <Link href="/admin/politicians/new">
+                        <Button className="gap-2">
+                            <Plus className="w-4 h-4" />
+                            Add Politician
+                        </Button>
+                    </Link>
                 }
             />
-
-            {/* Create Dialog */}
-            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-                <DialogContent className="max-w-[720px] lg:max-w-[1200px] w-full p-0 overflow-hidden gap-0">
-                    <DialogHeader className="p-6 pb-2">
-                        <DialogTitle>Add New Politician</DialogTitle>
-                        <DialogDescription>
-                            Create a profile for a politician.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="p-6 pt-2 h-[80vh] overflow-y-auto">
-                        <PoliticianForm
-                            parties={parties}
-                            onSuccess={handleCreateSuccess}
-                            onCancel={() => setIsCreateOpen(false)}
-                        />
-                    </div>
-                </DialogContent>
-            </Dialog>
-
-            {/* Edit Dialog */}
-            <Dialog open={!!editingPolitician} onOpenChange={(open) => !open && setEditingPolitician(null)}>
-                <DialogContent className="max-w-[720px] lg:max-w-[1200px] w-full p-0 overflow-hidden gap-0">
-                    <DialogHeader className="p-6 pb-2">
-                        <DialogTitle>Edit Politician</DialogTitle>
-                        <DialogDescription>
-                            Update politician details.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="p-6 pt-2 h-[80vh] overflow-y-auto">
-                        {editingPolitician && (
-                            <PoliticianForm
-                                initialData={editingPolitician}
-                                parties={parties}
-                                onSuccess={handleEditSuccess}
-                                onCancel={() => setEditingPolitician(null)}
-                            />
-                        )}
-                    </div>
-                </DialogContent>
-            </Dialog>
 
             <div className="flex items-center gap-4 mb-6">
                 <div className="relative flex-1 max-w-sm">
@@ -183,14 +123,15 @@ export default function PoliticianClientPage({ initialPoliticians, parties }: Po
                                 </TableCell>
                                 <TableCell className="text-right">
                                     <div className="flex items-center justify-end gap-2">
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-8 px-2 text-muted-foreground hover:text-foreground"
-                                            onClick={() => setEditingPolitician(politician)}
-                                        >
-                                            Edit
-                                        </Button>
+                                        <Link href={`/admin/politicians/${politician.id}`}>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                                            >
+                                                Edit
+                                            </Button>
+                                        </Link>
                                         <DeleteButton id={politician.id} type="politicians" />
                                     </div>
                                 </TableCell>
@@ -209,3 +150,4 @@ export default function PoliticianClientPage({ initialPoliticians, parties }: Po
         </div>
     );
 }
+

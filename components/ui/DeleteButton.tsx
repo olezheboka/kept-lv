@@ -3,12 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
 interface DeleteButtonProps {
   id: string;
   type: "promises" | "politicians" | "parties" | "categories";
+  variant?: "text" | "icon";
+  className?: string;
 }
 
-export function DeleteButton({ id, type }: DeleteButtonProps) {
+export function DeleteButton({ id, type, variant = "text", className }: DeleteButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -35,6 +40,19 @@ export function DeleteButton({ id, type }: DeleteButtonProps) {
       setLoading(false);
     }
   };
+
+  if (variant === "icon") {
+    return (
+      <button
+        onClick={handleDelete}
+        disabled={loading}
+        title="Delete"
+        className={cn("p-1.5 rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors disabled:opacity-50", className)}
+      >
+        {loading ? <span className="w-4 h-4 block animate-pulse bg-gray-200 rounded" /> : <Trash2 className="w-4 h-4" />}
+      </button>
+    );
+  }
 
   return (
     <button

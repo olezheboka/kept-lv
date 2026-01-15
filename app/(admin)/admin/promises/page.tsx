@@ -13,30 +13,12 @@ async function getPromises() {
   });
 }
 
-async function getPoliticians() {
-  return prisma.politician.findMany({
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
-}
-
-async function getCategories() {
-  return prisma.category.findMany({
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
-}
-
 export default async function AdminPromisesPage() {
-  const [promises, politicians, categories] = await Promise.all([
-    getPromises(),
-    getPoliticians(),
-    getCategories(),
-  ]);
+  const initialPromises = await getPromises();
 
-  return <PromiseClientPage
-    initialPromises={promises as any}
-    politicians={politicians}
-    categories={categories}
-  />;
+  return (
+    <PromiseClientPage
+      initialPromises={initialPromises as any}
+    />
+  );
 }

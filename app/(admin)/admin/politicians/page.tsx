@@ -13,18 +13,12 @@ async function getPoliticians() {
   });
 }
 
-async function getParties() {
-  return prisma.party.findMany({
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
-}
-
 export default async function AdminPoliticiansPage() {
-  const [politicians, parties] = await Promise.all([
-    getPoliticians(),
-    getParties(),
-  ]);
+  const initialPoliticians = await getPoliticians();
 
-  return <PoliticianClientPage initialPoliticians={politicians} parties={parties} />;
+  return (
+    <PoliticianClientPage
+      initialPoliticians={initialPoliticians as any}
+    />
+  );
 }
