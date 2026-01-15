@@ -69,9 +69,9 @@ export const Header = () => {
 
   const handleSearchKeys = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      setIsSearchOpen(false);
-      setResults(null);
-      router.push(`/promises?q=${encodeURIComponent(query)}`);
+      e.preventDefault();
+      // Do nothing, just keep the dropdown open with results
+      // If no search has happened yet (e.g. typing really fast), the useEffect will catch it.
     }
   };
 
