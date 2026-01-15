@@ -5,8 +5,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Inter } from "next/font/google";
 import { Providers } from "@/components/Providers";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 
@@ -31,13 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={`${inter.variable} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <Providers>
-            <div className="flex flex-col min-h-screen">
-              <Header />
-              <main className="flex-1">
-                {children}
-              </main>
-              <Footer />
-            </div>
+            {children}
             <Toaster />
             <Sonner />
           </Providers>
