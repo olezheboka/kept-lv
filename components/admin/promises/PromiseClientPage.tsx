@@ -30,7 +30,7 @@ interface PromiseData {
     categoryId: string;
     tags: string[];
     politician: { name: string };
-    category: { name: string };
+    category: { name: string; slug: string };
     updatedAt: Date | string;
 }
 
@@ -114,7 +114,7 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                 <Table>
                     <TableHeader className="bg-[#F9FAFB] border-b border-gray-100">
                         <TableRow className="hover:bg-transparent border-none">
-                            <TableHead className="w-[40%] font-medium text-xs uppercase tracking-wider text-gray-500 py-3 pl-6">
+                            <TableHead className="w-[35%] font-medium text-xs uppercase tracking-wider text-gray-500 py-3 pl-6">
                                 <div
                                     className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
                                     onClick={() => requestSort('title')}
@@ -123,7 +123,7 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                                     {getSortIcon('title')}
                                 </div>
                             </TableHead>
-                            <TableHead className="font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
+                            <TableHead className="w-[8%] font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
                                 <div
                                     className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
                                     onClick={() => requestSort('category')}
@@ -132,7 +132,7 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                                     {getSortIcon('category')}
                                 </div>
                             </TableHead>
-                            <TableHead className="font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
+                            <TableHead className="min-w-[150px] font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
                                 <div
                                     className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
                                     onClick={() => requestSort('status')}
@@ -144,9 +144,18 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                             <TableHead className="font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
                                 <div
                                     className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
+                                    onClick={() => requestSort('statusUpdatedAt')}
+                                >
+                                    STATUS UPDATE
+                                    {getSortIcon('statusUpdatedAt')}
+                                </div>
+                            </TableHead>
+                            <TableHead className="font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
+                                <div
+                                    className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
                                     onClick={() => requestSort('updatedAt')}
                                 >
-                                    LAST UPDATED
+                                    UPDATED
                                     {getSortIcon('updatedAt')}
                                 </div>
                             </TableHead>
@@ -199,6 +208,16 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="align-middle py-4 text-gray-500 text-xs whitespace-nowrap">
+                                        {promise.statusUpdatedAt ? new Date(promise.statusUpdatedAt).toLocaleString("lv-LV", {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            hour12: false
+                                        }) : "—"}
+                                    </TableCell>
+                                    <TableCell className="align-middle py-4 text-gray-500 text-xs whitespace-nowrap">
                                         {new Date(promise.updatedAt).toLocaleString("lv-LV", {
                                             day: "2-digit",
                                             month: "2-digit",
@@ -211,8 +230,17 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                                     <TableCell className="align-middle py-4 text-right pr-6">
                                         <div className="flex items-center justify-end gap-1">
                                             <Link
-                                                href={`/admin/promises/${promise.id ?? '#'}`}
-                                                title="View"
+                                                href={(() => {
+                                                    const date = new Date(promise.dateOfPromise);
+                                                    const day = date.getDate().toString().padStart(2, '0');
+                                                    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                                                    const year = date.getFullYear();
+                                                    const dateSlug = `${day}-${month}-${year}`;
+                                                    return `/promises/${promise.category.slug}/${dateSlug}-${promise.slug}`;
+                                                })()}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                title="View Public Page"
                                                 className="p-1.5 rounded-md text-black hover:bg-gray-100 transition-colors"
                                             >
                                                 <Eye className="w-4 h-4" />
@@ -239,7 +267,7 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                         })}
                         {sortedPromises.length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                                     No promises found.
                                 </TableCell>
                             </TableRow>
