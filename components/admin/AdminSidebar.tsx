@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import { format } from "date-fns";
 import {
     LayoutGrid,
     ScrollText,
@@ -27,6 +28,7 @@ const platformItems = [
 
 export function AdminSidebar() {
     const pathname = usePathname();
+    const { data: session } = useSession();
     const [collapsed, setCollapsed] = useState(false);
 
     const isActive = (href: string) => {
@@ -110,11 +112,15 @@ export function AdminSidebar() {
                     <>
                         <div className="flex items-center gap-3 mb-3">
                             <div className="w-9 h-9 rounded-full bg-g-blue-100 text-g-blue-600 flex items-center justify-center font-bold text-sm">
-                                AD
+                                {session?.user?.email?.slice(0, 2).toUpperCase() || "AD"}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-bold text-g-gray-900 truncate">Admin User</p>
-                                <p className="text-xs text-g-gray-500 truncate">Last login: Today, 10:30 AM</p>
+                                <p className="text-sm font-bold text-g-gray-900 truncate">
+                                    {session?.user?.email || "Admin User"}
+                                </p>
+                                <p className="text-xs text-g-gray-500 truncate">
+                                    Last login: {session?.user?.lastLogin ? format(new Date(session.user.lastLogin), "dd.MM.yyyy HH:mm") : "First login"}
+                                </p>
                             </div>
                         </div>
                         <button
@@ -128,7 +134,7 @@ export function AdminSidebar() {
                 ) : (
                     <div className="flex flex-col items-center gap-4">
                         <div className="w-8 h-8 rounded-full bg-g-blue-100 text-g-blue-600 flex items-center justify-center font-bold text-xs">
-                            AD
+                            {session?.user?.email?.slice(0, 2).toUpperCase() || "AD"}
                         </div>
                         <button
                             onClick={() => signOut({ callbackUrl: "/login" })}

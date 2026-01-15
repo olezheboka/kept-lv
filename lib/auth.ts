@@ -39,11 +39,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
+        let lastLogin = user.lastLogin;
+
+        try {
+          // Update last login
+          const updatedUser = await prisma.user.update({
+            where: { id: user.id },
+            data: { lastLogin: new Date() },
+          });
+          lastLogin = updatedUser.lastLogin;
+        } catch (error) {
+          console.error("Failed to update last login:", error);
+          // Continue login even if update fails (e.g. stale prisma client)
+        }
+
         return {
           id: user.id,
           email: user.email,
           name: user.name,
           role: user.role,
+          lastLogin: lastLogin,
         };
       },
     }),
@@ -53,6 +68,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.lastLogin = user.lastLogin;
       }
       return token;
     },
@@ -60,6 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.lastLogin = token.lastLogin as Date | string | null;
       }
       return session;
     },
