@@ -14,7 +14,8 @@ import {
     LogOut,
     ExternalLink,
     Activity,
-    ChevronLeft
+    ChevronLeft,
+    Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +25,7 @@ const platformItems = [
     { href: "/admin/politicians", icon: User, label: "Politicians" },
     { href: "/admin/parties", icon: Flag, label: "Parties" },
     { href: "/admin/categories", icon: Folder, label: "Categories" },
+    { href: "/admin/config", icon: Settings, label: "Config" },
 ];
 
 export function AdminSidebar() {
