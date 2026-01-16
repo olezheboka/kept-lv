@@ -169,7 +169,7 @@ export async function getParties(locale: Locale = "lv"): Promise<PartyUI[]> {
     const getCachedParties = unstable_cache(
         () => getPartiesFromDb(locale),
         [`parties-${locale}`],
-        { revalidate: 60, tags: ['parties'] }
+        { revalidate: 1, tags: ['parties'] }
     );
     return getCachedParties();
 }
@@ -309,7 +309,7 @@ const getPromisesFromDb = async (locale: Locale): Promise<PromiseUI[]> => {
         }));
     } catch (error) {
         console.error("Error fetching promises:", error);
-        return [];
+        throw error; // Throw error to see if it's a DB issue
     }
 };
 
@@ -317,7 +317,7 @@ export async function getPromises(locale: Locale = "lv"): Promise<PromiseUI[]> {
     const getCachedPromises = unstable_cache(
         () => getPromisesFromDb(locale),
         [`promises-${locale}`],
-        { revalidate: 60, tags: ['promises'] }
+        { revalidate: 1, tags: ['promises'] }
     );
     return getCachedPromises();
 }
@@ -756,7 +756,7 @@ export async function getCategories(locale: Locale = "lv"): Promise<CategoryWith
     const getCachedCategories = unstable_cache(
         () => getCategoriesFromDb(locale),
         [`categories-${locale}`],
-        { revalidate: 60, tags: ['categories'] }
+        { revalidate: 1, tags: ['categories'] }
     );
     return getCachedCategories();
 }
