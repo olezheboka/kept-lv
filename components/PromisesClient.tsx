@@ -13,6 +13,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { CATEGORIES, PromiseStatus, STATUS_CONFIG } from '@/lib/types';
 import { Search, Filter, Grid3X3, List, X, SlidersHorizontal, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { PromiseUI, PartyUI } from '@/lib/db';
+import { useDebounce } from '@/hooks/use-debounce';
 
 const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'in-progress', 'broken', 'not-rated'];
 const ITEMS_PER_PAGE = 30;
@@ -128,17 +129,28 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
         router.replace(url, { scroll: false });
     }, [pathname, router]);
 
-    // Update URL when search input changes (debounced could be added here, but direct for now)
+    // Debounce search query updates to URL
+    const debouncedSearchQuery = useDebounce(localSearchQuery, 300);
+
+    // Sync URL when debounced query changes
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        const currentQuery = params.get('q') || '';
+
+        if (debouncedSearchQuery !== currentQuery) {
+            if (debouncedSearchQuery) {
+                params.set('q', debouncedSearchQuery);
+            } else {
+                params.delete('q');
+            }
+            params.delete('page'); // Reset pagination on search
+            updateUrl(params);
+        }
+    }, [debouncedSearchQuery, searchParams, updateUrl]);
+
+    // Update local state immediately
     const handleSearchChange = (value: string) => {
         setLocalSearchQuery(value);
-        const params = new URLSearchParams(searchParams.toString());
-        if (value) {
-            params.set('q', value);
-        } else {
-            params.delete('q');
-        }
-        params.delete('page'); // Reset pagination on search
-        updateUrl(params);
     };
 
     const filteredPromises = useMemo(() => {
