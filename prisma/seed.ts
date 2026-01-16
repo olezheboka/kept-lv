@@ -1,5 +1,6 @@
 import { PrismaClient, PromiseStatus } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 import { hash } from "bcryptjs";
 import { config } from "dotenv";
 import { slugify } from "../lib/slugify";
@@ -8,9 +9,12 @@ import { slugify } from "../lib/slugify";
 config({ path: ".env.local" });
 config({ path: ".env" });
 
-const adapter = new PrismaPg({
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL!,
+  ssl: { rejectUnauthorized: false }, // Direct connection for seeding usually needs this or true
 });
+
+const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({ adapter });
 
