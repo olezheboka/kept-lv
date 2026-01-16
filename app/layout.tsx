@@ -14,7 +14,43 @@ const inter = Inter({
   subsets: ["latin", "latin-ext"],
 });
 
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: "metadata" });
+
+  // Fetch dynamic config
+  let config: Record<string, string> = {};
+  try {
+    // @ts-ignore
+    const dbConfigs = await prisma.systemConfig.findMany();
+    config = dbConfigs.reduce((acc: Record<string, string>, curr: { key: string; value: string }) => {
+      acc[curr.key] = curr.value;
+      return acc;
+    }, {} as Record<string, string>);
+  } catch (error) {
+    console.error("Failed to fetch system config for metadata", error);
+  }
+
+  const title = config.title || t("title");
+  const description = config.description || t("description");
+  const siteName = config.siteName || t("siteName");
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      siteName,
+      locale: locale,
+      type: "website",
+    },
+  };
+}
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();

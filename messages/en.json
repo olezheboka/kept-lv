@@ -27,6 +27,11 @@
     "share": "Share",
     "language": "Language"
   },
+  "metadata": {
+    "title": "Solījums.lv - Track representative promises and their execution",
+    "description": "Independent and objective platform reflecting government promise execution.",
+    "siteName": "solījums.lv"
+  },
   "status": {
     "kept": "KEPT",
     "notKept": "NOT KEPT",
@@ -93,6 +98,7 @@
     "managePoliticians": "Manage Politicians",
     "manageParties": "Manage Parties",
     "manageCategories": "Manage Categories",
+    "configuration": "Configuration",
     "addNew": "Add New",
     "editItem": "Edit",
     "deleteConfirm": "Are you sure you want to delete?",

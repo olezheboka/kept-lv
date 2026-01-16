@@ -26,6 +26,11 @@
     "share": "Dalīties",
     "language": "Valoda"
   },
+  "metadata": {
+    "title": "Solījums.lv - Seko līdzi varas pārstāvju solījumiem un to izpildei",
+    "description": "Neatkarīga un objektīva platforma, kas atspoguļo valdības solījumu izpildi.",
+    "siteName": "solījums.lv"
+  },
   "status": {
     "kept": "IZPILDĪTS",
     "notKept": "NEIZPILDĪTS",
@@ -92,6 +97,7 @@
     "managePoliticians": "Pārvaldīt politiķus",
     "manageParties": "Pārvaldīt partijas",
     "manageCategories": "Pārvaldīt kategorijas",
+    "configuration": "Konfigurācija",
     "addNew": "Pievienot jaunu",
     "editItem": "Rediģēt",
     "deleteConfirm": "Vai tiešām vēlaties dzēst?",
