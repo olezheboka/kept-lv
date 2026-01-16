@@ -25,6 +25,7 @@ const configSchema = z.object({
     title: z.string().min(1, "Meta title is required"),
     description: z.string().min(1, "Meta description is required"),
     ogImageUrl: z.string().optional(),
+    faviconUrl: z.string().optional(),
     keywords: z.string().optional(),
     twitterHandle: z.string().optional(),
     googleVerificationId: z.string().optional(),
@@ -50,6 +51,7 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
             title: "Solījums.lv - Seko līdzi varas pārstāvju solījumiem un to izpildei",
             description: "Neatkarīga un objektīva platforma, kas atspoguļo valdības solījumu izpildi.",
             ogImageUrl: "",
+            faviconUrl: "",
             keywords: "",
             twitterHandle: "",
             googleVerificationId: "",
@@ -158,6 +160,124 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
                                     </FormControl>
                                     <FormDescription>
                                         Summary displayed in search results and social shares.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="ogImageUrl"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Social Image URL (OG Image)</FormLabel>
+                                    <div className="flex gap-4 items-start">
+                                        <FormControl className="flex-1">
+                                            <Input {...field} placeholder="https://example.com/share-image.jpg" />
+                                        </FormControl>
+                                        {field.value && (
+                                            <div className="border rounded-md overflow-hidden w-24 h-14 shrink-0 bg-muted/50 flex items-center justify-center">
+                                                <img
+                                                    src={field.value}
+                                                    alt="OG Preview"
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => (e.currentTarget.style.display = 'none')}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <FormDescription>
+                                        Full URL to an image (1200x630px recommended) for social media previews.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="faviconUrl"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Favicon URL</FormLabel>
+                                    <div className="flex gap-4 items-start">
+                                        <FormControl className="flex-1">
+                                            <Input {...field} placeholder="https://example.com/favicon.ico" />
+                                        </FormControl>
+                                        {field.value && (
+                                            <div className="border rounded-md overflow-hidden w-10 h-10 shrink-0 bg-muted/50 flex items-center justify-center">
+                                                <img
+                                                    src={field.value}
+                                                    alt="Favicon Preview"
+                                                    className="w-6 h-6 object-contain"
+                                                    onError={(e) => (e.currentTarget.style.display = 'none')}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <FormDescription>
+                                        URL to the site icon (ICO, PNG, or SVG).
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="keywords"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Keywords</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder="politics, promises, latvia" />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Comma-separated list of keywords.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-6">
+                    <div className="flex items-center gap-2 pb-2 border-b">
+                        <Globe className="h-5 w-5 text-muted-foreground" />
+                        <h3 className="font-semibold text-lg text-foreground">Social & Verification</h3>
+                    </div>
+
+                    <div className="grid gap-6">
+                        <FormField
+                            control={form.control}
+                            name="twitterHandle"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Twitter Handle</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder="@username" />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Used for Twitter Cards attribution.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="googleVerificationId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Google Verification ID</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder="Content of the google-site-verification meta tag" />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Allows verifying domain ownership with Google Search Console.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>

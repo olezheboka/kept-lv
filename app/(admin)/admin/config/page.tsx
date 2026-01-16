@@ -5,12 +5,17 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 
 async function getConfig() {
-    // @ts-ignore - SystemConfig is generated but TS server might not see it yet
-    const configs = await prisma.systemConfig.findMany();
-    return configs.reduce((acc: Record<string, string>, curr: { key: string; value: string }) => {
-        acc[curr.key] = curr.value;
-        return acc;
-    }, {} as Record<string, string>);
+    try {
+        // @ts-ignore - SystemConfig is generated but TS server might not see it yet
+        const configs = await prisma.systemConfig.findMany();
+        return configs.reduce((acc: Record<string, string>, curr: { key: string; value: string }) => {
+            acc[curr.key] = curr.value;
+            return acc;
+        }, {} as Record<string, string>);
+    } catch (error) {
+        console.error("Failed to fetch system config:", error);
+        return {};
+    }
 }
 
 export default async function ConfigPage() {
@@ -21,6 +26,7 @@ export default async function ConfigPage() {
         title: config.title || "Solījums.lv - Seko līdzi varas pārstāvju solījumiem un to izpildei",
         description: config.description || "Neatkarīga un objektīva platforma, kas atspoguļo valdības solījumu izpildi.",
         ogImageUrl: config.ogImageUrl || "",
+        faviconUrl: config.faviconUrl || "",
         keywords: config.keywords || "",
         twitterHandle: config.twitterHandle || "",
         googleVerificationId: config.googleVerificationId || "",
@@ -42,7 +48,6 @@ export default async function ConfigPage() {
                 title="Configuration"
                 description="Manage system settings and metadata."
                 breadcrumbs={[
-                    { label: "Dashboard", href: "/admin" },
                     { label: "Configuration" },
                 ]}
             />

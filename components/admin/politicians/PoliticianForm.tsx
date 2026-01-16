@@ -230,7 +230,7 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
                 </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t">
+            <div className="flex gap-3 pt-4 border-t">
                 <Button
                     type="button"
                     variant="ghost"

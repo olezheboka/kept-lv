@@ -59,6 +59,9 @@ export async function generateMetadata(): Promise<Metadata> {
     verification: config.googleVerificationId ? {
       google: config.googleVerificationId,
     } : undefined,
+    icons: config.faviconUrl ? {
+      icon: config.faviconUrl,
+    } : undefined,
   };
 }
 
