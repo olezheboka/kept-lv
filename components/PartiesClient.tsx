@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Filter, Search, SlidersHorizontal, ChevronDown, X, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import type { PartyUI, PoliticianUI, PromiseUI } from '@/lib/db';
+import { useDebounce } from '@/hooks/use-debounce';
 
 const ITEMS_PER_PAGE = 30;
 
@@ -81,10 +82,8 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
     // Local state only for search input
     const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
-    // Sync local search query when URL changes
-    useEffect(() => {
-        setLocalSearchQuery(searchQuery);
-    }, [searchQuery]);
+    // Debounce search query updates
+    const debouncedSearchQuery = useDebounce(localSearchQuery, 300);
 
     // Helper to update URL with new params
     const updateUrl = useCallback((newParams: URLSearchParams) => {
@@ -93,17 +92,9 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
         router.replace(url, { scroll: false });
     }, [pathname, router]);
 
-    // Update URL when search input changes
+    // Update local state immediately
     const handleSearchChange = (value: string) => {
         setLocalSearchQuery(value);
-        const params = new URLSearchParams(searchParams.toString());
-        if (value) {
-            params.set('q', value);
-        } else {
-            params.delete('q');
-        }
-        params.delete('page'); // Reset pagination on search
-        updateUrl(params);
     };
 
     // Helper to get promises by party
@@ -118,8 +109,8 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
         let result = [...parties];
 
         // Search
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
+        if (debouncedSearchQuery) {
+            const query = debouncedSearchQuery.toLowerCase();
             result = result.filter(p =>
                 p.name.toLowerCase().includes(query) ||
                 p.abbreviation.toLowerCase().includes(query) ||
@@ -171,7 +162,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
         });
 
         return result;
-    }, [parties, searchQuery, filterCoalition, filterOpposition, sortBy, promises]);
+    }, [parties, debouncedSearchQuery, filterCoalition, filterOpposition, sortBy, promises]);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredParties.length / ITEMS_PER_PAGE);
@@ -223,7 +214,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
         updateUrl(params);
     };
 
-    const hasActiveFilters = !!searchQuery || filterCoalition || filterOpposition;
+    const hasActiveFilters = !!debouncedSearchQuery || filterCoalition || filterOpposition;
 
     return (
         <div className="flex flex-col bg-background">
@@ -348,13 +339,13 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                             {/* Active Filters Display */}
                             {hasActiveFilters && (
                                 <div className="flex flex-wrap gap-2 mb-6">
-                                    {!!searchQuery && (
+                                    {!!debouncedSearchQuery && (
                                         <button
                                             onClick={() => handleSearchChange('')}
                                             className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground hover:bg-muted/80"
                                         >
                                             <Search className="h-3 w-3" />
-                                            {searchQuery}
+                                            {debouncedSearchQuery}
                                             <X className="h-3 w-3" />
                                         </button>
                                     )}

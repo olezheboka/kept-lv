@@ -221,7 +221,7 @@ const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianUI[]> => 
         }));
     } catch (error) {
         console.error("Error fetching politicians:", error);
-        return [];
+        throw error;
     }
 };
 
@@ -229,7 +229,7 @@ export async function getPoliticians(locale: Locale = "lv"): Promise<PoliticianU
     const getCachedPoliticians = unstable_cache(
         () => getPoliticiansFromDb(locale),
         [`politicians-${locale}`],
-        { revalidate: 60, tags: ['politicians'] }
+        { revalidate: 1, tags: ['politicians'] }
     );
     return getCachedPoliticians();
 }

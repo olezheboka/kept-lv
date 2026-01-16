@@ -16,6 +16,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Search, ArrowUpDown, Filter, SlidersHorizontal, ChevronDown, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import type { PoliticianUI, PartyUI, PromiseUI } from '@/lib/db';
+import { useDebounce } from '@/hooks/use-debounce';
 
 const ITEMS_PER_PAGE = 30;
 
@@ -97,10 +98,8 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
     // Local state only for search input
     const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
-    // Sync local search query when URL changes
-    useEffect(() => {
-        setLocalSearchQuery(searchQuery);
-    }, [searchQuery]);
+    // Debounce search query updates
+    const debouncedSearchQuery = useDebounce(localSearchQuery, 300);
 
     // Helper to update URL with new params
     const updateUrl = useCallback((newParams: URLSearchParams) => {
@@ -109,17 +108,9 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
         router.replace(url, { scroll: false });
     }, [pathname, router]);
 
-    // Update URL when search input changes
+    // Update local state immediately
     const handleSearchChange = (value: string) => {
         setLocalSearchQuery(value);
-        const params = new URLSearchParams(searchParams.toString());
-        if (value) {
-            params.set('q', value);
-        } else {
-            params.delete('q');
-        }
-        params.delete('page'); // Reset pagination on search
-        updateUrl(params);
     };
 
     // Helper to get party by ID
@@ -132,8 +123,8 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
     const filteredPoliticians = useMemo(() => {
         let result = [...politicians];
 
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
+        if (debouncedSearchQuery) {
+            const query = debouncedSearchQuery.toLowerCase();
             result = result.filter(p =>
                 p.name.toLowerCase().includes(query) ||
                 p.role.toLowerCase().includes(query)
@@ -177,7 +168,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
         });
 
         return result;
-    }, [searchQuery, selectedParties, showInOffice, sortBy, politicians, promises]);
+    }, [debouncedSearchQuery, selectedParties, showInOffice, sortBy, politicians, promises]);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredPoliticians.length / ITEMS_PER_PAGE);
@@ -235,7 +226,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
         updateUrl(params);
     };
 
-    const hasActiveFilters = selectedParties.length > 0 || showInOffice || !!searchQuery;
+    const hasActiveFilters = selectedParties.length > 0 || showInOffice || !!debouncedSearchQuery;
 
     return (
         <div className="flex flex-col bg-background">
@@ -358,13 +349,13 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                             {/* Active Filters Display */}
                             {hasActiveFilters && (
                                 <div className="flex flex-wrap gap-2 mb-6">
-                                    {!!searchQuery && (
+                                    {!!debouncedSearchQuery && (
                                         <button
                                             onClick={() => handleSearchChange('')}
                                             className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground hover:bg-muted/80"
                                         >
                                             <Search className="h-3 w-3" />
-                                            {searchQuery}
+                                            {debouncedSearchQuery}
                                             <X className="h-3 w-3" />
                                         </button>
                                     )}
