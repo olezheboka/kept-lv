@@ -131,7 +131,7 @@ export default async function AdminDashboard() {
       <PageHeader
         title="Dashboard"
         description="Overview of your promise tracking platform"
-        breadcrumbs={[]}
+        breadcrumbs={[{ label: "Dashboard" }]}
       />
 
       {/* Row 1: Total Promises (50%) + Status Breakdown (50%) */}

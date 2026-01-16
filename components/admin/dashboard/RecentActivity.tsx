@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ScrollText, Users, Landmark, Folder } from "lucide-react";
+import { FileText, Users, Landmark, Folder } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 interface RecentActivityProps {
@@ -19,7 +19,7 @@ export function RecentActivity({ promises }: RecentActivityProps) {
                         <div key={promise.id} className={`flex items-start gap-4 p-4 hover:bg-g-gray-50/50 transition-colors ${!isLast ? 'border-b border-g-gray-100' : ''}`}>
                             {/* Icon Box */}
                             <div className="p-2 bg-g-gray-100 text-g-gray-500 rounded-lg flex-shrink-0">
-                                <ScrollText width={20} />
+                                <FileText width={20} />
                             </div>
 
                             <div className="flex-1 min-w-0">

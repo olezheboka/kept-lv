@@ -132,7 +132,7 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                             className={`
                                 flex flex-col p-2 rounded-lg border transition-all text-left group
                                 ${filterStatus === 'all'
-                                    ? 'bg-primary/5 border-primary ring-1 ring-primary'
+                                    ? 'bg-blue-50 dark:bg-blue-900/10 border-blue-500 ring-1 ring-blue-500'
                                     : 'bg-background border-border/50 hover:bg-muted/50 hover:border-border'}
                             `}
                         >
@@ -168,7 +168,7 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                                     className={`
                                         flex flex-col p-2 rounded-lg border transition-all text-left group
                                         ${isActive
-                                            ? 'bg-accent/5 border-accent ring-1 ring-accent'
+                                            ? 'bg-blue-50 dark:bg-blue-900/10 border-blue-500 ring-1 ring-blue-500'
                                             : 'bg-background border-border/50 hover:bg-muted/50 hover:border-border'}
                                     `}
                                 >

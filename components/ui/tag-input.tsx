@@ -42,8 +42,8 @@ export function TagInput({ value = [], onChange, placeholder = "Add tag...", cla
         <div
             onClick={handleContainerClick}
             className={cn(
-                "flex min-h-[38px] w-full flex-wrap items-center gap-1.5 rounded-md border border-[#d0d7de] bg-[#f6f8fa] px-3 py-1.5 text-sm ring-offset-background cursor-text",
-                isFocused && "ring-2 ring-[#0969da] border-[#0969da] outline-none",
+                "flex min-h-[38px] w-full flex-wrap items-center gap-1.5 rounded-md border border-input bg-background px-3 py-1.5 text-sm ring-offset-background cursor-text",
+                isFocused && "ring-2 ring-ring border-ring outline-none",
                 className
             )}
         >
@@ -51,7 +51,7 @@ export function TagInput({ value = [], onChange, placeholder = "Add tag...", cla
                 <Badge
                     key={tag}
                     variant="secondary"
-                    className="gap-1 bg-[#ddf4ff] text-[#0969da] hover:bg-[#bbe6ff] hover:text-[#0969da] border-none font-normal px-2 py-0.5 h-6 rounded-md text-xs"
+                    className="gap-1 bg-secondary text-secondary-foreground hover:bg-secondary/80 border-none font-normal px-2 py-0.5 h-6 rounded-md text-xs"
                 >
                     {tag}
                     <button
@@ -75,7 +75,7 @@ export function TagInput({ value = [], onChange, placeholder = "Add tag...", cla
                 onKeyDown={handleKeyDown}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                className="flex-1 bg-transparent border-none outline-none placeholder:text-[#656d76] text-[#1F2328] min-w-[120px] text-sm h-6 p-0"
+                className="flex-1 bg-transparent border-none outline-none placeholder:text-muted-foreground text-foreground min-w-[120px] text-sm h-6 p-0"
                 placeholder={value.length === 0 ? placeholder : ""}
             />
         </div>

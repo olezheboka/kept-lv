@@ -26,6 +26,9 @@ export interface MultiSelectDropdownProps {
     selected: string[];
     onChange: (selected: string[]) => void;
     placeholder?: string;
+    searchPlaceholder?: string;
+    emptyMessage?: string;
+    clearText?: string;
     className?: string;
 }
 
@@ -34,6 +37,9 @@ export function MultiSelectDropdown({
     selected,
     onChange,
     placeholder = "Select items",
+    searchPlaceholder = "Search...",
+    emptyMessage = "No items found.",
+    clearText = "Clear filters",
     className,
 }: MultiSelectDropdownProps) {
     const [open, setOpen] = React.useState(false);
@@ -89,7 +95,7 @@ export function MultiSelectDropdown({
                         )}
                         {selected.length > 2 && (
                             <Badge variant="secondary" className="mr-1">
-                                {selected.length} izvēlēti
+                                {selected.length} selected
                             </Badge>
                         )}
                     </div>
@@ -98,9 +104,9 @@ export function MultiSelectDropdown({
             </PopoverTrigger>
             <PopoverContent className="w-[300px] p-0" align="start">
                 <Command>
-                    <CommandInput placeholder="Meklēt..." />
+                    <CommandInput placeholder={searchPlaceholder} />
                     <CommandList>
-                        <CommandEmpty>Nekas nav atrasts.</CommandEmpty>
+                        <CommandEmpty>{emptyMessage}</CommandEmpty>
                         <CommandGroup className="max-h-64 overflow-auto">
                             {options.map((option) => {
                                 const isSelected = selected.includes(option.value);
@@ -133,9 +139,9 @@ export function MultiSelectDropdown({
                                 <CommandGroup>
                                     <CommandItem
                                         onSelect={handleClear}
-                                        className="justify-center text-center"
+                                        className="justify-center text-center text-sm font-medium text-muted-foreground hover:text-foreground"
                                     >
-                                        Notīrīt filtrus
+                                        {clearText}
                                     </CommandItem>
                                 </CommandGroup>
                             </>

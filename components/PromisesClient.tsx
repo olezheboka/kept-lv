@@ -151,6 +151,8 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                 return (
                     p.title.toLowerCase().includes(query) ||
                     p.fullText.toLowerCase().includes(query) ||
+                    p.politicianName.toLowerCase().includes(query) ||
+                    p.politicianRole.toLowerCase().includes(query) ||
                     p.tags.some(t => t.toLowerCase().includes(query))
                 );
             });

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { DeleteButton } from "@/components/ui/DeleteButton";
-import { Plus, Search, Eye, Pencil, Trash2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { Plus, Search, Eye, Pencil, Trash2, ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { PageHeader } from "@/components/admin/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -32,17 +34,119 @@ interface PromiseData {
     politician: { name: string };
     category: { name: string; slug: string };
     updatedAt: Date | string;
+    createdAt: Date | string;
+    searchText?: string; // Add optional property for optimization
 }
 
 interface PromiseClientPageProps {
     initialPromises: PromiseData[];
 }
 
-export default function PromiseClientPage({ initialPromises }: PromiseClientPageProps) {
-    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+import { MultiSelectDropdown } from "@/components/ui/multi-select-dropdown";
 
+const ITEMS_PER_PAGE = 30;
+
+export default function PromiseClientPage({ initialPromises }: PromiseClientPageProps) {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+    const [selectedAuthors, setSelectedAuthors] = useState<string[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+    // Search State
+    const searchQuery = searchParams.get('q') || '';
+    const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+    const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Derived state from URL for Pagination
+    const currentPage = Number(searchParams.get('page')) || 1;
+
+    // Sync local search query when URL changes
+    useEffect(() => {
+        setLocalSearchQuery(searchQuery);
+    }, [searchQuery]);
+
+    // Handle search input change with debounce
+    const handleSearchChange = (value: string) => {
+        setLocalSearchQuery(value);
+
+        if (searchTimeoutRef.current) {
+            clearTimeout(searchTimeoutRef.current);
+        }
+
+        searchTimeoutRef.current = setTimeout(() => {
+            const params = new URLSearchParams(searchParams.toString());
+            if (value) {
+                params.set('q', value);
+            } else {
+                params.delete('q');
+            }
+            params.delete('page'); // Reset pagination on search
+            router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        }, 300);
+    };
+
+    // Extract unique options for filters
+    const authorOptions = useMemo(() => {
+        const distinct = new Map();
+        initialPromises.forEach(p => {
+            if (p.politician) {
+                distinct.set(p.politicianId, { label: p.politician.name, value: p.politicianId });
+            }
+        });
+        return Array.from(distinct.values()).sort((a, b) => a.label.localeCompare(b.label));
+    }, [initialPromises]);
+
+    const categoryOptions = useMemo(() => {
+        const distinct = new Map();
+        initialPromises.forEach(p => {
+            if (p.category) {
+                distinct.set(p.categoryId, { label: p.category.name, value: p.categoryId });
+            }
+        });
+        return Array.from(distinct.values()).sort((a, b) => a.label.localeCompare(b.label));
+    }, [initialPromises]);
+
+    // Pre-compute searchable text for optimization
+    const promisesWithSearchText = useMemo(() => {
+        return initialPromises.map(p => ({
+            ...p,
+            searchText: (
+                p.title + " " +
+                p.status + " " +
+                p.politician.name + " " +
+                (p.description || "") + " " +
+                (p.explanation || "") + " " +
+                p.tags.join(" ")
+            ).toLowerCase()
+        }));
+    }, [initialPromises]);
+
+    // Filter promises
+    const filteredPromises = useMemo(() => {
+        let result = promisesWithSearchText;
+
+        if (selectedAuthors.length > 0) {
+            result = result.filter(p => selectedAuthors.includes(p.politicianId));
+        }
+
+        if (selectedCategories.length > 0) {
+            result = result.filter(p => selectedCategories.includes(p.categoryId));
+        }
+
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            result = result.filter(p => p.searchText.includes(query));
+        }
+
+        return result;
+    }, [promisesWithSearchText, selectedAuthors, selectedCategories, searchQuery]);
+
+    // Sort promises
     const sortedPromises = useMemo(() => {
-        let sortablePromises = [...initialPromises];
+        let sortablePromises = [...filteredPromises];
         if (sortConfig !== null) {
             sortablePromises.sort((a, b) => {
                 let aValue: any = a[sortConfig.key as keyof PromiseData];
@@ -67,7 +171,14 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
             });
         }
         return sortablePromises;
-    }, [initialPromises, sortConfig]);
+    }, [filteredPromises, sortConfig]);
+
+    // Pagination calculations
+    const totalPages = Math.ceil(sortedPromises.length / ITEMS_PER_PAGE);
+    const paginatedPromises = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return sortedPromises.slice(start, start + ITEMS_PER_PAGE);
+    }, [sortedPromises, currentPage]);
 
     const requestSort = (key: string) => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -87,49 +198,76 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
         return <ArrowDown className="w-3 h-3 text-gray-900" />;
     };
 
+    const handlePageChange = (page: number) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (page > 1) params.set('page', page.toString());
+        else params.delete('page');
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    };
+
     return (
         <div className="space-y-6">
-            {/* Custom Header */}
-            <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-2xl font-bold tracking-tight text-gray-900">Promises</h1>
-                        <Badge variant="secondary" className="rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-100">
-                            {initialPromises.length}
-                        </Badge>
+            <PageHeader
+                title="Promises"
+                description="Track and manage political promises"
+                count={filteredPromises.length}
+                breadcrumbs={[
+                    { label: "Overview", href: "/admin" },
+                    { label: "Promises" },
+                ]}
+            />
+
+            {/* Filters */}
+            <div className="flex flex-col sm:flex-row gap-4">
+                <div className="w-full sm:w-[350px]">
+                    <span className="text-sm font-medium mb-1.5 block text-gray-700">Search</span>
+                    <div className="relative">
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                        <Input
+                            placeholder="Title, status, author, description..."
+                            value={localSearchQuery}
+                            onChange={(e) => handleSearchChange(e.target.value)}
+                            className="bg-white pl-9"
+                        />
                     </div>
-                    <Link href="/admin/promises/new">
-                        <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2 font-medium">
-                            <Plus className="w-4 h-4" />
-                            Add Promise
-                        </Button>
-                    </Link>
                 </div>
-                <p className="text-muted-foreground text-sm">
-                    Track and manage political promises
-                </p>
+                <div className="w-full sm:w-[250px]">
+                    <span className="text-sm font-medium mb-1.5 block text-gray-700">Author</span>
+                    <MultiSelectDropdown
+                        options={authorOptions}
+                        selected={selectedAuthors}
+                        onChange={setSelectedAuthors}
+                        placeholder="Select authors"
+                        searchPlaceholder="Filter authors..."
+                        emptyMessage="No authors found"
+                        className="w-full bg-white"
+                    />
+                </div>
+                <div className="w-full sm:w-[250px]">
+                    <span className="text-sm font-medium mb-1.5 block text-gray-700">Category</span>
+                    <MultiSelectDropdown
+                        options={categoryOptions}
+                        selected={selectedCategories}
+                        onChange={setSelectedCategories}
+                        placeholder="Select categories"
+                        searchPlaceholder="Filter categories..."
+                        emptyMessage="No categories found"
+                        className="w-full bg-white"
+                    />
+                </div>
             </div>
 
             <div className="border rounded-lg bg-white shadow-sm overflow-hidden">
                 <Table>
                     <TableHeader className="bg-[#F9FAFB] border-b border-gray-100">
                         <TableRow className="hover:bg-transparent border-none">
-                            <TableHead className="w-[35%] font-medium text-xs uppercase tracking-wider text-gray-500 py-3 pl-6">
+                            <TableHead className="w-[45%] font-medium text-xs uppercase tracking-wider text-gray-500 py-3 pl-6">
                                 <div
                                     className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
                                     onClick={() => requestSort('title')}
                                 >
                                     TITLE
                                     {getSortIcon('title')}
-                                </div>
-                            </TableHead>
-                            <TableHead className="w-[8%] font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
-                                <div
-                                    className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
-                                    onClick={() => requestSort('category')}
-                                >
-                                    CATEGORY
-                                    {getSortIcon('category')}
                                 </div>
                             </TableHead>
                             <TableHead className="min-w-[150px] font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
@@ -159,11 +297,20 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                                     {getSortIcon('updatedAt')}
                                 </div>
                             </TableHead>
+                            <TableHead className="font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
+                                <div
+                                    className="flex items-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
+                                    onClick={() => requestSort('createdAt')}
+                                >
+                                    ADDED
+                                    {getSortIcon('createdAt')}
+                                </div>
+                            </TableHead>
                             <TableHead className="text-right py-3 pr-6"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {sortedPromises.map((promise) => {
+                        {paginatedPromises.map((promise) => {
                             // Status Styles Mapping
                             let statusBadgeClass = "bg-gray-100 text-gray-700 hover:bg-gray-100"; // Default Not Rated
                             if (promise.status === "KEPT") statusBadgeClass = "bg-green-500 text-white hover:bg-green-600 border-transparent";
@@ -193,21 +340,16 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                                         </div>
                                     </TableCell>
                                     <TableCell className="align-middle py-4">
-                                        <Badge variant="secondary" className="font-normal bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-md px-2.5">
-                                            {(promise.category as any)?.name || 'General'}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="align-middle py-4">
                                         <Badge
                                             className={cn(
-                                                "font-medium rounded-full px-3 py-0.5 shadow-none",
+                                                "font-medium rounded-full px-2 py-0 text-[10px] shadow-none h-5 leading-none flex items-center justify-center w-fit",
                                                 statusBadgeClass
                                             )}
                                         >
                                             {statusLabel}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="align-middle py-4 text-gray-500 text-xs whitespace-nowrap">
+                                    <TableCell className="align-middle py-4 text-gray-500 text-[10px] whitespace-nowrap">
                                         {promise.statusUpdatedAt ? new Date(promise.statusUpdatedAt).toLocaleString("lv-LV", {
                                             day: "2-digit",
                                             month: "2-digit",
@@ -217,8 +359,18 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                                             hour12: false
                                         }) : "—"}
                                     </TableCell>
-                                    <TableCell className="align-middle py-4 text-gray-500 text-xs whitespace-nowrap">
+                                    <TableCell className="align-middle py-4 text-gray-500 text-[10px] whitespace-nowrap">
                                         {new Date(promise.updatedAt).toLocaleString("lv-LV", {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            hour12: false
+                                        })}
+                                    </TableCell>
+                                    <TableCell className="align-middle py-4 text-gray-500 text-[10px] whitespace-nowrap">
+                                        {new Date(promise.createdAt).toLocaleString("lv-LV", {
                                             day: "2-digit",
                                             month: "2-digit",
                                             year: "numeric",
@@ -265,7 +417,7 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                                 </TableRow>
                             );
                         })}
-                        {sortedPromises.length === 0 && (
+                        {paginatedPromises.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                                     No promises found.
@@ -275,6 +427,55 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                     </TableBody>
                 </Table>
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-4 pb-8">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                        disabled={currentPage === 1}
+                    >
+                        <ChevronLeft className="h-4 w-4" />
+                        <span className="hidden sm:inline ml-1">Previous</span>
+                    </Button>
+                    <div className="flex items-center gap-1">
+                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                            let pageNum: number;
+                            if (totalPages <= 5) {
+                                pageNum = i + 1;
+                            } else if (currentPage <= 3) {
+                                pageNum = i + 1;
+                            } else if (currentPage >= totalPages - 2) {
+                                pageNum = totalPages - 4 + i;
+                            } else {
+                                pageNum = currentPage - 2 + i;
+                            }
+                            return (
+                                <Button
+                                    key={pageNum}
+                                    variant={currentPage === pageNum ? 'default' : 'outline'}
+                                    size="sm"
+                                    onClick={() => handlePageChange(pageNum)}
+                                    className="w-10"
+                                >
+                                    {pageNum}
+                                </Button>
+                            );
+                        })}
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                        disabled={currentPage === totalPages}
+                    >
+                        <span className="hidden sm:inline mr-1">Next</span>
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

@@ -25,7 +25,77 @@ interface CategoriesClientProps {
     })[];
 }
 
+import { cn } from '@/lib/utils';
+
 const ITEMS_PER_PAGE = 30;
+
+const CATEGORY_COLOR_MAP: Record<string, string> = {
+    // Agriculture - Blue
+    "agriculture": "bg-blue-600",
+    "agriculture-rural": "bg-blue-600",
+
+    // Culture - Teals
+    "culture": "bg-teal-600",
+    "culture-heritage": "bg-teal-600",
+
+    // Tech/Digital - Indigo
+    "digital": "bg-indigo-600",
+    "digital-technology": "bg-indigo-600",
+    "technology": "bg-indigo-600",
+
+    // Economy - Red/Rose
+    "economy": "bg-rose-600",
+    "economy-finance": "bg-rose-600",
+    "finance": "bg-rose-600",
+
+    // Education - Sky/Blue
+    "education": "bg-sky-600",
+    "education-science": "bg-sky-600",
+    "science": "bg-sky-600",
+
+    // Environment - Green
+    "environment": "bg-emerald-600",
+    "environment-energy": "bg-emerald-600",
+    "energy": "bg-emerald-600",
+
+    // Foreign - Cyan/Sky
+    "foreign-affairs": "bg-cyan-600",
+    "foreign": "bg-cyan-600",
+
+    // Health - Blue
+    "healthcare": "bg-blue-500",
+    "health": "bg-blue-500",
+
+    // Transport - Orange/Amber
+    "infrastructure": "bg-orange-500",
+    "transport": "bg-orange-500",
+    "transport-infrastructure": "bg-orange-500",
+
+    // Justice - Red/Orange
+    "justice": "bg-red-600",
+    "justice-law": "bg-red-600",
+    "law": "bg-red-600",
+
+    // Regional - Slate
+    "regional": "bg-slate-600",
+    "housing-regional": "bg-slate-600",
+    "housing": "bg-slate-600",
+
+    // Security - Green
+    "security": "bg-green-600",
+    "defense": "bg-green-600",
+    "defense-security": "bg-green-600",
+
+    // Social - Purple
+    "social-welfare": "bg-purple-600",
+    "social": "bg-purple-600",
+    "welfare": "bg-purple-600",
+
+    // Youth - Yellow/Amber
+    "youth": "bg-amber-500",
+    "youth-sports": "bg-amber-500",
+    "sports": "bg-amber-500"
+};
 
 export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
     const searchParams = useSearchParams();
@@ -99,7 +169,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                                                 />
                                                             </div>
                                                         ) : (
-                                                            <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-colors duration-300">
+                                                            <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
                                                                 {(() => {
                                                                     const IconComponent = SLUG_ICON_MAP[category.slug] || TrendingUp;
                                                                     return <IconComponent className="h-6 w-6" />;

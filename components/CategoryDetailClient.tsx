@@ -64,7 +64,7 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
                         transition={{ duration: 0.4 }}
                         className="flex items-start gap-6"
                     >
-                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-accent flex items-center justify-center text-accent-foreground overflow-hidden shrink-0">
+                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-blue-50 flex items-center justify-center overflow-hidden shrink-0">
                             {category.imageUrl ? (
                                 <img
                                     src={category.imageUrl}
@@ -72,10 +72,10 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
-                                <div className="flex items-center justify-center w-full h-full">
+                                <div className="flex items-center justify-center w-full h-full text-blue-600">
                                     {(() => {
                                         const IconComponent = SLUG_ICON_MAP[category.slug] || TrendingUp;
-                                        return <IconComponent className="h-5 w-5 md:h-6 md:w-6" />;
+                                        return <IconComponent className="h-8 w-8 md:h-10 md:w-10" />;
                                     })()}
                                 </div>
                             )}

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 interface BreadcrumbItem {
@@ -12,6 +13,7 @@ interface BreadcrumbItem {
 interface PageHeaderProps {
     title: string;
     description?: string;
+    count?: number;
     breadcrumbs?: BreadcrumbItem[];
     actions?: React.ReactNode;
     className?: string;
@@ -20,6 +22,7 @@ interface PageHeaderProps {
 export function PageHeader({
     title,
     description,
+    count,
     breadcrumbs = [],
     actions,
     className,
@@ -53,7 +56,14 @@ export function PageHeader({
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">{title}</h1>
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground">{title}</h1>
+                        {count !== undefined && (
+                            <Badge variant="secondary" className="rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-100 dark:bg-zinc-800 dark:text-zinc-400">
+                                {count}
+                            </Badge>
+                        )}
+                    </div>
                     {description && (
                         <p className="text-muted-foreground text-sm sm:text-base">{description}</p>
                     )}

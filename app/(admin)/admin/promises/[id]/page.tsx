@@ -19,7 +19,7 @@ export default async function EditPromisePage({ params }: { params: Promise<{ id
             orderBy: { name: "asc" },
         }),
         prisma.category.findMany({
-            select: { id: true, name: true },
+            select: { id: true, name: true, slug: true },
             orderBy: { name: "asc" },
         }),
     ]);

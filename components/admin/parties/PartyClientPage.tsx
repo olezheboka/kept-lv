@@ -41,18 +41,12 @@ export default function PartyClientPage({ initialParties }: PartyClientPageProps
             <PageHeader
                 title="Parties"
                 description="Manage political parties and their details."
+                count={initialParties.length}
                 breadcrumbs={[
                     { label: "Overview", href: "/admin" },
                     { label: "Parties" },
                 ]}
-                actions={
-                    <Link href="/admin/parties/new">
-                        <Button className="gap-2">
-                            <Plus className="w-4 h-4" />
-                            Add Party
-                        </Button>
-                    </Link>
-                }
+
             />
 
             <div className="flex items-center gap-4 mb-6">

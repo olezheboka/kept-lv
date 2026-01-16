@@ -11,7 +11,7 @@ export default async function NewPromisePage() {
             orderBy: { name: "asc" },
         }),
         prisma.category.findMany({
-            select: { id: true, name: true },
+            select: { id: true, name: true, slug: true },
             orderBy: { name: "asc" },
         }),
     ]);

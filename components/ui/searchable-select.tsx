@@ -31,6 +31,7 @@ interface SearchableSelectProps {
     searchPlaceholder?: string;
     className?: string;
     disabled?: boolean;
+    icon?: React.ElementType;
 }
 
 export function SearchableSelect({
@@ -41,6 +42,7 @@ export function SearchableSelect({
     searchPlaceholder = "Filter...",
     className,
     disabled = false,
+    icon: Icon,
 }: SearchableSelectProps) {
     const [open, setOpen] = React.useState(false);
     const selectedLabel = options.find((opt) => opt.value === value)?.label;
@@ -54,24 +56,27 @@ export function SearchableSelect({
                     aria-expanded={open}
                     disabled={disabled}
                     className={cn(
-                        "w-full justify-between bg-[#f6f8fa] border-[#d0d7de] text-sm font-normal text-[#1F2328] shadow-sm hover:bg-[#f3f4f6] hover:text-[#1F2328]",
-                        "focus:ring-2 focus:ring-[#0969da] focus:border-[#0969da] focus:outline-none",
-                        !value && "text-[#656d76] hover:text-[#656d76]", // Explicit dark gray for placeholder, PERSIST ON HOVER
+                        "w-full justify-between bg-background border-input text-sm font-normal text-foreground hover:bg-background hover:text-foreground hover:border-blue-500",
+                        "focus:ring-2 focus:ring-ring focus:border-ring focus:outline-none",
+                        !value && "text-muted-foreground hover:text-muted-foreground",
                         className
                     )}
                 >
-                    {selectedLabel || placeholder}
-                    <ChevronDown className="ml-2 h-4 w-4 opacity-50 text-black" />
+                    <div className="flex items-center gap-2 truncate">
+                        {Icon && <Icon className="h-4 w-4 shrink-0 opacity-50" />}
+                        <span className="truncate">{selectedLabel || placeholder}</span>
+                    </div>
+                    <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[300px] p-0 bg-white border border-[#d0d7de] shadow-lg" align="start">
-                <Command className="bg-white">
+            <PopoverContent className="w-[300px] p-0 bg-popover border border-border shadow-lg" align="start">
+                <Command className="bg-popover text-popover-foreground">
                     <CommandInput
                         placeholder={searchPlaceholder}
-                        className="h-9 text-black placeholder:text-[#656d76]"
+                        className="h-9 text-foreground placeholder:text-muted-foreground"
                     />
                     <CommandList>
-                        <CommandEmpty className="py-6 text-center text-sm text-[#656d76]">No results found.</CommandEmpty>
+                        <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">No results found.</CommandEmpty>
                         <CommandGroup>
                             {options.map((option) => (
                                 <CommandItem
@@ -81,18 +86,17 @@ export function SearchableSelect({
                                         onChange(option.value);
                                         setOpen(false);
                                     }}
-                                    className="cursor-pointer aria-selected:bg-[#0969da] aria-selected:text-white group"
+                                    className="cursor-pointer aria-selected:bg-accent aria-selected:text-accent-foreground group"
                                 >
                                     <div className="flex items-center w-full">
                                         <Check
                                             className={cn(
                                                 "mr-2 h-4 w-4",
                                                 value === option.value ? "opacity-100" : "opacity-0",
-                                                // When selected (hovered), icon should be white. When just checked but not hovered, blue.
-                                                "group-aria-selected:text-white text-[#0969da]"
+                                                "text-primary"
                                             )}
                                         />
-                                        <span className={cn(value === option.value && "font-medium", "text-[#1F2328] group-aria-selected:text-white")}>
+                                        <span className={cn(value === option.value && "font-medium", "text-foreground group-aria-selected:text-accent-foreground")}>
                                             {option.label}
                                         </span>
                                     </div>

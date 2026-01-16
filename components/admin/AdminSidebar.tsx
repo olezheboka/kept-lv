@@ -7,9 +7,9 @@ import { signOut, useSession } from "next-auth/react";
 import { format } from "date-fns";
 import {
     LayoutGrid,
-    ScrollText,
-    Users,
-    Landmark,
+    FileText,
+    User,
+    Flag,
     Folder,
     LogOut,
     ExternalLink,
@@ -20,9 +20,9 @@ import { cn } from "@/lib/utils";
 
 const platformItems = [
     { href: "/admin", icon: LayoutGrid, label: "Dashboard" },
-    { href: "/admin/promises", icon: ScrollText, label: "Promises" },
-    { href: "/admin/politicians", icon: Users, label: "Politicians" },
-    { href: "/admin/parties", icon: Landmark, label: "Parties" },
+    { href: "/admin/promises", icon: FileText, label: "Promises" },
+    { href: "/admin/politicians", icon: User, label: "Politicians" },
+    { href: "/admin/parties", icon: Flag, label: "Parties" },
     { href: "/admin/categories", icon: Folder, label: "Categories" },
 ];
 

@@ -50,18 +50,12 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
             <PageHeader
                 title="Politicians"
                 description="Manage politicians, their profiles, and affiliations."
+                count={initialPoliticians.length}
                 breadcrumbs={[
                     { label: "Overview", href: "/admin" },
                     { label: "Politicians" },
                 ]}
-                actions={
-                    <Link href="/admin/politicians/new">
-                        <Button className="gap-2">
-                            <Plus className="w-4 h-4" />
-                            Add Politician
-                        </Button>
-                    </Link>
-                }
+
             />
 
             <div className="flex items-center gap-4 mb-6">

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import PromiseClientPage from "@/components/admin/promises/PromiseClientPage";
 
@@ -17,8 +18,10 @@ export default async function AdminPromisesPage() {
   const initialPromises = await getPromises();
 
   return (
-    <PromiseClientPage
-      initialPromises={initialPromises as any}
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <PromiseClientPage
+        initialPromises={initialPromises as any}
+      />
+    </Suspense>
   );
 }

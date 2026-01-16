@@ -39,7 +39,7 @@ export default async function Index() {
 
                         </div>
                         <Link href="/promises" suppressHydrationWarning>
-                            <Button variant="ghost" className="hidden md:flex gap-2">
+                            <Button variant="ghost" className="hidden md:flex gap-2 hover:bg-primary hover:text-primary-foreground">
                                 Skatīt visus <ArrowRight className="h-4 w-4" />
                             </Button>
                         </Link>

@@ -122,7 +122,8 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
             const query = searchQuery.toLowerCase();
             result = result.filter(p =>
                 p.name.toLowerCase().includes(query) ||
-                p.abbreviation.toLowerCase().includes(query)
+                p.abbreviation.toLowerCase().includes(query) ||
+                (p.description && p.description.toLowerCase().includes(query))
             );
         }
 

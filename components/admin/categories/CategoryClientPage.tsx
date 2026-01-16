@@ -38,18 +38,12 @@ export default function CategoryClientPage({ initialCategories }: CategoryClient
             <PageHeader
                 title="Categories"
                 description="Manage promise categories and themes."
+                count={initialCategories.length}
                 breadcrumbs={[
                     { label: "Overview", href: "/admin" },
                     { label: "Categories" },
                 ]}
-                actions={
-                    <Link href="/admin/categories/new">
-                        <Button className="gap-2">
-                            <Plus className="w-4 h-4" />
-                            Add Category
-                        </Button>
-                    </Link>
-                }
+
             />
 
             <div className="flex items-center gap-4 mb-6">
