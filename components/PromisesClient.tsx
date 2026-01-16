@@ -132,21 +132,9 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
     // Debounce search query updates to URL
     const debouncedSearchQuery = useDebounce(localSearchQuery, 300);
 
-    // Sync URL when debounced query changes
-    useEffect(() => {
-        const params = new URLSearchParams(searchParams.toString());
-        const currentQuery = params.get('q') || '';
-
-        if (debouncedSearchQuery !== currentQuery) {
-            if (debouncedSearchQuery) {
-                params.set('q', debouncedSearchQuery);
-            } else {
-                params.delete('q');
-            }
-            params.delete('page'); // Reset pagination on search
-            updateUrl(params);
-        }
-    }, [debouncedSearchQuery, searchParams, updateUrl]);
+    // We no longer sync search query to URL 'on the fly' to prevent glitches.
+    // The URL is only used for initial state.
+    // If we wanted to, we could sync only on page exit or specific actions, but user requested removal.
 
     // Update local state immediately
     const handleSearchChange = (value: string) => {
@@ -157,8 +145,9 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
         let result = [...initialPromises];
 
         // Search filter
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
+        // Search filter - uses debounced local state instead of URL param
+        if (debouncedSearchQuery) {
+            const query = debouncedSearchQuery.toLowerCase();
             result = result.filter(p => {
                 return (
                     p.title.toLowerCase().includes(query) ||
@@ -202,7 +191,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
         }
 
         return result;
-    }, [searchQuery, selectedStatuses, selectedParties, selectedCategories, sortBy, initialPromises]);
+    }, [debouncedSearchQuery, selectedStatuses, selectedParties, selectedCategories, sortBy, initialPromises]);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredPromises.length / ITEMS_PER_PAGE);
@@ -282,7 +271,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
         updateUrl(params);
     };
 
-    const hasActiveFilters = selectedStatuses.length > 0 || selectedParties.length > 0 || selectedCategories.length > 0 || !!searchQuery;
+    const hasActiveFilters = selectedStatuses.length > 0 || selectedParties.length > 0 || selectedCategories.length > 0 || !!debouncedSearchQuery;
 
     return (
         <div className="flex flex-col bg-background">
@@ -409,13 +398,13 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                             {/* Active Filters */}
                             {hasActiveFilters && (
                                 <div className="flex flex-wrap gap-2 mb-6">
-                                    {!!searchQuery && (
+                                    {!!debouncedSearchQuery && (
                                         <button
                                             onClick={() => handleSearchChange('')}
                                             className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground hover:bg-muted/80"
                                         >
                                             <Search className="h-3 w-3" />
-                                            {searchQuery}
+                                            {debouncedSearchQuery}
                                             <X className="h-3 w-3" />
                                         </button>
                                     )}
