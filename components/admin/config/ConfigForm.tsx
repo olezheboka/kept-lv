@@ -24,6 +24,10 @@ const configSchema = z.object({
     siteName: z.string().min(1, "Site name is required"),
     title: z.string().min(1, "Meta title is required"),
     description: z.string().min(1, "Meta description is required"),
+    ogImageUrl: z.string().optional(),
+    keywords: z.string().optional(),
+    twitterHandle: z.string().optional(),
+    googleVerificationId: z.string().optional(),
 });
 
 type ConfigFormValues = z.infer<typeof configSchema>;
@@ -45,6 +49,10 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
             siteName: "solījums.lv",
             title: "Solījums.lv - Seko līdzi varas pārstāvju solījumiem un to izpildei",
             description: "Neatkarīga un objektīva platforma, kas atspoguļo valdības solījumu izpildi.",
+            ogImageUrl: "",
+            keywords: "",
+            twitterHandle: "",
+            googleVerificationId: "",
         },
     });
 

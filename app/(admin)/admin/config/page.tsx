@@ -20,6 +20,10 @@ export default async function ConfigPage() {
         siteName: config.siteName || "solījums.lv",
         title: config.title || "Solījums.lv - Seko līdzi varas pārstāvju solījumiem un to izpildei",
         description: config.description || "Neatkarīga un objektīva platforma, kas atspoguļo valdības solījumu izpildi.",
+        ogImageUrl: config.ogImageUrl || "",
+        keywords: config.keywords || "",
+        twitterHandle: config.twitterHandle || "",
+        googleVerificationId: config.googleVerificationId || "",
     };
 
     async function handleSuccess() {

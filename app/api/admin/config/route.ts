@@ -20,29 +20,18 @@ export async function GET() {
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { siteName, title, description } = body;
 
-        // Upsert each config key
-        await prisma.$transaction([
+        // Dynamic upsert for all provided keys
+        const updates = Object.entries(body).map(([key, value]) => {
             // @ts-ignore
-            prisma.systemConfig.upsert({
-                where: { key: "siteName" },
-                update: { value: siteName },
-                create: { key: "siteName", value: siteName },
-            }),
-            // @ts-ignore
-            prisma.systemConfig.upsert({
-                where: { key: "title" },
-                update: { value: title },
-                create: { key: "title", value: title },
-            }),
-            // @ts-ignore
-            prisma.systemConfig.upsert({
-                where: { key: "description" },
-                update: { value: description },
-                create: { key: "description", value: description },
-            }),
-        ]);
+            return prisma.systemConfig.upsert({
+                where: { key },
+                update: { value: String(value || "") },
+                create: { key, value: String(value || "") },
+            });
+        });
+
+        await prisma.$transaction(updates);
 
         return NextResponse.json({ success: true });
     } catch (error) {

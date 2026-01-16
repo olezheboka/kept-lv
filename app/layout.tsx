@@ -42,13 +42,23 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
+    keywords: config.keywords ? config.keywords.split(",").map(k => k.trim()) : undefined,
     openGraph: {
       title,
       description,
       siteName,
       locale: locale,
       type: "website",
+      images: config.ogImageUrl ? [{ url: config.ogImageUrl }] : undefined,
     },
+    twitter: config.twitterHandle ? {
+      card: "summary_large_image",
+      site: config.twitterHandle,
+      creator: config.twitterHandle,
+    } : undefined,
+    verification: config.googleVerificationId ? {
+      google: config.googleVerificationId,
+    } : undefined,
   };
 }
 
