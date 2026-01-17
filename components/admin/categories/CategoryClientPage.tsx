@@ -25,6 +25,7 @@ interface Category {
     imageUrl?: string | null;
     updatedAt: Date | string;
     _count: { promises: number };
+    searchText?: string;
 }
 
 interface CategoryClientPageProps {
@@ -73,21 +74,31 @@ export default function CategoryClientPage({ initialCategories }: CategoryClient
         }, 300);
     };
 
+
+
+    // Pre-compute searchable text
+    const categoriesWithSearchText = useMemo(() => {
+        return initialCategories.map(c => ({
+            ...c,
+            searchText: (
+                c.name + " " +
+                (c.description || "") + " " +
+                c.slug
+            ).toLowerCase()
+        }));
+    }, [initialCategories]);
+
     // Filter categories
     const filteredCategories = useMemo(() => {
-        let result = initialCategories;
+        let result = categoriesWithSearchText;
 
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
-            result = result.filter(c =>
-                c.name.toLowerCase().includes(query) ||
-                (c.description && c.description.toLowerCase().includes(query)) ||
-                c.slug.includes(query)
-            );
+            result = result.filter(c => c.searchText?.includes(query));
         }
 
         return result;
-    }, [initialCategories, searchQuery]);
+    }, [categoriesWithSearchText, searchQuery]);
 
     // Sort categories
     const sortedCategories = useMemo(() => {

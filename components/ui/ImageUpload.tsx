@@ -7,9 +7,12 @@ interface ImageUploadProps {
     value?: string | null;
     onChange: (url: string) => void;
     disabled?: boolean;
+    className?: string; // Additional classes for the image container
 }
 
-export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
+import { cn } from "@/lib/utils";
+
+export function ImageUpload({ value, onChange, disabled, className }: ImageUploadProps) {
     const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -56,7 +59,7 @@ export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
         <div className="space-y-4 w-full">
             <div className="flex flex-col gap-4">
                 {value ? (
-                    <div className="relative aspect-video w-full max-w-sm rounded-lg overflow-hidden border bg-muted">
+                    <div className={cn("relative rounded-lg overflow-hidden border bg-muted", className || "aspect-video w-full max-w-sm")}>
                         <img
                             src={value}
                             alt="Uploaded image"
@@ -74,12 +77,11 @@ export function ImageUpload({ value, onChange, disabled }: ImageUploadProps) {
                 ) : (
                     <div
                         onClick={() => fileInputRef.current?.click()}
-                        className={`
-              relative flex flex-col items-center justify-center w-full max-w-sm aspect-video
-              border-2 border-dashed rounded-lg cursor-pointer
-              hover:bg-muted/50 transition-colors
-              ${disabled ? "opacity-50 cursor-not-allowed" : ""}
-            `}
+                        className={cn(
+                            "relative flex flex-col items-center justify-center border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors",
+                            disabled && "opacity-50 cursor-not-allowed",
+                            className || "w-full max-w-sm aspect-video"
+                        )}
                     >
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                             {isUploading ? (

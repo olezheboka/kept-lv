@@ -201,27 +201,30 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
                     />
                 </div>
 
-                <div className="space-y-2">
-                    <Label className="text-foreground font-semibold">Party logo</Label>
-                    <div className="border rounded-md p-4 bg-gray-50/50">
-                        <ImageUpload
-                            value={formData.logoUrl}
-                            onChange={(url) => setFormData({ ...formData, logoUrl: url })}
-                            disabled={loading}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <Label className="text-foreground font-semibold">Party logo</Label>
+                        <div className="border rounded-md p-4 bg-gray-50/50 flex items-center justify-center">
+                            <ImageUpload
+                                value={formData.logoUrl}
+                                onChange={(url) => setFormData({ ...formData, logoUrl: url })}
+                                disabled={loading}
+                                className="w-24 h-24 aspect-square object-contain"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="websiteUrl" className="text-foreground font-semibold">Website URL</Label>
+                        <Input
+                            id="websiteUrl"
+                            type="url"
+                            value={formData.websiteUrl}
+                            onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
+                            placeholder="https://example.com"
+                            className="bg-background"
                         />
                     </div>
-                </div>
-
-                <div className="space-y-2">
-                    <Label htmlFor="websiteUrl" className="text-foreground font-semibold">Website URL</Label>
-                    <Input
-                        id="websiteUrl"
-                        type="url"
-                        value={formData.websiteUrl}
-                        onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
-                        placeholder="https://example.com"
-                        className="bg-background"
-                    />
                 </div>
 
                 <div className="pt-2">

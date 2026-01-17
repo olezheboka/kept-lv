@@ -32,8 +32,8 @@ function TopEntitiesCard({ title, totalCount, topEntities, emptyText, basePath }
 
                 {/* Top 3 List */}
                 <div className="flex-1 flex flex-col">
-                    <p className="text-xs font-medium text-g-gray-400 uppercase tracking-wide mb-4">Most Active</p>
-                    <div className="space-y-4">
+                    <p className="text-xs font-medium text-g-gray-400 uppercase tracking-wide mb-2">Most Active</p>
+                    <div className="space-y-2">
                         {topEntities.map((item, idx) => (
                             <Link
                                 key={idx}

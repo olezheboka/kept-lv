@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
@@ -180,9 +181,9 @@ export const RankingCard = ({ title, type, data }: RankingCardProps) => {
 
                     <div className="mt-auto pt-4 border-t border-border/50 text-center">
                         <Link href={type === 'politician' ? "/politicians" : "/parties"} suppressHydrationWarning>
-                            <button className="text-base text-muted-foreground hover:text-foreground flex items-center justify-center gap-1 mx-auto transition-colors" suppressHydrationWarning>
-                                Skatīt visus <ArrowRight className="h-3 w-3" />
-                            </button>
+                            <Button variant="ghost" className="gap-2 hover:bg-primary hover:text-primary-foreground w-full sm:w-auto">
+                                Skatīt visus <ArrowRight className="h-4 w-4" />
+                            </Button>
                         </Link>
                     </div>
                 </CardContent>
