@@ -221,7 +221,20 @@ const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianUI[]> => 
         }));
     } catch (error) {
         console.error("Error fetching politicians:", error);
-        throw error;
+        // Attempt to log to AuditLog for production debugging
+        try {
+            await prisma.auditLog.create({
+                data: {
+                    action: "error_fetch_politicians",
+                    entityType: "System",
+                    adminEmail: "system@internal",
+                    details: { message: error instanceof Error ? error.message : String(error) }
+                }
+            });
+        } catch (logError) {
+            console.error("Failed to log error to AuditLog:", logError);
+        }
+        return [];
     }
 };
 
@@ -309,7 +322,19 @@ const getPromisesFromDb = async (locale: Locale): Promise<PromiseUI[]> => {
         }));
     } catch (error) {
         console.error("Error fetching promises:", error);
-        throw error; // Throw error to see if it's a DB issue
+        try {
+            await prisma.auditLog.create({
+                data: {
+                    action: "error_fetch_promises",
+                    entityType: "System",
+                    adminEmail: "system@internal",
+                    details: { message: error instanceof Error ? error.message : String(error) }
+                }
+            });
+        } catch (logError) {
+            // Ignore logging errors
+        }
+        return [];
     }
 };
 
