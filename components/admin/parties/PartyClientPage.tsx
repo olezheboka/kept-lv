@@ -10,6 +10,8 @@ import { PageHeader } from "@/components/admin/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
     Table,
     TableBody,
@@ -43,7 +45,7 @@ export default function PartyClientPage({ initialParties }: PartyClientPageProps
     const pathname = usePathname();
 
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
-    const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+    const [showCoalitionOnly, setShowCoalitionOnly] = useState(false);
 
     // Search State
     const searchQuery = searchParams.get('q') || '';
@@ -90,20 +92,14 @@ export default function PartyClientPage({ initialParties }: PartyClientPageProps
             );
         }
 
-        if (selectedStatuses.length > 0) {
-            result = result.filter(p => {
-                const status = p.isCoalition ? "Coalition" : "Opposition";
-                return selectedStatuses.includes(status);
-            });
+        if (showCoalitionOnly) {
+            result = result.filter(p => p.isCoalition);
         }
 
         return result;
-    }, [initialParties, searchQuery, selectedStatuses]);
+    }, [initialParties, searchQuery, showCoalitionOnly]);
 
-    const statusOptions = [
-        { value: "Coalition", label: "In coalition" },
-        { value: "Opposition", label: "Opposition" }
-    ];
+
 
     // Sort parties
     const sortedParties = useMemo(() => {
@@ -188,13 +184,15 @@ export default function PartyClientPage({ initialParties }: PartyClientPageProps
                     </div>
                 </div>
 
-                <div className="w-full sm:w-[250px]">
-                    <MultiSelectDropdown
-                        options={statusOptions}
-                        selected={selectedStatuses}
-                        onChange={setSelectedStatuses}
-                        placeholder="Select status"
+                <div className="flex items-center space-x-2 pb-2.5">
+                    <Switch
+                        id="coalition-filter"
+                        checked={showCoalitionOnly}
+                        onCheckedChange={setShowCoalitionOnly}
                     />
+                    <Label htmlFor="coalition-filter" className="cursor-pointer font-normal whitespace-nowrap">
+                        Tikai koalīcijā
+                    </Label>
                 </div>
             </div>
 

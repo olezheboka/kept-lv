@@ -9,7 +9,10 @@ import { Search, Eye, Pencil, ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, Chev
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
     Table,
     TableBody,
@@ -28,6 +31,7 @@ interface Politician {
     education?: string | null;
     imageUrl?: string | null;
     isActive: boolean;
+    isInOffice?: boolean;
     partyId?: string | null;
     party?: { name: string; id: string } | null;
     updatedAt: string | Date;
@@ -48,7 +52,9 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
 
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
     const [selectedParties, setSelectedParties] = useState<string[]>([]);
-    const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+
+
+    const [showInOffice, setShowInOffice] = useState(false);
 
     // Search State
     const searchQuery = searchParams.get('q') || '';
@@ -109,15 +115,7 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
             .sort((a, b) => a.label.localeCompare(b.label));
     }, [initialPoliticians]);
 
-    const roleOptions = useMemo(() => {
-        const distinct = new Set<string>();
-        initialPoliticians.forEach(p => {
-            if (p.role) distinct.add(p.role);
-        });
-        return Array.from(distinct)
-            .map(role => ({ value: role, label: role }))
-            .sort((a, b) => a.label.localeCompare(b.label));
-    }, [initialPoliticians]);
+
 
     // Filter politicians
     const filteredPoliticians = useMemo(() => {
@@ -127,8 +125,10 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
             result = result.filter(p => p.partyId && selectedParties.includes(p.partyId));
         }
 
-        if (selectedRoles.length > 0) {
-            result = result.filter(p => p.role && selectedRoles.includes(p.role));
+
+
+        if (showInOffice) {
+            result = result.filter(p => p.isInOffice ?? p.isActive);
         }
 
         if (searchQuery) {
@@ -137,7 +137,7 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
         }
 
         return result;
-    }, [politiciansWithSearchText, searchQuery, selectedParties, selectedRoles]);
+    }, [politiciansWithSearchText, searchQuery, selectedParties, showInOffice]);
 
     // Sort politicians
     const sortedPoliticians = useMemo(() => {
@@ -154,6 +154,9 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
                 } else if (sortConfig.key === 'promises') {
                     aValue = a._count.promises;
                     bValue = b._count.promises;
+                } else if (sortConfig.key === 'isActive') {
+                    aValue = (a.isInOffice ?? a.isActive) ? 1 : 0;
+                    bValue = (b.isInOffice ?? b.isActive) ? 1 : 0;
                 }
 
                 if (aValue < bValue) {
@@ -163,6 +166,7 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
                     return sortConfig.direction === 'asc' ? 1 : -1;
                 }
                 return 0;
+
             });
         }
         return sortable;
@@ -235,13 +239,17 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
                     />
                 </div>
 
-                <div className="w-full sm:w-[250px]">
-                    <MultiSelectDropdown
-                        options={roleOptions}
-                        selected={selectedRoles}
-                        onChange={setSelectedRoles}
-                        placeholder="Select positions"
+
+
+                <div className="flex items-center space-x-2 pb-2.5">
+                    <Switch
+                        id="in-office-filter"
+                        checked={showInOffice}
+                        onCheckedChange={setShowInOffice}
                     />
+                    <Label htmlFor="in-office-filter" className="cursor-pointer font-normal whitespace-nowrap">
+                        Tikai amatā esošie
+                    </Label>
                 </div>
             </div>
 
@@ -256,6 +264,15 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
                                 >
                                     POLITICIAN
                                     {getSortIcon('name')}
+                                </div>
+                            </TableHead>
+                            <TableHead className="w-[10%] font-medium text-xs uppercase tracking-wider text-gray-500 py-3 text-center">
+                                <div
+                                    className="flex items-center justify-center gap-1 cursor-pointer hover:text-gray-700 group select-none"
+                                    onClick={() => requestSort('isActive')}
+                                >
+                                    IN OFFICE
+                                    {getSortIcon('isActive')}
                                 </div>
                             </TableHead>
                             <TableHead className="w-[15%] font-medium text-xs uppercase tracking-wider text-gray-500 py-3">
@@ -308,6 +325,17 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
                                             {politician.name}
                                         </span>
                                     </div>
+                                </TableCell>
+                                <TableCell className="align-middle py-4 text-center">
+                                    {(politician.isInOffice ?? politician.isActive) ? (
+                                        <Badge className="bg-green-100 text-green-700 hover:bg-green-200 border-transparent font-normal shadow-none px-2 py-0.5 text-xs">
+                                            Yes
+                                        </Badge>
+                                    ) : (
+                                        <Badge className="bg-gray-100 text-gray-600 hover:bg-gray-200 border-transparent font-normal shadow-none px-2 py-0.5 text-xs">
+                                            No
+                                        </Badge>
+                                    )}
                                 </TableCell>
                                 <TableCell className="align-middle py-4">
                                     {politician.party ? (
