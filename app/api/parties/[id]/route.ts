@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { updatePartySchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
+import { logActivity } from "@/lib/audit";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -60,6 +61,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       data: parsed.data,
     });
 
+    await logActivity("updated", "Party", party.id, party.name);
+
     return NextResponse.json(party);
   } catch (error) {
     console.error("Error updating party:", error);
@@ -79,9 +82,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     const { id } = await params;
 
-    await prisma.party.delete({
+    const deletedParty = await prisma.party.delete({
       where: { id },
     });
+
+    await logActivity("deleted", "Party", id, deletedParty.name);
 
     return NextResponse.json({ success: true });
   } catch (error) {

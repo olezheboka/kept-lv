@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { updateCategorySchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
+import { logActivity } from "@/lib/audit";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -66,6 +67,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       data: payload,
     });
 
+    await logActivity("updated", "Category", category.id, category.name);
+
     return NextResponse.json(category);
   } catch (error) {
     console.error("Error updating category:", error);
@@ -85,9 +88,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     const { id } = await params;
 
-    await prisma.category.delete({
+    const deletedCategory = await prisma.category.delete({
       where: { id },
     });
+
+    await logActivity("deleted", "Category", id, deletedCategory.name);
 
     return NextResponse.json({ success: true });
   } catch (error) {

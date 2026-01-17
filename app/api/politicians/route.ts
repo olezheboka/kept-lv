@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { createPoliticianSchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
+import { logActivity } from "@/lib/audit";
 
 export async function GET(request: NextRequest) {
   try {
@@ -68,6 +69,8 @@ export async function POST(request: NextRequest) {
         party: true,
       },
     });
+
+    await logActivity("created", "Politician", politician.id, politician.name);
 
     return NextResponse.json(politician, { status: 201 });
   } catch (error) {

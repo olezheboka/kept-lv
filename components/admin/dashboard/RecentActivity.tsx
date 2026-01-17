@@ -1,59 +1,161 @@
-import Link from "next/link";
-import { FileText, Users, Landmark, Folder } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+"use client";
 
-interface RecentActivityProps {
-    promises: any[];
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { FileText, Users, Landmark, Folder, LogIn, LogOut, Settings, Trash2, Plus, Edit, AlertTriangle } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { lv } from "date-fns/locale";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+
+interface Activity {
+    id: string;
+    adminEmail: string;
+    action: string;
+    entityType: string;
+    entityId: string | null;
+    entityTitle: string | null;
+    createdAt: string;
+    details: any;
 }
 
-export function RecentActivity({ promises }: RecentActivityProps) {
+export function RecentActivity() {
+    const [activities, setActivities] = useState<Activity[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+
+    const fetchActivities = async (pageNum: number, append = false) => {
+        try {
+            setLoading(true);
+            const res = await fetch(`/api/admin/activity?page=${pageNum}&limit=10`);
+            const data = await res.json();
+
+            if (data.activities) {
+                if (append) {
+                    setActivities(prev => [...prev, ...data.activities]);
+                } else {
+                    setActivities(data.activities);
+                }
+                setHasMore(data.page < data.totalPages);
+            }
+        } catch (error) {
+            console.error("Failed to fetch activities:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchActivities(1);
+    }, []);
+
+    const loadMore = () => {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        fetchActivities(nextPage, true);
+    };
+
+    const getActionBadge = (action: string) => {
+        switch (action) {
+            case "created":
+                return <Badge className="bg-green-100 text-green-700 hover:bg-green-200 border-0">Created</Badge>;
+            case "updated":
+                return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-0">Updated</Badge>;
+            case "deleted":
+                return <Badge className="bg-red-100 text-red-700 hover:bg-red-200 border-0">Deleted</Badge>;
+            case "login":
+                return <Badge variant="secondary">Login</Badge>;
+            case "logout":
+                return <Badge variant="outline">Logout</Badge>;
+            case "configuration_changed":
+                return <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-200 border-0">Config</Badge>;
+            default:
+                return <Badge variant="outline">{action}</Badge>;
+        }
+    };
+
+    const getEntityIcon = (type: string) => {
+        switch (type) {
+            case "Promise": return <FileText className="w-4 h-4" />;
+            case "Politician": return <Users className="w-4 h-4" />;
+            case "Party": return <Landmark className="w-4 h-4" />;
+            case "Category": return <Folder className="w-4 h-4" />;
+            case "SystemConfig": return <Settings className="w-4 h-4" />;
+            default: return <FileText className="w-4 h-4" />;
+        }
+    };
+
+    const getEntityLink = (activity: Activity) => {
+        if (!activity.entityId) return null;
+
+        let basePath = "/admin";
+        switch (activity.entityType) {
+            case "Promise": basePath += `/promises/${activity.entityId}`; break;
+            case "Politician": basePath += `/politicians/${activity.entityId}`; break;
+            case "Party": basePath += `/parties/${activity.entityId}`; break;
+            case "Category": basePath += `/categories/${activity.entityId}`; break;
+            default: return null;
+        }
+
+        if (activity.action === "deleted") {
+            return <span className="font-semibold text-gray-500 line-through">{activity.entityTitle || "Deleted Entity"}</span>;
+        }
+
+        return (
+            <Link href={basePath} className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+                {activity.entityTitle || "Unknown Entity"}
+            </Link>
+        );
+    };
+
     return (
-        <div className="bg-white rounded-lg border border-g-gray-200 shadow-sm overflow-hidden flex flex-col h-full">
-            <div className="px-6 py-4 border-b border-g-gray-100 flex justify-between items-center">
-                <h2 className="text-base font-semibold text-g-gray-900">Recent Activity</h2>
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full">
+            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                <h2 className="text-base font-semibold text-gray-900">Recent Activity</h2>
             </div>
-            <div className="flex-1 overflow-y-auto">
-                {promises.map((promise, idx) => {
-                    const isLast = idx === promises.length - 1;
-                    return (
-                        <div key={promise.id} className={`flex items-start gap-4 p-4 hover:bg-g-gray-50/50 transition-colors ${!isLast ? 'border-b border-g-gray-100' : ''}`}>
-                            {/* Icon Box */}
-                            <div className="p-2 bg-g-gray-100 text-g-gray-500 rounded-lg flex-shrink-0">
-                                <FileText width={20} />
+            <div className="divide-y divide-gray-100">
+                {activities.map((activity) => (
+                    <div key={activity.id} className="p-4 hover:bg-gray-50/50 transition-colors flex items-start gap-4">
+                        <div className="p-2 bg-gray-100 text-gray-500 rounded-lg flex-shrink-0">
+                            {getEntityIcon(activity.entityType)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                <div className="flex items-center gap-2 text-xs uppercase tracking-wide">
+                                    <span className="text-gray-500 font-semibold">{activity.entityType}</span>
+                                    {getActionBadge(activity.action)}
+                                </div>
+                                <div className="text-xs text-gray-400">
+                                    {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true, locale: lv })}
+                                </div>
                             </div>
-
-                            <div className="flex-1 min-w-0">
-                                <div className="flex justify-between items-start">
-                                    <div className="space-y-0.5">
-                                        {/* Header Row */}
-                                        <div className="flex items-center gap-2 text-xs uppercase tracking-wide">
-                                            <span className="text-g-gray-500 font-semibold">PROMISE</span>
-                                            <span className="text-g-blue-600 font-bold">Updated</span>
-                                        </div>
-                                        {/* Content Row */}
-                                        <Link href={`/admin/promises/${promise.id}`} className="block">
-                                            <h4 className="text-sm font-semibold text-g-gray-900 line-clamp-1 hover:text-g-blue-600 transition-colors">
-                                                {promise.title}
-                                            </h4>
-                                        </Link>
-                                    </div>
-
-                                    <div className="text-right flex-shrink-0 ml-4">
-                                        <div className="text-xs text-g-gray-500">
-                                            {formatDistanceToNow(new Date(promise.createdAt), { addSuffix: true })}
-                                        </div>
-                                        <div className="text-xs text-g-gray-400 mt-0.5">
-                                            by Admin
-                                        </div>
-                                    </div>
+                            <div className="mt-1">
+                                <div className="text-sm">
+                                    {getEntityLink(activity)}
+                                </div>
+                                <div className="text-xs text-gray-400 mt-0.5">
+                                    by {activity.adminEmail}
                                 </div>
                             </div>
                         </div>
-                    );
-                })}
+                    </div>
+                ))}
 
-                {promises.length === 0 && (
-                    <div className="p-8 text-center text-g-gray-500 text-sm">No recent activity</div>
+                {activities.length === 0 && !loading && (
+                    <div className="p-8 text-center text-gray-500 text-sm">No recent activity</div>
+                )}
+
+                {loading && (
+                    <div className="p-4 text-center text-sm text-gray-500">Loading...</div>
+                )}
+
+                {!loading && hasMore && (
+                    <div className="p-4 text-center border-t border-gray-100">
+                        <Button variant="ghost" size="sm" onClick={loadMore}>
+                            Load More
+                        </Button>
+                    </div>
                 )}
             </div>
         </div>

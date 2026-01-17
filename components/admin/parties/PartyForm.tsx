@@ -105,6 +105,8 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
         const newErrors: { [key: string]: string } = {};
         if (!formData.name.trim()) newErrors.name = "Party name cannot be blank";
         if (!formData.slug.trim()) newErrors.slug = "Slug cannot be blank";
+        if (!formData.logoUrl.trim()) newErrors.logoUrl = "Logo is required";
+        if (!formData.websiteUrl.trim()) newErrors.websiteUrl = "Website URL is required";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -114,6 +116,7 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
         e.preventDefault();
         if (!validate()) return;
         setLoading(true);
+        setErrors({}); // Clear previous errors
 
         try {
             const url = initialData
@@ -122,22 +125,50 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
 
             const method = initialData ? "PUT" : "POST";
 
+            // Normalize URL: add protocol if missing
+            let formattedWebsiteUrl = formData.websiteUrl.trim();
+            if (formattedWebsiteUrl && !/^https?:\/\//i.test(formattedWebsiteUrl)) {
+                formattedWebsiteUrl = `https://${formattedWebsiteUrl}`;
+            }
+
+            const bodyData = {
+                ...formData,
+                websiteUrl: formattedWebsiteUrl
+            };
+
             const res = await fetch(url, {
                 method,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(bodyData),
             });
 
             if (res.ok) {
                 router.refresh();
                 onSuccess();
             } else {
-                const error = await res.json();
-                alert("Failed to save: " + JSON.stringify(error));
+                const data = await res.json();
+
+                // Handle Zod validation errors
+                if (data.details && Array.isArray(data.details)) {
+                    const serverErrors: { [key: string]: string } = {};
+                    data.details.forEach((err: any) => {
+                        // path is usually ["field_name"]
+                        const field = err.path[0];
+                        if (field) {
+                            serverErrors[field] = err.message;
+                        }
+                    });
+                    setErrors(serverErrors);
+                } else if (data.error) {
+                    // Generic error
+                    setErrors({ form: data.error });
+                } else {
+                    setErrors({ form: "Something went wrong" });
+                }
             }
         } catch (error) {
             console.error(error);
-            alert("An error occurred");
+            setErrors({ form: "An unexpected error occurred" });
         } finally {
             setLoading(false);
         }
@@ -146,6 +177,7 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
     return (
         <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-6">
+                <FormError message={errors.form} />
 
                 {/* Basic Info */}
                 <div className="space-y-2">
@@ -203,27 +235,35 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <Label className="text-foreground font-semibold">Party logo</Label>
-                        <div className="border rounded-md p-4 bg-gray-50/50 flex items-center justify-center">
+                        <Label className="text-foreground font-semibold">Party logo <span className="text-destructive">*</span></Label>
+                        <div className={cn("border rounded-md p-4 bg-gray-50/50 flex items-center justify-center", errors.logoUrl && "border-destructive")}>
                             <ImageUpload
                                 value={formData.logoUrl}
-                                onChange={(url) => setFormData({ ...formData, logoUrl: url })}
+                                onChange={(url) => {
+                                    setFormData({ ...formData, logoUrl: url });
+                                    if (errors.logoUrl) setErrors({ ...errors, logoUrl: "" });
+                                }}
                                 disabled={loading}
                                 className="w-24 h-24 aspect-square object-contain"
                             />
                         </div>
+                        <FormError message={errors.logoUrl} />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="websiteUrl" className="text-foreground font-semibold">Website URL</Label>
+                        <Label htmlFor="websiteUrl" className="text-foreground font-semibold">Website URL <span className="text-destructive">*</span></Label>
                         <Input
                             id="websiteUrl"
-                            type="url"
+                            type="text"
                             value={formData.websiteUrl}
-                            onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
+                            onChange={(e) => {
+                                setFormData({ ...formData, websiteUrl: e.target.value });
+                                if (errors.websiteUrl) setErrors({ ...errors, websiteUrl: "" });
+                            }}
                             placeholder="https://example.com"
-                            className="bg-background"
+                            className={cn("bg-background", errors.websiteUrl && "border-destructive focus-visible:ring-destructive")}
                         />
+                        <FormError message={errors.websiteUrl} />
                     </div>
                 </div>
 

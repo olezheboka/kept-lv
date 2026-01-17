@@ -87,4 +87,45 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
   },
+  events: {
+    async signIn({ user }) {
+      try {
+        if (user) {
+          await prisma.auditLog.create({
+            data: {
+              action: "login",
+              entityType: "User",
+              entityId: user.id,
+              entityTitle: user.email || user.name || "User",
+              adminEmail: user.email || "unknown@system.com",
+              adminId: user.id,
+              details: { role: user.role }
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Failed to log sign in:", error);
+      }
+    },
+    async signOut({ token }) {
+      try {
+        if (token) {
+          // Token is a JWT, so properties might be different depending on session callback
+          // But usually token.email and token.sub (id) are available
+          await prisma.auditLog.create({
+            data: {
+              action: "logout",
+              entityType: "User",
+              entityId: token.sub as string,
+              entityTitle: token.email as string || "User",
+              adminEmail: token.email as string || "unknown@system.com",
+              adminId: token.sub as string,
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Failed to log sign out:", error);
+      }
+    }
+  }
 });

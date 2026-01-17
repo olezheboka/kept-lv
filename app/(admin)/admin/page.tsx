@@ -149,7 +149,7 @@ export default async function AdminDashboard() {
 
       {/* Row 3: Recent Activity (full width) */}
       <div>
-        <RecentActivity promises={stats.recentPromises} />
+        <RecentActivity />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { updatePoliticianSchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
+import { logActivity } from "@/lib/audit";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -86,6 +87,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       },
     });
 
+    await logActivity("updated", "Politician", politician.id, politician.name);
+
     return NextResponse.json(politician);
   } catch (error) {
     console.error("Error updating politician:", error);
@@ -105,9 +108,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     const { id } = await params;
 
-    await prisma.politician.delete({
+    const deletedPolitician = await prisma.politician.delete({
       where: { id },
     });
+
+    await logActivity("deleted", "Politician", id, deletedPolitician.name);
 
     return NextResponse.json({ success: true });
   } catch (error) {

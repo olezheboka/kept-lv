@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createCategorySchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
+import { logActivity } from "@/lib/audit";
 
 export async function GET() {
   try {
@@ -49,6 +50,8 @@ export async function POST(request: NextRequest) {
     const category = await prisma.category.create({
       data: payload,
     });
+
+    await logActivity("created", "Category", category.id, category.name);
 
     return NextResponse.json(category, { status: 201 });
   } catch (error) {

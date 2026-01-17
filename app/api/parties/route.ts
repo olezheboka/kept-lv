@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createPartySchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
+import { logActivity } from "@/lib/audit";
 
 export async function GET() {
   try {
@@ -44,6 +45,8 @@ export async function POST(request: NextRequest) {
     const party = await prisma.party.create({
       data: parsed.data,
     });
+
+    await logActivity("created", "Party", party.id, party.name);
 
     return NextResponse.json(party, { status: 201 });
   } catch (error) {

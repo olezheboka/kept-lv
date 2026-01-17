@@ -4,6 +4,7 @@ import { updatePromiseSchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { logActivity } from "@/lib/audit";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -120,6 +121,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       },
     });
 
+    await logActivity("updated", "Promise", promise.id, promise.title, { status: promise.status });
+
     revalidatePromisePaths(id);
 
     return NextResponse.json(promise);
@@ -141,9 +144,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     const { id } = await params;
 
-    await prisma.promise.delete({
+    const deletedPromise = await prisma.promise.delete({
       where: { id },
     });
+
+    await logActivity("deleted", "Promise", id, deletedPromise.title);
 
     revalidatePromisePaths(id);
 

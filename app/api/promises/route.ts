@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { createPromiseSchema, promiseFilterSchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
+import { logActivity } from "@/lib/audit";
 
 export async function GET(request: NextRequest) {
   try {
@@ -162,6 +163,8 @@ export async function POST(request: NextRequest) {
         evidence: true,
       },
     });
+
+    await logActivity("created", "Promise", promise.id, promise.title);
 
     return NextResponse.json(promise, { status: 201 });
   } catch (error) {
