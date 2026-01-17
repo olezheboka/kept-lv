@@ -107,9 +107,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         console.error("Failed to log sign in:", error);
       }
     },
-    async signOut({ token }) {
+    async signOut(message) {
       try {
-        if (token) {
+        if ('token' in message && message.token) {
+          const token = message.token;
           // Token is a JWT, so properties might be different depending on session callback
           // But usually token.email and token.sub (id) are available
           await prisma.auditLog.create({
