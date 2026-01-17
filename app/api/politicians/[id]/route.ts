@@ -87,7 +87,27 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       },
     });
 
-    await logActivity("updated", "Politician", politician.id, politician.name);
+    // Calculate changed fields
+    const currentPolitician = await prisma.politician.findUnique({ where: { id } });
+    const updatedFields: string[] = [];
+
+    if (currentPolitician) {
+      // Compare fields
+      const changesToCheck = { ...rest, bio, education, isActive };
+      Object.entries(changesToCheck).forEach(([key, value]) => {
+        if (value !== undefined) { // Check only if provided in update
+          const currVal = currentPolitician[key as keyof typeof currentPolitician];
+          // Simple equality check, handling nulls
+          if (currVal !== value && !(currVal === null && value === undefined)) {
+            updatedFields.push(key);
+          }
+        }
+      });
+    } else {
+      updatedFields.push(...Object.keys(parsed.data));
+    }
+
+    await logActivity("updated", "Politician", politician.id, politician.name, { updatedFields });
 
     return NextResponse.json(politician);
   } catch (error) {

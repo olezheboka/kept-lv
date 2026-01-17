@@ -61,7 +61,22 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       data: parsed.data,
     });
 
-    await logActivity("updated", "Party", party.id, party.name);
+    // Calculate changed fields
+    const currentParty = await prisma.party.findUnique({ where: { id } });
+    const updatedFields: string[] = [];
+
+    if (currentParty) {
+      Object.entries(parsed.data).forEach(([key, value]) => {
+        const k = key as keyof typeof currentParty;
+        if (currentParty[k] !== value) {
+          updatedFields.push(key);
+        }
+      });
+    } else {
+      updatedFields.push(...Object.keys(parsed.data));
+    }
+
+    await logActivity("updated", "Party", party.id, party.name, { updatedFields });
 
     return NextResponse.json(party);
   } catch (error) {

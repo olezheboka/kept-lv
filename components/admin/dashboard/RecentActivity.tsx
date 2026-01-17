@@ -116,37 +116,56 @@ export function RecentActivity() {
             </div>
             <div className="divide-y divide-gray-100">
                 {activities.map((activity) => (
-                    <div key={activity.id} className="p-4 hover:bg-gray-50/50 transition-colors flex items-start gap-4">
-                        <div className="p-2 bg-gray-100 text-gray-500 rounded-lg flex-shrink-0">
-                            {getEntityIcon(activity.entityType)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                                <div className="flex items-center gap-2 text-xs uppercase tracking-wide">
+                    <div key={activity.id} className="p-4 hover:bg-gray-50/50 transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                        {/* 1. Entity Column - Spans 4 columns */}
+                        <div className="md:col-span-4 flex items-start gap-3 overflow-hidden">
+                            <div className="p-2 bg-gray-100 text-gray-500 rounded-lg flex-shrink-0 mt-0.5">
+                                {getEntityIcon(activity.entityType)}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2 text-xs uppercase tracking-wide mb-0.5">
                                     <span className="text-gray-500 font-semibold">{activity.entityType}</span>
                                     {getActionBadge(activity.action)}
                                 </div>
-                                <div className="text-xs text-gray-400">
-                                    {new Date(activity.createdAt).toLocaleString("lv-LV", {
-                                        day: "2-digit",
-                                        month: "2-digit",
-                                        year: "numeric",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                        hour12: false
-                                    })}
-                                    <div className="text-[10px] text-gray-300">
-                                        {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true, locale: lv })}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="mt-1">
-                                <div className="text-sm">
+                                <div className="text-sm font-medium truncate" title={activity.entityTitle || ""}>
                                     {getEntityLink(activity)}
                                 </div>
-                                <div className="text-xs text-gray-400 mt-0.5">
-                                    by {activity.adminEmail}
+                            </div>
+                        </div>
+
+                        {/* 2. Changes Column - Spans 4 columns */}
+                        <div className="md:col-span-4 min-w-0">
+                            {activity.action === "updated" && activity.details?.updatedFields && Array.isArray(activity.details.updatedFields) ? (
+                                <div className="text-xs text-gray-500 break-words line-clamp-2" title={activity.details.updatedFields.join(", ")}>
+                                    <span className="font-semibold text-gray-400 mr-1">Updated:</span>
+                                    {activity.details.updatedFields.join(", ")}
                                 </div>
+                            ) : (
+                                <span className="text-xs text-gray-300">-</span>
+                            )}
+                        </div>
+
+                        {/* 3. Author Column - Spans 2 columns */}
+                        <div className="md:col-span-2 min-w-0">
+                            <div className="text-xs text-gray-500 truncate" title={activity.adminEmail}>
+                                {activity.adminEmail}
+                            </div>
+                        </div>
+
+                        {/* 4. Date Column - Spans 2 columns */}
+                        <div className="md:col-span-2">
+                            <div className="text-sm text-gray-900 whitespace-nowrap">
+                                {new Date(activity.createdAt).toLocaleString("lv-LV", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: false
+                                })}
+                            </div>
+                            <div className="text-[10px] text-gray-400 whitespace-nowrap">
+                                {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true, locale: lv })}
                             </div>
                         </div>
                     </div>

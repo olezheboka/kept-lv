@@ -73,8 +73,19 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // 1. Fetch current state BEFORE update for diffing
+    const currentPromise = await prisma.promise.findUnique({
+      where: { id },
+      include: { sources: true, evidence: true }
+    });
+
+    if (!currentPromise) {
+      return NextResponse.json({ error: "Promise not found" }, { status: 404 });
+    }
+
     const { sources, evidence, dateOfPromise, ...promiseData } = parsed.data;
 
+    // 2. Perform updates
     // Delete existing sources and evidence if new ones are provided
     if (sources) {
       await prisma.source.deleteMany({ where: { promiseId: id } });
@@ -121,7 +132,45 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       },
     });
 
-    await logActivity("updated", "Promise", promise.id, promise.title, { status: promise.status });
+    // 3. Calculate changed fields using pre-update state
+    const updatedFields: string[] = [];
+
+    // Compare primitive fields
+    Object.entries(promiseData).forEach(([key, value]) => {
+      const k = key as keyof typeof promiseData;
+      // Use loose equality or JSON stringify for simple array comparisons (tags)
+      if (JSON.stringify(currentPromise[k as keyof typeof currentPromise]) !== JSON.stringify(value)) {
+        updatedFields.push(key);
+      }
+    });
+
+    // Compare dates
+    if (dateOfPromise && currentPromise.dateOfPromise.toISOString() !== new Date(dateOfPromise).toISOString()) {
+      updatedFields.push("dateOfPromise");
+    }
+
+    // Deep compare sources
+    if (sources) {
+      const oldSources = currentPromise.sources.map(s => ({ url: s.url, title: s.title, description: s.description }));
+      const newSources = sources.map(s => ({ url: s.url, title: s.title, description: s.description }));
+      if (JSON.stringify(oldSources) !== JSON.stringify(newSources)) {
+        updatedFields.push("sources");
+      }
+    }
+
+    // Deep compare evidence
+    if (evidence) {
+      const oldEvidence = currentPromise.evidence.map(e => ({ url: e.url, description: e.description }));
+      const newEvidence = evidence.map(e => ({ url: e.url, description: e.description }));
+      if (JSON.stringify(oldEvidence) !== JSON.stringify(newEvidence)) {
+        updatedFields.push("evidence");
+      }
+    }
+
+    await logActivity("updated", "Promise", promise.id, promise.title, {
+      status: promise.status,
+      updatedFields
+    });
 
     revalidatePromisePaths(id);
 
