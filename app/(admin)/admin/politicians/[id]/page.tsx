@@ -34,7 +34,7 @@ export default async function EditPoliticianPage({ params }: { params: Promise<{
     return (
         <div className="space-y-6">
             <PageHeader
-                title="Edit Politician"
+                title="Edit politician"
                 description={`Editing: ${politician.name}`}
                 breadcrumbs={[
                     { label: "Politicians", href: "/admin/politicians" },

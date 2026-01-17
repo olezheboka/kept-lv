@@ -23,7 +23,7 @@ export default async function NewPoliticianPage() {
     return (
         <div className="space-y-6">
             <PageHeader
-                title="Create Politician"
+                title="Create politician"
                 description="Add a new politician."
                 breadcrumbs={[
                     { label: "Politicians", href: "/admin/politicians" },

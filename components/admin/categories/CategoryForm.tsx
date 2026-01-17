@@ -28,12 +28,19 @@ interface CategoryFormProps {
 export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [origin, setOrigin] = useState("");
     const [formData, setFormData] = useState({
         name: "",
         slug: "",
         description: "",
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            setOrigin(window.location.origin);
+        }
+    }, []);
 
     useEffect(() => {
         if (initialData) {
@@ -101,11 +108,11 @@ export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormP
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-6">
                 <div className="space-y-2">
                     <Label htmlFor="name" className="text-foreground font-semibold">
-                        Category Name <span className="text-destructive">*</span>
+                        Category name <span className="text-destructive">*</span>
                     </Label>
                     <Input
                         id="name"
@@ -115,7 +122,7 @@ export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormP
                             if (errors.name) setErrors({ ...errors, name: "" });
                         }}
                         placeholder="e.g. Economics"
-                        className={cn(errors.name && "border-[#cf222e] focus-visible:ring-[#cf222e]")}
+                        className={cn("bg-background", errors.name && "border-destructive focus-visible:ring-destructive")}
                     />
                     <FormError message={errors.name} />
                 </div>
@@ -132,23 +139,25 @@ export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormP
                             if (errors.slug) setErrors({ ...errors, slug: "" });
                         }}
                         placeholder="economics"
-                        className={cn("font-mono text-sm", errors.slug && "border-[#cf222e] focus-visible:ring-[#cf222e]")}
+                        className={cn("font-mono text-sm bg-background", errors.slug && "border-destructive focus-visible:ring-destructive")}
                     />
-                    <FormError message={errors.slug} />
-                    <p className="text-xs text-muted-foreground">
-                        URL-friendly identifier.
-                    </p>
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                        <FormError message={errors.slug} />
+                        <span>
+                            {origin ? `${origin}/categories/${formData.slug || "[slug]"}` : `http://localhost:3000/categories/${formData.slug || "[slug]"}`}
+                        </span>
+                    </div>
                 </div>
 
                 <div className="space-y-2">
                     <Label htmlFor="description" className="text-foreground font-semibold">
-                        Add a description
+                        Description
                     </Label>
                     <Textarea
                         id="description"
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="min-h-[120px] resize-y"
+                        className="min-h-[120px] resize-y bg-background"
                         placeholder="Brief description of the category..."
                     />
                 </div>

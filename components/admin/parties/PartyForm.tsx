@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,25 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormError } from "@/components/ui/form-error";
 import { cn } from "@/lib/utils";
 import { ImageUpload } from "@/components/ui/ImageUpload";
-import { Switch } from "@/components/ui/switch";
+
+const COALITION_OPTIONS = [
+    {
+        value: true,
+        label: "In coalition",
+        description: "Part of the government",
+        icon: CheckCircle2,
+        colorClass: "text-green-500",
+        bgClass: "bg-green-100",
+    },
+    {
+        value: false,
+        label: "Opposition",
+        description: "Not in government",
+        icon: XCircle,
+        colorClass: "text-gray-500",
+        bgClass: "bg-gray-100",
+    },
+];
 
 interface Party {
     id: string;
@@ -34,6 +52,7 @@ interface PartyFormProps {
 export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [origin, setOrigin] = useState("");
     const [formData, setFormData] = useState({
         name: "",
         slug: "",
@@ -44,6 +63,12 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
         isCoalition: false,
     });
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            setOrigin(window.location.origin);
+        }
+    }, []);
 
     useEffect(() => {
         if (initialData) {
@@ -119,11 +144,13 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-6">
+
+                {/* Basic Info */}
                 <div className="space-y-2">
                     <Label htmlFor="name" className="text-foreground font-semibold">
-                        Party Name <span className="text-destructive">*</span>
+                        Party name <span className="text-destructive">*</span>
                     </Label>
                     <Input
                         id="name"
@@ -133,29 +160,31 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
                             if (errors.name) setErrors({ ...errors, name: "" });
                         }}
                         placeholder="e.g. Jaunā Vienotība"
-                        className={cn(errors.name && "border-[#cf222e] focus-visible:ring-[#cf222e]")}
+                        className={cn("bg-background", errors.name && "border-destructive focus-visible:ring-destructive")}
                     />
                     <FormError message={errors.name} />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="slug" className="text-foreground font-semibold">
-                            Slug <span className="text-destructive">*</span>
-                        </Label>
-                        <Input
-                            id="slug"
-                            value={formData.slug}
-                            onChange={(e) => {
-                                setFormData({ ...formData, slug: e.target.value });
-                                if (errors.slug) setErrors({ ...errors, slug: "" });
-                            }}
-                            placeholder="jauna-vienotiba"
-                            className={cn("font-mono text-sm", errors.slug && "border-[#cf222e] focus-visible:ring-[#cf222e]")}
-                        />
+                <div className="space-y-2">
+                    <Label htmlFor="slug" className="text-foreground font-semibold">
+                        Slug <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                        id="slug"
+                        value={formData.slug}
+                        onChange={(e) => {
+                            setFormData({ ...formData, slug: e.target.value });
+                            if (errors.slug) setErrors({ ...errors, slug: "" });
+                        }}
+                        placeholder="jauna-vienotiba"
+                        className={cn("font-mono text-sm bg-background", errors.slug && "border-destructive focus-visible:ring-destructive")}
+                    />
+                    <div className="flex justify-between text-xs text-muted-foreground">
                         <FormError message={errors.slug} />
+                        <span>
+                            {origin ? `${origin}/parties/${formData.slug || "[slug]"}` : `http://localhost:3000/parties/${formData.slug || "[slug]"}`}
+                        </span>
                     </div>
-                    <p className="text-xs text-muted-foreground">Unique identifier linked to URL.</p>
                 </div>
 
                 <div className="space-y-2">
@@ -168,12 +197,13 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         rows={3}
                         placeholder="Brief description..."
+                        className="bg-background"
                     />
                 </div>
 
                 <div className="space-y-2">
-                    <Label className="text-foreground font-semibold">Party Logo</Label>
-                    <div className="border rounded-md p-4 bg-muted/20">
+                    <Label className="text-foreground font-semibold">Party logo</Label>
+                    <div className="border rounded-md p-4 bg-gray-50/50">
                         <ImageUpload
                             value={formData.logoUrl}
                             onChange={(url) => setFormData({ ...formData, logoUrl: url })}
@@ -187,25 +217,50 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
                     <Input
                         id="websiteUrl"
                         type="url"
-                        required
                         value={formData.websiteUrl}
                         onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}
                         placeholder="https://example.com"
+                        className="bg-background"
                     />
                 </div>
 
-                <div className="flex items-center gap-3 p-3 border rounded-md bg-muted/20">
-                    <Switch
-                        id="isCoalition"
-                        checked={formData.isCoalition}
-                        onCheckedChange={(checked) => setFormData({ ...formData, isCoalition: checked })}
-                        className="data-[state=checked]:bg-blue-600"
-                    />
-                    <div>
-                        <Label htmlFor="isCoalition" className="cursor-pointer font-medium">In Coalition</Label>
-                        <p className="text-xs text-muted-foreground">
-                            Toggle on if this party is part of the government coalition.
-                        </p>
+                <div className="pt-2">
+                    <h2 className="text-lg font-bold text-foreground mb-4">Coalition status</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {COALITION_OPTIONS.map((option) => {
+                            const isSelected = formData.isCoalition === option.value;
+                            const Icon = option.icon;
+
+                            return (
+                                <div
+                                    key={String(option.value)}
+                                    onClick={() => setFormData({ ...formData, isCoalition: option.value })}
+                                    className={cn(
+                                        "relative flex flex-col p-4 rounded-xl border-2 transition-all cursor-pointer hover:shadow-md",
+                                        isSelected
+                                            ? "border-blue-500 bg-card shadow-sm"
+                                            : "border-border hover:border-gray-300 dark:hover:border-gray-700 bg-card/50"
+                                    )}
+                                >
+                                    <div className="flex justify-between items-start mb-3">
+                                        <div className={cn("p-2 rounded-lg", option.bgClass)}>
+                                            <Icon className={cn("w-5 h-5", option.colorClass)} />
+                                        </div>
+                                        <div className={cn(
+                                            "w-5 h-5 rounded-full border flex items-center justify-center",
+                                            isSelected ? "border-blue-500" : "border-gray-300"
+                                        )}>
+                                            {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />}
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <p className="font-semibold text-sm text-foreground">{option.label}</p>
+                                        <p className="text-xs text-muted-foreground">{option.description}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>

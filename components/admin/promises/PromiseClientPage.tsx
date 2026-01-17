@@ -220,11 +220,10 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-4">
                 <div className="w-full sm:w-[350px]">
-                    <span className="text-sm font-medium mb-1.5 block text-gray-700">Search</span>
                     <div className="relative">
                         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
                         <Input
-                            placeholder="Title, status, author, description..."
+                            placeholder="Search promises..."
                             value={localSearchQuery}
                             onChange={(e) => handleSearchChange(e.target.value)}
                             className="bg-white pl-9"
@@ -232,7 +231,6 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                     </div>
                 </div>
                 <div className="w-full sm:w-[250px]">
-                    <span className="text-sm font-medium mb-1.5 block text-gray-700">Author</span>
                     <MultiSelectDropdown
                         options={authorOptions}
                         selected={selectedAuthors}
@@ -244,7 +242,6 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                     />
                 </div>
                 <div className="w-full sm:w-[250px]">
-                    <span className="text-sm font-medium mb-1.5 block text-gray-700">Category</span>
                     <MultiSelectDropdown
                         options={categoryOptions}
                         selected={selectedCategories}
@@ -306,7 +303,9 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                                     {getSortIcon('createdAt')}
                                 </div>
                             </TableHead>
-                            <TableHead className="text-right py-3 pr-6"></TableHead>
+                            <TableHead className="text-right font-medium text-xs uppercase tracking-wider text-gray-500 py-3 pr-6">
+                                ACTIONS
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

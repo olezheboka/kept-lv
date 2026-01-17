@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 async function getPoliticians() {
   return prisma.politician.findMany({
     include: {
-      party: { select: { name: true } },
+      party: { select: { name: true, id: true } },
       _count: { select: { promises: true } },
     },
     orderBy: { name: "asc" },
