@@ -117,8 +117,8 @@ export function RecentActivity() {
             <div className="divide-y divide-gray-100">
                 {activities.map((activity) => (
                     <div key={activity.id} className="p-4 hover:bg-gray-50/50 transition-colors grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-                        {/* 1. Entity Column - Spans 4 columns */}
-                        <div className="md:col-span-4 flex items-start gap-3 overflow-hidden">
+                        {/* 1. Entity & Author Column - Spans 5 columns */}
+                        <div className="md:col-span-5 flex items-start gap-3 overflow-hidden">
                             <div className="p-2 bg-gray-100 text-gray-500 rounded-lg flex-shrink-0 mt-0.5">
                                 {getEntityIcon(activity.entityType)}
                             </div>
@@ -130,11 +130,14 @@ export function RecentActivity() {
                                 <div className="text-sm font-medium truncate" title={activity.entityTitle || ""}>
                                     {getEntityLink(activity)}
                                 </div>
+                                <div className="text-xs text-gray-500 truncate mt-0.5" title={activity.adminEmail}>
+                                    by {activity.adminEmail}
+                                </div>
                             </div>
                         </div>
 
-                        {/* 2. Changes Column - Spans 4 columns */}
-                        <div className="md:col-span-4 min-w-0">
+                        {/* 2. Changes Column - Spans 5 columns */}
+                        <div className="md:col-span-5 min-w-0">
                             {activity.action === "updated" && activity.details?.updatedFields && Array.isArray(activity.details.updatedFields) ? (
                                 <div className="text-xs text-gray-500 break-words line-clamp-2" title={activity.details.updatedFields.join(", ")}>
                                     <span className="font-semibold text-gray-400 mr-1">Updated:</span>
@@ -143,13 +146,6 @@ export function RecentActivity() {
                             ) : (
                                 <span className="text-xs text-gray-300">-</span>
                             )}
-                        </div>
-
-                        {/* 3. Author Column - Spans 2 columns */}
-                        <div className="md:col-span-2 min-w-0">
-                            <div className="text-xs text-gray-500 truncate" title={activity.adminEmail}>
-                                {activity.adminEmail}
-                            </div>
                         </div>
 
                         {/* 4. Date Column - Spans 2 columns */}

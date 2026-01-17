@@ -184,6 +184,21 @@
     body {
       @apply bg-background text-foreground;
     }
+
+    button,
+    [type='button'],
+    [type='reset'],
+    [type='submit'],
+    label,
+    select {
+      @apply cursor-pointer;
+    }
+
+    :disabled,
+    [disabled],
+    [aria-disabled='true'] {
+      @apply cursor-not-allowed;
+    }
   }
 
   @theme inline {

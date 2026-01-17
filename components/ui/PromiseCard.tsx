@@ -28,7 +28,7 @@ export function PromiseCard({ promise }: PromiseCardProps) {
         glass-card
         p-8 mb-6
         transition-all duration-300
-        group cursor-pointer"
+        group"
     >
       {/* Status Badge - Top Right */}
       <div className="absolute top-6 right-6 z-10">
