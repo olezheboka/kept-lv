@@ -95,7 +95,7 @@ export function TotalPromisesCard({ stats }: TotalPromisesCardProps) {
         <div className="bg-white rounded-lg border border-g-gray-200 shadow-sm overflow-hidden flex flex-col h-full">
             {/* Header */}
             <div className="px-6 py-4 border-b border-g-gray-100">
-                <h2 className="text-base font-semibold text-g-gray-900">Total Promises</h2>
+                <h2 className="text-base font-semibold text-g-gray-900">Total promises</h2>
             </div>
 
             <div className="p-6 flex flex-col flex-1">
@@ -156,7 +156,7 @@ export function TotalPromisesCard({ stats }: TotalPromisesCardProps) {
 export function TotalPoliticiansCard({ stats }: { stats: DashboardStatsData }) {
     return (
         <TopEntitiesCard
-            title="Total Politicians"
+            title="Total politicians"
             totalCount={stats.totalPoliticians}
             topEntities={stats.topPoliticians}
             emptyText="No politicians active"
@@ -168,7 +168,7 @@ export function TotalPoliticiansCard({ stats }: { stats: DashboardStatsData }) {
 export function TotalPartiesCard({ stats }: { stats: DashboardStatsData }) {
     return (
         <TopEntitiesCard
-            title="Total Parties"
+            title="Total parties"
             totalCount={stats.totalParties}
             topEntities={stats.topParties}
             emptyText="No parties active"
@@ -180,7 +180,7 @@ export function TotalPartiesCard({ stats }: { stats: DashboardStatsData }) {
 export function TotalCategoriesCard({ stats }: { stats: DashboardStatsData }) {
     return (
         <TopEntitiesCard
-            title="Total Categories"
+            title="Total categories"
             totalCount={stats.totalCategories}
             topEntities={stats.topCategories}
             emptyText="No categories active"

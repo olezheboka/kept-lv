@@ -65,14 +65,14 @@ export function AdminSidebar() {
                     href="/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    title="Visit Public Site"
+                    title="Open public site"
                     className={cn(
                         "flex items-center gap-3 text-sm font-medium text-g-gray-600 hover:text-g-blue-600 transition-colors w-full px-3 py-2 rounded-md hover:bg-g-blue-50",
                         collapsed && "justify-center px-0"
                     )}
                 >
                     <ExternalLink width={18} strokeWidth={1.5} />
-                    {!collapsed && <span className="whitespace-nowrap">Visit Public Site</span>}
+                    {!collapsed && <span className="whitespace-nowrap">Open public site</span>}
                 </Link>
             </div>
 

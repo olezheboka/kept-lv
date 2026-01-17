@@ -70,7 +70,7 @@ export function StatusBreakdown({ stats }: StatusBreakdownProps) {
         <div className="bg-white rounded-lg border border-g-gray-200 shadow-sm overflow-hidden">
             {/* Heading - matching RecentActivity style */}
             <div className="px-6 py-4 border-b border-g-gray-100">
-                <h2 className="text-base font-semibold text-g-gray-900">Promise Status Breakdown</h2>
+                <h2 className="text-base font-semibold text-g-gray-900">Promise status breakdown</h2>
             </div>
 
             <div className="p-6">

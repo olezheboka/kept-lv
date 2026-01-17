@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FileText, Users, Landmark, Folder, LogIn, LogOut, Settings, Trash2, Plus, Edit, AlertTriangle } from "lucide-react";
-
+import { formatDistanceToNow } from "date-fns";
+import { lv } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -111,7 +112,7 @@ export function RecentActivity() {
     return (
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full">
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-                <h2 className="text-base font-semibold text-gray-900">Recent Activity</h2>
+                <h2 className="text-base font-semibold text-gray-900">Recent activity</h2>
             </div>
             <div className="divide-y divide-gray-100">
                 {activities.map((activity) => (
@@ -134,6 +135,9 @@ export function RecentActivity() {
                                         minute: "2-digit",
                                         hour12: false
                                     })}
+                                    <div className="text-[10px] text-gray-300">
+                                        {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true, locale: lv })}
+                                    </div>
                                 </div>
                             </div>
                             <div className="mt-1">
