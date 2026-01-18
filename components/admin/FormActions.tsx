@@ -18,26 +18,33 @@ export function FormActions({
     className
 }: FormActionsProps) {
     return (
-        <div className={cn(
-            "sticky bottom-0 z-40 flex items-center gap-3 py-4 -mx-6 -mb-6 px-6 bg-white/80 backdrop-blur-sm dark:bg-slate-950/80 border-t mt-8",
-            className
-        )}>
-            <Button
-                type="button"
-                variant="ghost"
-                onClick={onCancel}
-                disabled={loading}
-            >
-                Cancel
-            </Button>
-            <Button
-                type="submit"
-                disabled={loading}
-                className="min-w-[100px]"
-            >
-                {loading && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
-                {submitLabel}
-            </Button>
-        </div>
+        <>
+            {/* Spacer to prevent content from being hidden behind fixed footer */}
+            <div className="h-20" />
+
+            <div className={cn(
+                "fixed bottom-0 left-0 right-0 z-50 py-4 px-6 bg-white/80 backdrop-blur-md dark:bg-slate-950/80 border-t flex justify-center",
+                className
+            )}>
+                <div className="w-full max-w-5xl flex items-center justify-end gap-3 px-6">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={onCancel}
+                        disabled={loading}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        type="submit"
+                        disabled={loading}
+                        className="min-w-[100px]"
+                    >
+                        {loading && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
+                        {submitLabel}
+                    </Button>
+                </div>
+            </div>
+        </>
     );
 }
