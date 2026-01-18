@@ -138,7 +138,7 @@ export function RecentActivity() {
 
                         {/* 2. Changes Column - Spans 5 columns */}
                         <div className="md:col-span-5 min-w-0">
-                            {activity.action === "updated" && activity.details?.updatedFields && Array.isArray(activity.details.updatedFields) ? (
+                            {(activity.action === "updated" || activity.action === "configuration_changed") && activity.details?.updatedFields && Array.isArray(activity.details.updatedFields) ? (
                                 <div className="text-xs text-gray-500 break-words line-clamp-2" title={(activity.details.updatedFields as string[]).join(", ")}>
                                     <span className="font-semibold text-gray-400 mr-1">Updated:</span>
                                     {(activity.details.updatedFields as string[]).map(field => {

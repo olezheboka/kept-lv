@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { logActivity } from "@/lib/audit";
 // import { revalidatePath } from "next/cache";
 
 export async function GET() {
@@ -30,6 +31,14 @@ export async function POST(req: Request) {
         });
 
         await prisma.$transaction(updates);
+
+        await logActivity(
+            "configuration_changed",
+            "SystemConfig",
+            null,
+            "System Configuration",
+            { updatedFields: Object.keys(body) }
+        );
 
         return NextResponse.json({ success: true });
     } catch (error) {
