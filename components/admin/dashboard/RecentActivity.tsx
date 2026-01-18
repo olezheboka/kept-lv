@@ -141,7 +141,11 @@ export function RecentActivity() {
                             {activity.action === "updated" && activity.details?.updatedFields && Array.isArray(activity.details.updatedFields) ? (
                                 <div className="text-xs text-gray-500 break-words line-clamp-2" title={(activity.details.updatedFields as string[]).join(", ")}>
                                     <span className="font-semibold text-gray-400 mr-1">Updated:</span>
-                                    {(activity.details.updatedFields as string[]).join(", ")}
+                                    {(activity.details.updatedFields as string[]).map(field => {
+                                        if (field === "explanation") return "statusJustification";
+                                        if (field === "sources") return "justificationSource";
+                                        return field;
+                                    }).join(", ")}
                                 </div>
                             ) : (
                                 <span className="text-xs text-gray-300">-</span>
