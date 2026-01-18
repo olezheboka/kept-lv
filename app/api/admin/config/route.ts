@@ -21,24 +21,54 @@ export async function POST(req: Request) {
     try {
         const body = await req.json();
 
-        // Dynamic upsert for all provided keys
-        const updates = Object.entries(body).map(([key, value]) => {
-            return prisma.systemConfig.upsert({
-                where: { key },
-                update: { value: String(value || "") },
-                create: { key, value: String(value || "") },
-            });
+        // 1. Fetch current config to compare
+        const currentConfigs = await prisma.systemConfig.findMany();
+        const currentConfigMap = currentConfigs.reduce((acc: Record<string, string>, curr) => {
+            acc[curr.key] = curr.value;
+            return acc;
+        }, {} as Record<string, string>);
+
+        // 2. Identify changed fields
+        const changedKeys: string[] = [];
+        const updates: any[] = [];
+
+        Object.entries(body).forEach(([key, value]) => {
+            const stringValue = String(value || "");
+            const currentValue = currentConfigMap[key] || "";
+
+            if (stringValue !== currentValue) {
+                changedKeys.push(key);
+                updates.push(
+                    prisma.systemConfig.upsert({
+                        where: { key },
+                        update: { value: stringValue },
+                        create: { key, value: stringValue },
+                    })
+                );
+            }
         });
 
+        // 3. If no changes, return early
+        if (changedKeys.length === 0) {
+            return NextResponse.json({ success: true, message: "No changes detected" });
+        }
+
+        // 4. Apply updates
         await prisma.$transaction(updates);
 
-        await logActivity(
-            "configuration_changed",
-            "SystemConfig",
-            null,
-            "System Configuration",
-            { updatedFields: Object.keys(body) }
-        );
+        // 5. Log activity (wrapped in try/catch so it doesn't fail the request)
+        try {
+            await logActivity(
+                "configuration_changed",
+                "SystemConfig",
+                null,
+                "System Configuration",
+                { updatedFields: changedKeys }
+            );
+        } catch (logError) {
+            console.error("Failed to log activity:", logError);
+            // Don't fail the request if logging fails
+        }
 
         return NextResponse.json({ success: true });
     } catch (error) {

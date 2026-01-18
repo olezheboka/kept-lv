@@ -31,10 +31,7 @@ export default async function ConfigPage() {
         googleVerificationId: config.googleVerificationId || "",
     };
 
-    async function handleSuccess() {
-        "use server";
-        redirect("/admin/config");
-    }
+
 
     async function handleCancel() {
         "use server";
@@ -55,7 +52,6 @@ export default async function ConfigPage() {
                 <CardContent className="p-6">
                     <ConfigForm
                         initialData={initialData}
-                        onSuccess={handleSuccess}
                         onCancel={handleCancel}
                     />
                 </CardContent>
