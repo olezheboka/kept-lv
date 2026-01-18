@@ -2,13 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { updatePromiseSchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
-import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { logActivity } from "@/lib/audit";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
-const LOCALES = ["lv", "en", "ru"];
+// const LOCALES = ["lv", "en", "ru"];
 
 function revalidatePromisePaths(promiseId: string) {
   revalidatePath("/promises");

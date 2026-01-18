@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+// import { revalidatePath } from "next/cache";
 
 export async function GET() {
     try {
-        // @ts-ignore
+        // @ts-expect-error Safe to ignore
         const configs = await prisma.systemConfig.findMany();
         const configMap = configs.reduce((acc: Record<string, string>, curr: { key: string; value: string }) => {
             acc[curr.key] = curr.value;
@@ -12,7 +12,7 @@ export async function GET() {
         }, {} as Record<string, string>);
 
         return NextResponse.json(configMap);
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Failed to fetch config" }, { status: 500 });
     }
 }
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
         // Dynamic upsert for all provided keys
         const updates = Object.entries(body).map(([key, value]) => {
-            // @ts-ignore
+            // @ts-expect-error Safe to ignore
             return prisma.systemConfig.upsert({
                 where: { key },
                 update: { value: String(value || "") },

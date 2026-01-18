@@ -22,10 +22,12 @@ import { PromiseForm } from "@/components/admin/promises/PromiseForm";
 import { PoliticianForm } from "@/components/admin/politicians/PoliticianForm";
 import { PartyForm } from "@/components/admin/parties/PartyForm";
 
+import { PartyUI, PoliticianUI, CategoryUI } from "@/lib/db";
+
 interface AdminNavbarProps {
-    politicians: any[];
-    categories: any[];
-    parties: any[];
+    politicians: PoliticianUI[];
+    categories: CategoryUI[];
+    parties: PartyUI[];
 }
 
 export function AdminNavbar({ politicians, categories, parties }: AdminNavbarProps) {

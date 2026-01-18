@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { getPoliticianBySlug, getPartyBySlug, getPromisesByPolitician } from '@/lib/db';
 import { PoliticianDetailClient } from '@/components/PoliticianDetailClient';
-import { PartyUI } from '@/lib/db';
 
 interface PageProps {
     params: Promise<{ id: string }>;

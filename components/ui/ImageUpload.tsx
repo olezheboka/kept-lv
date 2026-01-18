@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Upload, X, Loader2, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Loader2 } from "lucide-react";
 
 interface ImageUploadProps {
     value?: string | null;
@@ -60,6 +60,7 @@ export function ImageUpload({ value, onChange, disabled, className }: ImageUploa
             <div className="flex flex-col gap-4">
                 {value ? (
                     <div className={cn("relative rounded-lg overflow-hidden border bg-muted", className || "aspect-video w-full max-w-sm")}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                             src={value}
                             alt="Uploaded image"

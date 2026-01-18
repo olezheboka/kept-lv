@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { FileText, Users, Landmark, Folder, LogIn, LogOut, Settings, Trash2, Plus, Edit, AlertTriangle } from "lucide-react";
+import { FileText, Users, Landmark, Folder, Settings } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { lv } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ interface Activity {
     entityId: string | null;
     entityTitle: string | null;
     createdAt: string;
-    details: any;
+    details: Record<string, unknown>;
 }
 
 export function RecentActivity() {
@@ -139,9 +139,9 @@ export function RecentActivity() {
                         {/* 2. Changes Column - Spans 5 columns */}
                         <div className="md:col-span-5 min-w-0">
                             {activity.action === "updated" && activity.details?.updatedFields && Array.isArray(activity.details.updatedFields) ? (
-                                <div className="text-xs text-gray-500 break-words line-clamp-2" title={activity.details.updatedFields.join(", ")}>
+                                <div className="text-xs text-gray-500 break-words line-clamp-2" title={(activity.details.updatedFields as string[]).join(", ")}>
                                     <span className="font-semibold text-gray-400 mr-1">Updated:</span>
-                                    {activity.details.updatedFields.join(", ")}
+                                    {(activity.details.updatedFields as string[]).join(", ")}
                                 </div>
                             ) : (
                                 <span className="text-xs text-gray-300">-</span>

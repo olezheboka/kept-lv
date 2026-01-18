@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
-import { Loader2, CheckCircle2, XCircle, HelpCircle, PieChart, Info, User, Folder } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, HelpCircle, PieChart, User, Folder } from "lucide-react";
 // ... (rest of imports remains the same, I will use multi_replace for this to avoid large context matching issues if possible, but replace_file_content is requested. I'll split into 2 replacements for safety)
 
 // ... actually I should do the imports separately. Let's do the imports first.
@@ -17,13 +17,7 @@ import { SearchableSelect } from "@/components/ui/searchable-select";
 import { TagInput } from "@/components/ui/tag-input";
 import { DatePicker } from "@/components/ui/date-picker";
 import { cn } from "@/lib/utils";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+// unused imports removed
 
 interface Politician {
     id: string;
@@ -135,6 +129,7 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
 
         // Check if it's already a valid kebab-case status
         if (["in-progress", "kept", "broken", "partially-kept", "not-rated"].includes(status)) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return status as any;
         }
 
@@ -148,6 +143,7 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
             "NOT_RATED": "not-rated"
         };
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (map[status] || "in-progress") as any;
     };
 

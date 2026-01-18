@@ -34,7 +34,7 @@ export function DeleteButton({ id, type, variant = "text", className }: DeleteBu
       } else {
         alert("Failed to delete");
       }
-    } catch (error) {
+    } catch {
       alert("Failed to delete");
     } finally {
       setLoading(false);

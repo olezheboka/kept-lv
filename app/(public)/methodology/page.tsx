@@ -1,10 +1,10 @@
 "use client";
 
-import Link from 'next/link';
+// import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle2, Users, BookOpen, Shield, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Users, BookOpen, Shield } from 'lucide-react';
 
 // Reusing About content as seen in Lovable app configuration
 // In a real scenario, this might need distinct content

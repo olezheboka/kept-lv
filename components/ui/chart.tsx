@@ -61,7 +61,7 @@ const ChartContainer = React.forwardRef<
 ChartContainer.displayName = "Chart";
 
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
-  const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color);
+  const colorConfig = Object.entries(config).filter(([, config]) => config.theme || config.color);
 
   if (!colorConfig.length) {
     return null;
@@ -100,10 +100,14 @@ const ChartTooltipContent = React.forwardRef<
     indicator?: "line" | "dot" | "dashed";
     nameKey?: string;
     labelKey?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     payload?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     label?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     labelFormatter?: any;
     labelClassName?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     formatter?: any;
     color?: string;
   }
@@ -168,6 +172,7 @@ const ChartTooltipContent = React.forwardRef<
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {payload.map((item: any, index: number) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`;
             const itemConfig = getPayloadConfigFromPayload(config, item, key);
@@ -176,10 +181,7 @@ const ChartTooltipContent = React.forwardRef<
             return (
               <div
                 key={item.dataKey}
-                className={cn(
-                  "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
-                  indicator === "dot" && "items-center",
-                )}
+                className="flex gap-2 min-w-[8rem] items-center"
               >
                 {formatter && item?.value !== undefined && item.name ? (
                   formatter(item.value, item.name, item, index, item.payload)
@@ -241,6 +243,7 @@ const ChartLegendContent = React.forwardRef<
   Pick<RechartsPrimitive.LegendProps, "verticalAlign"> & {
     hideIcon?: boolean;
     nameKey?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     payload?: any[];
   }
 >(({ className, hideIcon = false, payload, verticalAlign = "bottom", nameKey }, ref) => {

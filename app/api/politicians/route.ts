@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createPoliticianSchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
-import { Prisma } from "@prisma/client";
 import { logActivity } from "@/lib/audit";
 
 export async function GET(request: NextRequest) {

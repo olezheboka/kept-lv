@@ -13,7 +13,6 @@ import {
     Folder,
     LogOut,
     ExternalLink,
-    Activity,
     ChevronLeft,
     Settings
 } from "lucide-react";

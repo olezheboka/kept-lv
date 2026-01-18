@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { updatePoliticianSchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
-import { Prisma } from "@prisma/client";
+// import { revalidatePath } from "next/cache";
 import { logActivity } from "@/lib/audit";
 
 type RouteParams = { params: Promise<{ id: string }> };

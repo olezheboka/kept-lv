@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createCategorySchema } from "@/lib/validators";
+// import { createCategorySchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
 import { logActivity } from "@/lib/audit";
 

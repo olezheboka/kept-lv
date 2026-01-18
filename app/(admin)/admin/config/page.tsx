@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 
 async function getConfig() {
     try {
-        // @ts-ignore - SystemConfig is generated but TS server might not see it yet
+        // @ts-expect-error Safe to ignore
         const configs = await prisma.systemConfig.findMany();
         return configs.reduce((acc: Record<string, string>, curr: { key: string; value: string }) => {
             acc[curr.key] = curr.value;

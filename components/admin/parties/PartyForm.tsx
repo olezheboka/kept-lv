@@ -49,7 +49,7 @@ interface PartyFormProps {
     parties?: Party[]; // Pass if needed for logic, though mainly self-references here
 }
 
-export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFormProps) {
+export function PartyForm({ initialData, onSuccess, onCancel }: PartyFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [origin, setOrigin] = useState("");
@@ -151,6 +151,7 @@ export function PartyForm({ initialData, parties, onSuccess, onCancel }: PartyFo
                 // Handle Zod validation errors
                 if (data.details && Array.isArray(data.details)) {
                     const serverErrors: { [key: string]: string } = {};
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     data.details.forEach((err: any) => {
                         // path is usually ["field_name"]
                         const field = err.path[0];

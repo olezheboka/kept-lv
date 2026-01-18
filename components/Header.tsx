@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Link, useRouter } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
@@ -36,7 +36,7 @@ export const Header = () => {
     categories: { id: string; name: string; slug?: string }[];
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
 
   useEffect(() => {
     const timer = setTimeout(async () => {

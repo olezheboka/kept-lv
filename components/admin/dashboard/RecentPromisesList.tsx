@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/StatusBadge";
-import { mapStatusToUI, cn } from "@/lib/utils";
-export function RecentPromisesList({ promises }: { promises: any[] }) {
+import { mapStatusToUI } from "@/lib/utils";
+export function RecentPromisesList({ promises }: { promises: Array<{ id: string; title: string; status: string; politician: { name: string }; category?: { name: string } }> }) {
     return (
         <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center justify-between">
@@ -33,7 +32,7 @@ export function RecentPromisesList({ promises }: { promises: any[] }) {
                                 <p className="text-xs text-muted-foreground mt-1 flex items-center gap-2">
                                     <span className="font-medium text-foreground/80">{promise.politician.name}</span>
                                     <span className="text-border">•</span>
-                                    <span>{(promise.category as any)?.name || 'Uncategorized'}</span>
+                                    <span>{promise.category?.name || 'Uncategorized'}</span>
                                 </p>
                             </div>
                             <div className="flex-shrink-0">

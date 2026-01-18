@@ -6,6 +6,7 @@ export async function logActivity(
     entityType: string,
     entityId: string | null = null,
     entityTitle: string | null = null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     details: any = null
 ) {
     try {

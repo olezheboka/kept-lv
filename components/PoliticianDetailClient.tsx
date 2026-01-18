@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { StatusBadge } from '@/components/StatusBadge';
-import { PartyBadge } from '@/components/PartyBadge';
+// import { StatusBadge } from '@/components/StatusBadge';
+// import { PartyBadge } from '@/components/PartyBadge';
 import { PromiseCard } from '@/components/PromiseCard';
 import { PerformanceCard } from '@/components/PerformanceCard';
 import { Button } from '@/components/ui/button';

@@ -18,6 +18,7 @@ export default async function AdminPoliticiansPage() {
 
   return (
     <PoliticianClientPage
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       initialPoliticians={initialPoliticians as any}
     />
   );

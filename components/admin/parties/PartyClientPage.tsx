@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { DeleteButton } from "@/components/ui/DeleteButton";
-import { MultiSelectDropdown } from "@/components/ui/multi-select-dropdown";
+// import { MultiSelectDropdown } from "@/components/ui/multi-select-dropdown"; // Unused
 import { Search, Pencil, ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Eye } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -103,10 +103,12 @@ export default function PartyClientPage({ initialParties }: PartyClientPageProps
 
     // Sort parties
     const sortedParties = useMemo(() => {
-        let sortable = [...filteredParties];
+        const sortable = [...filteredParties];
         if (sortConfig !== null) {
             sortable.sort((a, b) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let aValue: any = a[sortConfig.key as keyof Party];
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let bValue: any = b[sortConfig.key as keyof Party];
 
                 if (sortConfig.key === 'politicians') {

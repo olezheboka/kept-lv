@@ -3,12 +3,12 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { StatusBadge } from '@/components/StatusBadge';
-import { PartyBadge } from '@/components/PartyBadge';
+// import { PartyBadge } from '@/components/PartyBadge';
 import { PromiseCard } from '@/components/PromiseCard';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+// import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent } from '@/components/ui/card';
-import { Clock, ArrowLeft, Share2, Calendar, User, Tag, Link2, MessageCircle, Send, Check, Copy } from 'lucide-react';
+import { ArrowLeft, Share2, Calendar, Tag, Link2, MessageCircle, Send, Copy } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -18,7 +18,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { format } from 'date-fns';
 import { PromiseUI, PoliticianUI, PartyUI, CategoryUI } from '@/lib/db';
-import { CATEGORIES } from '@/lib/types';
+// import { CATEGORIES } from '@/lib/types';
 
 interface PromiseDetailClientProps {
     promise: PromiseUI | null;

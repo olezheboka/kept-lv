@@ -2,15 +2,15 @@
 
 import { memo } from 'react';
 
-import { CATEGORIES } from '@/lib/types';
+// import { CATEGORIES } from '@/lib/types';
 import { StatusBadge } from './StatusBadge';
-import { PartyBadge } from './PartyBadge';
+// import { PartyBadge } from './PartyBadge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+// import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { PromiseUI, PartyUI, PoliticianUI } from '@/lib/db';
 import { getPromiseUrl } from '@/lib/promise-url';
 
@@ -22,8 +22,8 @@ interface PromiseCardProps {
   party?: PartyUI;
 }
 
-const PromiseCardComponent = ({ promise, index = 0, hideLastUpdated = false }: PromiseCardProps) => {
-  const category = CATEGORIES.find(c => c.id === promise.categorySlug);
+const PromiseCardComponent = ({ promise }: PromiseCardProps) => {
+  // const category = CATEGORIES.find(c => c.id === promise.categorySlug);
 
   return (
     <motion.div

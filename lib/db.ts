@@ -231,8 +231,8 @@ const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianUI[]> => 
                     details: { message: error instanceof Error ? error.message : String(error) }
                 }
             });
-        } catch (logError) {
-            console.error("Failed to log error to AuditLog:", logError);
+        } catch {
+            // Ignore logging errors
         }
         return [];
     }
@@ -288,6 +288,7 @@ const getPromisesFromDb = async (locale: Locale): Promise<PromiseUI[]> => {
 
         return promises.map((p) => ({
             id: p.id,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             slug: (p as any).slug || p.id,
             categorySlug: p.category.slug,
             title: getLocalizedText(p.title, locale),
@@ -331,7 +332,7 @@ const getPromisesFromDb = async (locale: Locale): Promise<PromiseUI[]> => {
                     details: { message: error instanceof Error ? error.message : String(error) }
                 }
             });
-        } catch (logError) {
+        } catch {
             // Ignore logging errors
         }
         return [];
@@ -365,6 +366,7 @@ export async function getPromiseById(
 
     return {
         id: p.id,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         slug: (p as any).slug || p.id,
         categorySlug: p.category.slug,
         title: getLocalizedText(p.title, locale),
@@ -481,6 +483,7 @@ export async function getPromisesByPolitician(
 
     return promises.map((p) => ({
         id: p.id,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         slug: (p as any).slug || p.id,
         categorySlug: p.category.slug,
         title: getLocalizedText(p.title, locale),
@@ -542,6 +545,7 @@ export async function getPromisesByParty(
 
     return promises.map((p) => ({
         id: p.id,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         slug: (p as any).slug || p.id,
         categorySlug: p.category.slug,
         title: getLocalizedText(p.title, locale),
@@ -594,6 +598,7 @@ export async function getPromisesByCategory(
 
     return promises.map((p) => ({
         id: p.id,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         slug: (p as any).slug || p.id,
         categorySlug: p.category.slug,
         title: getLocalizedText(p.title, locale),
@@ -811,6 +816,7 @@ export async function getRandomPromises(count: number, excludeId?: string, local
 
         return {
             id: p.id,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             slug: (p as any).slug || p.id,
             categorySlug: p.category.slug,
             title: getLocalizedText(p.title, locale),

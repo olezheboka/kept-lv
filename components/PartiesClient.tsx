@@ -1,24 +1,23 @@
 "use client";
 
-import { useState, useMemo, useCallback, memo, useEffect } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Filter, Search, SlidersHorizontal, ChevronDown, X, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Filter, Search, SlidersHorizontal, ChevronDown, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import type { PartyUI, PoliticianUI, PromiseUI } from '@/lib/db';
+import type { PartyUI, PromiseUI } from '@/lib/db';
 import { useDebounce } from '@/hooks/use-debounce';
 
 const ITEMS_PER_PAGE = 30;
 
 interface PartiesClientProps {
     parties: PartyUI[];
-    politicians: PoliticianUI[];
+    // politicians: PoliticianUI[]; // Unused
     promises: PromiseUI[];
 }
 
@@ -27,8 +26,10 @@ interface FilterPanelProps {
     setFilterCoalition: (val: boolean) => void;
     filterOpposition: boolean;
     setFilterOpposition: (val: boolean) => void;
-    hasActiveFilters: boolean;
-    clearFilters: () => void;
+    filterOpposition: boolean;
+    setFilterOpposition: (val: boolean) => void;
+    // hasActiveFilters: boolean;
+    // clearFilters: () => void;
 }
 
 const FilterPanel = memo(({
@@ -36,8 +37,8 @@ const FilterPanel = memo(({
     setFilterCoalition,
     filterOpposition,
     setFilterOpposition,
-    hasActiveFilters,
-    clearFilters,
+    // hasActiveFilters,
+    // clearFilters,
 }: FilterPanelProps) => (
     <div className="space-y-6">
         {/* Coalition/Opposition Filter */}
@@ -67,7 +68,7 @@ const FilterPanel = memo(({
 
 FilterPanel.displayName = 'FilterPanel';
 
-export function PartiesClient({ parties, politicians, promises }: PartiesClientProps) {
+export function PartiesClient({ parties, promises, /* politicians */ }: PartiesClientProps) {
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -98,12 +99,12 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
     };
 
     // Helper to get promises by party
-    const getPromisesByParty = (partyId: string) =>
-        promises.filter(p => p.partyId === partyId);
+    const getPromisesByParty = useCallback((partyId: string) =>
+        promises.filter(p => p.partyId === partyId), [promises]);
 
     // Helper to get politicians by party
-    const getPoliticiansByParty = (partyId: string) =>
-        politicians.filter(p => p.partyId === partyId);
+    // const getPoliticiansByParty = (partyId: string) =>
+    //    politicians.filter(p => p.partyId === partyId);
 
     const filteredParties = useMemo(() => {
         let result = [...parties];
@@ -162,7 +163,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
         });
 
         return result;
-    }, [parties, debouncedSearchQuery, filterCoalition, filterOpposition, sortBy, promises]);
+    }, [parties, debouncedSearchQuery, filterCoalition, filterOpposition, sortBy, getPromisesByParty]);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredParties.length / ITEMS_PER_PAGE);
@@ -387,7 +388,7 @@ export function PartiesClient({ parties, politicians, promises }: PartiesClientP
                                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                                         {paginatedParties.map((party, index) => {
                                             const partyPromises = getPromisesByParty(party.id);
-                                            const partyPoliticians = getPoliticiansByParty(party.id);
+                                            // const partyPoliticians = getPoliticiansByParty(party.id);
                                             const keptCount = partyPromises.filter(p => p.status === 'kept').length;
                                             const partiallyKeptCount = partyPromises.filter(p => p.status === 'partially-kept').length;
                                             const inProgressCount = partyPromises.filter(p => p.status === 'in-progress').length;

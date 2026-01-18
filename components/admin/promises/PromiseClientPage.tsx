@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { DeleteButton } from "@/components/ui/DeleteButton";
-import { Plus, Search, Eye, Pencil, Trash2, ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Eye, Pencil, ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -146,10 +146,12 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
 
     // Sort promises
     const sortedPromises = useMemo(() => {
-        let sortablePromises = [...filteredPromises];
+        const sortablePromises = [...filteredPromises];
         if (sortConfig !== null) {
             sortablePromises.sort((a, b) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let aValue: any = a[sortConfig.key as keyof PromiseData];
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let bValue: any = b[sortConfig.key as keyof PromiseData];
 
                 // Handle nested properties

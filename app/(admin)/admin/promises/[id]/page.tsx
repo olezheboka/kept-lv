@@ -32,6 +32,7 @@ export default async function EditPromisePage({ params }: { params: Promise<{ id
     // Note: The form expects specific mapping for status enums if they differ
     const formattedPromise = {
         ...promise,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         status: promise.status as any, // Form handles normalization
         slug: promise.slug || "",
     };

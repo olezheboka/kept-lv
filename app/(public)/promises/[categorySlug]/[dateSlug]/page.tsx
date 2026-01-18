@@ -31,7 +31,7 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
         />;
     }
 
-    const [, dateStr, promiseSlug] = dateMatch;
+    const [, , promiseSlug] = dateMatch;
 
     const promise = await getPromiseBySlug(categorySlug, promiseSlug);
 

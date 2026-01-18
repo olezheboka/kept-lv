@@ -33,6 +33,7 @@ export const PartyBadge = ({
         )}
       >
         {party.logoUrl ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
           <img
             src={party.logoUrl}
             alt={party.name}

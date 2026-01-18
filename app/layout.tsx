@@ -1,8 +1,8 @@
 import "./globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
-import { routing } from "@/i18n/routing";
+// import { notFound } from "next/navigation";
+// import { routing } from "@/i18n/routing";
 import { Inter } from "next/font/google";
 import { Providers } from "@/components/Providers";
 
@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // Fetch dynamic config
   let config: Record<string, string> = {};
   try {
-    // @ts-ignore
+    // @ts-expect-error Safe to ignore
     const dbConfigs = await prisma.systemConfig.findMany();
     config = dbConfigs.reduce((acc: Record<string, string>, curr: { key: string; value: string }) => {
       acc[curr.key] = curr.value;

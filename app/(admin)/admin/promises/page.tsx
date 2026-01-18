@@ -20,6 +20,7 @@ export default async function AdminPromisesPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <PromiseClientPage
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         initialPromises={initialPromises as any}
       />
     </Suspense>

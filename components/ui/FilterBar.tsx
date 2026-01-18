@@ -2,9 +2,9 @@
 
 import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getLocalizedText, statusConfig } from "@/lib/utils";
+import { getLocalizedText } from "@/lib/utils";
 import type { PromiseStats, LocalizedText } from "@/types";
 
 interface FilterBarProps {
@@ -14,7 +14,7 @@ interface FilterBarProps {
   stats: PromiseStats;
 }
 
-export function FilterBar({ politicians, categories, parties, stats }: FilterBarProps) {
+export function FilterBar({ politicians, categories, stats }: FilterBarProps) {
   const locale = useLocale();
   const t = useTranslations("promises");
   const tStatus = useTranslations("status");

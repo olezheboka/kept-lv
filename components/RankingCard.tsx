@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
+// import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Trophy, Medal, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { PartyBadge } from './PartyBadge';
+// import { PartyBadge } from './PartyBadge';
 
 import { motion } from "framer-motion";
 import type { RankingItem, PartyUI } from '@/lib/db';
@@ -37,22 +37,21 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
         return () => clearTimeout(timer);
     }, [item.keptPercentage, index]);
 
-    // Create a simple party object from the item data for PartyBadge
-    const partyBadgeData = type === 'party' ? {
-        id: item.id,
-        slug: item.id,
-        name: item.name,
-        abbreviation: item.abbreviation || item.id.toUpperCase(),
-        isInCoalition: item.isInCoalition || false,
-        mpCount: 0,
-    } : item.partyId ? {
-        id: item.partyId,
-        slug: item.partyId,
-        name: item.partyId,
-        abbreviation: item.partyId.toUpperCase(),
-        isInCoalition: false,
-        mpCount: 0,
-    } : null;
+    // const partyBadgeData = type === 'party' ? {
+    //     id: item.id,
+    //     slug: item.id,
+    //     name: item.name,
+    //     abbreviation: item.abbreviation || item.id.toUpperCase(),
+    //     isInCoalition: item.isInCoalition || false,
+    //     mpCount: 0,
+    // } : item.partyId ? {
+    //     id: item.partyId,
+    //     slug: item.partyId,
+    //     name: item.partyId,
+    //     abbreviation: item.partyId.toUpperCase(),
+    //     isInCoalition: false,
+    //     mpCount: 0,
+    // } : null;
 
     return (
         <motion.div

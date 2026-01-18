@@ -11,7 +11,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { CATEGORIES, PromiseStatus, STATUS_CONFIG } from '@/lib/types';
-import { Search, Filter, Grid3X3, List, X, SlidersHorizontal, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Filter, X, SlidersHorizontal, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { PromiseUI, PartyUI } from '@/lib/db';
 import { useDebounce } from '@/hooks/use-debounce';
 
@@ -31,8 +31,8 @@ interface FilterPanelProps {
     toggleParty: (partyId: string) => void;
     selectedCategories: string[];
     toggleCategory: (categoryId: string) => void;
-    hasActiveFilters: boolean;
-    clearFilters: () => void;
+    // hasActiveFilters: boolean;
+    // clearFilters: () => void;
 }
 
 const FilterPanel = memo(({
@@ -43,8 +43,8 @@ const FilterPanel = memo(({
     toggleParty,
     selectedCategories,
     toggleCategory,
-    hasActiveFilters,
-    clearFilters
+    // hasActiveFilters,
+    // clearFilters
 }: FilterPanelProps) => (
     <div className="space-y-6">
         {/* Status Filter */}
@@ -111,7 +111,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
     const selectedStatuses = useMemo(() => searchParams.get('status')?.split(',').filter(Boolean) as PromiseStatus[] || [], [searchParams]);
     const selectedParties = useMemo(() => searchParams.get('party')?.split(',').filter(Boolean) || [], [searchParams]);
     const selectedCategories = useMemo(() => searchParams.get('category')?.split(',').filter(Boolean) || [], [searchParams]);
-    const sortBy = (searchParams.get('sort') as any) || 'updated-desc';
+    const sortBy = (searchParams.get('sort') as string) || 'updated-desc';
     const searchQuery = searchParams.get('q') || '';
 
     // Local state only for search input to avoid stuttering
@@ -201,6 +201,7 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
     }, [filteredPromises, currentPage]);
 
     // View mode local state
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
     const toggleStatus = useCallback((status: PromiseStatus) => {
@@ -313,8 +314,8 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                         toggleParty={toggleParty}
                                         selectedCategories={selectedCategories}
                                         toggleCategory={toggleCategory}
-                                        hasActiveFilters={hasActiveFilters}
-                                        clearFilters={clearFilters}
+                                    // hasActiveFilters={hasActiveFilters}
+                                    // clearFilters={clearFilters}
                                     />
                                     {hasActiveFilters && (
                                         <Button variant="outline" onClick={clearFilters} className="w-full mt-4">
@@ -365,8 +366,8 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                                 toggleParty={toggleParty}
                                                 selectedCategories={selectedCategories}
                                                 toggleCategory={toggleCategory}
-                                                hasActiveFilters={hasActiveFilters}
-                                                clearFilters={clearFilters}
+                                            // hasActiveFilters={hasActiveFilters}
+                                            // clearFilters={clearFilters}
                                             />
                                         </div>
                                         {hasActiveFilters && (

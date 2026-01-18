@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { DeleteButton } from "@/components/ui/DeleteButton";
-import { Tag, Search, Pencil, ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Eye } from "lucide-react";
+import { Search, Eye, Pencil, ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,10 +102,12 @@ export default function CategoryClientPage({ initialCategories }: CategoryClient
 
     // Sort categories
     const sortedCategories = useMemo(() => {
-        let sortable = [...filteredCategories];
+        const sortable = [...filteredCategories];
         if (sortConfig !== null) {
             sortable.sort((a, b) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let aValue: any = a[sortConfig.key as keyof Category];
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let bValue: any = b[sortConfig.key as keyof Category];
 
                 if (sortConfig.key === 'promises') {

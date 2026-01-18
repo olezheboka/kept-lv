@@ -1,4 +1,4 @@
-import { ScrollText, Eye, Pencil } from "lucide-react";
+import { Eye, Pencil } from "lucide-react";
 import Link from "next/link";
 
 // Reusable card for Top Entities (Politicians, Parties, Categories)
@@ -63,6 +63,7 @@ function TopEntitiesCard({ title, totalCount, topEntities, emptyText, basePath }
 // Stats Interface matching page.tsx return
 interface DashboardStatsData {
     totalPromises: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     recentPromises: any[];
     totalPoliticians: number;
     totalParties: number;
@@ -75,6 +76,7 @@ interface DashboardStatsData {
 interface TotalPromisesCardProps {
     stats: {
         totalPromises: number;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         recentPromises: any[];
     };
 }
@@ -190,6 +192,7 @@ export function TotalCategoriesCard({ stats }: { stats: DashboardStatsData }) {
 }
 
 // Legacy component
-export function DashboardStats({ stats }: { stats: any }) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function DashboardStats({ stats }: { stats: unknown }) {
     return null;
 }

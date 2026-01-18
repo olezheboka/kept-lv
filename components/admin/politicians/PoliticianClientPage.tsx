@@ -141,10 +141,12 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
 
     // Sort politicians
     const sortedPoliticians = useMemo(() => {
-        let sortable = [...filteredPoliticians];
+        const sortable = [...filteredPoliticians];
         if (sortConfig !== null) {
             sortable.sort((a, b) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let aValue: any = a[sortConfig.key as keyof Politician];
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 let bValue: any = b[sortConfig.key as keyof Politician];
 
                 // Handle nested/special properties

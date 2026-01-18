@@ -15,7 +15,9 @@ import {
     Trophy,
 } from 'lucide-react';
 
-export const SLUG_ICON_MAP: Record<string, any> = {
+import { type LucideIcon } from 'lucide-react';
+
+export const SLUG_ICON_MAP: Record<string, LucideIcon> = {
     // Economy & Finance
     "economy": TrendingUp,
     "economy-finance": TrendingUp,

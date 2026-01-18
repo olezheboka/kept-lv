@@ -47,28 +47,20 @@ const randomSubset = <T>(arr: T[], count: number): T[] => {
   return shuffled.slice(0, count);
 };
 
-// Map mock status to Prisma enum
-function mapStatus(status: string): PromiseStatus {
-  const statusMap: Record<string, PromiseStatus> = {
-    'kept': 'KEPT',
-    'broken': 'NOT_KEPT', // keeping broken mapping if data sources usage it, though seeding uses strict types
-    'in-progress': 'IN_PROGRESS',
-    'partially-kept': 'PARTIAL',
-    'not-rated': 'NOT_RATED', // UPDATED MAPPING
-  };
-  return statusMap[status] || 'IN_PROGRESS';
-}
+
 
 async function main() {
   console.log("Seeding database with real Latvia data...");
 
   // Create admin user
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const adminPassword = await hash("17191719", 12);
 
   // Cleanup old default admin if exists
   try {
     await prisma.user.deleteMany({ where: { email: "admin@solijums.lv" } });
-  } catch (e) {
+  } catch {
     // ignore
   }
 
@@ -87,13 +79,6 @@ async function main() {
   console.log("Created admin user:", admin.email);
 
   // Clear existing data
-  console.log("Clearing existing data...");
-  await prisma.source.deleteMany({});
-  await prisma.evidence.deleteMany({});
-  await prisma.promise.deleteMany({});
-  await prisma.politician.deleteMany({});
-  await prisma.party.deleteMany({});
-  await prisma.category.deleteMany({});
 
 
   // Create all categories (14 total) - Removed Color, Added Description

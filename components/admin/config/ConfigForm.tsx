@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Settings, Globe, FileText } from "lucide-react";
+import { Loader2, Globe, FileText } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -61,13 +61,13 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
     async function onSubmit(data: ConfigFormValues) {
         setLoading(true);
         try {
-            const res = await fetch("/api/admin/config", {
+            const res = await fetch("/api/system-config", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
             });
 
-            if (!res.ok) throw new Error("Failed to save config");
+            if (!res.ok) throw new Error("Failed to save");
 
             toast({
                 title: "Configuration Saved",
@@ -79,7 +79,7 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
             if (onSuccess) {
                 await onSuccess();
             }
-        } catch (error) {
+        } catch {
             toast({
                 title: "Error",
                 description: "Failed to save configuration.",
@@ -99,6 +99,8 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
                         <Globe className="h-5 w-5 text-muted-foreground" />
                         <h3 className="font-semibold text-lg text-foreground">General Settings</h3>
                     </div>
+                    <p className="text-sm text-gray-500">Configure global application settings. These affect how the site behaves and what&apos;s displayed to users.</p>
+                    <p className="text-sm text-muted-foreground">Kategoriju &apos;svarīguma&apos; koeficienti (1.0 = standarta)</p>
 
                     <div className="grid gap-6">
                         <FormField
@@ -111,7 +113,7 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
                                         <Input {...field} placeholder="e.g. solījums.lv" />
                                     </FormControl>
                                     <FormDescription>
-                                        Used in the navigation bar and Open Graph site name using 'siteName'.
+                                        Used in the navigation bar and Open Graph site name using &apos;siteName&apos;.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
@@ -178,6 +180,7 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
                                         </FormControl>
                                         {field.value && (
                                             <div className="border rounded-md overflow-hidden w-24 h-14 shrink-0 bg-muted/50 flex items-center justify-center">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img
                                                     src={field.value}
                                                     alt="OG Preview"
@@ -207,6 +210,7 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
                                         </FormControl>
                                         {field.value && (
                                             <div className="border rounded-md overflow-hidden w-10 h-10 shrink-0 bg-muted/50 flex items-center justify-center">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img
                                                     src={field.value}
                                                     alt="Favicon Preview"
