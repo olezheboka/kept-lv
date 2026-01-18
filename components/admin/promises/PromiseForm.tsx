@@ -9,6 +9,7 @@ import { Loader2, CheckCircle2, XCircle, HelpCircle, PieChart, User, Folder } fr
 // ... actually I should do the imports separately. Let's do the imports first.
 
 import { Button } from "@/components/ui/button";
+import { FormActions } from "@/components/admin/FormActions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -536,24 +537,11 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
 
             </div>
 
-            <div className="flex gap-3 pt-4">
-                <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={onCancel}
-                    disabled={loading}
-                >
-                    Cancel
-                </Button>
-                <Button
-                    type="submit"
-                    disabled={loading}
-                    className="min-w-[100px]"
-                >
-                    {loading && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
-                    {initialData ? "Update" : "Create"}
-                </Button>
-            </div>
+            <FormActions
+                loading={loading}
+                onCancel={onCancel}
+                submitLabel={initialData ? "Update" : "Create"}
+            />
         </form>
     );
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
 import { Loader2, TrendingUp } from "lucide-react";
 import { SLUG_ICON_MAP } from "@/lib/categoryIcons";
+import { FormActions } from "@/components/admin/FormActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -179,24 +180,11 @@ export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormP
                 </div>
             </div>
 
-            <div className="flex gap-3 pt-4 border-t">
-                <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={onCancel}
-                    disabled={loading}
-                >
-                    Cancel
-                </Button>
-                <Button
-                    type="submit"
-                    disabled={loading}
-                    className="min-w-[100px]"
-                >
-                    {loading && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
-                    {initialData ? "Update" : "Create"}
-                </Button>
-            </div>
+            <FormActions
+                loading={loading}
+                onCancel={onCancel}
+                submitLabel={initialData ? "Update" : "Create"}
+            />
         </form>
     );
 }

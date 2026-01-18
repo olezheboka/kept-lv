@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { FormActions } from "@/components/admin/FormActions";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -61,7 +62,7 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
     async function onSubmit(data: ConfigFormValues) {
         setLoading(true);
         try {
-            const res = await fetch("/api/system-config", {
+            const res = await fetch("/api/admin/config", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
@@ -290,20 +291,11 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
                     </div>
                 </div>
 
-                <div className="flex gap-4 pt-4 border-t">
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        onClick={() => onCancel?.()}
-                        disabled={loading}
-                    >
-                        Cancel
-                    </Button>
-                    <Button type="submit" disabled={loading} className="min-w-[140px]">
-                        {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Save Configuration
-                    </Button>
-                </div>
+                <FormActions
+                    loading={loading}
+                    onCancel={() => onCancel?.()}
+                    submitLabel="Save Configuration"
+                />
             </form>
         </Form>
     );

@@ -78,7 +78,7 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                                     { key: 'partially-kept', value: stats.partiallyKept, color: 'text-status-partially' },
                                     { key: 'in-progress', value: stats.inProgress, color: 'text-status-progress' },
                                     { key: 'broken', value: stats.broken, color: 'text-status-broken' },
-                                    { key: 'not-rated', value: stats.notRated, color: 'text-[#66758B]' },
+                                    { key: 'not-rated', value: stats.notRated, color: 'text-[#D1D5DC]' },
                                 ];
 
                                 let accumulatedPercentage = 0;

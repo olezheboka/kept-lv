@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
 import { Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { FormActions } from "@/components/admin/FormActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -309,24 +310,11 @@ export function PartyForm({ initialData, onSuccess, onCancel }: PartyFormProps) 
                 </div>
             </div>
 
-            <div className="flex gap-3 pt-4 border-t">
-                <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={onCancel}
-                    disabled={loading}
-                >
-                    Cancel
-                </Button>
-                <Button
-                    type="submit"
-                    disabled={loading}
-                    className="min-w-[100px]"
-                >
-                    {loading && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
-                    {initialData ? "Update" : "Create"}
-                </Button>
-            </div>
+            <FormActions
+                loading={loading}
+                onCancel={onCancel}
+                submitLabel={initialData ? "Update" : "Create"}
+            />
         </form>
     );
 }
