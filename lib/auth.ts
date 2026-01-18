@@ -39,15 +39,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        let lastLogin = user.lastLogin;
+        const lastLogin = user.lastLogin;
 
         try {
           // Update last login
-          const updatedUser = await prisma.user.update({
+          await prisma.user.update({
             where: { id: user.id },
             data: { lastLogin: new Date() },
           });
-          lastLogin = updatedUser.lastLogin;
+          // Do not overwrite local `lastLogin` variable so we return the *previous* login time,
+          // not the current one.
         } catch (error) {
           console.error("Failed to update last login:", error);
           // Continue login even if update fails (e.g. stale prisma client)
