@@ -88,6 +88,18 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     const { id } = await params;
 
+    // Check for related promises
+    const promisesCount = await prisma.promise.count({
+      where: { categoryId: id },
+    });
+
+    if (promisesCount > 0) {
+      return NextResponse.json(
+        { error: "Cannot delete category with existing promises. Please delete or reassign them first." },
+        { status: 400 }
+      );
+    }
+
     const deletedCategory = await prisma.category.delete({
       where: { id },
     });
