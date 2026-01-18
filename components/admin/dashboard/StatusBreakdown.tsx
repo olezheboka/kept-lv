@@ -33,11 +33,11 @@ export function StatusBreakdown({ stats }: StatusBreakdownProps) {
     const notRatedPct = (notRatedPromises / total) * 100;
 
     const items = [
-        { label: "Kept", count: keptPromises, pct: keptPct, colorClass: "text-status-kept" },
-        { label: "Partially kept", count: partialPromises, pct: partialPct, colorClass: "text-status-partially" },
-        { label: "In progress", count: inProgressPromises, pct: inProgressPct, colorClass: "text-status-progress" },
-        { label: "Not kept", count: notKeptPromises, pct: notKeptPct, colorClass: "text-status-broken" },
-        { label: "Not rated", count: notRatedPromises, pct: notRatedPct, colorClass: "text-[#D1D5DC]" },
+        { label: "Kept", count: keptPromises, pct: keptPct, color: "#22c55e" },
+        { label: "Partially kept", count: partialPromises, pct: partialPct, color: "#facc15" },
+        { label: "In progress", count: inProgressPromises, pct: inProgressPct, color: "#3b82f6" },
+        { label: "Not kept", count: notKeptPromises, pct: notKeptPct, color: "#ef4444" },
+        { label: "Not rated", count: notRatedPromises, pct: notRatedPct, color: "#d1d5db" },
     ];
 
     // SVG Donut chart calculations
@@ -85,9 +85,8 @@ export function StatusBreakdown({ stats }: StatusBreakdownProps) {
                                     cy={center}
                                     r={radius}
                                     fill="none"
-                                    stroke="currentColor"
+                                    stroke="#f3f4f6"
                                     strokeWidth={strokeWidth}
-                                    className="text-gray-100"
                                 />
                                 {/* Segments */}
                                 {segments.map((segment, idx) => (
@@ -98,12 +97,11 @@ export function StatusBreakdown({ stats }: StatusBreakdownProps) {
                                             cy={center}
                                             r={radius}
                                             fill="none"
-                                            stroke="currentColor"
+                                            stroke={segment.color}
                                             strokeWidth={strokeWidth}
                                             strokeDasharray={segment.dashArray}
                                             strokeDashoffset={segment.dashOffset}
                                             strokeLinecap="butt"
-                                            className={segment.colorClass}
                                         />
                                     )
                                 ))}
@@ -111,7 +109,7 @@ export function StatusBreakdown({ stats }: StatusBreakdownProps) {
                             {/* Center text */}
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
                                 <span className="text-4xl font-bold text-gray-900">{Math.round(keptPct)}%</span>
-                                <span className="text-sm font-medium text-status-kept uppercase tracking-wider">Kept</span>
+                                <span className="text-sm font-medium text-green-500 uppercase tracking-wider">Kept</span>
                             </div>
                         </div>
 
@@ -138,7 +136,8 @@ export function StatusBreakdown({ stats }: StatusBreakdownProps) {
                                 <div key={item.label} className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div
-                                            className={`w-3 h-3 rounded-full flex-shrink-0 ${item.colorClass.replace("text-", "bg-")}`}
+                                            className="w-3 h-3 rounded-full flex-shrink-0"
+                                            style={{ backgroundColor: item.color }}
                                         />
                                         <span className="text-sm text-gray-700">{item.label}</span>
                                     </div>
