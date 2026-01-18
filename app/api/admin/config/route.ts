@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
     try {
-        // @ts-expect-error Safe to ignore
         const configs = await prisma.systemConfig.findMany();
         const configMap = configs.reduce((acc: Record<string, string>, curr: { key: string; value: string }) => {
             acc[curr.key] = curr.value;
@@ -23,7 +22,6 @@ export async function POST(req: Request) {
 
         // Dynamic upsert for all provided keys
         const updates = Object.entries(body).map(([key, value]) => {
-            // @ts-expect-error Safe to ignore
             return prisma.systemConfig.upsert({
                 where: { key },
                 update: { value: String(value || "") },

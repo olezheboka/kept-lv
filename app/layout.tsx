@@ -25,7 +25,6 @@ export async function generateMetadata(): Promise<Metadata> {
   // Fetch dynamic config
   let config: Record<string, string> = {};
   try {
-    // @ts-expect-error Safe to ignore
     const dbConfigs = await prisma.systemConfig.findMany();
     config = dbConfigs.reduce((acc: Record<string, string>, curr: { key: string; value: string }) => {
       acc[curr.key] = curr.value;

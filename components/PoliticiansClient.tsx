@@ -32,8 +32,7 @@ interface FilterPanelProps {
     parties: PartyUI[];
     selectedParties: string[];
     toggleParty: (partyId: string) => void;
-    selectedParties: string[];
-    toggleParty: (partyId: string) => void;
+
     // hasActiveFilters: boolean;
     // clearFilters: () => void;
 }
@@ -269,8 +268,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                         parties={parties}
                                         selectedParties={selectedParties}
                                         toggleParty={toggleParty}
-                                        hasActiveFilters={hasActiveFilters}
-                                        clearFilters={clearFilters}
+
                                     />
                                     {hasActiveFilters && (
                                         <Button variant="outline" onClick={clearFilters} className="w-full mt-4">
@@ -319,8 +317,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                                 parties={parties}
                                                 selectedParties={selectedParties}
                                                 toggleParty={toggleParty}
-                                                hasActiveFilters={hasActiveFilters}
-                                                clearFilters={clearFilters}
+
                                             />
                                         </div>
                                         {hasActiveFilters && (

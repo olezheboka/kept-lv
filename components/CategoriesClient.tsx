@@ -29,7 +29,7 @@ interface CategoriesClientProps {
 
 const ITEMS_PER_PAGE = 30;
 
-const ITEMS_PER_PAGE = 30;
+
 
 // CONSTANT REMOVED: CATEGORY_COLOR_MAP was unused
 

@@ -26,8 +26,7 @@ interface FilterPanelProps {
     setFilterCoalition: (val: boolean) => void;
     filterOpposition: boolean;
     setFilterOpposition: (val: boolean) => void;
-    filterOpposition: boolean;
-    setFilterOpposition: (val: boolean) => void;
+
     // hasActiveFilters: boolean;
     // clearFilters: () => void;
 }
@@ -254,8 +253,7 @@ export function PartiesClient({ parties, promises, /* politicians */ }: PartiesC
                                         setFilterCoalition={handleCoalitionChange}
                                         filterOpposition={filterOpposition}
                                         setFilterOpposition={handleOppositionChange}
-                                        hasActiveFilters={hasActiveFilters}
-                                        clearFilters={clearFilters}
+
                                     />
                                     {hasActiveFilters && (
                                         <Button variant="outline" onClick={clearFilters} className="w-full mt-4">
@@ -303,8 +301,7 @@ export function PartiesClient({ parties, promises, /* politicians */ }: PartiesC
                                                 setFilterCoalition={handleCoalitionChange}
                                                 filterOpposition={filterOpposition}
                                                 setFilterOpposition={handleOppositionChange}
-                                                hasActiveFilters={hasActiveFilters}
-                                                clearFilters={clearFilters}
+
                                             />
                                         </div>
                                         {hasActiveFilters && (
