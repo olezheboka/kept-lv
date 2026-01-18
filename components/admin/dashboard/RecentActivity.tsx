@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FileText, Users, Landmark, Folder, Settings } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { lv } from "date-fns/locale";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -161,7 +161,7 @@ export function RecentActivity() {
                                 })}
                             </div>
                             <div className="text-[10px] text-gray-400 whitespace-nowrap">
-                                {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true, locale: lv })}
+                                {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}
                             </div>
                         </div>
                     </div>
