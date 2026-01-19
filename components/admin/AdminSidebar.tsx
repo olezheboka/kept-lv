@@ -119,7 +119,7 @@ export function AdminSidebar() {
                                 <p className="text-sm font-bold text-g-gray-900 truncate">
                                     {session?.user?.email || "Admin User"}
                                 </p>
-                                <p className="text-xs text-g-gray-500 truncate">
+                                <p className="text-xs text-g-gray-500">
                                     Previous login: {session?.user?.lastLogin ? format(new Date(session.user.lastLogin), "dd.MM.yyyy HH:mm") : "First login"}
                                 </p>
                             </div>
