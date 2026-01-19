@@ -81,15 +81,55 @@ export const Header = () => {
     setQuery('');
   };
 
+  const [isCompact, setIsCompact] = useState(false);
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const amountScrolled = Math.abs(currentScrollY - lastScrollY);
+      const isScrollingDown = currentScrollY > lastScrollY;
+      const isScrollingUp = currentScrollY < lastScrollY;
+
+      // Add simple hysteresis/debounce
+      // Only change state if scrolled a significant amount or at top
+      if (isScrollingDown && currentScrollY > 100 && amountScrolled > 5) {
+        setIsCompact(true);
+      } else if ((isScrollingUp && amountScrolled > 10) || currentScrollY < 50) {
+        setIsCompact(false);
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-xl border-b border-border/50">
-      <div className="container-wide">
-        <div className="flex h-16 items-center justify-between gap-4">
+    <motion.header
+      initial={{ height: "80px", backgroundColor: "rgba(255, 255, 255, 0.95)" }}
+      animate={{
+        height: isCompact ? "50px" : "80px",
+        backgroundColor: isCompact ? "rgba(255, 255, 255, 0.95)" : "rgba(255, 255, 255, 0.8)",
+      }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-xl border-b border-border/50 overflow-hidden flex items-center"
+    >
+      <div className="container-wide w-full">
+        <div className="flex items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0" suppressHydrationWarning>
-            <span className="font-bold text-2xl text-[#2563EB]">
+            <motion.span
+              animate={{
+                scale: isCompact ? 0.75 : 1,
+                x: isCompact ? -10 : 0
+              }}
+              className="font-bold text-2xl text-[#2563EB] origin-left"
+            >
               solījums.lv
-            </span>
+            </motion.span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -393,6 +433,6 @@ export const Header = () => {
           </motion.div>
         )}
       </div>
-    </header>
+    </motion.header>
   );
 };
