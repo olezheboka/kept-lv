@@ -1,3 +1,4 @@
+import { Prisma, SystemConfig } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { logActivity } from "@/lib/audit";
@@ -30,7 +31,7 @@ export async function POST(req: Request) {
 
         // 2. Identify changed fields
         const changedKeys: string[] = [];
-        const updates: any[] = [];
+        const updates: Prisma.PrismaPromise<SystemConfig>[] = [];
 
         Object.entries(body).forEach(([key, value]) => {
             const stringValue = String(value || "");
