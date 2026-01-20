@@ -97,9 +97,9 @@ export const statusConfig = {
     border: "border-violet-400/50",
     text: "text-violet-400",
   },
-  NOT_RATED: {
-    icon: "?",
-    label: { lv: "NAV NOVĒRTĒTS", en: "NOT RATED", ru: "НЕ ОЦЕНЕНО" },
+  CANCELLED: {
+    icon: "⊘",
+    label: { lv: "ATCELTS", en: "CANCELLED", ru: "ОТМЕНЕНО" },
     gradient: "from-gray-500 to-slate-600",
     bg: "bg-gray-500/20",
     border: "border-gray-400/50",
@@ -108,16 +108,16 @@ export const statusConfig = {
 } as const;
 
 // Map Prisma status to UI status
-export function mapStatusToUI(status: string): "kept" | "partially-kept" | "in-progress" | "broken" | "not-rated" {
-  const statusMap: Record<string, "kept" | "partially-kept" | "in-progress" | "broken" | "not-rated"> = {
+export function mapStatusToUI(status: string): "kept" | "partially-kept" | "in-progress" | "broken" | "cancelled" {
+  const statusMap: Record<string, "kept" | "partially-kept" | "in-progress" | "broken" | "cancelled"> = {
     KEPT: "kept",
     NOT_KEPT: "broken",
     IN_PROGRESS: "in-progress",
     PARTIAL: "partially-kept",
-    ABANDONED: "not-rated",
-    NOT_RATED: "not-rated",
+    ABANDONED: "cancelled",
+    CANCELLED: "cancelled",
   };
-  return statusMap[status] || "not-rated";
+  return statusMap[status] || "cancelled";
 }
 
 export type PromiseStatusType = keyof typeof statusConfig;

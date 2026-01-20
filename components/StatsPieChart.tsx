@@ -7,18 +7,18 @@ const COLORS = {
   partiallyKept: 'hsl(38, 92%, 50%)',
   inProgress: 'hsl(217, 91%, 60%)',
   broken: 'hsl(350, 89%, 60%)',
-  notRated: 'hsl(215, 16%, 47%)',
+  cancelled: 'hsl(215, 16%, 47%)',
 };
 
 export const StatsPieChart = () => {
   const stats = getPromiseStats();
-  
+
   const data = [
     { name: 'Izpildīti', value: stats.kept, color: COLORS.kept },
     { name: 'Daļēji izpildīti', value: stats.partiallyKept, color: COLORS.partiallyKept },
     { name: 'Procesā', value: stats.inProgress, color: COLORS.inProgress },
     { name: 'Lauzti', value: stats.broken, color: COLORS.broken },
-    { name: 'Nav novērtēti', value: stats.notRated, color: COLORS.notRated },
+    { name: 'Atcelti', value: stats.cancelled, color: COLORS.cancelled },
   ].filter(d => d.value > 0);
 
   return (
@@ -59,7 +59,7 @@ export const StatsPieChart = () => {
             />
           </PieChart>
         </ResponsiveContainer>
-        
+
         {/* Center text */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">

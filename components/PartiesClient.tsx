@@ -390,7 +390,7 @@ export function PartiesClient({ parties, promises, /* politicians */ }: PartiesC
                                             const partiallyKeptCount = partyPromises.filter(p => p.status === 'partially-kept').length;
                                             const inProgressCount = partyPromises.filter(p => p.status === 'in-progress').length;
                                             const brokenCount = partyPromises.filter(p => p.status === 'broken').length;
-                                            const notRatedCount = partyPromises.filter(p => p.status === 'not-rated').length;
+                                            const cancelledCount = partyPromises.filter(p => p.status === 'cancelled').length;
                                             const total = partyPromises.length;
 
                                             return (
@@ -460,10 +460,10 @@ export function PartiesClient({ parties, promises, /* politicians */ }: PartiesC
                                                                                 style={{ width: `${(brokenCount / total) * 100}%` }}
                                                                             />
                                                                         )}
-                                                                        {notRatedCount > 0 && (
+                                                                        {cancelledCount > 0 && (
                                                                             <div
                                                                                 className="h-full bg-status-unrated"
-                                                                                style={{ width: `${(notRatedCount / total) * 100}%` }}
+                                                                                style={{ width: `${(cancelledCount / total) * 100}%` }}
                                                                             />
                                                                         )}
                                                                     </div>

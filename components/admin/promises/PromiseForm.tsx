@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
-import { Loader2, CheckCircle2, XCircle, HelpCircle, PieChart, User, Folder, Users, Building2, Layers } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, HelpCircle, PieChart, User, Folder, Users, Building2, Layers, Ban } from "lucide-react";
 
 import { FormActions } from "@/components/admin/FormActions";
 import { Input } from "@/components/ui/input";
@@ -46,7 +46,7 @@ interface PromiseData {
     title: string;
     slug: string;
     description?: string | null;
-    status: "in-progress" | "kept" | "broken" | "partially-kept" | "not-rated";
+    status: "in-progress" | "kept" | "broken" | "partially-kept" | "cancelled";
     explanation?: string | null;
     dateOfPromise: string | Date;
     statusUpdatedAt?: string | Date | null;
@@ -69,7 +69,7 @@ export interface PromiseFormProps {
     readOnly?: boolean; // Add readOnly support for strict type checking in parent if needed, though mostly unused
 }
 
-type StatusType = "in-progress" | "kept" | "broken" | "partially-kept" | "not-rated";
+type StatusType = "in-progress" | "kept" | "broken" | "partially-kept" | "cancelled";
 
 const STATUS_OPTIONS: {
     value: StatusType;
@@ -80,10 +80,10 @@ const STATUS_OPTIONS: {
     bgClass: string;
 }[] = [
         {
-            value: "not-rated",
-            label: "Not Rated",
-            description: "Pending review",
-            icon: HelpCircle,
+            value: "cancelled",
+            label: "Cancelled",
+            description: "Promise cancelled",
+            icon: Ban,
             colorClass: "text-slate-500",
             bgClass: "bg-slate-100",
         },
@@ -138,7 +138,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
         if (!status) return "in-progress";
 
         // Check if it's already a valid kebab-case status
-        if (["in-progress", "kept", "broken", "partially-kept", "not-rated"].includes(status)) {
+        if (["in-progress", "kept", "broken", "partially-kept", "cancelled"].includes(status)) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return status as any;
         }
@@ -150,7 +150,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             "PARTIAL": "partially-kept",
             "ABANDONED": "broken",
             "BROKEN": "broken",
-            "NOT_RATED": "not-rated"
+            "CANCELLED": "cancelled"
         };
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -277,7 +277,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                 "kept": "KEPT",
                 "broken": "NOT_KEPT",
                 "partially-kept": "PARTIAL",
-                "not-rated": "NOT_RATED"
+                "cancelled": "CANCELLED"
             };
 
             const payload = {

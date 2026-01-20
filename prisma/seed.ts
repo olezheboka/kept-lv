@@ -337,7 +337,7 @@ async function main() {
     { title: "Atbalstīt sporta skolas", categorySlug: "youth", tags: ["sports", "skola", "treniņi"] },
   ];
 
-  const statuses: PromiseStatus[] = ['KEPT', 'NOT_KEPT', 'IN_PROGRESS', 'PARTIAL', 'NOT_RATED'];
+  const statuses: PromiseStatus[] = ['KEPT', 'NOT_KEPT', 'IN_PROGRESS', 'PARTIAL', 'CANCELLED'];
 
   let promisesCreated = 0;
 

@@ -362,18 +362,18 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                     <TableBody>
                         {paginatedPromises.map((promise) => {
                             // Status Styles Mapping
-                            let statusBadgeClass = "bg-gray-100 text-gray-700 hover:bg-gray-100"; // Default Not Rated
+                            let statusBadgeClass = "bg-gray-100 text-gray-700 hover:bg-gray-100"; // Default Cancelled
                             if (promise.status === "KEPT") statusBadgeClass = "bg-green-500 text-white hover:bg-green-600 border-transparent";
                             if (promise.status === "IN_PROGRESS") statusBadgeClass = "bg-blue-500 text-white hover:bg-blue-600 border-transparent";
                             if (promise.status === "PARTIAL") statusBadgeClass = "bg-orange-500 text-white hover:bg-orange-600 border-transparent";
                             if (promise.status === "NOT_KEPT") statusBadgeClass = "bg-red-500 text-white hover:bg-red-600 border-transparent";
                             if (promise.status === "ABANDONED") statusBadgeClass = "bg-red-500 text-white hover:bg-red-600 border-transparent";
-                            if (promise.status === "NOT_RATED") statusBadgeClass = "bg-gray-200 text-gray-700 hover:bg-gray-300 border-transparent";
+                            if (promise.status === "CANCELLED") statusBadgeClass = "bg-gray-200 text-gray-700 hover:bg-gray-300 border-transparent";
 
                             const statusLabel = promise.status === 'ABANDONED' ? 'Not Kept' :
                                 promise.status === 'PARTIAL' ? 'Partially Kept' :
                                     promise.status === 'IN_PROGRESS' ? 'In Progress' :
-                                        promise.status === 'NOT_RATED' ? 'Not Rated' :
+                                        promise.status === 'CANCELLED' ? 'Cancelled' :
                                             promise.status === 'KEPT' ? 'Kept' :
                                                 promise.status === 'NOT_KEPT' ? 'Not Kept' : promise.status;
 

@@ -18,7 +18,7 @@ interface CategoriesClientProps {
             partiallyKept: number;
             inProgress: number;
             broken: number;
-            notRated: number;
+            cancelled: number;
             // partial is deprecated in favor of partiallyKept
             partial?: number;
         }
@@ -80,7 +80,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                 <div className="container-wide">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                         {paginatedCategories.map((category, index) => {
-                            const { total, kept, partiallyKept, inProgress, broken, notRated } = category.stats;
+                            const { total, kept, partiallyKept, inProgress, broken, cancelled } = category.stats;
 
                             return (
                                 <motion.div
@@ -159,10 +159,10 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                                                 style={{ width: `${(broken / total) * 100}%` }}
                                                             />
                                                         )}
-                                                        {notRated > 0 && (
+                                                        {cancelled > 0 && (
                                                             <div
                                                                 className="h-full bg-status-unrated"
-                                                                style={{ width: `${(notRated / total) * 100}%` }}
+                                                                style={{ width: `${(cancelled / total) * 100}%` }}
                                                             />
                                                         )}
                                                     </div>

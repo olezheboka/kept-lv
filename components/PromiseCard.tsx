@@ -92,8 +92,8 @@ const PromiseCardComponent = ({ promise }: PromiseCardProps) => {
       className="h-full"
     >
       <Link href={getPromiseUrl(promise)} className="block h-full" suppressHydrationWarning>
-        <Card className="group h-full flex flex-col overflow-hidden border-border/50 bg-card hover:shadow-elevated hover:border-border transition-all duration-300 cursor-pointer">
-          <CardContent className="p-5 relative pt-8 flex flex-col h-full">
+        <Card className="group relative h-full flex flex-col overflow-hidden border-border/50 bg-card hover:shadow-elevated hover:border-border transition-all duration-300 cursor-pointer">
+          <CardContent className="p-5 pt-8 flex flex-col h-full">
             {/* Status Badge - Absolute Top Right */}
             <div className="absolute top-0 right-0">
               <StatusBadge status={promise.status} className="rounded-none rounded-bl-lg" />

@@ -66,7 +66,7 @@ export const createPromiseSchema = z.object({
   title: z.string().min(1),
   slug: z.string().min(1, "Slug is required").max(255),
   description: z.string().optional().nullable(),
-  status: z.enum(["KEPT", "NOT_KEPT", "IN_PROGRESS", "ABANDONED", "PARTIAL", "NOT_RATED"]).default("IN_PROGRESS"),
+  status: z.enum(["KEPT", "NOT_KEPT", "IN_PROGRESS", "ABANDONED", "PARTIAL", "CANCELLED"]).default("IN_PROGRESS"),
   explanation: z.string().optional().nullable(),
   dateOfPromise: z.string().datetime().or(z.date()),
   statusUpdatedAt: z.string().datetime().optional().nullable(),

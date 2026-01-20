@@ -1,6 +1,6 @@
 // Core data types for Kept - Latvian Political Promise Tracker
 
-export type PromiseStatus = 'kept' | 'partially-kept' | 'in-progress' | 'broken' | 'not-rated';
+export type PromiseStatus = 'kept' | 'partially-kept' | 'in-progress' | 'broken' | 'cancelled';
 
 export type Category =
   | 'economy'
@@ -97,10 +97,10 @@ export const STATUS_CONFIG: Record<PromiseStatus, { label: string; className: st
     className: 'status-broken',
     icon: 'XCircle'
   },
-  'not-rated': {
-    label: 'Nav novērtēts',
+  'cancelled': {
+    label: 'Atcelts',
     className: 'status-unrated',
-    icon: 'HelpCircle'
+    icon: 'Ban'
   }
 };
 

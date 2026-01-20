@@ -57,7 +57,7 @@ export interface PromiseUI {
     }[];
     datePromised: string;
     electionCycle?: string;
-    status: "kept" | "partially-kept" | "in-progress" | "broken" | "not-rated";
+    status: "kept" | "partially-kept" | "in-progress" | "broken" | "cancelled";
     statusJustification: string;
     statusUpdatedAt: string;
     statusUpdatedBy: string;
@@ -613,7 +613,7 @@ type CategoryWithStats = CategoryUI & {
         partiallyKept: number;
         inProgress: number;
         broken: number;
-        notRated: number;
+        cancelled: number;
     }
 };
 
@@ -633,7 +633,7 @@ const getCategoriesFromDb = async (locale: Locale): Promise<CategoryWithStats[]>
         const partiallyKept = cat.promises.filter((p) => p.status === "PARTIAL").length;
         const inProgress = cat.promises.filter((p) => p.status === "IN_PROGRESS").length;
         const broken = cat.promises.filter((p) => p.status === "NOT_KEPT").length;
-        const notRated = cat.promises.filter((p) => p.status === "ABANDONED" || p.status === "NOT_RATED").length;
+        const cancelled = cat.promises.filter((p) => p.status === "ABANDONED" || p.status === "CANCELLED").length;
 
         return {
             id: cat.slug,
@@ -647,7 +647,7 @@ const getCategoriesFromDb = async (locale: Locale): Promise<CategoryWithStats[]>
                 partiallyKept,
                 inProgress,
                 broken,
-                notRated,
+                cancelled,
             }
         };
     });
@@ -711,7 +711,7 @@ export async function getPromiseStats() {
     const partiallyKept = promises.filter((p) => p.status === "PARTIAL").length;
     const inProgress = promises.filter((p) => p.status === "IN_PROGRESS").length;
     const broken = promises.filter((p) => p.status === "NOT_KEPT").length;
-    const notRated = 0;
+    const cancelled = 0;
 
     return {
         total,
@@ -719,7 +719,7 @@ export async function getPromiseStats() {
         partiallyKept,
         inProgress,
         broken,
-        notRated,
+        cancelled,
         keptPercentage: total > 0 ? Math.round((kept / total) * 100) : 0,
         brokenPercentage: total > 0 ? Math.round((broken / total) * 100) : 0,
     };

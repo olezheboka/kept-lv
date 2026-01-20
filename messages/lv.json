@@ -36,7 +36,8 @@
     "notKept": "NEIZPILDĪTS",
     "inProgress": "PROCESĀ",
     "abandoned": "PAMESTS",
-    "partial": "DAĻĒJI"
+    "partial": "DAĻĒJI",
+    "cancelled": "ATCELTS"
   },
   "home": {
     "heroTitle": "Sekojiet līdzi politiķu solījumiem",

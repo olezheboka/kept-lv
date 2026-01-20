@@ -32,7 +32,7 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
         partiallyKept: promises.filter(p => p.status === 'partially-kept').length,
         inProgress: promises.filter(p => p.status === 'in-progress').length,
         broken: promises.filter(p => p.status === 'broken').length,
-        notRated: promises.filter(p => p.status === 'not-rated').length,
+        cancelled: promises.filter(p => p.status === 'cancelled').length,
     };
 
     const filteredPromises = filterStatus === 'all'

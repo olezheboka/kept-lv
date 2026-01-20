@@ -7,7 +7,7 @@ interface StatusBreakdownProps {
         partialPromises: number;
         inProgressPromises: number;
         notKeptPromises: number;
-        notRatedPromises: number;
+        cancelledPromises: number;
         keptRateTrend?: number;
     };
 }
@@ -19,7 +19,7 @@ export function StatusBreakdown({ stats }: StatusBreakdownProps) {
         partialPromises,
         inProgressPromises,
         notKeptPromises,
-        notRatedPromises,
+        cancelledPromises,
         keptRateTrend = 0
     } = stats;
 
@@ -30,14 +30,14 @@ export function StatusBreakdown({ stats }: StatusBreakdownProps) {
     const partialPct = (partialPromises / total) * 100;
     const inProgressPct = (inProgressPromises / total) * 100;
     const notKeptPct = (notKeptPromises / total) * 100;
-    const notRatedPct = (notRatedPromises / total) * 100;
+    const cancelledPct = (cancelledPromises / total) * 100;
 
     const items = [
         { label: "Kept", count: keptPromises, pct: keptPct, color: "#22c55e" },
         { label: "Partially kept", count: partialPromises, pct: partialPct, color: "#facc15" },
         { label: "In progress", count: inProgressPromises, pct: inProgressPct, color: "#3b82f6" },
         { label: "Not kept", count: notKeptPromises, pct: notKeptPct, color: "#ef4444" },
-        { label: "Not rated", count: notRatedPromises, pct: notRatedPct, color: "#d1d5db" },
+        { label: "Cancelled", count: cancelledPromises, pct: cancelledPct, color: "#d1d5db" },
     ];
 
     // SVG Donut chart calculations

@@ -2,9 +2,9 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { PromiseStatus, STATUS_CONFIG } from '@/lib/types';
-import { CheckCircle2, Clock, XCircle, CircleDot, HelpCircle, List } from 'lucide-react';
+import { CheckCircle2, Clock, XCircle, CircleDot, Ban, List } from 'lucide-react';
 
-const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'in-progress', 'broken', 'not-rated'];
+const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'in-progress', 'broken', 'cancelled'];
 
 interface Stats {
     total: number;
@@ -12,7 +12,7 @@ interface Stats {
     partiallyKept: number;
     inProgress: number;
     broken: number;
-    notRated: number;
+    cancelled: number;
 }
 
 interface PerformanceCardProps {
@@ -78,7 +78,7 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                                     { key: 'partially-kept', value: stats.partiallyKept, color: 'text-status-partially' },
                                     { key: 'in-progress', value: stats.inProgress, color: 'text-status-progress' },
                                     { key: 'broken', value: stats.broken, color: 'text-status-broken' },
-                                    { key: 'not-rated', value: stats.notRated, color: 'text-[#D1D5DC]' },
+                                    { key: 'cancelled', value: stats.cancelled, color: 'text-[#D1D5DC]' },
                                 ];
 
                                 let accumulatedPercentage = 0;
@@ -154,11 +154,11 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                                 'partially-kept': { icon: CircleDot, color: 'text-status-partially', bg: 'bg-status-partially-bg' },
                                 'in-progress': { icon: Clock, color: 'text-status-progress', bg: 'bg-status-progress-bg' },
                                 'broken': { icon: XCircle, color: 'text-status-broken', bg: 'bg-status-broken-bg' },
-                                'not-rated': { icon: HelpCircle, color: 'text-status-unrated', bg: 'bg-status-unrated-bg' },
-                            }[status as string] || { icon: HelpCircle, color: 'text-status-unrated', bg: 'bg-status-unrated-bg' };
+                                'cancelled': { icon: Ban, color: 'text-status-unrated', bg: 'bg-status-unrated-bg' },
+                            }[status as string] || { icon: Ban, color: 'text-status-unrated', bg: 'bg-status-unrated-bg' };
 
                             const Icon = config.icon;
-                            const count = stats[status === 'partially-kept' ? 'partiallyKept' : status === 'in-progress' ? 'inProgress' : status === 'not-rated' ? 'notRated' : status];
+                            const count = stats[status === 'partially-kept' ? 'partiallyKept' : status === 'in-progress' ? 'inProgress' : status === 'cancelled' ? 'cancelled' : status];
                             const isActive = filterStatus === status;
 
                             return (
@@ -172,8 +172,8 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                                             : 'bg-background border-border/50 hover:bg-muted/50 hover:border-border'}
                                     `}
                                 >
-                                    <div className={`mb-1.5 p-1 w-fit rounded-full flex items-center justify-center ${status === 'not-rated' ? 'bg-[#F4F5F7] text-[#66758B]' : `${config.bg} bg-opacity-20`}`}>
-                                        <Icon className={`h-3.5 w-3.5 ${status === 'not-rated' ? 'text-[#66758B]' : config.color}`} />
+                                    <div className={`mb-1.5 p-1 w-fit rounded-full flex items-center justify-center ${status === 'cancelled' ? 'bg-[#F4F5F7] text-[#66758B]' : `${config.bg} bg-opacity-20`}`}>
+                                        <Icon className={`h-3.5 w-3.5 ${status === 'cancelled' ? 'text-[#66758B]' : config.color}`} />
                                     </div>
                                     <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-0.5 group-hover:text-foreground transition-colors truncate w-full">
                                         {STATUS_CONFIG[status].label}

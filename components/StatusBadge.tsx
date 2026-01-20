@@ -1,5 +1,5 @@
 import { PromiseStatus, STATUS_CONFIG } from '@/lib/types';
-import { CheckCircle2, CircleDot, Clock, XCircle, HelpCircle } from 'lucide-react';
+import { CheckCircle2, CircleDot, Clock, XCircle, HelpCircle, Ban } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const HalfCircleIcon = ({ size = 24, className }: { size?: number; className?: string }) => (
@@ -34,6 +34,7 @@ const iconMap = {
   Clock,
   XCircle,
   HelpCircle,
+  Ban,
   Contrast: HalfCircleIcon,
 };
 

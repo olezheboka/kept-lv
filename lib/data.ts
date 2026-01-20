@@ -580,7 +580,7 @@ export const getPromiseStats = () => {
   const partiallyKept = promises.filter(p => p.status === 'partially-kept').length;
   const inProgress = promises.filter(p => p.status === 'in-progress').length;
   const broken = promises.filter(p => p.status === 'broken').length;
-  const notRated = promises.filter(p => p.status === 'not-rated').length;
+  const cancelled = promises.filter(p => p.status === 'cancelled').length;
 
   return {
     total,
@@ -588,7 +588,7 @@ export const getPromiseStats = () => {
     partiallyKept,
     inProgress,
     broken,
-    notRated,
+    cancelled,
     keptPercentage: Math.round((kept / total) * 100),
     brokenPercentage: Math.round((broken / total) * 100),
   };
