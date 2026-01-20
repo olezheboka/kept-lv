@@ -40,6 +40,8 @@ async function getDashboardStats() {
       include: {
         category: { select: { slug: true } },
         politician: { select: { name: true } },
+        party: { select: { name: true } },
+        coalitionParties: { select: { name: true } },
       },
     }),
     // Top 3 politicians by promise count

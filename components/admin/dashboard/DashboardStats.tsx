@@ -121,7 +121,13 @@ export function TotalPromisesCard({ stats }: TotalPromisesCardProps) {
                                             {promise.title}
                                         </div>
                                         <div className="text-xs text-g-gray-400 mt-0.5 truncate">
-                                            {promise.politician?.name || 'Unknown Politician'}
+                                            {promise.politician?.name
+                                                ? promise.politician.name
+                                                : promise.party?.name
+                                                    ? promise.party.name
+                                                    : promise.coalitionParties?.length > 0
+                                                        ? promise.coalitionParties.map((p: { name: string }) => p.name).join(", ")
+                                                        : 'Unknown Promisor'}
                                         </div>
                                     </div>
 
