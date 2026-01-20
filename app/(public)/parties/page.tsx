@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { getParties, getPromises } from '@/lib/db';
 import { PartiesClient } from '@/components/PartiesClient';
 
@@ -10,9 +11,11 @@ export default async function PartiesPage() {
     ]);
 
     return (
-        <PartiesClient
-            parties={parties}
-            promises={promises}
-        />
+        <Suspense fallback={<div className="container-wide py-8">Ielādē...</div>}>
+            <PartiesClient
+                parties={parties}
+                promises={promises}
+            />
+        </Suspense>
     );
 }

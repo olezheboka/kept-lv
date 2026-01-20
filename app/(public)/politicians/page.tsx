@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { getPoliticians, getParties, getPromises } from '@/lib/db';
 import { PoliticiansClient } from '@/components/PoliticiansClient';
 
@@ -9,10 +10,12 @@ export default async function PoliticiansPage() {
     ]);
 
     return (
-        <PoliticiansClient
-            politicians={politicians}
-            parties={parties}
-            promises={promises}
-        />
+        <Suspense fallback={<div className="container-wide py-8">Ielādē...</div>}>
+            <PoliticiansClient
+                politicians={politicians}
+                parties={parties}
+                promises={promises}
+            />
+        </Suspense>
     );
 }
