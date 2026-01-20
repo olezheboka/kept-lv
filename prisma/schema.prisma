@@ -28,6 +28,8 @@ model Party {
   websiteUrl  String?
   isCoalition Boolean      @default(false)
   politicians Politician[]
+  partyPromises Promise[] @relation("PartyPromises")
+  coalitionPromises Promise[] @relation("CoalitionPromises")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
@@ -71,12 +73,16 @@ model Promise {
   slug            String?       @unique
   description     String?
   status          PromiseStatus @default(IN_PROGRESS)
+  type            PromiseType   @default(INDIVIDUAL)
   explanation     String?
   tags            String[]      @default([])
   dateOfPromise   DateTime
   statusUpdatedAt DateTime?
-  politicianId    String
-  politician      Politician    @relation(fields: [politicianId], references: [id])
+  politicianId    String?
+  politician      Politician?   @relation(fields: [politicianId], references: [id])
+  partyId         String?
+  party           Party?        @relation("PartyPromises", fields: [partyId], references: [id])
+  coalitionParties Party[]      @relation("CoalitionPromises")
   categoryId      String
   category        Category      @relation(fields: [categoryId], references: [id])
   sources         Source[]
@@ -117,6 +123,12 @@ enum Role {
   EDITOR
 }
 
+enum PromiseType {
+  INDIVIDUAL
+  PARTY
+  COALITION
+}
+
 enum PromiseStatus {
   KEPT
   NOT_KEPT
@@ -132,6 +144,8 @@ enum SourceType {
   DOCUMENT
   SOCIAL_MEDIA
   INTERVIEW
+  MANIFESTO
+  GOVERNMENT_DOC
 }
 
 enum EvidenceType {

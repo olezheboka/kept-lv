@@ -8,9 +8,11 @@ async function getPromises() {
   return prisma.promise.findMany({
     include: {
       politician: { select: { name: true } },
+      party: { select: { name: true } },
+      coalitionParties: { select: { name: true } },
       category: { select: { name: true, slug: true } },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { updatedAt: "desc" },
   });
 }
 

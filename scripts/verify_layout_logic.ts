@@ -24,7 +24,7 @@ async function checkPromiseLayoutLogic(limit: number = 5) {
             continue;
         }
 
-        const relatedByPolitician = await getPromisesByPolitician(politicianId);
+        const relatedByPolitician = politicianId ? await getPromisesByPolitician(politicianId) : [];
         const relatedByPoliticianFiltered = relatedByPolitician
             .filter(r => r.id !== p.id)
             .slice(0, 2);

@@ -7,11 +7,17 @@ import { redirect, notFound } from "next/navigation";
 export default async function EditPromisePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
 
-    const [promise, politicians, categories] = await Promise.all([
+    const [promise, politicians, categories, parties] = await Promise.all([
         prisma.promise.findUnique({
             where: { id },
             include: {
                 sources: true,
+                coalitionParties: {
+                    select: {
+                        id: true,
+                        name: true,
+                    }
+                }
             }
         }),
         prisma.politician.findMany({
@@ -20,6 +26,10 @@ export default async function EditPromisePage({ params }: { params: Promise<{ id
         }),
         prisma.category.findMany({
             select: { id: true, name: true, slug: true },
+            orderBy: { name: "asc" },
+        }),
+        prisma.party.findMany({
+            select: { id: true, name: true },
             orderBy: { name: "asc" },
         }),
     ]);
@@ -63,6 +73,7 @@ export default async function EditPromisePage({ params }: { params: Promise<{ id
                     <PromiseForm
                         initialData={formattedPromise}
                         politicians={politicians}
+                        parties={parties}
                         categories={categories}
                         onSuccess={handleSuccess}
                         onCancel={handleCancel}

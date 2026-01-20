@@ -31,12 +31,16 @@ interface PromiseData {
     politicianId: string;
     categoryId: string;
     tags: string[];
-    politician: { name: string };
+    type?: "INDIVIDUAL" | "PARTY" | "COALITION";
+    politician?: { name: string } | null;
+    party?: { name: string } | null;
+    coalitionParties?: { name: string }[];
     category: { name: string; slug: string };
     updatedAt: Date | string;
     createdAt: Date | string;
     searchText?: string; // Add optional property for optimization
 }
+
 
 interface PromiseClientPageProps {
     initialPromises: PromiseData[];
@@ -51,7 +55,7 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
     const router = useRouter();
     const pathname = usePathname();
 
-    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+    const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>({ key: 'updatedAt', direction: 'desc' });
     const [selectedAuthors, setSelectedAuthors] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
@@ -116,7 +120,7 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
             searchText: (
                 p.title + " " +
                 p.status + " " +
-                p.politician.name + " " +
+                (p.politician?.name || "") + " " +
                 (p.description || "") + " " +
                 (p.explanation || "") + " " +
                 p.tags.join(" ")
@@ -156,8 +160,8 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
 
                 // Handle nested properties
                 if (sortConfig.key === 'politician') {
-                    aValue = a.politician.name;
-                    bValue = b.politician.name;
+                    aValue = a.politician?.name || "";
+                    bValue = b.politician?.name || "";
                 } else if (sortConfig.key === 'category') {
                     aValue = a.category.name;
                     bValue = b.category.name;
@@ -336,7 +340,9 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                                                 {promise.title}
                                             </span>
                                             <span className="text-xs text-gray-500">
-                                                {promise.politician.name}
+                                                {promise.type === "PARTY" && promise.party?.name}
+                                                {promise.type === "COALITION" && promise.coalitionParties?.map(p => p.name).join(", ")}
+                                                {(!promise.type || promise.type === "INDIVIDUAL") && (promise.politician?.name || "—")}
                                             </span>
                                         </div>
                                     </TableCell>
@@ -430,54 +436,56 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
             </div>
 
             {/* Pagination Controls */}
-            {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-4 pb-8">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                        disabled={currentPage === 1}
-                    >
-                        <ChevronLeft className="h-4 w-4" />
-                        <span className="hidden sm:inline ml-1">Previous</span>
-                    </Button>
-                    <div className="flex items-center gap-1">
-                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                            let pageNum: number;
-                            if (totalPages <= 5) {
-                                pageNum = i + 1;
-                            } else if (currentPage <= 3) {
-                                pageNum = i + 1;
-                            } else if (currentPage >= totalPages - 2) {
-                                pageNum = totalPages - 4 + i;
-                            } else {
-                                pageNum = currentPage - 2 + i;
-                            }
-                            return (
-                                <Button
-                                    key={pageNum}
-                                    variant={currentPage === pageNum ? 'default' : 'outline'}
-                                    size="sm"
-                                    onClick={() => handlePageChange(pageNum)}
-                                    className="w-10"
-                                >
-                                    {pageNum}
-                                </Button>
-                            );
-                        })}
+            {
+                totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-2 mt-4 pb-8">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                            disabled={currentPage === 1}
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                            <span className="hidden sm:inline ml-1">Previous</span>
+                        </Button>
+                        <div className="flex items-center gap-1">
+                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                let pageNum: number;
+                                if (totalPages <= 5) {
+                                    pageNum = i + 1;
+                                } else if (currentPage <= 3) {
+                                    pageNum = i + 1;
+                                } else if (currentPage >= totalPages - 2) {
+                                    pageNum = totalPages - 4 + i;
+                                } else {
+                                    pageNum = currentPage - 2 + i;
+                                }
+                                return (
+                                    <Button
+                                        key={pageNum}
+                                        variant={currentPage === pageNum ? 'default' : 'outline'}
+                                        size="sm"
+                                        onClick={() => handlePageChange(pageNum)}
+                                        className="w-10"
+                                    >
+                                        {pageNum}
+                                    </Button>
+                                );
+                            })}
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                            disabled={currentPage === totalPages}
+                        >
+                            <span className="hidden sm:inline mr-1">Next</span>
+                            <ChevronRight className="h-4 w-4" />
+                        </Button>
                     </div>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                        disabled={currentPage === totalPages}
-                    >
-                        <span className="hidden sm:inline mr-1">Next</span>
-                        <ChevronRight className="h-4 w-4" />
-                    </Button>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }
 

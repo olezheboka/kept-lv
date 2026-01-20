@@ -18,6 +18,11 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { format } from 'date-fns';
 import { PromiseUI, PoliticianUI, PartyUI, CategoryUI } from '@/lib/db';
+import { CoalitionLogoStack } from '@/components/ui/coalition-logo-stack';
+import { EntityBadge } from '@/components/ui/entity-badge';
+import { useLocale } from 'next-intl';
+import Image from 'next/image';
+import { PartyAvatar } from '@/components/ui/party-avatar';
 // import { CATEGORIES } from '@/lib/types';
 
 interface PromiseDetailClientProps {
@@ -46,6 +51,10 @@ export const PromiseDetailClient = ({
     relatedByCategory
 }: PromiseDetailClientProps) => {
     const { toast } = useToast();
+    const locale = useLocale();
+
+    const isCoalition = promise?.type === 'COALITION';
+    const isParty = promise?.type === 'PARTY';
 
     const handleCopyLink = () => {
         if (typeof window !== 'undefined') {
@@ -122,46 +131,68 @@ export const PromiseDetailClient = ({
                             className="w-full"
                         >
                             {/* Header Section: Author & Date */}
-                            {politician && party && (
-                                <div className="mb-6 pb-6 border-b border-border/50">
-                                    <div className="flex flex-col md:flex-row items-start gap-6">
-                                        <div className="flex-1 text-left">
-                                            {/* Row 1: Name + Party Badge */}
-                                            <div className="flex flex-wrap items-center justify-start gap-4 mb-2">
+                            <div className="mb-6 pb-6 border-b border-border/50">
+                                <div className="flex flex-col md:flex-row items-start gap-6">
+                                    <div className="flex-1 text-left">
+                                        {/* Row 1: Name + Party Badge */}
+                                        <div className="flex flex-wrap items-center justify-start gap-4 mb-2">
+                                            {isCoalition ? (
+                                                <>
+                                                    <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+                                                        Koalīcijas solījums
+                                                    </h2>
+                                                    <CoalitionLogoStack
+                                                        parties={promise.coalitionParties || []}
+                                                        size="lg"
+                                                        // className="h-10" // header uses lg size
+                                                        locale={locale as "lv" | "en" | "ru"}
+                                                    />
+                                                </>
+                                            ) : isParty && party ? (
+                                                <Link href={`/parties/${party.id}`} className="group inline-block" suppressHydrationWarning>
+                                                    <h2 className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-accent transition-colors">
+                                                        {party.name}
+                                                    </h2>
+                                                </Link>
+                                            ) : politician && party ? (
                                                 <Link href={`/politicians/${politician.id}`} className="group inline-block" suppressHydrationWarning>
                                                     <h2 className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-accent transition-colors">
                                                         {politician.name}
                                                     </h2>
                                                 </Link>
-                                                {party.logoUrl ? (
-                                                    <div className="h-8 w-auto min-w-[32px] relative flex items-center justify-center flex-shrink-0">
-                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                        <img
-                                                            src={party.logoUrl}
-                                                            alt={party.abbreviation}
-                                                            className="h-full w-auto object-contain"
-                                                        />
-                                                    </div>
-                                                ) : (
-                                                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-muted text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                                                        {party.abbreviation}
-                                                    </span>
-                                                )}
-                                            </div>
+                                            ) : null}
+                                        </div>
 
-                                            {/* Row 2: Role + Amatā Badge */}
-                                            <div className="flex flex-wrap items-center justify-start gap-3 text-lg text-muted-foreground">
-                                                <span>{politician.role}</span>
-                                                {politician.isInOffice && (
-                                                    <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
-                                                        Amatā
-                                                    </span>
-                                                )}
-                                            </div>
+                                        {/* Row 2: Role + Amatā Badge / EntityBadge */}
+                                        <div className="flex flex-wrap items-center justify-start gap-3 text-lg text-muted-foreground">
+                                            {isCoalition ? (
+                                                null
+                                            ) : isParty ? (
+                                                party ? (
+                                                    party.isInCoalition ? (
+                                                        <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
+                                                            Koalīcijā
+                                                        </span>
+                                                    ) : (
+                                                        <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
+                                                            Opozīcijā
+                                                        </span>
+                                                    )
+                                                ) : null
+                                            ) : politician ? (
+                                                <>
+                                                    <span>{politician.role}</span>
+                                                    {politician.isInOffice && (
+                                                        <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
+                                                            Amatā
+                                                        </span>
+                                                    )}
+                                                </>
+                                            ) : null}
                                         </div>
                                     </div>
                                 </div>
-                            )}
+                            </div>
 
                             {/* Promise Content Section */}
                             <div>
@@ -221,6 +252,8 @@ export const PromiseDetailClient = ({
                                         {promise.description}
                                     </p>
                                 )}
+
+
 
 
                             </div>

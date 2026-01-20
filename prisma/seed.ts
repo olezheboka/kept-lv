@@ -78,7 +78,12 @@ async function main() {
   });
   console.log("Created admin user:", admin.email);
 
-  // Clear existing data
+  // Clear existing data (Promises, Politicians, Parties)
+  console.log("Clearing existing promises, politicians, and parties...");
+  await prisma.promise.deleteMany();
+  await prisma.politician.deleteMany();
+  await prisma.party.deleteMany();
+  // Do NOT delete categories as requested
 
 
   // Create all categories (14 total) - Removed Color, Added Description
@@ -336,26 +341,25 @@ async function main() {
 
   let promisesCreated = 0;
 
+  // 1. INDIVIDUAL PROMISES
+  console.log("Generating Individual Promises...");
   for (const pol of politiciansData) {
-    // Generate exactly 20 promises per politician (4 per status)
-    for (let i = 0; i < 20; i++) {
+    // Generate exactly 3 promises per politician
+    for (let i = 0; i < 3; i++) {
       // Round robin status to ensure distribution
       const status = statuses[(promisesCreated) % statuses.length];
       const template = randomItem(promiseTemplates);
 
-      // Make title unique and long enough (>70 chars) if needed, but template titles are short.
-      // Let's construct a longer title based on template.
       const longTitleBase = `${template.title} un nodrošināt ilgtermiņa stabilitāti Latvijas iedzīvotājiem ${2024 + i}. gadā`;
-      const title = longTitleBase.padEnd(70, " - svarīgs solījums"); // Ensure > 70 chars if not already
+      const title = longTitleBase.padEnd(70, " - svarīgs solījums");
 
       const description = generateLongText(
-        `Šis solījums paredz veikt būtiskas izmaiņas ${template.categorySlug} jomā. `,
-        250 // > 200 chars
+        `Šis ir individuāls solījums, ko sniedzis ${pol.name} saistībā ar ${template.categorySlug} jomā. `,
+        250
       );
-
       const explanation = generateLongText(
         `Pašreizējais statuss ir ${status}. Mēs esam veikuši vairākus soļus, lai to sasniegtu. `,
-        250 // > 200 chars
+        250
       );
 
       const promiseTags = randomSubset(template.tags, Math.floor(Math.random() * 2) + 2); // 2 or 3 tags
@@ -363,20 +367,26 @@ async function main() {
       await prisma.promise.create({
         data: {
           title: title,
-          slug: slugify(`${title.substring(0, 50)}-${pol.slug}-${i}`), // Unique slug: limit title part to 50 chars
+          slug: slugify(`${title.substring(0, 50)}-${pol.slug}-ind-${i}`),
           description: description,
           status: status,
           explanation: explanation,
+          type: "INDIVIDUAL",
           dateOfPromise: new Date(`2023-${(i % 12) + 1}-15`),
           statusUpdatedAt: new Date(),
           politicianId: politicians[pol.slug].id,
+          partyId: parties[pol.partySlug].id, // Also link to party for filtering convenience if desired, or leave null if strictly Individual. 
+          // Note: Schema says partyId is for Single Party promises, but linking it for individuals helps "Promises by Ind in Party". 
+          // For now, let's keep partyId for PARTY type promises mainly, but linking it is fine too.
+          // However, the spec distinguishes "Party Promise" (partyId set, type=PARTY) vs "Ind Promise" (polId set, type=INDIV).
+          // Let's NOT set partyId here to simulate strict separation, relying on politician.party relation for filtering.
           categoryId: categories[template.categorySlug].id,
           tags: promiseTags,
           sources: {
             create: {
-              type: "ARTICLE",
+              type: "ARTICLE", // Use valid SourceType
               url: "https://www.lsm.lv",
-              title: "LSM Ziņas: Politiķa paziņojums par šo jautājumu",
+              title: "LSM Ziņas: Politiķa paziņojums",
               description: "Intervija ar politiķi par plānotajiem darbiem."
             }
           }
@@ -384,6 +394,92 @@ async function main() {
       });
       promisesCreated++;
     }
+  }
+
+  // 2. PARTY PROMISES
+  console.log("Generating Party Promises...");
+  for (const party of partiesData) {
+    // Generate 2 promises per party
+    for (let i = 0; i < 2; i++) {
+      const status = statuses[(promisesCreated) % statuses.length];
+      const template = randomItem(promiseTemplates);
+
+      const title = `${template.title} (Partijas programma)`;
+      const description = generateLongText(`Šis ir partijas ${party.name} oficiālais solījums vēlētājiem. `, 250);
+      const explanation = generateLongText(`Partijas progresa ziņojums: ${status}. `, 250);
+
+      await prisma.promise.create({
+        data: {
+          title: title,
+          slug: slugify(`party-${party.slug}-${template.categorySlug}-${i}`),
+          description: description,
+          status: status,
+          explanation: explanation,
+          type: "PARTY",
+          dateOfPromise: new Date(`2023-${(i % 12) + 1}-20`),
+          statusUpdatedAt: new Date(),
+          partyId: parties[party.slug].id, // Set partyId
+          categoryId: categories[template.categorySlug].id,
+          tags: ["partijas-programma", ...template.tags],
+          sources: {
+            create: {
+              type: "MANIFESTO", // Use new SourceType
+              url: party.websiteUrl || "https://cvk.lv",
+              title: `${party.name} 4000 zīmju programma`,
+              description: "Oficiālā programma CVK mājaslapā."
+            }
+          }
+        }
+      });
+      promisesCreated++;
+    }
+  }
+
+  // 3. COALITION PROMISES
+  console.log("Generating Coalition Promises...");
+  const coalitionPartiesList = partiesData.filter(p => p.isCoalition);
+  // Create 5 coalition promises
+  for (let i = 0; i < 5; i++) {
+    const status = statuses[(promisesCreated) % statuses.length];
+    const template = randomItem(promiseTemplates);
+
+    // Pick random 2-3 coalition parties
+    const involvedParties = randomSubset(coalitionPartiesList, Math.floor(Math.random() * 2) + 2);
+    // Ensure we have at least 2
+    if (involvedParties.length < 2) continue;
+
+    const partyIds = involvedParties.map(p => ({ id: parties[p.slug].id }));
+
+    const title = `${template.title} (Koalīcijas līgums)`;
+    const description = generateLongText(`Šis ir koalīcijas kopīgs solījums, kurā piedalās: ${involvedParties.map(p => p.name).join(", ")}. `, 250);
+    const explanation = generateLongText(`Koalīcijas padomes progresa ziņojums. `, 250);
+
+    await prisma.promise.create({
+      data: {
+        title: title,
+        slug: slugify(`coalition-promise-${i}-${template.categorySlug}`),
+        description: description,
+        status: status,
+        explanation: explanation,
+        type: "COALITION",
+        dateOfPromise: new Date(`2023-${(i % 12) + 1}-01`),
+        statusUpdatedAt: new Date(),
+        coalitionParties: {
+          connect: partyIds // Connect multiple parties
+        },
+        categoryId: categories[template.categorySlug].id,
+        tags: ["koalīcijas-līgums", "valdības-deklarācija", ...template.tags],
+        sources: {
+          create: {
+            type: "GOVERNMENT_DOC", // Use new SourceType
+            url: "https://mk.gov.lv",
+            title: "Valdības deklarācija",
+            description: "Deklarācija par Evikas Siliņas vadītā Ministru kabineta iecerēto darbību."
+          }
+        }
+      }
+    });
+    promisesCreated++;
   }
 
   console.log(`Created ${promisesCreated} promises.`);

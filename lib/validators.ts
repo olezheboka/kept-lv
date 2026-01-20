@@ -48,7 +48,7 @@ export const updateCategorySchema = createCategorySchema.partial();
 
 // Source schema
 export const sourceSchema = z.object({
-  type: z.enum(["VIDEO", "ARTICLE", "DOCUMENT", "SOCIAL_MEDIA", "INTERVIEW"]),
+  type: z.enum(["VIDEO", "ARTICLE", "DOCUMENT", "SOCIAL_MEDIA", "INTERVIEW", "MANIFESTO", "GOVERNMENT_DOC"]),
   url: z.string().url(),
   title: z.string().optional().nullable(),
   description: z.string().optional().nullable(),
@@ -70,7 +70,10 @@ export const createPromiseSchema = z.object({
   explanation: z.string().optional().nullable(),
   dateOfPromise: z.string().datetime().or(z.date()),
   statusUpdatedAt: z.string().datetime().optional().nullable(),
-  politicianId: z.string().cuid(),
+  type: z.enum(["INDIVIDUAL", "PARTY", "COALITION"]).default("INDIVIDUAL"),
+  politicianId: z.string().cuid().optional().nullable(),
+  partyId: z.string().cuid().optional().nullable(),
+  coalitionPartyIds: z.array(z.string()).optional(),
   categoryId: z.string().cuid(),
   sources: z.array(sourceSchema).optional(),
   evidence: z.array(evidenceSchema).optional(),

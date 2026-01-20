@@ -5,13 +5,17 @@ import { PromiseForm } from "@/components/admin/promises/PromiseForm";
 import { redirect } from "next/navigation";
 
 export default async function NewPromisePage() {
-    const [politicians, categories] = await Promise.all([
+    const [politicians, categories, parties] = await Promise.all([
         prisma.politician.findMany({
             select: { id: true, name: true },
             orderBy: { name: "asc" },
         }),
         prisma.category.findMany({
             select: { id: true, name: true, slug: true },
+            orderBy: { name: "asc" },
+        }),
+        prisma.party.findMany({
+            select: { id: true, name: true },
             orderBy: { name: "asc" },
         }),
     ]);
@@ -41,6 +45,7 @@ export default async function NewPromisePage() {
                 <CardContent className="p-6">
                     <PromiseForm
                         politicians={politicians}
+                        parties={parties}
                         categories={categories}
                         onSuccess={handleSuccess}
                         onCancel={handleCancel}

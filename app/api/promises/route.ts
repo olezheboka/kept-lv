@@ -125,13 +125,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { sources, evidence, dateOfPromise, ...promiseData } = parsed.data;
+    const { sources, evidence, dateOfPromise, coalitionPartyIds, ...promiseData } = parsed.data;
 
     const promise = await prisma.promise.create({
       data: {
         ...promiseData,
         tags: promiseData.tags || [],
         dateOfPromise: new Date(dateOfPromise),
+        // Handle relation logic based on type (though simplistic here, validated by UI/Schema)
+        coalitionParties: coalitionPartyIds?.length
+          ? { connect: coalitionPartyIds.map(id => ({ id })) }
+          : undefined,
         sources: sources?.length
           ? {
             create: sources.map(s => ({
@@ -158,6 +162,8 @@ export async function POST(request: NextRequest) {
             party: true,
           },
         },
+        party: true,
+        coalitionParties: true,
         category: true,
         sources: true,
         evidence: true,

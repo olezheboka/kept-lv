@@ -1,5 +1,5 @@
 import { prisma } from "./prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma, Party, Source } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import { mapStatusToUI } from "./utils";
 
@@ -36,14 +36,25 @@ export interface PromiseUI {
     categorySlug: string;
     title: string;
     fullText: string;
-    politicianId: string;
-    politicianName: string;
-    politicianRole: string;
-    politicianPhotoUrl: string;
-    politicianIsInOffice: boolean;
+    type: "INDIVIDUAL" | "PARTY" | "COALITION";
+    politicianId?: string;
+    politicianName?: string;
+    politicianRole?: string;
+    politicianPhotoUrl?: string;
+    politicianIsInOffice?: boolean;
     partyId?: string;
     partyAbbreviation?: string;
     partyLogoUrl?: string;
+    partyName?: string;
+    partyColor?: string;
+    coalitionParties?: {
+        id: string;
+        slug: string;
+        name: string;
+        abbreviation: string;
+        logoUrl?: string;
+        color: string;
+    }[];
     datePromised: string;
     electionCycle?: string;
     status: "kept" | "partially-kept" | "in-progress" | "broken" | "not-rated";
@@ -119,17 +130,24 @@ function mapCategorySlug(slug: string): string {
     return categoryMap[slug] || slug;
 }
 
-// Party abbreviation map (since DB doesn't store abbreviations)
+// Party abbreviation map (official 14th Saeima election abbreviations)
+// Slugs must match those in seed.ts
 const partyAbbreviations: Record<string, string> = {
-    jv: "JV",
-    zzs: "ZZS",
-    na: "NA",
-    ap: "AP!",
-    prog: "P",
-    lra: "LRA",
-    stab: "S!",
-    lpv: "LPV",
-    sask: "S",
+    // Parties in Parliament (per seed.ts slugs)
+    jv: "JV",        // Jaunā Vienotība (New Unity)
+    zzs: "ZZS",      // Zaļo un Zemnieku savienība (Union of Greens and Farmers)
+    as: "AS",        // Apvienotais Saraksts (United List)
+    na: "NA",        // Nacionālā apvienība (National Alliance)
+    stab: "S!",      // Stabilitātei! (For Stability!)
+    prog: "PRO",     // Progresīvie (The Progressives)
+    lpv: "LPV",      // Latvija Pirmajā Vietā (Latvia First)
+    lra: "LRA",      // Latvijas Reģionu apvienība (Latvian Regions Association)
+    // Parties not in Parliament (per seed.ts slugs)
+    sask: "S",       // Saskaņa (Harmony)
+    ap: "A/P",       // Attīstībai/Par! (Development/For!)
+    lks: "LKS",      // Latvijas Krievu savienība (Latvian Russian Union)
+    kons: "K",       // Konservatīvie (Conservatives) - slug is "kons" in seed
+    sv: "SV",        // Suverēnā vara (Sovereign Power)
 };
 
 // Party MP counts (hardcoded for now as "real world" context)
@@ -275,52 +293,73 @@ export async function getPoliticianBySlug(
 
 // ========== PROMISES ==========
 
+// Helper to map DB promise to UI promise
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapPromiseToUI(p: any, locale: Locale): PromiseUI {
+    return {
+        id: p.id,
+        slug: p.slug || p.id,
+        categorySlug: p.category.slug,
+        title: getLocalizedText(p.title, locale),
+        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
+        type: p.type || "INDIVIDUAL",
+        politicianId: p.politician?.slug || "",
+        politicianName: p.politician?.name || "",
+        politicianRole: p.politician?.role ? getLocalizedText(p.politician.role, locale) : "",
+        politicianPhotoUrl: p.politician?.imageUrl || "",
+        politicianIsInOffice: p.politician?.isActive ?? false,
+        // Party logic:
+        partyId: p.type === 'PARTY' ? p.party?.slug : p.politician?.party?.slug,
+        partyAbbreviation: p.type === 'PARTY'
+            ? (p.party ? (partyAbbreviations[p.party.slug] || p.party.slug.toUpperCase()) : undefined)
+            : (p.politician?.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined),
+        partyLogoUrl: p.type === 'PARTY' ? p.party?.logoUrl || undefined : p.politician?.party?.logoUrl || undefined,
+        partyName: p.type === 'PARTY' && p.party ? getLocalizedText(p.party.name, locale) : undefined,
+        partyColor: "#CCCCCC",
+        coalitionParties: p.type === 'COALITION' && p.coalitionParties ? p.coalitionParties.map((cp: Party) => ({
+            id: cp.slug,
+            slug: cp.slug,
+            name: getLocalizedText(cp.name, locale),
+            abbreviation: partyAbbreviations[cp.slug] || cp.slug.toUpperCase(),
+            logoUrl: cp.logoUrl || undefined,
+            color: "#CCCCCC"
+        })) : undefined,
+        datePromised: p.dateOfPromise.toISOString().split("T")[0],
+        electionCycle: "2022 Saeima Elections",
+        status: mapStatusToUI(p.status),
+        statusJustification: p.explanation ? getLocalizedText(p.explanation, locale) : "",
+        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
+        statusUpdatedBy: "Solījums.lv Team",
+        category: mapCategorySlug(p.category.slug),
+        description: p.description ? getLocalizedText(p.description, locale) : undefined,
+        importance: undefined,
+        deadline: undefined,
+        tags: p.tags,
+        sources: p.sources.map((s: Source) => ({
+            title: s.title ? getLocalizedText(s.title, locale) : "",
+            url: s.url,
+            publication: "",
+            date: s.createdAt.toISOString().split("T")[0],
+        })),
+        viewCount: 0,
+        featured: false,
+    };
+}
+
 const getPromisesFromDb = async (locale: Locale): Promise<PromiseUI[]> => {
     try {
         const promises = await prisma.promise.findMany({
             include: {
                 politician: { include: { party: true } },
+                party: true,
+                coalitionParties: true,
                 category: true,
                 sources: true,
             },
             orderBy: { updatedAt: "desc" },
         });
 
-        return promises.map((p) => ({
-            id: p.id,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            slug: (p as any).slug || p.id,
-            categorySlug: p.category.slug,
-            title: getLocalizedText(p.title, locale),
-            fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
-            politicianId: p.politician.slug,
-            politicianName: p.politician.name,
-            politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
-            politicianPhotoUrl: p.politician.imageUrl || "",
-            politicianIsInOffice: p.politician.isActive,
-            partyId: p.politician.party?.slug,
-            partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
-            partyLogoUrl: p.politician.party?.logoUrl || undefined,
-            datePromised: p.dateOfPromise.toISOString().split("T")[0],
-            electionCycle: "2022 Saeima Elections",
-            status: mapStatusToUI(p.status),
-            statusJustification: p.explanation ? getLocalizedText(p.explanation, locale) : "",
-            statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
-            statusUpdatedBy: "Solījums.lv Team",
-            category: p.category.name ? getLocalizedText(p.category.name, locale) : "",
-            description: p.description ? getLocalizedText(p.description, locale) : undefined,
-            importance: undefined,
-            deadline: undefined,
-            tags: p.tags,
-            sources: p.sources.map((s) => ({
-                title: s.title ? getLocalizedText(s.title, locale) : "",
-                url: s.url,
-                publication: "",
-                date: s.createdAt.toISOString().split("T")[0],
-            })),
-            viewCount: 0,
-            featured: false,
-        }));
+        return promises.map((p) => mapPromiseToUI(p, locale));
     } catch (error) {
         console.error("Error fetching promises:", error);
         try {
@@ -356,6 +395,8 @@ export async function getPromiseById(
         where: { id },
         include: {
             politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
             category: true,
             sources: true,
             evidence: true,
@@ -364,43 +405,7 @@ export async function getPromiseById(
 
     if (!p) return null;
 
-    return {
-        id: p.id,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        slug: (p as any).slug || p.id,
-        categorySlug: p.category.slug,
-        title: getLocalizedText(p.title, locale),
-        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
-        politicianId: p.politician.slug,
-        politicianName: p.politician.name,
-        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
-        politicianPhotoUrl: p.politician.imageUrl || "",
-        politicianIsInOffice: p.politician.isActive,
-        partyId: p.politician.party?.slug,
-        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
-        partyLogoUrl: p.politician.party?.logoUrl || undefined,
-        datePromised: p.dateOfPromise.toISOString().split("T")[0],
-        electionCycle: "2022 Saeima Elections",
-        status: mapStatusToUI(p.status),
-        statusJustification: p.explanation
-            ? getLocalizedText(p.explanation, locale)
-            : "",
-        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
-        statusUpdatedBy: "Kept Analytics Team",
-        category: mapCategorySlug(p.category.slug),
-        description: p.description ? getLocalizedText(p.description, locale) : undefined,
-        importance: undefined,
-        deadline: undefined,
-        tags: p.tags,
-        sources: p.sources.map((s) => ({
-            title: s.title ? getLocalizedText(s.title, locale) : "",
-            url: s.url,
-            publication: "",
-            date: s.createdAt.toISOString().split("T")[0],
-        })),
-        viewCount: 0,
-        featured: false,
-    };
+    return mapPromiseToUI(p, locale);
 }
 
 export async function getPromiseBySlug(
@@ -415,6 +420,8 @@ export async function getPromiseBySlug(
         },
         include: {
             politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
             category: true,
             sources: true,
             evidence: true,
@@ -423,42 +430,7 @@ export async function getPromiseBySlug(
 
     if (!p) return null;
 
-    return {
-        id: p.id,
-        slug: p.slug || p.id,
-        categorySlug: p.category.slug,
-        title: getLocalizedText(p.title, locale),
-        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
-        politicianId: p.politician.slug,
-        politicianName: p.politician.name,
-        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
-        politicianPhotoUrl: p.politician.imageUrl || "",
-        politicianIsInOffice: p.politician.isActive,
-        partyId: p.politician.party?.slug,
-        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
-        partyLogoUrl: p.politician.party?.logoUrl || undefined,
-        datePromised: p.dateOfPromise.toISOString().split("T")[0],
-        electionCycle: "2022 Saeima Elections",
-        status: mapStatusToUI(p.status),
-        statusJustification: p.explanation
-            ? getLocalizedText(p.explanation, locale)
-            : "",
-        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
-        statusUpdatedBy: "Kept Analytics Team",
-        category: mapCategorySlug(p.category.slug),
-        description: p.description ? getLocalizedText(p.description, locale) : undefined,
-        importance: undefined,
-        deadline: undefined,
-        tags: p.tags,
-        sources: p.sources.map((s) => ({
-            title: s.title ? getLocalizedText(s.title, locale) : "",
-            url: s.url,
-            publication: "",
-            date: s.createdAt.toISOString().split("T")[0],
-        })),
-        viewCount: 0,
-        featured: false,
-    };
+    return mapPromiseToUI(p, locale);
 }
 
 export async function getPromisesByPolitician(
@@ -475,49 +447,15 @@ export async function getPromisesByPolitician(
         where: { politicianId: politician.id },
         include: {
             politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
             category: true,
             sources: true,
         },
         orderBy: { updatedAt: "desc" },
     });
 
-    return promises.map((p) => ({
-        id: p.id,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        slug: (p as any).slug || p.id,
-        categorySlug: p.category.slug,
-        title: getLocalizedText(p.title, locale),
-        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
-        politicianId: p.politician.slug,
-        politicianName: p.politician.name,
-        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
-        politicianPhotoUrl: p.politician.imageUrl || "",
-        politicianIsInOffice: p.politician.isActive,
-        partyId: p.politician.party?.slug,
-        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
-        partyLogoUrl: p.politician.party?.logoUrl || undefined,
-        datePromised: p.dateOfPromise.toISOString().split("T")[0],
-        electionCycle: "2022 Saeima Elections",
-        status: mapStatusToUI(p.status),
-        statusJustification: p.explanation
-            ? getLocalizedText(p.explanation, locale)
-            : "",
-        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
-        statusUpdatedBy: "Kept Analytics Team",
-        category: mapCategorySlug(p.category.slug),
-        description: p.description ? getLocalizedText(p.description, locale) : undefined,
-        importance: undefined,
-        deadline: undefined,
-        tags: p.tags,
-        sources: p.sources.map((s) => ({
-            title: s.title ? getLocalizedText(s.title, locale) : "",
-            url: s.url,
-            publication: "",
-            date: s.createdAt.toISOString().split("T")[0],
-        })),
-        viewCount: 0,
-        featured: false,
-    }));
+    return promises.map((p) => mapPromiseToUI(p, locale));
 }
 
 export async function getPromisesByParty(
@@ -537,49 +475,15 @@ export async function getPromisesByParty(
         where: { politicianId: { in: politicianIds } },
         include: {
             politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
             category: true,
             sources: true,
         },
         orderBy: { updatedAt: "desc" },
     });
 
-    return promises.map((p) => ({
-        id: p.id,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        slug: (p as any).slug || p.id,
-        categorySlug: p.category.slug,
-        title: getLocalizedText(p.title, locale),
-        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
-        politicianId: p.politician.slug,
-        politicianName: p.politician.name,
-        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
-        politicianPhotoUrl: p.politician.imageUrl || "",
-        politicianIsInOffice: p.politician.isActive,
-        partyId: p.politician.party?.slug,
-        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
-        partyLogoUrl: p.politician.party?.logoUrl || undefined,
-        datePromised: p.dateOfPromise.toISOString().split("T")[0],
-        electionCycle: "2022 Saeima Elections",
-        status: mapStatusToUI(p.status),
-        statusJustification: p.explanation
-            ? getLocalizedText(p.explanation, locale)
-            : "",
-        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
-        statusUpdatedBy: "Kept Analytics Team",
-        category: mapCategorySlug(p.category.slug),
-        description: p.description ? getLocalizedText(p.description, locale) : undefined,
-        importance: undefined,
-        deadline: undefined,
-        tags: p.tags,
-        sources: p.sources.map((s) => ({
-            title: s.title ? getLocalizedText(s.title, locale) : "",
-            url: s.url,
-            publication: "",
-            date: s.createdAt.toISOString().split("T")[0],
-        })),
-        viewCount: 0,
-        featured: false,
-    }));
+    return promises.map((p) => mapPromiseToUI(p, locale));
 }
 
 export async function getPromisesByCategory(
@@ -590,48 +494,15 @@ export async function getPromisesByCategory(
         where: { category: { slug: categorySlug } },
         include: {
             politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
             category: true,
             sources: true,
         },
         orderBy: { updatedAt: "desc" },
     });
 
-    return promises.map((p) => ({
-        id: p.id,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        slug: (p as any).slug || p.id,
-        categorySlug: p.category.slug,
-        title: getLocalizedText(p.title, locale),
-        fullText: p.description ? getLocalizedText(p.description, locale) : getLocalizedText(p.title, locale),
-        politicianId: p.politician.slug,
-        politicianName: p.politician.name,
-        politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
-        politicianPhotoUrl: p.politician.imageUrl || "",
-        politicianIsInOffice: p.politician.isActive,
-        partyId: p.politician.party?.slug,
-        partyAbbreviation: p.politician.party ? (partyAbbreviations[p.politician.party.slug] || p.politician.party.slug.toUpperCase()) : undefined,
-        datePromised: p.dateOfPromise.toISOString().split("T")[0],
-        electionCycle: "2022 Saeima Elections",
-        status: mapStatusToUI(p.status),
-        statusJustification: p.explanation
-            ? getLocalizedText(p.explanation, locale)
-            : "",
-        statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
-        statusUpdatedBy: "Kept Analytics Team",
-        category: mapCategorySlug(p.category.slug),
-        description: p.description ? getLocalizedText(p.description, locale) : undefined,
-        importance: undefined,
-        deadline: undefined,
-        tags: p.tags,
-        sources: p.sources.map((s) => ({
-            title: s.title ? getLocalizedText(s.title, locale) : "",
-            url: s.url,
-            publication: "",
-            date: s.createdAt.toISOString().split("T")[0],
-        })),
-        viewCount: 0,
-        featured: false,
-    }));
+    return promises.map((p) => mapPromiseToUI(p, locale));
 }
 
 export async function getFeaturedPromises(
@@ -796,11 +667,9 @@ export async function getRandomPromises(count: number, excludeId?: string, local
         where: excludeId ? { id: { not: excludeId } } : undefined,
         take: count * 2,
         include: {
-            politician: {
-                include: {
-                    party: true
-                }
-            },
+            politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
             category: true,
             sources: true
         }
@@ -810,50 +679,7 @@ export async function getRandomPromises(count: number, excludeId?: string, local
     const shuffled = promises.sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, count);
 
-    return selected.map((p) => {
-        const party = p.politician.party;
-        const mappedStatus = mapStatusToUI(p.status);
-
-        return {
-            id: p.id,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            slug: (p as any).slug || p.id,
-            categorySlug: p.category.slug,
-            title: getLocalizedText(p.title, locale),
-            fullText: p.description ? getLocalizedText(p.description, locale) : "",
-            description: p.description ? getLocalizedText(p.description, locale) : undefined,
-            politicianId: p.politician.slug,
-            politicianName: p.politician.name,
-            politicianRole: p.politician.role ? getLocalizedText(p.politician.role, locale) : "",
-            politicianPhotoUrl: p.politician.imageUrl || "",
-            politicianIsInOffice: p.politician.isActive,
-            partyId: party?.slug,
-            partyAbbreviation: party ? (partyAbbreviations[party.slug] || party.slug.toUpperCase()) : undefined,
-            partyLogoUrl: party?.logoUrl || undefined,
-            datePromised: p.dateOfPromise.toISOString(),
-            status: mappedStatus,
-            statusJustification: p.explanation ? getLocalizedText(p.explanation, locale) : "",
-            statusUpdatedAt: p.statusUpdatedAt?.toISOString() || p.updatedAt.toISOString(),
-            statusUpdatedBy: "Solījums.lv",
-            category: p.category.slug,
-            tags: p.tags,
-            // checking Schema again... Promise model has no tags.
-            // But PromiseUI has tags: string[]. I'll return empty array.
-            sources: p.sources.map(s => ({
-                title: s.title ? getLocalizedText(s.title, locale) : "",
-                url: s.url,
-                publication: s.type,
-                date: s.createdAt.toISOString()
-            })),
-            viewCount: 0,
-            featured: false,
-            // PromiseUI in db.ts lines 31-57 has these fields.
-            // Let me double check if I missed any.
-            // electionCycle? It is optional in PromiseUI.
-            // importance? Optional.
-            // deadline? Optional.
-        };
-    });
+    return selected.map((p) => mapPromiseToUI(p, locale));
 }
 
 export async function getCategoryBySlug(

@@ -1,4 +1,4 @@
-import type { PromiseStatus, SourceType, EvidenceType, Role } from "@prisma/client";
+import type { PromiseStatus, SourceType, EvidenceType, Role, PromiseType } from "@prisma/client";
 
 export type Locale = "lv" | "en" | "ru";
 
@@ -76,10 +76,11 @@ export interface PromiseWithRelations {
   title: LocalizedText;
   description: LocalizedText | null;
   status: PromiseStatus;
+  type: PromiseType;
   explanation: LocalizedText | null;
   dateOfPromise: Date;
   statusUpdatedAt: Date | null;
-  politicianId: string;
+  politicianId: string | null;
   politician: {
     id: string;
     name: string;
@@ -91,7 +92,22 @@ export interface PromiseWithRelations {
       slug: string;
       color: string;
     } | null;
-  };
+  } | null;
+  partyId: string | null;
+  party: {
+    id: string;
+    name: LocalizedText;
+    slug: string;
+    color: string;
+    logoUrl: string | null;
+  } | null;
+  coalitionParties: {
+    id: string;
+    name: LocalizedText;
+    slug: string;
+    color: string;
+    logoUrl: string | null;
+  }[];
   categoryId: string;
   category: {
     id: string;
@@ -118,6 +134,7 @@ export interface EvidenceData {
   type: EvidenceType;
   url: string;
   description: LocalizedText | null;
+  promiseId: string;
 }
 
 export interface PromiseStats {
@@ -131,6 +148,7 @@ export interface PromiseStats {
 
 export interface FilterParams {
   status?: PromiseStatus | "all";
+  type?: PromiseType;
   politician?: string;
   category?: string;
   party?: string;
@@ -149,4 +167,4 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-export { PromiseStatus, SourceType, EvidenceType, Role };
+export { PromiseStatus, SourceType, EvidenceType, Role, PromiseType };

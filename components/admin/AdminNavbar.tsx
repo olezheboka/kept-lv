@@ -96,6 +96,7 @@ export function AdminNavbar({ politicians, categories, parties }: AdminNavbarPro
                     </DialogHeader>
                     <PromiseForm
                         politicians={politicians}
+                        parties={parties}
                         categories={categories}
                         onSuccess={handleSuccess}
                         onCancel={() => setActiveModal(null)}

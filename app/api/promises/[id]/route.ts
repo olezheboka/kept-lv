@@ -82,7 +82,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Promise not found" }, { status: 404 });
     }
 
-    const { sources, evidence, dateOfPromise, ...promiseData } = parsed.data;
+    const { sources, evidence, dateOfPromise, coalitionPartyIds, ...promiseData } = parsed.data;
 
     // 2. Perform updates
     // Delete existing sources and evidence if new ones are provided
@@ -99,6 +99,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         ...promiseData,
         tags: promiseData.tags,
         dateOfPromise: dateOfPromise ? new Date(dateOfPromise) : undefined,
+        // Update coalition parties if provided (using set to replace)
+        coalitionParties: coalitionPartyIds
+          ? { set: coalitionPartyIds.map(id => ({ id })) }
+          : undefined,
         sources: sources?.length
           ? {
             create: sources.map(s => ({
@@ -125,6 +129,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             party: true,
           },
         },
+        party: true,
+        coalitionParties: true,
         category: true,
         sources: true,
         evidence: true,

@@ -152,8 +152,9 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                 return (
                     p.title.toLowerCase().includes(query) ||
                     p.fullText.toLowerCase().includes(query) ||
-                    p.politicianName.toLowerCase().includes(query) ||
-                    p.politicianRole.toLowerCase().includes(query) ||
+                    (p.politicianName && p.politicianName.toLowerCase().includes(query)) ||
+                    (p.politicianRole && p.politicianRole.toLowerCase().includes(query)) ||
+                    (p.partyName && p.partyName.toLowerCase().includes(query)) ||
                     p.tags.some(t => t.toLowerCase().includes(query))
                 );
             });
@@ -166,7 +167,17 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
 
         // Party filter
         if (selectedParties.length > 0) {
-            result = result.filter(p => p.partyId && selectedParties.includes(p.partyId));
+            result = result.filter(p => {
+                // Check direct party association (Individual/Party)
+                if (p.partyId && selectedParties.includes(p.partyId)) return true;
+
+                // Check coalition parties
+                if (p.type === 'COALITION' && p.coalitionParties) {
+                    return p.coalitionParties.some(cp => selectedParties.includes(cp.slug));
+                }
+
+                return false;
+            });
         }
 
         // Category filter

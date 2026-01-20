@@ -46,7 +46,7 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
         />;
     }
 
-    const politician = await getPoliticianBySlug(promise.politicianId);
+    const politician = promise.politicianId ? await getPoliticianBySlug(promise.politicianId) : null;
     const party = promise.partyId ? await getPartyBySlug(promise.partyId) : null;
 
     const categoryInfo = CATEGORIES.find(c => c.id === promise.categorySlug);
@@ -61,7 +61,7 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
     }
 
     const [relatedByPolitician, relatedByCategory] = await Promise.all([
-        getPromisesByPolitician(promise.politicianId),
+        promise.politicianId ? getPromisesByPolitician(promise.politicianId) : Promise.resolve([]),
         getPromisesByCategory(promise.categorySlug),
     ]);
 

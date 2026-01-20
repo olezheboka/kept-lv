@@ -3,10 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
-import { Loader2, CheckCircle2, XCircle, HelpCircle, PieChart, User, Folder } from "lucide-react";
-// ... (rest of imports remains the same, I will use multi_replace for this to avoid large context matching issues if possible, but replace_file_content is requested. I'll split into 2 replacements for safety)
-
-// ... actually I should do the imports separately. Let's do the imports first.
+import { Loader2, CheckCircle2, XCircle, HelpCircle, PieChart, User, Folder, Users, Building2, Layers } from "lucide-react";
 
 import { FormActions } from "@/components/admin/FormActions";
 import { Input } from "@/components/ui/input";
@@ -17,7 +14,8 @@ import { SearchableSelect } from "@/components/ui/searchable-select";
 import { TagInput } from "@/components/ui/tag-input";
 import { DatePicker } from "@/components/ui/date-picker";
 import { cn } from "@/lib/utils";
-// unused imports removed
+import { MultiSelectDropdown } from "@/components/ui/multi-select-dropdown";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Politician {
     id: string;
@@ -30,11 +28,18 @@ interface Category {
     slug?: string;
 }
 
+interface Party {
+    id: string;
+    name: string;
+}
+
 interface Source {
-    type: "VIDEO" | "ARTICLE" | "DOCUMENT" | "SOCIAL_MEDIA" | "INTERVIEW" | "TEXT" | "IMAGE";
+    type: "VIDEO" | "ARTICLE" | "DOCUMENT" | "SOCIAL_MEDIA" | "INTERVIEW" | "MANIFESTO" | "GOVERNMENT_DOC";
     url: string;
     title?: string | null;
 }
+
+type PromiseType = "INDIVIDUAL" | "PARTY" | "COALITION";
 
 interface PromiseData {
     id: string;
@@ -45,18 +50,23 @@ interface PromiseData {
     explanation?: string | null;
     dateOfPromise: string | Date;
     statusUpdatedAt?: string | Date | null;
-    politicianId: string;
+    type?: PromiseType;
+    politicianId?: string | null;
+    partyId?: string | null;
     categoryId: string;
     tags: string[];
     sources?: Source[];
+    coalitionParties?: Party[];
 }
 
-interface PromiseFormProps {
+export interface PromiseFormProps {
     initialData?: PromiseData | null;
     politicians: Politician[];
+    parties: Party[];
     categories: Category[];
     onSuccess: () => void;
     onCancel: () => void;
+    readOnly?: boolean; // Add readOnly support for strict type checking in parent if needed, though mostly unused
 }
 
 type StatusType = "in-progress" | "kept" | "broken" | "partially-kept" | "not-rated";
@@ -111,7 +121,7 @@ const STATUS_OPTIONS: {
         },
     ];
 
-export function PromiseForm({ initialData, politicians, categories, onSuccess, onCancel }: PromiseFormProps) {
+export function PromiseForm({ initialData, politicians, parties, categories, onSuccess, onCancel }: PromiseFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [origin, setOrigin] = useState("");
@@ -158,7 +168,12 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
                 explanation: initialData.explanation || "",
                 dateOfPromise: initialData.dateOfPromise ? new Date(initialData.dateOfPromise).toISOString().split('T')[0] : "",
                 statusUpdatedAt: initialData.statusUpdatedAt ? new Date(initialData.statusUpdatedAt).toISOString().split('T')[0] : "",
+
+                type: initialData.type || "INDIVIDUAL",
                 politicianId: initialData.politicianId || "",
+                partyId: initialData.partyId || "",
+                coalitionPartyIds: initialData.coalitionParties ? initialData.coalitionParties.map(p => p.id) : [],
+
                 categoryId: initialData.categoryId || "",
                 sourceType: source?.type || "VIDEO",
                 sourceUrl: source?.url || "",
@@ -174,7 +189,12 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
             explanation: "",
             dateOfPromise: "",
             statusUpdatedAt: "",
+
+            type: "INDIVIDUAL" as PromiseType,
             politicianId: "",
+            partyId: "",
+            coalitionPartyIds: [] as string[],
+
             categoryId: "",
             sourceType: "VIDEO" as const,
             sourceUrl: "",
@@ -197,7 +217,12 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
                 explanation: initialData.explanation || "",
                 dateOfPromise: initialData.dateOfPromise ? new Date(initialData.dateOfPromise).toISOString().split('T')[0] : "",
                 statusUpdatedAt: initialData.statusUpdatedAt ? new Date(initialData.statusUpdatedAt).toISOString().split('T')[0] : "",
+
+                type: initialData.type || "INDIVIDUAL",
                 politicianId: initialData.politicianId || "",
+                partyId: initialData.partyId || "",
+                coalitionPartyIds: initialData.coalitionParties ? initialData.coalitionParties.map(p => p.id) : [],
+
                 categoryId: initialData.categoryId || "",
                 sourceType: source?.type || "VIDEO",
                 sourceUrl: source?.url || "",
@@ -219,11 +244,22 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
         if (!formData.title.trim()) newErrors.title = "Title cannot be blank";
         if (!formData.slug.trim()) newErrors.slug = "Slug cannot be blank";
         if (!formData.description.trim()) newErrors.description = "Description cannot be blank";
-        if (!formData.politicianId) newErrors.politicianId = "Promisor is required";
+
+        // Conditional validation based on Type
+        if (formData.type === "INDIVIDUAL" && !formData.politicianId) {
+            newErrors.politicianId = "Politician is required for individual promises";
+        }
+        if (formData.type === "PARTY" && !formData.partyId) {
+            newErrors.partyId = "Party is required for party promises";
+        }
+        if (formData.type === "COALITION" && formData.coalitionPartyIds.length < 2) {
+            newErrors.coalitionPartyIds = "At least 2 parties are required for a coalition promise";
+        }
+
         if (!formData.categoryId) newErrors.categoryId = "Category is required";
         if (!formData.dateOfPromise) newErrors.dateOfPromise = "Date of promise is required";
         if (!formData.status) newErrors.status = "Status is required";
-        if (!formData.statusUpdatedAt) newErrors.statusUpdatedAt = "Status Updated At is required"; // Made required based on screenshot
+        if (!formData.statusUpdatedAt) newErrors.statusUpdatedAt = "Status Updated At is required";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -239,7 +275,7 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
             const statusMap: Record<string, string> = {
                 "in-progress": "IN_PROGRESS",
                 "kept": "KEPT",
-                "broken": "NOT_KEPT", // User requested NOT_KEPT consistency
+                "broken": "NOT_KEPT",
                 "partially-kept": "PARTIAL",
                 "not-rated": "NOT_RATED"
             };
@@ -252,7 +288,13 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
                 explanation: formData.explanation || null,
                 dateOfPromise: new Date(formData.dateOfPromise).toISOString(),
                 statusUpdatedAt: formData.statusUpdatedAt ? new Date(formData.statusUpdatedAt).toISOString() : null,
-                politicianId: formData.politicianId,
+
+                type: formData.type,
+                // Only send relevant ID based on type
+                politicianId: formData.type === "INDIVIDUAL" ? formData.politicianId : null,
+                partyId: formData.type === "PARTY" ? formData.partyId : null,
+                coalitionPartyIds: formData.type === "COALITION" ? formData.coalitionPartyIds : [],
+
                 categoryId: formData.categoryId,
                 tags: formData.tags,
                 sources: formData.sourceUrl
@@ -292,11 +334,143 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
     };
 
     const politicianOptions = politicians.map(p => ({ label: p.name, value: p.id }));
+    const partyOptions = parties.map(p => ({ label: p.name, value: p.id }));
     const categoryOptions = categories.map(c => ({ label: c.name, value: c.id }));
+
+    // For multi-select
+    const multiSelectPartyOptions = parties.map(p => ({ label: p.name, value: p.id }));
 
     return (
         <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-6">
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    {/* Promisor Type Selection */}
+                    <div className="space-y-3">
+                        <Label className="text-foreground font-semibold">Promisor Type</Label>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            {[
+                                {
+                                    value: "INDIVIDUAL",
+                                    label: "Individual",
+                                    description: "Specific politician",
+                                    icon: User,
+                                    colorClass: "text-blue-500",
+                                    bgClass: "bg-blue-100",
+                                },
+                                {
+                                    value: "PARTY",
+                                    label: "Party",
+                                    description: "Entire party pledge",
+                                    icon: Building2,
+                                    colorClass: "text-purple-500",
+                                    bgClass: "bg-purple-100",
+                                },
+                                {
+                                    value: "COALITION",
+                                    label: "Coalition",
+                                    description: "Joint agreement",
+                                    icon: Layers,
+                                    colorClass: "text-orange-500",
+                                    bgClass: "bg-orange-100",
+                                }
+                            ].map((option) => {
+                                const isSelected = formData.type === option.value;
+                                const Icon = option.icon;
+
+                                return (
+                                    <div
+                                        key={option.value}
+                                        onClick={() => setFormData({ ...formData, type: option.value as PromiseType })}
+                                        className={cn(
+                                            "relative flex flex-col p-4 rounded-xl border-2 transition-all cursor-pointer hover:shadow-md",
+                                            isSelected
+                                                ? "border-blue-500 bg-white dark:bg-slate-950 shadow-sm"
+                                                : "border-border hover:border-gray-300 dark:hover:border-gray-700 bg-white/50"
+                                        )}
+                                    >
+                                        <div className="flex justify-between items-start mb-3">
+                                            <div className={cn("p-2 rounded-lg", option.bgClass)}>
+                                                <Icon className={cn("w-5 h-5", option.colorClass)} />
+                                            </div>
+                                            <div className={cn(
+                                                "w-5 h-5 rounded-full border flex items-center justify-center",
+                                                isSelected ? "border-blue-500" : "border-gray-300"
+                                            )}>
+                                                {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />}
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-1">
+                                            <p className="font-semibold text-sm text-foreground">{option.label}</p>
+                                            <p className="text-xs text-muted-foreground">{option.description}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Conditional Inputs based on Type */}
+                    <div className="min-h-[90px]">
+                        {formData.type === "INDIVIDUAL" && (
+                            <div className="space-y-2">
+                                <Label htmlFor="politician" className="text-foreground font-semibold">Promisor (Politician) <span className="text-destructive">*</span></Label>
+                                <SearchableSelect
+                                    options={politicianOptions}
+                                    value={formData.politicianId}
+                                    onChange={(val) => {
+                                        setFormData({ ...formData, politicianId: val });
+                                        if (errors.politicianId) setErrors({ ...errors, politicianId: "" });
+                                    }}
+                                    placeholder="Select politician"
+                                    searchPlaceholder="Search politicians..."
+                                    icon={User}
+                                    className={cn(errors.politicianId && "border-destructive focus-visible:ring-destructive ring-destructive")}
+                                />
+                                <FormError message={errors.politicianId} />
+                            </div>
+                        )}
+
+                        {formData.type === "PARTY" && (
+                            <div className="space-y-2">
+                                <Label htmlFor="party" className="text-foreground font-semibold">Promisor (Party) <span className="text-destructive">*</span></Label>
+                                <SearchableSelect
+                                    options={partyOptions}
+                                    value={formData.partyId}
+                                    onChange={(val) => {
+                                        setFormData({ ...formData, partyId: val });
+                                        if (errors.partyId) setErrors({ ...errors, partyId: "" });
+                                    }}
+                                    placeholder="Select party"
+                                    searchPlaceholder="Search parties..."
+                                    icon={Building2}
+                                    className={cn(errors.partyId && "border-destructive focus-visible:ring-destructive ring-destructive")}
+                                />
+                                <FormError message={errors.partyId} />
+                            </div>
+                        )}
+
+                        {formData.type === "COALITION" && (
+                            <div className="space-y-2">
+                                <Label className="text-foreground font-semibold">Coalition parties (at least 2) <span className="text-destructive">*</span></Label>
+                                <MultiSelectDropdown
+                                    options={multiSelectPartyOptions}
+                                    selected={formData.coalitionPartyIds}
+                                    onChange={(selected) => {
+                                        setFormData({ ...formData, coalitionPartyIds: selected });
+                                        if (errors.coalitionPartyIds) setErrors({ ...errors, coalitionPartyIds: "" });
+                                    }}
+                                    placeholder="Select parties..."
+                                    searchPlaceholder="Search parties..."
+                                    className={cn(errors.coalitionPartyIds && "border-destructive focus-visible:ring-destructive ring-destructive")}
+                                />
+                                <FormError message={errors.coalitionPartyIds} />
+                            </div>
+                        )}
+                    </div>
+                </div>
+
 
                 {/* Title */}
                 <div className="space-y-2">
@@ -378,41 +552,24 @@ export function PromiseForm({ initialData, politicians, categories, onSuccess, o
                     </div>
                 </div>
 
-                {/* Politician & Category */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="politician" className="text-foreground font-semibold">Promisor <span className="text-destructive">*</span></Label>
-                        <SearchableSelect
-                            options={politicianOptions}
-                            value={formData.politicianId}
-                            onChange={(val) => {
-                                setFormData({ ...formData, politicianId: val });
-                                if (errors.politicianId) setErrors({ ...errors, politicianId: "" });
-                            }}
-                            placeholder="Select promisor"
-                            searchPlaceholder="Search promisors..."
-                            icon={User}
-                            className={cn(errors.politicianId && "border-destructive focus-visible:ring-destructive ring-destructive")}
-                        />
-                        <FormError message={errors.politicianId} />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="category" className="text-foreground font-semibold">Category <span className="text-destructive">*</span></Label>
-                        <SearchableSelect
-                            options={categoryOptions}
-                            value={formData.categoryId}
-                            onChange={(val) => {
-                                setFormData({ ...formData, categoryId: val });
-                                if (errors.categoryId) setErrors({ ...errors, categoryId: "" });
-                            }}
-                            placeholder="Select category"
-                            searchPlaceholder="Search categories..."
-                            icon={Folder}
-                            className={cn(errors.categoryId && "border-destructive focus-visible:ring-destructive ring-destructive")}
-                        />
-                        <FormError message={errors.categoryId} />
-                    </div>
+                {/* Category (Full Width now) */}
+                <div className="space-y-2">
+                    <Label htmlFor="category" className="text-foreground font-semibold">Category <span className="text-destructive">*</span></Label>
+                    <SearchableSelect
+                        options={categoryOptions}
+                        value={formData.categoryId}
+                        onChange={(val) => {
+                            setFormData({ ...formData, categoryId: val });
+                            if (errors.categoryId) setErrors({ ...errors, categoryId: "" });
+                        }}
+                        placeholder="Select category"
+                        searchPlaceholder="Search categories..."
+                        icon={Folder}
+                        className={cn(errors.categoryId && "border-destructive focus-visible:ring-destructive ring-destructive")}
+                    />
+                    <FormError message={errors.categoryId} />
                 </div>
+
 
                 {/* Date & Tags */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
