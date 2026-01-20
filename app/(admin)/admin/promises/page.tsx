@@ -7,9 +7,14 @@ export const dynamic = "force-dynamic";
 async function getPromises() {
   return prisma.promise.findMany({
     include: {
-      politician: { select: { name: true } },
-      party: { select: { name: true } },
-      coalitionParties: { select: { name: true } },
+      politician: {
+        select: {
+          name: true,
+          party: { select: { id: true, name: true } }
+        }
+      },
+      party: { select: { id: true, name: true } },
+      coalitionParties: { select: { id: true, name: true } },
       category: { select: { name: true, slug: true } },
     },
     orderBy: { updatedAt: "desc" },

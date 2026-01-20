@@ -32,9 +32,12 @@ interface PromiseData {
     categoryId: string;
     tags: string[];
     type?: "INDIVIDUAL" | "PARTY" | "COALITION";
-    politician?: { name: string } | null;
-    party?: { name: string } | null;
-    coalitionParties?: { name: string }[];
+    politician?: {
+        name: string;
+        party?: { id: string; name: string } | null;
+    } | null;
+    party?: { id: string; name: string } | null;
+    coalitionParties?: { id: string; name: string }[];
     category: { name: string; slug: string };
     updatedAt: Date | string;
     createdAt: Date | string;
@@ -57,6 +60,7 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
 
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>({ key: 'updatedAt', direction: 'desc' });
     const [selectedAuthors, setSelectedAuthors] = useState<string[]>([]);
+    const [selectedParties, setSelectedParties] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
     // Search State
@@ -103,6 +107,27 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
         return Array.from(distinct.values()).sort((a, b) => a.label.localeCompare(b.label));
     }, [initialPromises]);
 
+    const partyOptions = useMemo(() => {
+        const distinct = new Map();
+        initialPromises.forEach(p => {
+            // Add Party (from Direct Promise type)
+            if (p.party) {
+                distinct.set(p.party.id, { label: p.party.name, value: p.party.id });
+            }
+            // Add Party (from Politician affiliation)
+            if (p.politician?.party) {
+                distinct.set(p.politician.party.id, { label: p.politician.party.name, value: p.politician.party.id });
+            }
+            // Add Parties (from Coalition)
+            if (p.coalitionParties) {
+                p.coalitionParties.forEach(cp => {
+                    distinct.set(cp.id, { label: cp.name, value: cp.id });
+                });
+            }
+        });
+        return Array.from(distinct.values()).sort((a, b) => a.label.localeCompare(b.label));
+    }, [initialPromises]);
+
     const categoryOptions = useMemo(() => {
         const distinct = new Map();
         initialPromises.forEach(p => {
@@ -136,6 +161,15 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
             result = result.filter(p => selectedAuthors.includes(p.politicianId));
         }
 
+        if (selectedParties.length > 0) {
+            result = result.filter(p => {
+                const partyDirectMatch = p.party?.id && selectedParties.includes(p.party.id);
+                const politicianPartyMatch = p.politician?.party?.id && selectedParties.includes(p.politician.party.id);
+                const coalitionMatch = p.coalitionParties?.some(cp => selectedParties.includes(cp.id));
+                return partyDirectMatch || politicianPartyMatch || coalitionMatch;
+            });
+        }
+
         if (selectedCategories.length > 0) {
             result = result.filter(p => selectedCategories.includes(p.categoryId));
         }
@@ -146,7 +180,7 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
         }
 
         return result;
-    }, [promisesWithSearchText, selectedAuthors, selectedCategories, searchQuery]);
+    }, [promisesWithSearchText, selectedAuthors, selectedCategories, selectedParties, searchQuery]);
 
     // Sort promises
     const sortedPromises = useMemo(() => {
@@ -236,7 +270,7 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                         />
                     </div>
                 </div>
-                <div className="w-full sm:w-[250px]">
+                <div className="w-full sm:w-[200px]">
                     <MultiSelectDropdown
                         options={authorOptions}
                         selected={selectedAuthors}
@@ -247,7 +281,18 @@ export default function PromiseClientPage({ initialPromises }: PromiseClientPage
                         className="w-full bg-white"
                     />
                 </div>
-                <div className="w-full sm:w-[250px]">
+                <div className="w-full sm:w-[200px]">
+                    <MultiSelectDropdown
+                        options={partyOptions}
+                        selected={selectedParties}
+                        onChange={setSelectedParties}
+                        placeholder="Select parties"
+                        searchPlaceholder="Filter parties..."
+                        emptyMessage="No parties found"
+                        className="w-full bg-white"
+                    />
+                </div>
+                <div className="w-full sm:w-[200px]">
                     <MultiSelectDropdown
                         options={categoryOptions}
                         selected={selectedCategories}
