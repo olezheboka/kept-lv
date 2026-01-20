@@ -1,14 +1,9 @@
 import { getRequestConfig } from 'next-intl/server';
 
-export default getRequestConfig(async ({ requestLocale }) => {
-    let locale = await requestLocale;
-
-    if (!locale || !['en', 'lv', 'ru'].includes(locale)) {
-        locale = 'lv';
-    }
-
+export default getRequestConfig(async () => {
+    // Latvian-only (public website)
     return {
-        locale,
-        messages: (await import(`../messages/${locale}.json`)).default
+        locale: 'lv',
+        messages: (await import('../messages/lv.json')).default
     };
 });
