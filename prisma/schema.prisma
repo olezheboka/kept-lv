@@ -7,31 +7,31 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   passwordHash String
   name         String?
-  role         Role     @default(ADMIN)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  role         Role      @default(ADMIN)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
   lastLogin    DateTime?
 
   @@map("users")
 }
 
 model Party {
-  id          String       @id @default(cuid())
-  name        String
-  description String?
-  slug        String       @unique
-  logoUrl     String?
-  websiteUrl  String?
-  isCoalition Boolean      @default(false)
-  politicians Politician[]
-  partyPromises Promise[] @relation("PartyPromises")
-  coalitionPromises Promise[] @relation("CoalitionPromises")
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id                String       @id @default(cuid())
+  name              String
+  description       String?
+  slug              String       @unique
+  logoUrl           String?
+  websiteUrl        String?
+  isCoalition       Boolean      @default(false)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  politicians       Politician[]
+  partyPromises     Promise[]    @relation("PartyPromises")
+  coalitionPromises Promise[]    @relation("CoalitionPromises")
 
   @@map("parties")
 }
@@ -46,49 +46,49 @@ model Politician {
   education String?
   isActive  Boolean   @default(true)
   partyId   String?
-  party     Party?    @relation(fields: [partyId], references: [id])
-  promises  Promise[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  party     Party?    @relation(fields: [partyId], references: [id])
+  promises  Promise[]
 
   @@map("politicians")
 }
 
 model Category {
-  id        String    @id @default(cuid())
-  name      String
+  id          String    @id @default(cuid())
+  name        String
   description String?
   slug        String    @unique
   imageUrl    String?
-  promises  Promise[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  promises    Promise[]
 
   @@map("categories")
 }
 
 model Promise {
-  id              String        @id @default(cuid())
-  title           String
-  slug            String?       @unique
-  description     String?
-  status          PromiseStatus @default(IN_PROGRESS)
-  type            PromiseType   @default(INDIVIDUAL)
-  explanation     String?
-  tags            String[]      @default([])
-  dateOfPromise   DateTime
-  statusUpdatedAt DateTime?
-  politicianId    String?
-  politician      Politician?   @relation(fields: [politicianId], references: [id])
-  partyId         String?
-  party           Party?        @relation("PartyPromises", fields: [partyId], references: [id])
-  coalitionParties Party[]      @relation("CoalitionPromises")
-  categoryId      String
-  category        Category      @relation(fields: [categoryId], references: [id])
-  sources         Source[]
-  evidence        Evidence[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id               String        @id @default(cuid())
+  title            String
+  slug             String?       @unique
+  description      String?
+  status           PromiseStatus @default(IN_PROGRESS)
+  explanation      String?
+  tags             String[]      @default([])
+  dateOfPromise    DateTime
+  statusUpdatedAt  DateTime?
+  politicianId     String?
+  categoryId       String
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  partyId          String?
+  type             PromiseType   @default(INDIVIDUAL)
+  evidence         Evidence[]
+  category         Category      @relation(fields: [categoryId], references: [id])
+  party            Party?        @relation("PartyPromises", fields: [partyId], references: [id])
+  politician       Politician?   @relation(fields: [politicianId], references: [id])
+  sources          Source[]
+  coalitionParties Party[]       @relation("CoalitionPromises")
 
   @@map("promises")
 }
@@ -100,8 +100,8 @@ model Source {
   title       String?
   description String?
   promiseId   String
-  promise     Promise    @relation(fields: [promiseId], references: [id], onDelete: Cascade)
   createdAt   DateTime   @default(now())
+  promise     Promise    @relation(fields: [promiseId], references: [id], onDelete: Cascade)
 
   @@map("sources")
 }
@@ -112,10 +112,35 @@ model Evidence {
   url         String
   description String?
   promiseId   String
-  promise     Promise      @relation(fields: [promiseId], references: [id], onDelete: Cascade)
   createdAt   DateTime     @default(now())
+  promise     Promise      @relation(fields: [promiseId], references: [id], onDelete: Cascade)
 
   @@map("evidence")
+}
+
+model SystemConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_config")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  adminEmail  String
+  adminId     String?
+  action      String
+  entityType  String
+  entityId    String?
+  entityTitle String?
+  details     Json?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("audit_logs")
 }
 
 enum Role {
@@ -154,29 +179,4 @@ enum EvidenceType {
   VIDEO
   STATISTICS
   OTHER
-}
-
-model SystemConfig {
-  id          String   @id @default(cuid())
-  key         String   @unique
-  value       String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("system_config")
-}
-
-model AuditLog {
-  id          String   @id @default(cuid())
-  adminEmail  String
-  adminId     String?
-  action      String
-  entityType  String
-  entityId    String?
-  entityTitle String?
-  details     Json?
-  createdAt   DateTime @default(now())
-
-  @@index([createdAt])
-  @@map("audit_logs")
 }
