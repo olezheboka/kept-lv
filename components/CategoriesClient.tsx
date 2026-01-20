@@ -25,13 +25,7 @@ interface CategoriesClientProps {
     })[];
 }
 
-// import { cn } from '@/lib/utils';
-
 const ITEMS_PER_PAGE = 30;
-
-
-
-// CONSTANT REMOVED: CATEGORY_COLOR_MAP was unused
 
 export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
     const searchParams = useSearchParams();

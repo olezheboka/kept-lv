@@ -1,21 +1,14 @@
 "use client";
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { PromiseCard } from '@/components/PromiseCard';
-// import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { STATUS_CONFIG, PromiseStatus } from '@/lib/types';
 import { PromiseUI, CategoryUI } from '@/lib/db';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
-
-interface CategoryDetailClientProps {
-    category: CategoryUI;
-    promises: PromiseUI[];
-}
-
-import { useState } from 'react';
 import { PerformanceCard } from '@/components/PerformanceCard';
 
 interface CategoryDetailClientProps {

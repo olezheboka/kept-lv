@@ -3,27 +3,15 @@
 import { memo } from 'react';
 import { useLocale } from 'next-intl';
 
-// import { CATEGORIES } from '@/lib/types';
 import { StatusBadge } from './StatusBadge';
-// import { PartyBadge } from './PartyBadge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-// import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import type { PromiseUI, PartyUI, PoliticianUI } from '@/lib/db';
 import { getPromiseUrl } from '@/lib/promise-url';
 import { CoalitionLogoStack } from '@/components/ui/coalition-logo-stack';
-import { EntityBadge } from '@/components/ui/entity-badge';
-import Image from 'next/image';
-import { PartyAvatar } from '@/components/ui/party-avatar';
-import {
-  HoverCard,
-  HoverCardArrow,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 
 interface PromiseCardProps {
   promise: PromiseUI;
@@ -39,50 +27,6 @@ const PromiseCardComponent = ({ promise }: PromiseCardProps) => {
 
   const isCoalition = promise.type === 'COALITION';
   const isParty = promise.type === 'PARTY';
-
-  // Helper to get initials from full name (e.g., "Krišjānis Kariņš" -> "KK")
-  const getInitials = (name: string | undefined | null): string => {
-    if (!name) return '?';
-    const parts = name.trim().split(/\s+/);
-    if (parts.length >= 2) {
-      return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
-    }
-    return parts[0].charAt(0).toUpperCase();
-  };
-
-  // Helper to render Tooltip Content (with avatar and optional link)
-  const renderTooltipContent = (
-    avatar: React.ReactNode,
-    name: string | undefined | null,
-    linkUrl?: string,
-    subtext?: string
-  ) => (
-    <HoverCardContent
-      side="top"
-      className="p-1 w-auto min-w-[180px] rounded-xl bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-white/20 shadow-2xl animate-in fade-in zoom-in-95 duration-200"
-    >
-      <HoverCardArrow className="fill-white/80 dark:fill-black/80" width={12} height={6} />
-      <div className="flex items-center gap-2 p-1.5">
-        <div className="relative w-8 h-8 shrink-0">
-          {avatar}
-        </div>
-        <div className="flex flex-col">
-          {linkUrl ? (
-            <Link
-              href={linkUrl}
-              className="text-sm font-medium leading-none text-foreground"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {name || "?"}
-            </Link>
-          ) : (
-            <span className="text-sm font-medium leading-none">{name || "?"}</span>
-          )}
-          {subtext && <span className="text-[10px] text-muted-foreground leading-none mt-0.5">{subtext}</span>}
-        </div>
-      </div>
-    </HoverCardContent>
-  );
 
   return (
     <motion.div

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
 import { PartyAvatar } from "./party-avatar";
 import {
     HoverCard,
@@ -8,7 +7,6 @@ import {
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import Image from "next/image";
 
 interface Party {
     id: string;

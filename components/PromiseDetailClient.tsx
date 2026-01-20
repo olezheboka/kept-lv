@@ -3,10 +3,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { StatusBadge } from '@/components/StatusBadge';
-// import { PartyBadge } from '@/components/PartyBadge';
 import { PromiseCard } from '@/components/PromiseCard';
 import { Button } from '@/components/ui/button';
-// import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Share2, Calendar, Tag, Link2, MessageCircle, Send, Copy } from 'lucide-react';
 import {
@@ -19,11 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from 'date-fns';
 import { PromiseUI, PoliticianUI, PartyUI, CategoryUI } from '@/lib/db';
 import { CoalitionLogoStack } from '@/components/ui/coalition-logo-stack';
-import { EntityBadge } from '@/components/ui/entity-badge';
 import { useLocale } from 'next-intl';
-import Image from 'next/image';
-import { PartyAvatar } from '@/components/ui/party-avatar';
-// import { CATEGORIES } from '@/lib/types';
 
 interface PromiseDetailClientProps {
     promise: PromiseUI | null;

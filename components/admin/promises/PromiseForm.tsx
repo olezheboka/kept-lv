@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
-import { Loader2, CheckCircle2, XCircle, HelpCircle, PieChart, User, Folder, Users, Building2, Layers, Ban } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, PieChart, User, Folder, Building2, Layers, Ban } from "lucide-react";
 
 import { FormActions } from "@/components/admin/FormActions";
 import { Input } from "@/components/ui/input";
@@ -15,7 +15,6 @@ import { TagInput } from "@/components/ui/tag-input";
 import { DatePicker } from "@/components/ui/date-picker";
 import { cn } from "@/lib/utils";
 import { MultiSelectDropdown } from "@/components/ui/multi-select-dropdown";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Politician {
     id: string;
