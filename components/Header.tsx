@@ -115,7 +115,7 @@ export const Header = () => {
         backgroundColor: isCompact ? "rgba(255, 255, 255, 0.95)" : "rgba(255, 255, 255, 0.8)",
       }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-xl border-b border-border/50 overflow-hidden flex items-center"
+      className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-xl border-b border-border/50 flex items-center"
     >
       <div className="container-wide w-full">
         <div className="flex items-center justify-between gap-4">
