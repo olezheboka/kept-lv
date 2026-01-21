@@ -147,7 +147,6 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             "KEPT": "kept",
             "NOT_KEPT": "broken",
             "PARTIAL": "partially-kept",
-            "ABANDONED": "broken",
             "BROKEN": "broken",
             "CANCELLED": "cancelled"
         };
