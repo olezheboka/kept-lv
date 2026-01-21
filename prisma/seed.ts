@@ -18,6 +18,14 @@ const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({ adapter });
 
+/**
+ * SEEDING GUIDELINES:
+ * - Do NOT include "Koalīcijas solījums" in promise titles. The promisor/author
+ *   will be displayed separately in the UI, so this text would be redundant.
+ * - Promise titles should be at least 70 characters long.
+ * - Promise descriptions and status explanations should be at least 200 characters.
+ */
+
 // Helper to generate long text
 const generateLongText = (base: string, minLength: number) => {
   let text = base;
@@ -337,7 +345,7 @@ async function main() {
     { title: "Atbalstīt sporta skolas", categorySlug: "youth", tags: ["sports", "skola", "treniņi"] },
   ];
 
-  const statuses: PromiseStatus[] = ['KEPT', 'NOT_KEPT', 'IN_PROGRESS', 'PARTIAL', 'CANCELLED'];
+  const statuses: PromiseStatus[] = [PromiseStatus.KEPT, PromiseStatus.NOT_KEPT, PromiseStatus.IN_PROGRESS, PromiseStatus.PARTIAL, PromiseStatus.CANCELLED];
 
   let promisesCreated = 0;
 
