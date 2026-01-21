@@ -688,7 +688,7 @@ const getCategoriesFromDb = async (locale: Locale): Promise<CategoryWithStats[]>
             const partiallyKept = cat.promises.filter((p) => p.status === "PARTIAL").length;
             const inProgress = cat.promises.filter((p) => p.status === "IN_PROGRESS").length;
             const broken = cat.promises.filter((p) => p.status === "NOT_KEPT").length;
-            const cancelled = cat.promises.filter((p) => (p.status as string) === "ABANDONED" || (p.status as string) === "CANCELLED").length;
+            const cancelled = cat.promises.filter((p) => p.status === "CANCELLED").length;
 
             return {
                 id: cat.slug,
@@ -789,7 +789,7 @@ export async function getPromiseStats() {
         const partiallyKept = promises.filter((p) => p.status === "PARTIAL").length;
         const inProgress = promises.filter((p) => p.status === "IN_PROGRESS").length;
         const broken = promises.filter((p) => p.status === "NOT_KEPT").length;
-        const cancelled = 0;
+        const cancelled = promises.filter((p) => p.status === "CANCELLED").length;
 
         return {
             total,

@@ -10,7 +10,7 @@ interface StatsSectionProps {
     kept: number;
     notKept: number;
     inProgress: number;
-    abandoned: number;
+    cancelled: number;
     partial: number;
   };
   politicians: number;
@@ -47,10 +47,10 @@ export function StatsSection({ stats, politicians, parties }: StatsSectionProps)
       icon: statusConfig.PARTIAL.icon,
     },
     {
-      value: stats.abandoned,
-      label: tStatus("abandoned"),
-      color: "text-slate-400",
-      icon: statusConfig.ABANDONED.icon,
+      value: stats.cancelled,
+      label: tStatus("cancelled"),
+      color: "text-gray-400",
+      icon: statusConfig.CANCELLED.icon,
     },
   ];
 
