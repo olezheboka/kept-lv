@@ -320,178 +320,205 @@ async function main() {
 
 
   const promiseTemplates = [
-    { title: "Paaugstināt skolotāju algas", categorySlug: "education", tags: ["algas", "skola", "izglītība", "pedagogi"] },
-    { title: "Samazināt PVN pārtikai", categorySlug: "economy", tags: ["nodokļi", "pārtika", "PVN", "ekonomika"] },
-    { title: "Uzlabot veselības aprūpes pieejamību", categorySlug: "healthcare", tags: ["veselība", "slimnīcas", "rinda", "ārsti"] },
-    { title: "Stiprināt valsts robežu", categorySlug: "security", tags: ["robeža", "drošība", "aizsardzība", "armija"] },
-    { title: "Ieviest digitālo veselību", categorySlug: "digital", tags: ["e-veselība", "it", "digitalizācija"] },
-    { title: "Atbalstīt jaunos lauksaimniekus", categorySlug: "agriculture", tags: ["lauki", "atbalsts", "zemnieki"] },
-    { title: "Renovēt reģionālos ceļus", categorySlug: "infrastructure", tags: ["ceļi", "remonts", "satiksme", "reģioni"] },
-    { title: "Palielināt pensijas", categorySlug: "social-welfare", tags: ["pensijas", "seniori", "labklājība"] },
-    { title: "Nodrošināt bērnudārzu pieejamību", categorySlug: "education", tags: ["bērnudārzi", "bērni", "ģimene"] },
-    { title: "Mazināt birokrātiju uzņēmējiem", categorySlug: "economy", tags: ["bizness", "birokrātija", "uzņēmējdarbība"] },
-    { title: "Veicināt zaļo enerģiju", categorySlug: "environment", tags: ["enerģētika", "zaļais kurss", "klimats"] },
-    { title: "Stiprināt korupcijas apkarošanu", categorySlug: "justice", tags: ["korupcija", "tieslietas", "caurspīdīgums"] },
-    { title: "Atjaunot kultūras namus", categorySlug: "culture", tags: ["kultūra", "tradīcijas", "novadi"] },
-    { title: "Uzlabot sabiedrisko transportu", categorySlug: "infrastructure", tags: ["transports", "autobusi", "vilcieni"] },
-    { title: "Palielināt bērnu pabalstus", categorySlug: "social-welfare", tags: ["pabalsti", "bērni", "demogrāfija"] },
-    { title: "Ieviest obligāto dienestu", categorySlug: "security", tags: ["dienests", "armija", "jaunieši"] },
-    { title: "Samazināt darbaspēka nodokļus", categorySlug: "economy", tags: ["nodokļi", "darbs", "algas"] },
-    { title: "Veicināt eksportu", categorySlug: "economy", tags: ["eksports", "ražošana", "tirgus"] },
-    { title: "Uzlabot tiesu darbību", categorySlug: "justice", tags: ["tiesas", "likums", "taisnīgums"] },
-    { title: "Atbalstīt sporta skolas", categorySlug: "youth", tags: ["sports", "skola", "treniņi"] },
+    { title: "Ieviest valsts finansētu bērnu zobārstniecības programmu visos reģionos", categorySlug: "healthcare", tags: ["veselība", "bērni", "zobārstniecība"] },
+    { title: "Palielināt valsts aizsardzības budžetu līdz trim procentiem no IKP", categorySlug: "security", tags: ["drošība", "aizsardzība", "IKP", "NATO"] },
+    { title: "Samazināt pievienotās vērtības nodokļa likmi svaigiem dārzeņiem un augļiem", categorySlug: "economy", tags: ["ekonomika", "PVN", "pārtika"] },
+    { title: "Nodrošināt bezmaksas braukšanu sabiedriskajā transportā visiem Latvijas pensionāriem", categorySlug: "infrastructure", tags: ["transports", "pensionāri", "atvieglojumi"] },
+    { title: "Paaugstināt minimālo mēneša darba algu līdz astoņsimt eiro mēnesī", categorySlug: "social-welfare", tags: ["algas", "labklājība", "ekonomika"] },
+    { title: "Izveidot jaunu zinātnes un inovāciju centru ar desmit tūkstošiem darba vietu", categorySlug: "digital", tags: ["inovācijas", "zinātne", "tehnoloģijas", "darbs"] },
+    { title: "Stiprināt latviešu valodas lomu izglītības sistēmā un valsts pārvaldē", categorySlug: "education", tags: ["valoda", "izglītība", "identitāte"] },
+    { title: "Paātrināt pāreju uz atjaunojamajiem energoresursiem visā valsts teritorijā", categorySlug: "environment", tags: ["enerģija", "vide", "klimats"] },
+    { title: "Ieviest stingrākus sodus par korupciju un valsts līdzekļu izšķērdēšanu", categorySlug: "justice", tags: ["taisnīgums", "korupcija", "likums"] },
+    { title: "Atbalstīt vietējos amatniekus un tradicionālās kultūras pasākumus novados", categorySlug: "culture", tags: ["kultūra", "novadi", "amatniecība"] },
+    { title: "Modernizēt lauksaimniecības tehnikas parku un atbalstīt mazās saimniecības", categorySlug: "agriculture", tags: ["lauksaimniecība", "atbalsts", "tehnika"] },
+    { title: "Uzlabot interneta pārklājumu un ātrumu attālākajos Latvijas reģionos", categorySlug: "digital", tags: ["internets", "reģioni", "tehnoloģijas"] },
+    { title: "Būvēt jaunas īres mājas ar zemu maksu jaunajām speciālistu ģimenēm", categorySlug: "regional", tags: ["mājoklis", "ģimenes", "reģioni"] },
+    { title: "Palielināt finanšu atbalstu sporta infrastruktūras attīstībai skolās", categorySlug: "youth", tags: ["sports", "skola", "veselība"] },
+    { title: "Samazināt administratīvo slogu mazajiem un vidējiem uzņēmējiem", categorySlug: "economy", tags: ["bizness", "uzņēmējdarbība", "birokrātija"] },
+    { title: "Nodrošināt modernu aprīkojumu visām Latvijas ugunsdzēsēju depo vienībām", categorySlug: "security", tags: ["drošība", "ugunsdzēsēji", "aprīkojums"] },
+    { title: "Paplašināt onkoloģisko slimību skrīninga programmas un uzlabot ārstēšanu", categorySlug: "healthcare", tags: ["veselība", "ārstēšana", "medicīna"] },
+    { title: "Veikt kapitālo remontu galvenajiem valsts autoceļiem un vietējiem ceļiem", categorySlug: "infrastructure", tags: ["ceļi", "transports", "infrastruktūra"] },
+    { title: "Ieviest jaunu stipendiju fondu talantīgākajiem studentiem augstskolās", categorySlug: "education", tags: ["stipendijas", "studenti", "augstskola"] },
+    { title: "Veicināt ekotūrismu un dabas parku aizsardzību visā valsts teritorijā", categorySlug: "environment", tags: ["tūrisms", "daba", "vide"] },
   ];
 
-  // Rule 1: At least one for every status per politician
-  // Rule 4: At least one for every status per party
-  // Rule 5: At least one for every status per category
-
   const allStatuses: PromiseStatus[] = Object.values(PromiseStatus);
-  const categoriesList = Object.values(categories);
-  const politiciansList = Object.values(politicians);
-  const partiesList = Object.values(parties);
-  const coalitionPartiesList = partiesData.filter(p => p.isCoalition);
+  const groupPartiesList = partiesData.filter(p => !p.isCoalition);
 
   let promisesCreated = 0;
-  let categoryIdx = 0;
 
-  // Helper to get next category and rotate
-  const getNextCategory = () => {
-    const cat = categoriesList[categoryIdx % categoriesList.length];
-    categoryIdx++;
-    return cat.id;
+  // Helper to generate a unique title for a combination
+  const getUniqueTitle = (baseTitle: string, index: number) => {
+    const extensions = [
+      " un nodrošināt stabilu valsts izaugsmi ilgtermiņā",
+      " visiem Latvijas iedzīvotājiem neatkarīgi no dzīvesvietas",
+      " sadarbībā ar starptautiskajiem partneriem un ekspertiem",
+      " rūpīgi izvērtējot visas pieejamās budžeta iespējas un prioritātes",
+      " stiprinot valsts konkurētspēju un iedzīvotāju labklājību",
+      " kā vienu no galvenajām valdības darba prioritātēm šajā ciklā",
+      " lai veicinātu drošību un tiesiskumu visā sabiedrībā",
+      " ievērojot labākās Eiropas prakses un standartus šajā jomā",
+      " sniedzot tūlītēju atbalstu mērķa grupām un nozarēm",
+      " nodrošinot caurspīdīgu un efektīvu procesu pārvaldību"
+    ];
+    let title = baseTitle;
+    if (title.length < 70) {
+      title += extensions[index % extensions.length];
+    }
+    while (title.length < 70) {
+      title += " un veicināt tālāku attīstību.";
+    }
+    return title;
   };
 
-  const getTemplateForCategory = (categoryId: string) => {
-    // Find template matching category or random if not found
-    const catSlug = Object.keys(categories).find(key => categories[key].id === categoryId);
-    const matches = promiseTemplates.filter(t => t.categorySlug === catSlug);
-    return matches.length > 0 ? randomItem(matches) : randomItem(promiseTemplates);
-  };
+  // CATEGORY COVERAGE (Every category must have every status)
+  console.log("Generating Category Coverage Promises (Every Cat x Every Status)...");
+  let polIdx = 0;
+  for (const cat of categoriesData) {
+    const categoryId = categories[cat.slug].id;
+    const catTemplates = promiseTemplates.filter(t => t.categorySlug === cat.slug);
 
-  // 1. INDIVIDUAL PROMISES (Rule 1)
-  console.log("Generating Individual Promises (1 per status per politician)...");
+    for (const status of allStatuses) {
+      // Rotate promisor types between INDIVIDUAL and PARTY only
+      // (Coalition promises are generated separately at the end)
+      const typeChoice = (promisesCreated % 2);
+      const template = catTemplates.length > 0 ? catTemplates[promisesCreated % catTemplates.length] : randomItem(promiseTemplates);
+      const finalTitle = getUniqueTitle(template.title, promisesCreated);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let promiseData: any = {
+        title: finalTitle,
+        slug: slugify(`cat-coverage-${cat.slug}-${status}-${promisesCreated}`),
+        description: generateLongText(`Šis solījums paredz būtiskas izmaiņas ${cat.name.toLowerCase()} jomā. `, 250),
+        status: status,
+        explanation: generateLongText(`Pašreizējais vērtējums: statusu ${status} pamato fakts, ka darbi turpinās. `, 250),
+        dateOfPromise: new Date(`2023-${(promisesCreated % 12) + 1}-15`),
+        categoryId: categoryId,
+        tags: randomSubset(template.tags, 2),
+        sources: {
+          create: {
+            type: "ARTICLE",
+            url: "https://www.lsm.lv",
+            title: "Publisks paziņojums medijos",
+            description: "Informācija no oficiāliem avotiem."
+          }
+        }
+      };
+
+      if (typeChoice === 0) { // INDIVIDUAL
+        const pol = politiciansData[polIdx % politiciansData.length];
+        const polId = politicians[pol.slug].id;
+        const partyId = parties[pol.partySlug].id;
+        promiseData = { ...promiseData, type: "INDIVIDUAL", politicianId: polId, partyId: partyId };
+        polIdx++;
+      } else { // PARTY
+        const p = groupPartiesList[promisesCreated % groupPartiesList.length];
+        promiseData = { ...promiseData, type: "PARTY", partyId: parties[p.slug].id };
+      }
+
+      await prisma.promise.create({ data: promiseData });
+      promisesCreated++;
+    }
+  }
+
+  // MINIMUM THRESHOLDS (Ensure each politician and party has at least 5 promises)
+  console.log("Generating additional promises to meet minimum thresholds (5 per politician/party)...");
+
+  // Additional Individual Promises
   for (const pol of politiciansData) {
     const polId = politicians[pol.slug].id;
-    const partyId = parties[pol.partySlug].id;
+    const existingCount = await prisma.promise.count({ where: { politicianId: polId } });
 
-    for (const status of allStatuses) {
-      const categoryId = getNextCategory();
-      const template = getTemplateForCategory(categoryId);
-
-      const title = `${template.title} - ${pol.name} apņemšanās (${status})`;
-      // Ensure title length >= 70
-      const finalTitle = title.padEnd(70, " un uzlabot valsts nākotni");
+    for (let i = existingCount; i < 5; i++) {
+      const cat = randomItem(categoriesData);
+      const template = randomItem(promiseTemplates);
+      const status = allStatuses[i % allStatuses.length];
+      const finalTitle = getUniqueTitle(template.title, promisesCreated);
 
       await prisma.promise.create({
         data: {
           title: finalTitle,
-          slug: slugify(`${finalTitle.substring(0, 40)}-${pol.slug}-${status}-${promisesCreated}`),
-          description: generateLongText(`Šis ir ${pol.name} solījums jomā: ${template.categorySlug}. `, 250),
-          status: status,
-          explanation: generateLongText(`Skaidrojums par statusu ${status}: `, 250),
+          slug: slugify(`pol-threshold-${pol.slug}-${promisesCreated}`),
+          description: generateLongText(`Specifisks solījums no ${pol.name}. `, 250),
+          status,
+          explanation: generateLongText(`Vērtējums: `, 250),
           type: "INDIVIDUAL",
-          dateOfPromise: new Date(`2023-${(promisesCreated % 12) + 1}-10`),
+          dateOfPromise: new Date(`2024-01-10`),
           politicianId: polId,
-          partyId: partyId, // Link to party for filtering
-          categoryId: categoryId,
-          tags: randomSubset(template.tags, 2),
-          sources: {
-            create: {
-              type: "ARTICLE",
-              url: "https://www.lsm.lv",
-              title: "Ziņu portāls",
-              description: "Publisks paziņojums."
-            }
-          }
+          partyId: parties[pol.partySlug].id,
+          categoryId: categories[cat.slug].id,
+          tags: randomSubset(template.tags, 1),
+          sources: { create: { type: "VIDEO", url: "https://youtube.com", title: "Intervija" } }
         }
       });
       promisesCreated++;
     }
   }
 
-  // 2. PARTY PROMISES (Rule 4 & Rule 3) - Rule 3 says "at least 5 in total", we do 6 per party
-  console.log("Generating Party Promises (1 per status per party)...");
-  for (const party of partiesData) {
+  // Additional Party Promises
+  for (const party of groupPartiesList) {
     const partyId = parties[party.slug].id;
+    const existingCount = await prisma.promise.count({ where: { partyId, type: "PARTY" } });
 
-    for (const status of allStatuses) {
-      const categoryId = getNextCategory();
-      const template = getTemplateForCategory(categoryId);
-
-      const title = `${template.title} - ${party.name} programma (${status})`;
-      const finalTitle = title.padEnd(70, " - iedzīvotāju labklājībai");
+    for (let i = existingCount; i < 5; i++) {
+      const cat = randomItem(categoriesData);
+      const template = randomItem(promiseTemplates);
+      const status = allStatuses[i % allStatuses.length];
+      const finalTitle = getUniqueTitle(template.title, promisesCreated);
 
       await prisma.promise.create({
         data: {
           title: finalTitle,
-          slug: slugify(`party-${party.slug}-${status}-${promisesCreated}`),
-          description: generateLongText(`Partijas ${party.name} oficiālā programma. `, 250),
-          status: status,
-          explanation: generateLongText(`Partijas progresa apskats: `, 250),
+          slug: slugify(`party-threshold-${party.slug}-${promisesCreated}`),
+          description: generateLongText(`${party.name} priekšvēlēšanu apņemšanās. `, 250),
+          status,
+          explanation: generateLongText(`Statusa pamatojums: `, 250),
           type: "PARTY",
-          dateOfPromise: new Date(`2023-${(promisesCreated % 12) + 1}-20`),
+          dateOfPromise: new Date(`2024-02-15`),
           partyId: partyId,
-          categoryId: categoryId,
-          tags: ["partijas-programma", ...template.tags],
-          sources: {
-            create: {
-              type: "MANIFESTO",
-              url: party.websiteUrl || "https://cvk.lv",
-              title: "Partijas programma",
-              description: "Dokuments no CVK."
-            }
-          }
+          categoryId: categories[cat.slug].id,
+          tags: randomSubset(template.tags, 1),
+          sources: { create: { type: "MANIFESTO", url: "https://cvk.lv", title: "Programma" } }
         }
       });
       promisesCreated++;
     }
   }
 
-  // 3. COALITION PROMISES (Rule 2) - At least 5
-  console.log("Generating Coalition Promises...");
+  // COALITION PROMISES (Created last, using the governing coalition: JV, ZZS, PROG)
+  // Ensure at least 5 Coalition Promises with at least 1 per status
+  console.log("Generating Coalition Promises (JV + ZZS + PROG)...");
+
+  // Define the governing coalition: exactly 3 parties
+  const governingCoalition = [
+    { id: parties["jv"].id },   // Jaunā Vienotība
+    { id: parties["zzs"].id },  // Zaļo un Zemnieku savienība  
+    { id: parties["prog"].id }  // Progresīvie
+  ];
+
+  // First, ensure at least 1 coalition promise per status
   for (const status of allStatuses) {
-    const categoryId = getNextCategory();
-    const template = getTemplateForCategory(categoryId);
-
-    // Pick random 2 coalition parties
-    const involved = randomSubset(coalitionPartiesList, 2);
-    if (involved.length < 2) continue;
-
-    const title = `${template.title} - Koalīcijas solījums (${status})`;
-    const finalTitle = title.padEnd(70, " - saskaņā ar koalīcijas līgumu");
+    const cat = randomItem(categoriesData);
+    const template = randomItem(promiseTemplates);
+    const finalTitle = getUniqueTitle(template.title, promisesCreated);
 
     await prisma.promise.create({
       data: {
         title: finalTitle,
         slug: slugify(`coalition-${status}-${promisesCreated}`),
-        description: generateLongText(`Kopīgs solījums no ${involved.map(p => p.name).join(", ")}. `, 250),
-        status: status,
-        explanation: generateLongText(`Koalīcijas padomes skaidrojums: `, 250),
+        description: generateLongText(`Valdošās koalīcijas kopīgais solījums ${cat.name.toLowerCase()} jomā. `, 250),
+        status,
+        explanation: generateLongText(`Koalīcijas saskaņotais vērtējums: `, 250),
         type: "COALITION",
-        dateOfPromise: new Date(`2024-01-01`),
-        coalitionParties: {
-          connect: involved.map(p => ({ id: parties[p.slug].id }))
-        },
-        categoryId: categoryId,
-        tags: ["koalīcija", ...template.tags],
-        sources: {
-          create: {
-            type: "GOVERNMENT_DOC",
-            url: "https://mk.gov.lv",
-            title: "Valdības deklarācija",
-            description: "Oficiāls valdības dokuments."
-          }
-        }
+        dateOfPromise: new Date(`2024-03-20`),
+        coalitionParties: { connect: governingCoalition },
+        categoryId: categories[cat.slug].id,
+        tags: ["koalīcija", "valdība", "prioritāte"],
+        sources: { create: { type: "GOVERNMENT_DOC", url: "https://mk.gov.lv", title: "Valdības deklarācija" } }
       }
     });
     promisesCreated++;
   }
-
-  // Final check for Rule 5 (at least 5 per category, all statuses)
-  // Our category rotation (getNextCategory) already ensures approx 250/14 = 17 promises per category.
-  // And since GCD(14, 6) != 6, it will cycle statuses as well.
-
 
   console.log(`Created ${promisesCreated} promises.`);
   console.log("Seeding completed!");
@@ -505,3 +532,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
