@@ -1,34 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
-
-const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-  console.error("❌ DATABASE_URL is missing.");
-}
-
-// Create pool with settings optimized for serverless
-const pool = new Pool({
-  connectionString,
-  ssl: connectionString?.includes("localhost") ? false : { rejectUnauthorized: false },
-  // Reduced pool size for serverless - each function instance gets its own pool
-  max: 10,
-  // Shorter timeouts for serverless
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 30000,
-});
-
-// Handle pool errors gracefully
-pool.on("error", (err) => {
-  console.error("Unexpected pool error:", err);
-});
-
-const adapter = new PrismaPg(pool);
 
 const prismaClientSingleton = () => {
   return new PrismaClient({
-    adapter,
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error", "warn"],
   });
 };
