@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma, withRetry } from "@/lib/prisma";
 import { TotalPromisesCard, TotalPoliticiansCard, TotalPartiesCard, TotalCategoriesCard } from "@/components/admin/dashboard/DashboardStats";
 import { StatusBreakdown } from "@/components/admin/dashboard/StatusBreakdown";
 import { RecentActivity } from "@/components/admin/dashboard/RecentActivity";
@@ -24,7 +24,7 @@ async function getDashboardStats() {
     topPoliticians,
     topCategories,
     allParties,
-  ] = await Promise.all([
+  ] = await withRetry(() => Promise.all([
     prisma.promise.count(),
     prisma.promise.count({ where: { status: "KEPT" } }),
     prisma.promise.count({ where: { status: "PARTIAL" } }),
@@ -78,7 +78,7 @@ async function getDashboardStats() {
         }
       }
     }),
-  ]);
+  ]));
 
   const keptRate = totalPromises > 0
     ? Math.round((keptPromises / totalPromises) * 100)

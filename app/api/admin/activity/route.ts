@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma, withRetry } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 
 export const dynamic = 'force-dynamic';
@@ -16,14 +16,14 @@ export async function GET(request: Request) {
         const limit = Number(searchParams.get("limit")) || 20;
         const skip = (page - 1) * limit;
 
-        const [activities, total] = await Promise.all([
+        const [activities, total] = await withRetry(() => Promise.all([
             prisma.auditLog.findMany({
                 orderBy: { createdAt: "desc" },
                 take: limit,
                 skip: skip,
             }),
             prisma.auditLog.count(),
-        ]);
+        ]));
 
         return NextResponse.json({
             activities,
