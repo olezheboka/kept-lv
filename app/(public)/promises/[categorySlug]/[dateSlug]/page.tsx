@@ -16,6 +16,8 @@ interface PageProps {
     params: Promise<{ categorySlug: string; dateSlug: string }>;
 }
 
+export const revalidate = 60;
+
 const PromiseDetailPage = async ({ params }: PageProps) => {
     const { categorySlug, dateSlug } = await params;
 

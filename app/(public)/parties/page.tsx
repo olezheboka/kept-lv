@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { getParties, getPromises } from '@/lib/db';
 import { PartiesClient } from '@/components/PartiesClient';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function PartiesPage() {
     const [parties, promises] = await Promise.all([

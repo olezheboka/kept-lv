@@ -8,7 +8,7 @@ interface PageProps {
     params: Promise<{ id: string }>;
 }
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 const PoliticianDetailPage = async ({ params }: PageProps) => {
     const { id } = await params;

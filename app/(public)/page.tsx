@@ -16,6 +16,8 @@ import {
     ExternalLink,
 } from "lucide-react";
 
+export const revalidate = 60;
+
 export default async function Index() {
     const [featuredPromises, politicianRankings, partyRankings] = await Promise.all([
         getFeaturedPromises("lv", 3),
