@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "DATABASE_URL=$POSTGRES_URL PRISMA_CLIENT_ENGINE_TYPE=library PRISMA_GENERATE_DATAPROXY=false prisma generate && next build",
+    "build": "export PRISMA_CLIENT_ENGINE_TYPE=library; export PRISMA_GENERATE_DATAPROXY=false; prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "postinstall": "DATABASE_URL=$POSTGRES_URL PRISMA_CLIENT_ENGINE_TYPE=library prisma generate"
+    "postinstall": "export PRISMA_CLIENT_ENGINE_TYPE=library; prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
