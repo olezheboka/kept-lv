@@ -480,14 +480,10 @@ export async function getFeaturedPromises(
     locale: Locale = "lv",
     limit: number = 4
 ): Promise<PromiseUI[]> {
-    try {
-        const promises = await getPromises(locale);
-        // Return most recently updated promises as "featured"
-        return promises.slice(0, limit);
-    } catch (error) {
-        console.error("Error fetching featured promises:", error);
-        return [];
-    }
+    // withRetry is already used inside getPromises, so errors will propagate
+    const promises = await getPromises(locale);
+    // Return most recently updated promises as "featured"
+    return promises.slice(0, limit);
 }
 
 
@@ -497,82 +493,72 @@ export async function getFeaturedPromises(
 export async function getPoliticianRankings(
     locale: Locale = "lv"
 ): Promise<RankingItem[]> {
-    try {
-        const politicians = await prisma.politician.findMany({
-            include: {
-                party: true,
-                promises: true,
-            },
-        });
+    const politicians = await withRetry(() => prisma.politician.findMany({
+        include: {
+            party: true,
+            promises: true,
+        },
+    }));
 
-        const rankings = politicians
-            .map((pol) => {
-                const totalPromises = pol.promises.length;
-                const keptPromises = pol.promises.filter((p) => p.status === "KEPT").length;
+    const rankings = politicians
+        .map((pol) => {
+            const totalPromises = pol.promises.length;
+            const keptPromises = pol.promises.filter((p) => p.status === "KEPT").length;
 
-                return {
-                    id: pol.slug,
-                    name: pol.name,
-                    avatarUrl: pol.imageUrl || undefined,
-                    partyId: pol.party?.slug,
-                    partyLogoUrl: pol.party?.logoUrl || undefined,
-                    role: pol.role ? getLocalizedText(pol.role, locale) : undefined,
-                    isInOffice: pol.isActive,
-                    totalPromises,
-                    keptPromises,
-                    keptPercentage:
-                        totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0,
-                    abbreviation: pol.party ? (partyAbbreviations[pol.party.slug] || pol.party.slug.toUpperCase()) : undefined,
-                };
-            })
-            .filter((item) => item.totalPromises > 0)
-            .sort((a, b) => b.keptPercentage - a.keptPercentage);
+            return {
+                id: pol.slug,
+                name: pol.name,
+                avatarUrl: pol.imageUrl || undefined,
+                partyId: pol.party?.slug,
+                partyLogoUrl: pol.party?.logoUrl || undefined,
+                role: pol.role ? getLocalizedText(pol.role, locale) : undefined,
+                isInOffice: pol.isActive,
+                totalPromises,
+                keptPromises,
+                keptPercentage:
+                    totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0,
+                abbreviation: pol.party ? (partyAbbreviations[pol.party.slug] || pol.party.slug.toUpperCase()) : undefined,
+            };
+        })
+        .filter((item) => item.totalPromises > 0)
+        .sort((a, b) => b.keptPercentage - a.keptPercentage);
 
-        return rankings;
-    } catch (error) {
-        console.error("Error fetching politician rankings:", error);
-        return [];
-    }
+    return rankings;
 }
 
 export async function getPartyRankings(locale: Locale = "lv"): Promise<RankingItem[]> {
-    try {
-        const parties = await prisma.party.findMany({
-            include: {
-                politicians: {
-                    include: {
-                        promises: true,
-                    },
+    const parties = await withRetry(() => prisma.party.findMany({
+        include: {
+            politicians: {
+                include: {
+                    promises: true,
                 },
             },
-        });
+        },
+    }));
 
-        const rankings = parties
-            .map((party) => {
-                const allPromises = party.politicians.flatMap((p) => p.promises);
-                const totalPromises = allPromises.length;
-                const keptPromises = allPromises.filter((p) => p.status === "KEPT").length;
+    const rankings = parties
+        .map((party) => {
+            const allPromises = party.politicians.flatMap((p) => p.promises);
+            const totalPromises = allPromises.length;
+            const keptPromises = allPromises.filter((p) => p.status === "KEPT").length;
 
-                return {
-                    id: party.slug,
-                    name: getLocalizedText(party.name, locale),
-                    avatarUrl: party.logoUrl || undefined,
-                    abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
-                    isInCoalition: party.isCoalition, // Use correct field from DB
-                    totalPromises,
-                    keptPromises,
-                    keptPercentage:
-                        totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0,
-                };
-            })
-            .filter((item) => item.totalPromises > 0)
-            .sort((a, b) => b.keptPercentage - a.keptPercentage);
+            return {
+                id: party.slug,
+                name: getLocalizedText(party.name, locale),
+                avatarUrl: party.logoUrl || undefined,
+                abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
+                isInCoalition: party.isCoalition,
+                totalPromises,
+                keptPromises,
+                keptPercentage:
+                    totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0,
+            };
+        })
+        .filter((item) => item.totalPromises > 0)
+        .sort((a, b) => b.keptPercentage - a.keptPercentage);
 
-        return rankings;
-    } catch (error) {
-        console.error("Error fetching party rankings:", error);
-        return [];
-    }
+    return rankings;
 }
 
 // ========== CATEGORIES ==========
@@ -657,60 +643,41 @@ export async function getCategoryBySlug(
     slug: string,
     locale: Locale = "lv"
 ): Promise<CategoryUI | null> {
-    try {
-        const category = await prisma.category.findUnique({
-            where: { slug },
-        });
+    const category = await withRetry(() => prisma.category.findUnique({
+        where: { slug },
+    }));
 
-        if (!category) return null;
+    if (!category) return null;
 
-        return {
-            id: category.slug, // id as slug
-            slug: category.slug,
-            name: getLocalizedText(category.name, locale),
-            description: category.description ? getLocalizedText(category.description, locale) : undefined,
-            imageUrl: category.imageUrl || undefined,
-        };
-    } catch (error) {
-        console.error("Error fetching category by slug:", error);
-        return null;
-    }
+    return {
+        id: category.slug,
+        slug: category.slug,
+        name: getLocalizedText(category.name, locale),
+        description: category.description ? getLocalizedText(category.description, locale) : undefined,
+        imageUrl: category.imageUrl || undefined,
+    };
 }
 
 // ========== STATS ==========
 
 export async function getPromiseStats() {
-    try {
-        const promises = await prisma.promise.findMany();
+    const promises = await withRetry(() => prisma.promise.findMany());
 
-        const total = promises.length;
-        const kept = promises.filter((p) => p.status === "KEPT").length;
-        const partiallyKept = promises.filter((p) => p.status === "PARTIAL").length;
-        const inProgress = promises.filter((p) => p.status === "IN_PROGRESS").length;
-        const broken = promises.filter((p) => p.status === "NOT_KEPT").length;
-        const cancelled = promises.filter((p) => p.status === "CANCELLED").length;
+    const total = promises.length;
+    const kept = promises.filter((p) => p.status === "KEPT").length;
+    const partiallyKept = promises.filter((p) => p.status === "PARTIAL").length;
+    const inProgress = promises.filter((p) => p.status === "IN_PROGRESS").length;
+    const broken = promises.filter((p) => p.status === "NOT_KEPT").length;
+    const cancelled = promises.filter((p) => p.status === "CANCELLED").length;
 
-        return {
-            total,
-            kept,
-            partiallyKept,
-            inProgress,
-            broken,
-            cancelled,
-            keptPercentage: total > 0 ? Math.round((kept / total) * 100) : 0,
-            brokenPercentage: total > 0 ? Math.round((broken / total) * 100) : 0,
-        };
-    } catch (error) {
-        console.error("Error fetching promise stats:", error);
-        return {
-            total: 0,
-            kept: 0,
-            partiallyKept: 0,
-            inProgress: 0,
-            broken: 0,
-            cancelled: 0,
-            keptPercentage: 0,
-            brokenPercentage: 0,
-        };
-    }
+    return {
+        total,
+        kept,
+        partiallyKept,
+        inProgress,
+        broken,
+        cancelled,
+        keptPercentage: total > 0 ? Math.round((kept / total) * 100) : 0,
+        brokenPercentage: total > 0 ? Math.round((broken / total) * 100) : 0,
+    };
 }
