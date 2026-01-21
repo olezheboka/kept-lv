@@ -196,29 +196,23 @@ export async function getPartyBySlug(
     slug: string,
     locale: Locale = "lv"
 ): Promise<PartyUI | null> {
+    const party = await withRetry(() => prisma.party.findUnique({
+        where: { slug },
+    }));
 
-    try {
-        const party = await prisma.party.findUnique({
-            where: { slug },
-        });
+    if (!party) return null;
 
-        if (!party) return null;
-
-        return {
-            id: party.slug,
-            slug: party.slug,
-            name: getLocalizedText(party.name, locale),
-            description: party.description ? getLocalizedText(party.description, locale) : undefined,
-            abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
-            logoUrl: party.logoUrl || undefined,
-            websiteUrl: party.websiteUrl || undefined,
-            isInCoalition: party.isCoalition,
-            mpCount: partyMpCounts[party.slug] ?? 0,
-        };
-    } catch (error) {
-        console.error("Error fetching party by slug:", error);
-        return null;
-    }
+    return {
+        id: party.slug,
+        slug: party.slug,
+        name: getLocalizedText(party.name, locale),
+        description: party.description ? getLocalizedText(party.description, locale) : undefined,
+        abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
+        logoUrl: party.logoUrl || undefined,
+        websiteUrl: party.websiteUrl || undefined,
+        isInCoalition: party.isCoalition,
+        mpCount: partyMpCounts[party.slug] ?? 0,
+    };
 }
 
 // ========== POLITICIANS ==========
@@ -257,32 +251,26 @@ export async function getPoliticianBySlug(
     slug: string,
     locale: Locale = "lv"
 ): Promise<PoliticianUI | null> {
+    const pol = await withRetry(() => prisma.politician.findUnique({
+        where: { slug },
+        include: { party: true },
+    }));
 
-    try {
-        const pol = await prisma.politician.findUnique({
-            where: { slug },
-            include: { party: true },
-        });
+    if (!pol) return null;
 
-        if (!pol) return null;
-
-        return {
-            id: pol.slug,
-            slug: pol.slug,
-            name: pol.name,
-            role: pol.role ? getLocalizedText(pol.role, locale) : (pol.bio ? getLocalizedText(pol.bio, locale) : ""),
-            partyId: pol.party?.slug,
-            photoUrl: pol.imageUrl || "",
-            isInOffice: pol.isActive,
-            roleStartDate: undefined,
-            roleEndDate: undefined,
-            bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
-            education: pol.education || undefined,
-        };
-    } catch (error) {
-        console.error("Error fetching politician by slug:", error);
-        return null;
-    }
+    return {
+        id: pol.slug,
+        slug: pol.slug,
+        name: pol.name,
+        role: pol.role ? getLocalizedText(pol.role, locale) : (pol.bio ? getLocalizedText(pol.bio, locale) : ""),
+        partyId: pol.party?.slug,
+        photoUrl: pol.imageUrl || "",
+        isInOffice: pol.isActive,
+        roleStartDate: undefined,
+        roleEndDate: undefined,
+        bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
+        education: pol.education || undefined,
+    };
 }
 
 // ========== PROMISES ==========
@@ -412,7 +400,8 @@ export async function getPromiseBySlug(
 
 export async function getPromisesByPolitician(
     politicianSlug: string,
-    locale: Locale = "lv"
+    locale: Locale = "lv",
+    limit?: number
 ): Promise<PromiseUI[]> {
     const politician = await withRetry(() => prisma.politician.findUnique({
         where: { slug: politicianSlug },
@@ -430,6 +419,7 @@ export async function getPromisesByPolitician(
             sources: true,
         },
         orderBy: { updatedAt: "desc" },
+        take: limit,
     }));
 
     return promises.map((p) => mapPromiseToUI(p, locale));
@@ -437,7 +427,8 @@ export async function getPromisesByPolitician(
 
 export async function getPromisesByParty(
     partySlug: string,
-    locale: Locale = "lv"
+    locale: Locale = "lv",
+    limit?: number
 ): Promise<PromiseUI[]> {
     const party = await withRetry(() => prisma.party.findUnique({
         where: { slug: partySlug },
@@ -458,6 +449,7 @@ export async function getPromisesByParty(
             sources: true,
         },
         orderBy: { updatedAt: "desc" },
+        take: limit,
     }));
 
     return promises.map((p) => mapPromiseToUI(p, locale));
@@ -465,7 +457,8 @@ export async function getPromisesByParty(
 
 export async function getPromisesByCategory(
     categorySlug: string,
-    locale: Locale = "lv"
+    locale: Locale = "lv",
+    limit?: number
 ): Promise<PromiseUI[]> {
     const promises = await withRetry(() => prisma.promise.findMany({
         where: { category: { slug: categorySlug } },
@@ -477,6 +470,7 @@ export async function getPromisesByCategory(
             sources: true,
         },
         orderBy: { updatedAt: "desc" },
+        take: limit,
     }));
 
     return promises.map((p) => mapPromiseToUI(p, locale));

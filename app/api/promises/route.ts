@@ -4,6 +4,7 @@ import { createPromiseSchema, promiseFilterSchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
 import { logActivity } from "@/lib/audit";
+import { revalidatePromise } from "@/lib/revalidate";
 
 export async function GET(request: NextRequest) {
   try {
@@ -171,6 +172,11 @@ export async function POST(request: NextRequest) {
     });
 
     await logActivity("created", "Promise", promise.id, promise.title);
+
+    // Trigger on-demand revalidation for instant updates
+    // We need to pass the full object which we included in prisma.create
+    // The type matches because we included related fields
+    revalidatePromise(promise);
 
     return NextResponse.json(promise, { status: 201 });
   } catch (error) {

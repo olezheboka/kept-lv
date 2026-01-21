@@ -67,8 +67,8 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
     }
 
     const [relatedPol, relatedCat] = await Promise.all([
-        currentPromise.politicianId ? getPromisesByPolitician(currentPromise.politicianId) : Promise.resolve([]),
-        getPromisesByCategory(currentPromise.categorySlug),
+        currentPromise.politicianId ? getPromisesByPolitician(currentPromise.politicianId, "lv", 4) : Promise.resolve([]),
+        getPromisesByCategory(currentPromise.categorySlug, "lv", 4),
     ]);
 
     // Filter out current promise from related

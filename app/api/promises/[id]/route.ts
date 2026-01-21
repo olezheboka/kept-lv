@@ -2,18 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { updatePromiseSchema } from "@/lib/validators";
 import { auth } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
+
 import { logActivity } from "@/lib/audit";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
 // const LOCALES = ["lv", "en", "ru"];
 
-function revalidatePromisePaths(promiseId: string) {
-  revalidatePath("/promises");
-  revalidatePath(`/promises/${promiseId}`);
-  revalidatePath("/");
-}
+import { revalidatePromise } from "@/lib/revalidate";
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
@@ -177,7 +173,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       updatedFields
     });
 
-    revalidatePromisePaths(id);
+    revalidatePromise(promise);
 
     return NextResponse.json(promise);
   } catch (error) {
@@ -200,11 +196,19 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     const deletedPromise = await prisma.promise.delete({
       where: { id },
+      include: {
+        politician: { include: { party: true } },
+        party: true,
+        category: true,
+      }
     });
 
     await logActivity("deleted", "Promise", id, deletedPromise.title);
 
-    revalidatePromisePaths(id);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    revalidatePromise({ ...deletedPromise, coalitionParties: [] } as any); // Partial match for types, or better, include all relations needed.
+    // revalidate.ts expects PromiseWithRelations.
+    // Let's include all relations in delete as well.
 
     return NextResponse.json({ success: true });
   } catch (error) {
