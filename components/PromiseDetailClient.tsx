@@ -17,8 +17,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { format } from 'date-fns';
 import { PromiseUI, PoliticianUI, PartyUI, CategoryUI } from '@/lib/db';
-import { CoalitionLogoStack } from '@/components/ui/coalition-logo-stack';
-import { useLocale } from 'next-intl';
+
 
 interface PromiseDetailClientProps {
     promise: PromiseUI | null;
@@ -46,7 +45,6 @@ export const PromiseDetailClient = ({
     relatedByCategory
 }: PromiseDetailClientProps) => {
     const { toast } = useToast();
-    const locale = useLocale();
 
     const isCoalition = promise?.type === 'COALITION';
     const isParty = promise?.type === 'PARTY';
@@ -183,27 +181,20 @@ export const PromiseDetailClient = ({
                                 {/* Row 2: Promisor */}
                                 <div className="flex items-center gap-3 mb-4">
                                     {isCoalition ? (
-                                        <>
-                                            <span className="text-foreground font-semibold">
-                                                {(promise.coalitionParties || []).map((p, idx) => (
-                                                    <span key={p.id}>
-                                                        <Link
-                                                            href={`/parties/${p.slug || p.id}`}
-                                                            className="hover:text-primary transition-colors"
-                                                            suppressHydrationWarning
-                                                        >
-                                                            {p.name}
-                                                        </Link>
-                                                        {idx < (promise.coalitionParties?.length || 0) - 1 && ', '}
-                                                    </span>
-                                                ))}
-                                            </span>
-                                            <CoalitionLogoStack
-                                                parties={promise.coalitionParties || []}
-                                                size="lg"
-                                                locale={locale as "lv" | "en" | "ru"}
-                                            />
-                                        </>
+                                        <span className="text-foreground font-semibold">
+                                            {(promise.coalitionParties || []).map((p, idx) => (
+                                                <span key={p.id}>
+                                                    <Link
+                                                        href={`/parties/${p.slug || p.id}`}
+                                                        className="hover:text-primary transition-colors"
+                                                        suppressHydrationWarning
+                                                    >
+                                                        {p.name}
+                                                    </Link>
+                                                    {idx < (promise.coalitionParties?.length || 0) - 1 && ', '}
+                                                </span>
+                                            ))}
+                                        </span>
                                     ) : isParty && party ? (
                                         <Link
                                             href={`/parties/${party.id}`}
