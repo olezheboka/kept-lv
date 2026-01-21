@@ -178,8 +178,8 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                 onChange={(e) => handleSortChange(e.target.value)}
                                 className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                             >
-                                <option value="alphabetical-asc">A→Z</option>
-                                <option value="alphabetical-desc">Z→A</option>
+                                <option value="alphabetical-asc">A↑Z</option>
+                                <option value="alphabetical-desc">Z↓A</option>
                                 <option value="promises-asc"># solījumi ↑</option>
                                 <option value="promises-desc"># solījumi ↓</option>
                             </select>
