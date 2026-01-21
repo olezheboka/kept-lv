@@ -618,39 +618,57 @@ type CategoryWithStats = CategoryUI & {
 };
 
 const getCategoriesFromDb = async (locale: Locale): Promise<CategoryWithStats[]> => {
-    const categories = await prisma.category.findMany({
-        include: {
-            promises: {
-                select: { status: true },
+    try {
+        const categories = await prisma.category.findMany({
+            include: {
+                promises: {
+                    select: { status: true },
+                },
             },
-        },
-        orderBy: { slug: "asc" },
-    });
+            orderBy: { slug: "asc" },
+        });
 
-    return categories.map((cat) => {
-        const total = cat.promises.length;
-        const kept = cat.promises.filter((p) => p.status === "KEPT").length;
-        const partiallyKept = cat.promises.filter((p) => p.status === "PARTIAL").length;
-        const inProgress = cat.promises.filter((p) => p.status === "IN_PROGRESS").length;
-        const broken = cat.promises.filter((p) => p.status === "NOT_KEPT").length;
-        const cancelled = cat.promises.filter((p) => p.status === "ABANDONED" || p.status === "CANCELLED").length;
+        return categories.map((cat) => {
+            const total = cat.promises.length;
+            const kept = cat.promises.filter((p) => p.status === "KEPT").length;
+            const partiallyKept = cat.promises.filter((p) => p.status === "PARTIAL").length;
+            const inProgress = cat.promises.filter((p) => p.status === "IN_PROGRESS").length;
+            const broken = cat.promises.filter((p) => p.status === "NOT_KEPT").length;
+            const cancelled = cat.promises.filter((p) => (p.status as string) === "ABANDONED" || (p.status as string) === "CANCELLED").length;
 
-        return {
-            id: cat.slug,
-            slug: cat.slug,
-            name: getLocalizedText(cat.name, locale),
-            description: cat.description ? getLocalizedText(cat.description, locale) : undefined,
-            imageUrl: cat.imageUrl || undefined,
-            stats: {
-                total,
-                kept,
-                partiallyKept,
-                inProgress,
-                broken,
-                cancelled,
-            }
-        };
-    });
+            return {
+                id: cat.slug,
+                slug: cat.slug,
+                name: getLocalizedText(cat.name, locale),
+                description: cat.description ? getLocalizedText(cat.description, locale) : undefined,
+                imageUrl: cat.imageUrl || undefined,
+                stats: {
+                    total,
+                    kept,
+                    partiallyKept,
+                    inProgress,
+                    broken,
+                    cancelled,
+                }
+            };
+        });
+    } catch (error) {
+        console.error("Error fetching categories:", error);
+        // Attempt to log to AuditLog for production debugging
+        try {
+            await prisma.auditLog.create({
+                data: {
+                    action: "error_fetch_categories",
+                    entityType: "System",
+                    adminEmail: "system@internal",
+                    details: { message: error instanceof Error ? error.message : String(error) }
+                }
+            });
+        } catch {
+            // Ignore logging errors
+        }
+        return [];
+    }
 };
 
 export async function getCategories(locale: Locale = "lv"): Promise<CategoryWithStats[]> {
@@ -704,23 +722,37 @@ export async function getCategoryBySlug(
 // ========== STATS ==========
 
 export async function getPromiseStats() {
-    const promises = await prisma.promise.findMany();
+    try {
+        const promises = await prisma.promise.findMany();
 
-    const total = promises.length;
-    const kept = promises.filter((p) => p.status === "KEPT").length;
-    const partiallyKept = promises.filter((p) => p.status === "PARTIAL").length;
-    const inProgress = promises.filter((p) => p.status === "IN_PROGRESS").length;
-    const broken = promises.filter((p) => p.status === "NOT_KEPT").length;
-    const cancelled = 0;
+        const total = promises.length;
+        const kept = promises.filter((p) => p.status === "KEPT").length;
+        const partiallyKept = promises.filter((p) => p.status === "PARTIAL").length;
+        const inProgress = promises.filter((p) => p.status === "IN_PROGRESS").length;
+        const broken = promises.filter((p) => p.status === "NOT_KEPT").length;
+        const cancelled = 0;
 
-    return {
-        total,
-        kept,
-        partiallyKept,
-        inProgress,
-        broken,
-        cancelled,
-        keptPercentage: total > 0 ? Math.round((kept / total) * 100) : 0,
-        brokenPercentage: total > 0 ? Math.round((broken / total) * 100) : 0,
-    };
+        return {
+            total,
+            kept,
+            partiallyKept,
+            inProgress,
+            broken,
+            cancelled,
+            keptPercentage: total > 0 ? Math.round((kept / total) * 100) : 0,
+            brokenPercentage: total > 0 ? Math.round((broken / total) * 100) : 0,
+        };
+    } catch (error) {
+        console.error("Error fetching promise stats:", error);
+        return {
+            total: 0,
+            kept: 0,
+            partiallyKept: 0,
+            inProgress: 0,
+            broken: 0,
+            cancelled: 0,
+            keptPercentage: 0,
+            brokenPercentage: 0,
+        };
+    }
 }
