@@ -20,11 +20,13 @@ function createPrismaClient() {
     ssl: process.env.NODE_ENV === 'production' ? true : { rejectUnauthorized: false }
   });
 
+
+
   const adapter = new PrismaPg(pool);
 
   return new PrismaClient({
     adapter,
-    log: process.env.NODE_ENV === "development" ? ["query"] : ["error", "warn"],
+    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error", "warn"],
   });
 }
 

@@ -9,6 +9,8 @@ interface PageProps {
     params: Promise<{ id: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+
 const PartyDetailPage = async ({ params }: PageProps) => {
     const { id } = await params;
     const party = await getPartyBySlug(id);

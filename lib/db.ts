@@ -476,25 +476,30 @@ export async function getPromisesByPolitician(
     politicianSlug: string,
     locale: Locale = "lv"
 ): Promise<PromiseUI[]> {
-    const politician = await prisma.politician.findUnique({
-        where: { slug: politicianSlug },
-    });
+    try {
+        const politician = await prisma.politician.findUnique({
+            where: { slug: politicianSlug },
+        });
 
-    if (!politician) return [];
+        if (!politician) return [];
 
-    const promises = await prisma.promise.findMany({
-        where: { politicianId: politician.id },
-        include: {
-            politician: { include: { party: true } },
-            party: true,
-            coalitionParties: true,
-            category: true,
-            sources: true,
-        },
-        orderBy: { updatedAt: "desc" },
-    });
+        const promises = await prisma.promise.findMany({
+            where: { politicianId: politician.id },
+            include: {
+                politician: { include: { party: true } },
+                party: true,
+                coalitionParties: true,
+                category: true,
+                sources: true,
+            },
+            orderBy: { updatedAt: "desc" },
+        });
 
-    return promises.map((p) => mapPromiseToUI(p, locale));
+        return promises.map((p) => mapPromiseToUI(p, locale));
+    } catch (error) {
+        console.error("Error fetching promises by politician:", error);
+        return [];
+    }
 }
 
 export async function getPromisesByParty(
@@ -753,19 +758,24 @@ export async function getCategoryBySlug(
     slug: string,
     locale: Locale = "lv"
 ): Promise<CategoryUI | null> {
-    const category = await prisma.category.findUnique({
-        where: { slug },
-    });
+    try {
+        const category = await prisma.category.findUnique({
+            where: { slug },
+        });
 
-    if (!category) return null;
+        if (!category) return null;
 
-    return {
-        id: category.slug, // id as slug
-        slug: category.slug,
-        name: getLocalizedText(category.name, locale),
-        description: category.description ? getLocalizedText(category.description, locale) : undefined,
-        imageUrl: category.imageUrl || undefined,
-    };
+        return {
+            id: category.slug, // id as slug
+            slug: category.slug,
+            name: getLocalizedText(category.name, locale),
+            description: category.description ? getLocalizedText(category.description, locale) : undefined,
+            imageUrl: category.imageUrl || undefined,
+        };
+    } catch (error) {
+        console.error("Error fetching category by slug:", error);
+        return null;
+    }
 }
 
 // ========== STATS ==========

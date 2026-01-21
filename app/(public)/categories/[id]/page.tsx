@@ -8,6 +8,8 @@ interface PageProps {
     params: Promise<{ id: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+
 const CategoryDetailPage = async ({ params }: PageProps) => {
     const { id } = await params;
     const category = await getCategoryBySlug(id);
