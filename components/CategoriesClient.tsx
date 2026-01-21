@@ -1,14 +1,16 @@
 "use client";
 
-import { useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { CategoryUI } from '@/lib/db';
-import { TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { TrendingUp, ChevronLeft, ChevronRight, Search, ChevronDown, X } from 'lucide-react';
 import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
+import { useDebounce } from '@/hooks/use-debounce';
 
 interface CategoriesClientProps {
     categories: (CategoryUI & {
@@ -32,22 +34,105 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
     const router = useRouter();
     const pathname = usePathname();
 
+    // Derived state from URL
     const currentPage = Number(searchParams.get('page')) || 1;
+    const sortBy = searchParams.get('sort') || 'alphabetical-asc';
+    const searchQuery = searchParams.get('q') || '';
+
+    // Local state for search input
+    const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+
+    // Debounce search query updates
+    const debouncedSearchQuery = useDebounce(localSearchQuery, 300);
+
+    // Helper to update URL with new params
+    const updateUrl = useCallback((newParams: URLSearchParams) => {
+        const queryString = newParams.toString();
+        const url = queryString ? `${pathname}?${queryString}` : pathname;
+        router.replace(url, { scroll: false });
+    }, [pathname, router]);
+
+    // Update local state immediately
+    const handleSearchChange = (value: string) => {
+        setLocalSearchQuery(value);
+    };
+
+    // Sync debounced search to URL
+    useMemo(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (debouncedSearchQuery) params.set('q', debouncedSearchQuery);
+        else params.delete('q');
+        params.delete('page'); // Reset pagination on search
+
+        // Only update if the query actually changed
+        const currentQ = searchParams.get('q') || '';
+        if (currentQ !== debouncedSearchQuery) {
+            updateUrl(params);
+        }
+    }, [debouncedSearchQuery, searchParams, updateUrl]);
+
+    // Filtered and sorted categories
+    const filteredCategories = useMemo(() => {
+        let result = [...categories];
+
+        // Search
+        if (debouncedSearchQuery) {
+            const query = debouncedSearchQuery.toLowerCase();
+            result = result.filter(c =>
+                c.name.toLowerCase().includes(query) ||
+                (c.description && c.description.toLowerCase().includes(query))
+            );
+        }
+
+        // Sorting
+        result.sort((a, b) => {
+            switch (sortBy) {
+                case 'alphabetical-asc':
+                    return a.name.localeCompare(b.name, 'lv');
+                case 'alphabetical-desc':
+                    return b.name.localeCompare(a.name, 'lv');
+                case 'promises-asc':
+                    return a.stats.total - b.stats.total;
+                case 'promises-desc':
+                    return b.stats.total - a.stats.total;
+                default:
+                    return 0;
+            }
+        });
+
+        return result;
+    }, [categories, debouncedSearchQuery, sortBy]);
+
+    const totalPages = Math.ceil(filteredCategories.length / ITEMS_PER_PAGE);
+    const paginatedCategories = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredCategories.slice(start, start + ITEMS_PER_PAGE);
+    }, [filteredCategories, currentPage]);
+
+    const handleSortChange = (value: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (value !== 'alphabetical-asc') params.set('sort', value);
+        else params.delete('sort');
+        params.delete('page'); // Reset pagination
+        updateUrl(params);
+    };
 
     const handlePageChange = (page: number) => {
         const params = new URLSearchParams(searchParams.toString());
         if (page > 1) params.set('page', page.toString());
         else params.delete('page');
-        const queryString = params.toString();
-        const url = queryString ? `${pathname}?${queryString}` : pathname;
-        router.replace(url, { scroll: false });
+        updateUrl(params);
     };
 
-    const totalPages = Math.ceil(categories.length / ITEMS_PER_PAGE);
-    const paginatedCategories = useMemo(() => {
-        const start = (currentPage - 1) * ITEMS_PER_PAGE;
-        return categories.slice(start, start + ITEMS_PER_PAGE);
-    }, [categories, currentPage]);
+    const clearSearch = useCallback(() => {
+        setLocalSearchQuery('');
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('q');
+        params.delete('page');
+        updateUrl(params);
+    }, [searchParams, updateUrl]);
+
+    const hasActiveFilters = !!debouncedSearchQuery;
 
     return (
         <div className="flex flex-col bg-background">
@@ -72,6 +157,64 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
             {/* Categories Grid */}
             <section className="py-8 md:py-12">
                 <div className="container-wide">
+                    {/* Search & Sort Bar */}
+                    <div className="flex flex-col md:flex-row gap-4 mb-6">
+                        {/* Search */}
+                        <div className="relative flex-1">
+                            <Input
+                                type="search"
+                                placeholder="Meklēt kategorijas..."
+                                value={localSearchQuery}
+                                onChange={(e) => handleSearchChange(e.target.value)}
+                                className="pl-10"
+                            />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        </div>
+
+                        {/* Sort */}
+                        <div className="relative w-full md:w-auto min-w-[200px]">
+                            <select
+                                value={sortBy}
+                                onChange={(e) => handleSortChange(e.target.value)}
+                                className="appearance-none h-10 pl-3 pr-10 w-full rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                            >
+                                <option value="alphabetical-asc">A→Z</option>
+                                <option value="alphabetical-desc">Z→A</option>
+                                <option value="promises-asc"># solījumi ↑</option>
+                                <option value="promises-desc"># solījumi ↓</option>
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                        </div>
+                    </div>
+
+                    {/* Active Filters Display */}
+                    {hasActiveFilters && (
+                        <div className="flex flex-wrap gap-2 mb-6">
+                            {!!debouncedSearchQuery && (
+                                <button
+                                    onClick={clearSearch}
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground hover:bg-muted/80"
+                                >
+                                    <Search className="h-3 w-3" />
+                                    {debouncedSearchQuery}
+                                    <X className="h-3 w-3" />
+                                </button>
+                            )}
+                            <button
+                                onClick={clearSearch}
+                                className="text-xs text-red-600 hover:text-red-700 hover:underline font-medium ml-2"
+                            >
+                                Notīrīt visus
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Results Count */}
+                    <p className="text-sm text-muted-foreground mb-6">
+                        Atrastas {filteredCategories.length} kategorijas
+                        {totalPages > 1 && ` • Lapa ${currentPage} no ${totalPages}`}
+                    </p>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                         {paginatedCategories.map((category, index) => {
                             const { total, kept, partiallyKept, inProgress, broken, cancelled } = category.stats;
@@ -155,7 +298,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                                         )}
                                                         {cancelled > 0 && (
                                                             <div
-                                                                className="h-full bg-status-unrated"
+                                                                className="h-full bg-status-unrated-bar"
                                                                 style={{ width: `${(cancelled / total) * 100}%` }}
                                                             />
                                                         )}
@@ -168,6 +311,18 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                             );
                         })}
                     </div>
+
+                    {/* Empty state */}
+                    {paginatedCategories.length === 0 && (
+                        <div className="text-center py-12">
+                            <p className="text-muted-foreground">Nav atrasta neviena kategorija</p>
+                            {hasActiveFilters && (
+                                <Button variant="outline" onClick={clearSearch} className="mt-4">
+                                    Notīrīt meklēšanu
+                                </Button>
+                            )}
+                        </div>
+                    )}
 
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
