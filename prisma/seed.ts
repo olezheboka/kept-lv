@@ -9,13 +9,12 @@ import { slugify } from "../lib/slugify";
 config({ path: ".env.local" });
 config({ path: ".env" });
 
+const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL!,
-  ssl: { rejectUnauthorized: false }, // Direct connection for seeding usually needs this or true
+  connectionString,
+  ssl: { rejectUnauthorized: false }
 });
-
 const adapter = new PrismaPg(pool);
-
 const prisma = new PrismaClient({ adapter });
 
 /**

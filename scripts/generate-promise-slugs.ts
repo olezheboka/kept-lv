@@ -8,16 +8,15 @@ config({ path: '.env.local' });
 
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 import { slugify } from '../lib/slugify';
 
 const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-    console.error('❌ DATABASE_URL not found!');
-    process.exit(1);
-}
-
-const adapter = new PrismaPg({ connectionString });
+const pool = new Pool({
+    connectionString,
+    ssl: { rejectUnauthorized: false }
+});
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function generatePromiseSlugs() {
