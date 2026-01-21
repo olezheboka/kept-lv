@@ -6,7 +6,8 @@ import { StatusBadge } from '@/components/StatusBadge';
 import { PromiseCard } from '@/components/PromiseCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Share2, Calendar, Tag, Link2, MessageCircle, Send, Copy } from 'lucide-react';
+import { ArrowLeft, Share2, Calendar, Tag, Link2, MessageCircle, Send, Copy, FileText } from 'lucide-react';
+import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -124,98 +125,40 @@ export const PromiseDetailClient = ({
                             transition={{ duration: 0.4 }}
                             className="w-full"
                         >
-                            {/* Header Section: Author & Date */}
-                            <div className="mb-6 pb-6 border-b border-border/50">
-                                <div className="flex flex-col md:flex-row items-start gap-6">
-                                    <div className="flex-1 text-left">
-                                        {/* Row 1: Name + Party Badge */}
-                                        <div className="flex flex-wrap items-center justify-start gap-4 mb-2">
-                                            {isCoalition ? (
-                                                <>
-                                                    <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-                                                        Koalīcijas solījums
-                                                    </h2>
-                                                    <CoalitionLogoStack
-                                                        parties={promise.coalitionParties || []}
-                                                        size="lg"
-                                                        // className="h-10" // header uses lg size
-                                                        locale={locale as "lv" | "en" | "ru"}
-                                                    />
-                                                </>
-                                            ) : isParty && party ? (
-                                                <Link href={`/parties/${party.id}`} className="group inline-block" suppressHydrationWarning>
-                                                    <h2 className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-accent transition-colors">
-                                                        {party.name}
-                                                    </h2>
-                                                </Link>
-                                            ) : politician && party ? (
-                                                <Link href={`/politicians/${politician.id}`} className="group inline-block" suppressHydrationWarning>
-                                                    <h2 className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-accent transition-colors">
-                                                        {politician.name}
-                                                    </h2>
-                                                </Link>
-                                            ) : null}
+                            {/* Header Section: Category, Date, Share */}
+                            <div className="mb-6">
+                                {/* Row 1: Category + Date + Share Button */}
+                                <div className="flex items-center justify-between gap-4 mb-3">
+                                    <div className="flex items-center gap-4 text-sm text-muted-foreground/70">
+                                        {/* Date first */}
+                                        <div className="flex items-center gap-1.5">
+                                            <Calendar className="h-4 w-4" />
+                                            <span>{format(new Date(promise.datePromised), 'yyyy.MM.dd')}</span>
                                         </div>
 
-                                        {/* Row 2: Role + Amatā Badge / EntityBadge */}
-                                        <div className="flex flex-wrap items-center justify-start gap-3 text-lg text-muted-foreground">
-                                            {isCoalition ? (
-                                                null
-                                            ) : isParty ? (
-                                                party ? (
-                                                    party.isInCoalition ? (
-                                                        <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
-                                                            Koalīcijā
-                                                        </span>
-                                                    ) : (
-                                                        <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
-                                                            Opozīcijā
-                                                        </span>
-                                                    )
-                                                ) : null
-                                            ) : politician ? (
-                                                <>
-                                                    <span>{politician.role}</span>
-                                                    {politician.isInOffice && (
-                                                        <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
-                                                            Amatā
-                                                        </span>
-                                                    )}
-                                                </>
-                                            ) : null}
-                                        </div>
+                                        {/* Category with proper icon */}
+                                        {category && (() => {
+                                            const CategoryIcon = SLUG_ICON_MAP[category.slug] || FileText;
+                                            return (
+                                                <Link
+                                                    href={`/categories/${category.slug}`}
+                                                    className="flex items-center gap-1.5 hover:text-foreground transition-colors"
+                                                    suppressHydrationWarning
+                                                >
+                                                    <CategoryIcon className="h-4 w-4" />
+                                                    <span>{category.name}</span>
+                                                </Link>
+                                            );
+                                        })()}
                                     </div>
-                                </div>
-                            </div>
-
-                            {/* Promise Content Section */}
-                            <div>
-                                <div className="flex flex-wrap items-center gap-3 mb-6 text-sm">
-                                    <h3 className="font-semibold text-muted-foreground uppercase tracking-wider">
-                                        Solījums
-                                    </h3>
-
-                                    <span className="text-muted-foreground/30">•</span>
-
-                                    <div className="flex items-center gap-1.5 text-muted-foreground">
-                                        <Calendar className="h-3.5 w-3.5" />
-                                        <span className="font-medium text-foreground">
-                                            {format(new Date(promise.datePromised), 'dd.MM.yyyy')}
-                                        </span>
-                                    </div>
-
-                                    {category && (
-                                        <>
-                                            <span className="text-muted-foreground/30">•</span>
-                                            <span className="text-sm text-muted-foreground/70">
-                                                {category.name}
-                                            </span>
-                                        </>
-                                    )}
 
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground hover:bg-muted h-8 px-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="gap-2 h-9 px-3 border-border hover:bg-muted"
+                                            >
                                                 <Share2 className="h-4 w-4" />
                                                 <span>Dalīties</span>
                                             </Button>
@@ -237,10 +180,57 @@ export const PromiseDetailClient = ({
                                     </DropdownMenu>
                                 </div>
 
-                                <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight">
+                                {/* Row 2: Promisor */}
+                                <div className="flex items-center gap-3 mb-4">
+                                    {isCoalition ? (
+                                        <>
+                                            <span className="text-foreground font-semibold">
+                                                {(promise.coalitionParties || []).map((p, idx) => (
+                                                    <span key={p.id}>
+                                                        <Link
+                                                            href={`/parties/${p.slug || p.id}`}
+                                                            className="hover:text-primary transition-colors"
+                                                            suppressHydrationWarning
+                                                        >
+                                                            {p.name}
+                                                        </Link>
+                                                        {idx < (promise.coalitionParties?.length || 0) - 1 && ', '}
+                                                    </span>
+                                                ))}
+                                            </span>
+                                            <CoalitionLogoStack
+                                                parties={promise.coalitionParties || []}
+                                                size="lg"
+                                                locale={locale as "lv" | "en" | "ru"}
+                                            />
+                                        </>
+                                    ) : isParty && party ? (
+                                        <Link
+                                            href={`/parties/${party.id}`}
+                                            className="text-foreground font-semibold hover:text-primary transition-colors"
+                                            suppressHydrationWarning
+                                        >
+                                            {party.name}
+                                        </Link>
+                                    ) : politician ? (
+                                        <Link
+                                            href={`/politicians/${politician.id}`}
+                                            className="text-foreground font-semibold hover:text-primary transition-colors"
+                                            suppressHydrationWarning
+                                        >
+                                            {politician.name}
+                                        </Link>
+                                    ) : null}
+                                </div>
+
+                                {/* Row 3: Title */}
+                                <h1 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
                                     {promise.title}
                                 </h1>
+                            </div>
 
+                            {/* Description */}
+                            <div>
                                 {promise.description && (
                                     <p className="text-lg text-muted-foreground leading-relaxed mb-8">
                                         {promise.description}
