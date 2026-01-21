@@ -1,48 +1,52 @@
-import { Pool } from "pg";
+import { PrismaClient } from "@prisma/client";
 import { config } from "dotenv";
 
 // Load environment variables
 config({ path: ".env.local" });
 config({ path: ".env" });
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL!,
-  ssl: { rejectUnauthorized: false },
-});
+const prisma = new PrismaClient();
 
 async function main() {
   console.log('Checking promises in database...');
 
   try {
     // Count all promises
-    const countResult = await pool.query(`SELECT COUNT(*) as count FROM promises`);
-    console.log('Total promises:', countResult.rows[0].count);
+    const count = await prisma.promise.count();
+    console.log('Total promises:', count);
 
     // Check status distribution
-    const statusResult = await pool.query(`
-      SELECT status, COUNT(*) as count 
-      FROM promises 
-      GROUP BY status 
-      ORDER BY status
-    `);
-    console.log('Status distribution:', statusResult.rows);
+    const distribution = await prisma.promise.groupBy({
+      by: ['status'],
+      _count: true,
+      orderBy: {
+        status: 'asc'
+      }
+    });
+    console.log('Status distribution:', distribution.map(d => ({ status: d.status, count: d._count })));
 
-    // Check current enum values
-    const enumResult = await pool.query(`
+    // Check current enum values using raw query for metadata
+    // Prisma doesn't expose enum metadata directly, so we use raw query if needed, 
+    // or just rely on the fact that Prisma Client is typed.
+    // Keeping the original intent of checking DB level enums:
+    const enumResult = await prisma.$queryRaw<Array<{ enumlabel: string }>>`
       SELECT enumlabel 
       FROM pg_enum 
       WHERE enumtypid = (SELECT oid FROM pg_type WHERE typname = 'PromiseStatus')
-    `);
-    console.log('Current PromiseStatus enum values:', enumResult.rows.map(r => r.enumlabel));
+    `;
+    console.log('Current PromiseStatus enum values:', enumResult.map(r => r.enumlabel));
 
     // Get a few sample promises
-    const sampleResult = await pool.query(`SELECT id, title, status FROM promises LIMIT 5`);
-    console.log('Sample promises:', sampleResult.rows);
+    const samples = await prisma.promise.findMany({
+      take: 5,
+      select: { id: true, title: true, status: true }
+    });
+    console.log('Sample promises:', samples);
 
   } catch (error) {
     console.error('Query failed:', error);
   } finally {
-    await pool.end();
+    await prisma.$disconnect();
   }
 }
 
