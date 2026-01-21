@@ -13,10 +13,10 @@ const pool = new Pool({
   connectionString,
   ssl: connectionString?.includes("localhost") ? false : { rejectUnauthorized: false },
   // Reduced pool size for serverless - each function instance gets its own pool
-  max: 5,
+  max: 10,
   // Shorter timeouts for serverless
-  idleTimeoutMillis: 10000,
-  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 30000,
 });
 
 // Handle pool errors gracefully
@@ -44,8 +44,8 @@ if (process.env.NODE_ENV !== "production") globalThis.prisma = prisma;
 // Helper function to execute with retry logic for serverless reliability
 export async function withRetry<T>(
   operation: () => Promise<T>,
-  retries: number = 3,
-  delay: number = 1000
+  retries: number = 5,
+  delay: number = 2000
 ): Promise<T> {
   let lastError: Error | undefined;
 
