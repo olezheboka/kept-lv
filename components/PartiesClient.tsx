@@ -462,7 +462,7 @@ export function PartiesClient({ parties, promises, /* politicians */ }: PartiesC
                                                                         )}
                                                                         {cancelledCount > 0 && (
                                                                             <div
-                                                                                className="h-full bg-status-unrated"
+                                                                                className="h-full bg-status-unrated-bar"
                                                                                 style={{ width: `${(cancelledCount / total) * 100}%` }}
                                                                             />
                                                                         )}

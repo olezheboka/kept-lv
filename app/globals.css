@@ -47,6 +47,8 @@
   --status-progress-bg: 217 91% 96%;
   --status-broken: 350 89% 60%;
   --status-broken-bg: 350 89% 96%;
+  --status-unrated-bar: 216 12% 85%;
+  /* #D1D5DD for progress bars */
 
   @layer base {
     :root {
@@ -92,6 +94,8 @@
       --status-broken-bg: 350 89% 96%;
       --status-unrated: 216 15% 47%;
       --status-unrated-bg: 220 14% 96%;
+      --status-unrated-bar: 216 12% 70%;
+      /* Darker grey for progress bars */
 
       /* Party Colors - Original values kept as they are not in the new :root */
       --party-jv: 217 91% 40%;
@@ -160,6 +164,8 @@
       --status-broken-bg: 350 89% 15%;
       --status-unrated: 215 16% 55%;
       --status-unrated-bg: 215 16% 20%;
+      --status-unrated-bar: 216 12% 65%;
+      /* Darker for dark mode */
 
       /* Surfaces - Original values kept as they are not in the new .dark */
       --surface-elevated: 222 47% 10%;
@@ -232,6 +238,7 @@
     --color-status-broken-bg: hsl(var(--status-broken-bg));
     --color-status-unrated: hsl(var(--status-unrated));
     --color-status-unrated-bg: hsl(var(--status-unrated-bg));
+    --color-status-unrated-bar: hsl(var(--status-unrated-bar));
 
     --color-surface-elevated: hsl(var(--surface-elevated));
     --color-surface-muted: hsl(var(--surface-muted));
