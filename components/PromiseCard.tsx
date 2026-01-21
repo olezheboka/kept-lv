@@ -35,79 +35,80 @@ const PromiseCardComponent = ({ promise }: PromiseCardProps) => {
       transition={{ duration: 0.2 }}
       className="h-full"
     >
-      <Link href={getPromiseUrl(promise)} className="block h-full" suppressHydrationWarning>
-        <Card className="group relative h-full flex flex-col overflow-hidden border-border/50 bg-card hover:shadow-elevated hover:border-border transition-all duration-300 cursor-pointer">
-          <CardContent className="p-5 pt-8 flex flex-col h-full">
-            {/* Status Badge - Absolute Top Right */}
-            <div className="absolute top-0 right-0">
-              <StatusBadge status={promise.status} className="rounded-none rounded-bl-lg" />
-            </div>
+      <Card className="group relative h-full flex flex-col overflow-hidden border-border/50 bg-card hover:shadow-elevated hover:border-border transition-all duration-300 cursor-pointer">
+        <Link href={getPromiseUrl(promise)} className="absolute inset-0 z-10" aria-label={promise.title} suppressHydrationWarning />
+        <CardContent className="p-5 pt-8 flex flex-col h-full pointer-events-none">
+          {/* Status Badge - Absolute Top Right */}
+          <div className="absolute top-0 right-0 z-20">
+            <StatusBadge status={promise.status} className="rounded-none rounded-bl-lg" />
+          </div>
 
-            {/* Author & Party - Name on LEFT, Avatar on RIGHT */}
-            <div className="flex flex-col gap-3 mb-4 pt-1">
-              <div className="flex items-center justify-between gap-4 w-full">
-                {/* Name & Description - LEFT */}
-                <div className="flex flex-col min-w-0 justify-center">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-foreground leading-none truncate">
-                      {isCoalition
-                        ? "Koalīcija"
-                        : (isParty ? promise.partyName : promise.politicianName)
-                      }
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 mt-0">
-                    {/* Description / Subtitle */}
-                    <span className="text-xs text-muted-foreground truncate leading-tight">
-                      {isCoalition
-                        ? "Koalīcijas solījums"
-                        : (isParty
-                          ? "Partijas programma"
-                          : (
-                            <>
-                              <span className="truncate max-w-[200px]">{promise.politicianRole}</span>
-                              {promise.politicianIsInOffice && (
-                                <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
-                                  Amatā
-                                </span>
-                              )}
-                            </>
-                          )
-                        )
-                      }
-                    </span>
-                  </div>
+          {/* Author & Party - Name on LEFT, Avatar on RIGHT */}
+          <div className="flex flex-col gap-3 mb-4 pt-1 pointer-events-auto">
+            <div className="flex items-center justify-between gap-4 w-full">
+              {/* Name & Description - LEFT */}
+              <div className="flex flex-col min-w-0 justify-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-foreground leading-none truncate">
+                    {isCoalition
+                      ? "Koalīcija"
+                      : (isParty ? promise.partyName : promise.politicianName)
+                    }
+                  </span>
                 </div>
 
-                {/* Avatar / Logo - Only for Coalition (2+ parties) */}
-                {isCoalition && (promise.coalitionParties?.length ?? 0) >= 2 && (
+                <div className="flex items-center gap-2 mt-0">
+                  {/* Description / Subtitle */}
+                  <span className="text-xs text-muted-foreground truncate leading-tight">
+                    {isCoalition
+                      ? "Koalīcijas solījums"
+                      : (isParty
+                        ? "Partijas programma"
+                        : (
+                          <>
+                            <span className="truncate max-w-[200px]">{promise.politicianRole}</span>
+                            {promise.politicianIsInOffice && (
+                              <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
+                                Amatā
+                              </span>
+                            )}
+                          </>
+                        )
+                      )
+                    }
+                  </span>
+                </div>
+              </div>
+
+              {/* Avatar / Logo - Only for Coalition (2+ parties) */}
+              {isCoalition && (promise.coalitionParties?.length ?? 0) >= 2 && (
+                <div className="relative z-20">
                   <CoalitionLogoStack
                     parties={promise.coalitionParties || []}
                     size="lg"
                     className="flex-shrink-0"
                     locale={locale as "lv" | "en" | "ru"}
                   />
-                )}
-              </div>
+                </div>
+              )}
             </div>
+          </div>
 
-            {/* Title */}
-            <h3 className="font-semibold text-base text-foreground leading-snug mb-4 line-clamp-3 group-hover:text-accent transition-colors flex-1">
-              {promise.title}
-            </h3>
+          {/* Title */}
+          <h3 className="font-semibold text-base text-foreground leading-snug mb-4 line-clamp-3 group-hover:text-accent transition-colors flex-1 relative z-0">
+            {promise.title}
+          </h3>
 
-            {/* FooterContainer - pushed to bottom */}
-            <div className="mt-auto space-y-3">
-              {/* Footer: Timeline */}
-              <div className="pt-3 border-t border-border/50 text-xs text-muted-foreground flex items-center gap-2">
-                <Calendar size={12} className="text-muted-foreground/70" />
-                <span>Solīts <span className="font-medium text-foreground">{format(new Date(promise.datePromised), 'dd.MM.yyyy')}</span></span>
-              </div>
+          {/* FooterContainer - pushed to bottom */}
+          <div className="mt-auto space-y-3 relative z-0">
+            {/* Footer: Timeline */}
+            <div className="pt-3 border-t border-border/50 text-xs text-muted-foreground flex items-center gap-2">
+              <Calendar size={12} className="text-muted-foreground/70" />
+              <span>Solīts <span className="font-medium text-foreground">{format(new Date(promise.datePromised), 'dd.MM.yyyy')}</span></span>
             </div>
-          </CardContent>
-        </Card>
-      </Link>
+          </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 };
