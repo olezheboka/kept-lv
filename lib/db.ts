@@ -166,45 +166,28 @@ const partyMpCounts: Record<string, number> = {
 // ========== PARTIES ==========
 
 const getPartiesFromDb = async (locale: Locale): Promise<PartyUI[]> => {
-    try {
-        const parties = await withRetry(() => prisma.party.findMany({
-            orderBy: { createdAt: "asc" },
-        }));
+    const parties = await withRetry(() => prisma.party.findMany({
+        orderBy: { createdAt: "asc" },
+    }));
 
-        return parties.map((party) => ({
-            id: party.slug,
-            slug: party.slug,
-            name: getLocalizedText(party.name, locale),
-            description: party.description ? getLocalizedText(party.description, locale) : undefined,
-            abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
-            logoUrl: party.logoUrl || undefined,
-            websiteUrl: party.websiteUrl || undefined,
-            isInCoalition: party.isCoalition,
-            mpCount: partyMpCounts[party.slug] ?? 0,
-        }));
-    } catch (error) {
-        console.error("Error fetching parties:", error);
-        try {
-            await prisma.auditLog.create({
-                data: {
-                    action: "error_fetch_parties",
-                    entityType: "System",
-                    adminEmail: "system@internal",
-                    details: { message: error instanceof Error ? error.message : String(error) }
-                }
-            });
-        } catch {
-            // Ignore logging errors
-        }
-        return [];
-    }
+    return parties.map((party) => ({
+        id: party.slug,
+        slug: party.slug,
+        name: getLocalizedText(party.name, locale),
+        description: party.description ? getLocalizedText(party.description, locale) : undefined,
+        abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
+        logoUrl: party.logoUrl || undefined,
+        websiteUrl: party.websiteUrl || undefined,
+        isInCoalition: party.isCoalition,
+        mpCount: partyMpCounts[party.slug] ?? 0,
+    }));
 };
 
 export async function getParties(locale: Locale = "lv"): Promise<PartyUI[]> {
     const getCachedParties = unstable_cache(
         () => getPartiesFromDb(locale),
         [`parties-${locale}`],
-        { revalidate: 1, tags: ['parties'] }
+        { revalidate: 60, tags: ['parties'] }
     );
     return getCachedParties();
 }
@@ -241,49 +224,31 @@ export async function getPartyBySlug(
 // ========== POLITICIANS ==========
 
 const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianUI[]> => {
-    try {
-        const politicians = await withRetry(() => prisma.politician.findMany({
-            include: { party: true },
-            orderBy: { createdAt: "asc" },
-        }));
+    const politicians = await withRetry(() => prisma.politician.findMany({
+        include: { party: true },
+        orderBy: { createdAt: "asc" },
+    }));
 
-        return politicians.map((pol) => ({
-            id: pol.slug,
-            slug: pol.slug,
-            name: pol.name,
-            role: pol.role ? getLocalizedText(pol.role, locale) : (pol.bio ? getLocalizedText(pol.bio, locale) : ""),
-            partyId: pol.party?.slug,
-            photoUrl: pol.imageUrl || "",
-            isInOffice: pol.isActive,
-            roleStartDate: undefined,
-            roleEndDate: undefined,
-            bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
-            education: pol.education || undefined,
-        }));
-    } catch (error) {
-        console.error("Error fetching politicians:", error);
-        // Attempt to log to AuditLog for production debugging
-        try {
-            await prisma.auditLog.create({
-                data: {
-                    action: "error_fetch_politicians",
-                    entityType: "System",
-                    adminEmail: "system@internal",
-                    details: { message: error instanceof Error ? error.message : String(error) }
-                }
-            });
-        } catch {
-            // Ignore logging errors
-        }
-        return [];
-    }
+    return politicians.map((pol) => ({
+        id: pol.slug,
+        slug: pol.slug,
+        name: pol.name,
+        role: pol.role ? getLocalizedText(pol.role, locale) : (pol.bio ? getLocalizedText(pol.bio, locale) : ""),
+        partyId: pol.party?.slug,
+        photoUrl: pol.imageUrl || "",
+        isInOffice: pol.isActive,
+        roleStartDate: undefined,
+        roleEndDate: undefined,
+        bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
+        education: pol.education || undefined,
+    }));
 };
 
 export async function getPoliticians(locale: Locale = "lv"): Promise<PoliticianUI[]> {
     const getCachedPoliticians = unstable_cache(
         () => getPoliticiansFromDb(locale),
         [`politicians-${locale}`],
-        { revalidate: 1, tags: ['politicians'] }
+        { revalidate: 60, tags: ['politicians'] }
     );
     return getCachedPoliticians();
 }
@@ -376,42 +341,25 @@ function mapPromiseToUI(p: any, locale: Locale): PromiseUI {
 }
 
 const getPromisesFromDb = async (locale: Locale): Promise<PromiseUI[]> => {
-    try {
-        const promises = await withRetry(() => prisma.promise.findMany({
-            include: {
-                politician: { include: { party: true } },
-                party: true,
-                coalitionParties: true,
-                category: true,
-                sources: true,
-            },
-            orderBy: { updatedAt: "desc" },
-        }));
+    const promises = await withRetry(() => prisma.promise.findMany({
+        include: {
+            politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
+            category: true,
+            sources: true,
+        },
+        orderBy: { updatedAt: "desc" },
+    }));
 
-        return promises.map((p) => mapPromiseToUI(p, locale));
-    } catch (error) {
-        console.error("Error fetching promises:", error);
-        try {
-            await prisma.auditLog.create({
-                data: {
-                    action: "error_fetch_promises",
-                    entityType: "System",
-                    adminEmail: "system@internal",
-                    details: { message: error instanceof Error ? error.message : String(error) }
-                }
-            });
-        } catch {
-            // Ignore logging errors
-        }
-        return [];
-    }
+    return promises.map((p) => mapPromiseToUI(p, locale));
 };
 
 export async function getPromises(locale: Locale = "lv"): Promise<PromiseUI[]> {
     const getCachedPromises = unstable_cache(
         () => getPromisesFromDb(locale),
         [`promises-${locale}`],
-        { revalidate: 1, tags: ['promises'] }
+        { revalidate: 60, tags: ['promises'] }
     );
     return getCachedPromises();
 }
@@ -672,64 +620,46 @@ type CategoryWithStats = CategoryUI & {
 };
 
 const getCategoriesFromDb = async (locale: Locale): Promise<CategoryWithStats[]> => {
-    try {
-        const categories = await withRetry(() => prisma.category.findMany({
-            include: {
-                promises: {
-                    select: { status: true },
-                },
+    const categories = await withRetry(() => prisma.category.findMany({
+        include: {
+            promises: {
+                select: { status: true },
             },
-            orderBy: { slug: "asc" },
-        }));
+        },
+        orderBy: { slug: "asc" },
+    }));
 
-        return categories.map((cat) => {
-            const total = cat.promises.length;
-            const kept = cat.promises.filter((p) => p.status === "KEPT").length;
-            const partiallyKept = cat.promises.filter((p) => p.status === "PARTIAL").length;
-            const inProgress = cat.promises.filter((p) => p.status === "IN_PROGRESS").length;
-            const broken = cat.promises.filter((p) => p.status === "NOT_KEPT").length;
-            const cancelled = cat.promises.filter((p) => p.status === "CANCELLED").length;
+    return categories.map((cat) => {
+        const total = cat.promises.length;
+        const kept = cat.promises.filter((p) => p.status === "KEPT").length;
+        const partiallyKept = cat.promises.filter((p) => p.status === "PARTIAL").length;
+        const inProgress = cat.promises.filter((p) => p.status === "IN_PROGRESS").length;
+        const broken = cat.promises.filter((p) => p.status === "NOT_KEPT").length;
+        const cancelled = cat.promises.filter((p) => p.status === "CANCELLED").length;
 
-            return {
-                id: cat.slug,
-                slug: cat.slug,
-                name: getLocalizedText(cat.name, locale),
-                description: cat.description ? getLocalizedText(cat.description, locale) : undefined,
-                imageUrl: cat.imageUrl || undefined,
-                stats: {
-                    total,
-                    kept,
-                    partiallyKept,
-                    inProgress,
-                    broken,
-                    cancelled,
-                }
-            };
-        });
-    } catch (error) {
-        console.error("Error fetching categories:", error);
-        // Attempt to log to AuditLog for production debugging
-        try {
-            await prisma.auditLog.create({
-                data: {
-                    action: "error_fetch_categories",
-                    entityType: "System",
-                    adminEmail: "system@internal",
-                    details: { message: error instanceof Error ? error.message : String(error) }
-                }
-            });
-        } catch {
-            // Ignore logging errors
-        }
-        return [];
-    }
+        return {
+            id: cat.slug,
+            slug: cat.slug,
+            name: getLocalizedText(cat.name, locale),
+            description: cat.description ? getLocalizedText(cat.description, locale) : undefined,
+            imageUrl: cat.imageUrl || undefined,
+            stats: {
+                total,
+                kept,
+                partiallyKept,
+                inProgress,
+                broken,
+                cancelled,
+            }
+        };
+    });
 };
 
 export async function getCategories(locale: Locale = "lv"): Promise<CategoryWithStats[]> {
     const getCachedCategories = unstable_cache(
         () => getCategoriesFromDb(locale),
         [`categories-${locale}`],
-        { revalidate: 1, tags: ['categories'] }
+        { revalidate: 60, tags: ['categories'] }
     );
     return getCachedCategories();
 }
