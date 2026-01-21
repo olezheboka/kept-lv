@@ -11,6 +11,7 @@ import {
 } from '@/lib/db';
 import { CATEGORIES } from '@/lib/types';
 import { PromiseDetailClient } from '@/components/PromiseDetailClient';
+import { notFound } from 'next/navigation';
 
 interface PageProps {
     params: Promise<{ categorySlug: string; dateSlug: string }>;
@@ -46,39 +47,37 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
     let relatedByPolitician: PromiseUI[] = [];
     let relatedByCategory: PromiseUI[] = [];
 
-    try {
-        promise = await getPromiseBySlug(categorySlug, promiseSlug);
+    promise = await getPromiseBySlug(categorySlug, promiseSlug);
 
-        if (promise) {
-            const currentPromise = promise; // Ensure type safety
-            politician = currentPromise.politicianId ? await getPoliticianBySlug(currentPromise.politicianId) : null;
-            party = currentPromise.partyId ? await getPartyBySlug(currentPromise.partyId) : null;
-
-            const categoryInfo = CATEGORIES.find(c => c.id === currentPromise.categorySlug);
-            if (categoryInfo) {
-                category = {
-                    id: categoryInfo.id,
-                    slug: categoryInfo.id,
-                    name: categoryInfo.name,
-                };
-            }
-
-            const [relatedPol, relatedCat] = await Promise.all([
-                currentPromise.politicianId ? getPromisesByPolitician(currentPromise.politicianId) : Promise.resolve([]),
-                getPromisesByCategory(currentPromise.categorySlug),
-            ]);
-
-            // Filter out current promise from related
-            relatedByPolitician = relatedPol
-                .filter(p => p.id !== currentPromise.id)
-                .slice(0, 3);
-            relatedByCategory = relatedCat
-                .filter(p => p.id !== currentPromise.id)
-                .slice(0, 3);
-        }
-    } catch (error) {
-        console.error("Error fetching promise detail:", error);
+    if (!promise) {
+        notFound();
     }
+
+    const currentPromise = promise; // Ensure type safety
+    politician = currentPromise.politicianId ? await getPoliticianBySlug(currentPromise.politicianId) : null;
+    party = currentPromise.partyId ? await getPartyBySlug(currentPromise.partyId) : null;
+
+    const categoryInfo = CATEGORIES.find(c => c.id === currentPromise.categorySlug);
+    if (categoryInfo) {
+        category = {
+            id: categoryInfo.id,
+            slug: categoryInfo.id,
+            name: categoryInfo.name,
+        };
+    }
+
+    const [relatedPol, relatedCat] = await Promise.all([
+        currentPromise.politicianId ? getPromisesByPolitician(currentPromise.politicianId) : Promise.resolve([]),
+        getPromisesByCategory(currentPromise.categorySlug),
+    ]);
+
+    // Filter out current promise from related
+    relatedByPolitician = relatedPol
+        .filter(p => p.id !== currentPromise.id)
+        .slice(0, 3);
+    relatedByCategory = relatedCat
+        .filter(p => p.id !== currentPromise.id)
+        .slice(0, 3);
 
     return (
         <PromiseDetailClient

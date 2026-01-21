@@ -9,6 +9,8 @@ interface PageProps {
     params: Promise<{ id: string }>;
 }
 
+import { notFound } from 'next/navigation';
+
 export const revalidate = 60;
 
 const PartyDetailPage = async ({ params }: PageProps) => {
@@ -16,10 +18,10 @@ const PartyDetailPage = async ({ params }: PageProps) => {
     const party = await getPartyBySlug(id);
 
     if (!party) {
-        return <PartyDetailClient party={null} promises={[]} />;
+        notFound();
     }
 
-    const promises = await getPromisesByParty(party.slug);
+    const promises = await getPromisesByParty(party.id);
 
     return (
         <PartyDetailClient

@@ -368,26 +368,21 @@ export async function getPromiseById(
     id: string,
     locale: Locale = "lv"
 ): Promise<PromiseUI | null> {
-    try {
-        const p = await prisma.promise.findUnique({
-            where: { id },
-            include: {
-                politician: { include: { party: true } },
-                party: true,
-                coalitionParties: true,
-                category: true,
-                sources: true,
-                evidence: true,
-            },
-        });
+    const p = await withRetry(() => prisma.promise.findUnique({
+        where: { id },
+        include: {
+            politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
+            category: true,
+            sources: true,
+            evidence: true,
+        },
+    }));
 
-        if (!p) return null;
+    if (!p) return null;
 
-        return mapPromiseToUI(p, locale);
-    } catch (error) {
-        console.error("Error fetching promise by id:", error);
-        return null;
-    }
+    return mapPromiseToUI(p, locale);
 }
 
 export async function getPromiseBySlug(
@@ -395,116 +390,96 @@ export async function getPromiseBySlug(
     promiseSlug: string,
     locale: Locale = "lv"
 ): Promise<PromiseUI | null> {
-    try {
-        const p = await prisma.promise.findFirst({
-            where: {
-                slug: promiseSlug,
-                category: { slug: categorySlug },
-            },
-            include: {
-                politician: { include: { party: true } },
-                party: true,
-                coalitionParties: true,
-                category: true,
-                sources: true,
-                evidence: true,
-            },
-        });
+    const p = await withRetry(() => prisma.promise.findFirst({
+        where: {
+            slug: promiseSlug,
+            category: { slug: categorySlug },
+        },
+        include: {
+            politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
+            category: true,
+            sources: true,
+            evidence: true,
+        },
+    }));
 
-        if (!p) return null;
+    if (!p) return null;
 
-        return mapPromiseToUI(p, locale);
-    } catch (error) {
-        console.error("Error fetching promise by slug:", error);
-        return null;
-    }
+    return mapPromiseToUI(p, locale);
 }
 
 export async function getPromisesByPolitician(
     politicianSlug: string,
     locale: Locale = "lv"
 ): Promise<PromiseUI[]> {
-    try {
-        const politician = await prisma.politician.findUnique({
-            where: { slug: politicianSlug },
-        });
+    const politician = await withRetry(() => prisma.politician.findUnique({
+        where: { slug: politicianSlug },
+    }));
 
-        if (!politician) return [];
+    if (!politician) return [];
 
-        const promises = await prisma.promise.findMany({
-            where: { politicianId: politician.id },
-            include: {
-                politician: { include: { party: true } },
-                party: true,
-                coalitionParties: true,
-                category: true,
-                sources: true,
-            },
-            orderBy: { updatedAt: "desc" },
-        });
+    const promises = await withRetry(() => prisma.promise.findMany({
+        where: { politicianId: politician.id },
+        include: {
+            politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
+            category: true,
+            sources: true,
+        },
+        orderBy: { updatedAt: "desc" },
+    }));
 
-        return promises.map((p) => mapPromiseToUI(p, locale));
-    } catch (error) {
-        console.error("Error fetching promises by politician:", error);
-        return [];
-    }
+    return promises.map((p) => mapPromiseToUI(p, locale));
 }
 
 export async function getPromisesByParty(
     partySlug: string,
     locale: Locale = "lv"
 ): Promise<PromiseUI[]> {
-    try {
-        const party = await prisma.party.findUnique({
-            where: { slug: partySlug },
-            include: { politicians: true },
-        });
+    const party = await withRetry(() => prisma.party.findUnique({
+        where: { slug: partySlug },
+        include: { politicians: true },
+    }));
 
-        if (!party) return [];
+    if (!party) return [];
 
-        const politicianIds = party.politicians.map((p) => p.id);
+    const politicianIds = party.politicians.map((p) => p.id);
 
-        const promises = await prisma.promise.findMany({
-            where: { politicianId: { in: politicianIds } },
-            include: {
-                politician: { include: { party: true } },
-                party: true,
-                coalitionParties: true,
-                category: true,
-                sources: true,
-            },
-            orderBy: { updatedAt: "desc" },
-        });
+    const promises = await withRetry(() => prisma.promise.findMany({
+        where: { politicianId: { in: politicianIds } },
+        include: {
+            politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
+            category: true,
+            sources: true,
+        },
+        orderBy: { updatedAt: "desc" },
+    }));
 
-        return promises.map((p) => mapPromiseToUI(p, locale));
-    } catch (error) {
-        console.error("Error fetching promises by party:", error);
-        return [];
-    }
+    return promises.map((p) => mapPromiseToUI(p, locale));
 }
 
 export async function getPromisesByCategory(
     categorySlug: string,
     locale: Locale = "lv"
 ): Promise<PromiseUI[]> {
-    try {
-        const promises = await prisma.promise.findMany({
-            where: { category: { slug: categorySlug } },
-            include: {
-                politician: { include: { party: true } },
-                party: true,
-                coalitionParties: true,
-                category: true,
-                sources: true,
-            },
-            orderBy: { updatedAt: "desc" },
-        });
+    const promises = await withRetry(() => prisma.promise.findMany({
+        where: { category: { slug: categorySlug } },
+        include: {
+            politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
+            category: true,
+            sources: true,
+        },
+        orderBy: { updatedAt: "desc" },
+    }));
 
-        return promises.map((p) => mapPromiseToUI(p, locale));
-    } catch (error) {
-        console.error("Error fetching promises by category:", error);
-        return [];
-    }
+    return promises.map((p) => mapPromiseToUI(p, locale));
 }
 
 export async function getFeaturedPromises(

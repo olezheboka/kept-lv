@@ -8,6 +8,8 @@ interface PageProps {
     params: Promise<{ id: string }>;
 }
 
+import { notFound } from 'next/navigation';
+
 export const revalidate = 60;
 
 const CategoryDetailPage = async ({ params }: PageProps) => {
@@ -15,16 +17,7 @@ const CategoryDetailPage = async ({ params }: PageProps) => {
     const category = await getCategoryBySlug(id);
 
     if (!category) {
-        return (
-            <div className="flex flex-col bg-background min-h-[50vh] items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold text-foreground mb-4">Kategorija nav atrasta</h1>
-                    <Link href="/categories">
-                        <Button>Atpakaļ uz kategorijām</Button>
-                    </Link>
-                </div>
-            </div>
-        );
+        notFound();
     }
 
     const promises = await getPromisesByCategory(category.id);
