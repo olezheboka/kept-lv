@@ -100,21 +100,22 @@ export function CoalitionLogoStack({
                     {parties.map((party) => {
                         const name = typeof party.name === 'string' ? party.name : party.name[locale];
                         return (
-                            <div key={party.id} className="flex items-center gap-2 p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                            <Link
+                                key={party.id}
+                                href={`/parties/${party.slug}`}
+                                className="flex items-center gap-2 p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 <PartyAvatar
                                     abbreviation={party.abbreviation}
                                     size="md"
                                     className="w-8 h-8 text-[10px]"
                                     color={party.color}
                                 />
-                                <Link
-                                    href={`/parties/${party.slug}`}
-                                    className="text-sm font-medium leading-none text-foreground"
-                                    onClick={(e) => e.stopPropagation()}
-                                >
+                                <span className="text-sm font-medium leading-none text-foreground">
                                     {name}
-                                </Link>
-                            </div>
+                                </span>
+                            </Link>
                         )
                     })}
                 </div>
