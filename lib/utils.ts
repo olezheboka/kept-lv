@@ -81,14 +81,6 @@ export const statusConfig = {
     border: "border-amber-400/50",
     text: "text-amber-400",
   },
-  ABANDONED: {
-    icon: "∅",
-    label: { lv: "PAMESTS", en: "ABANDONED", ru: "ЗАБРОШЕНО" },
-    gradient: "from-slate-500 to-gray-600",
-    bg: "bg-slate-500/20",
-    border: "border-slate-400/50",
-    text: "text-slate-400",
-  },
   PARTIAL: {
     icon: "◐",
     label: { lv: "DAĻĒJI", en: "PARTIAL", ru: "ЧАСТИЧНО" },
@@ -114,7 +106,6 @@ export function mapStatusToUI(status: string): "kept" | "partially-kept" | "in-p
     NOT_KEPT: "broken",
     IN_PROGRESS: "in-progress",
     PARTIAL: "partially-kept",
-    ABANDONED: "cancelled",
     CANCELLED: "cancelled",
   };
   return statusMap[status] || "cancelled";

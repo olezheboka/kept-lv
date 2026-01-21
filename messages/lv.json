@@ -35,7 +35,6 @@
     "kept": "IZPILDĪTS",
     "notKept": "NEIZPILDĪTS",
     "inProgress": "PROCESĀ",
-    "abandoned": "PAMESTS",
     "partial": "DAĻĒJI",
     "cancelled": "ATCELTS"
   },

@@ -142,7 +142,7 @@ export interface PromiseStats {
   kept: number;
   notKept: number;
   inProgress: number;
-  abandoned: number;
+  cancelled: number;
   partial: number;
 }
 

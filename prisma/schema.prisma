@@ -158,7 +158,6 @@ enum PromiseStatus {
   KEPT
   NOT_KEPT
   IN_PROGRESS
-  ABANDONED
   PARTIAL
   CANCELLED
 }

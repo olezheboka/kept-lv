@@ -50,8 +50,8 @@ export function FilterBar({ politicians, categories, stats }: FilterBarProps) {
     { value: "KEPT", label: tStatus("kept"), color: "emerald" },
     { value: "NOT_KEPT", label: tStatus("notKept"), color: "rose" },
     { value: "IN_PROGRESS", label: tStatus("inProgress"), color: "amber" },
-    { value: "ABANDONED", label: tStatus("abandoned"), color: "slate" },
     { value: "PARTIAL", label: tStatus("partial"), color: "violet" },
+    { value: "CANCELLED", label: tStatus("cancelled"), color: "gray" },
   ];
 
   return (
@@ -194,8 +194,8 @@ export function FilterBar({ politicians, categories, stats }: FilterBarProps) {
           <p className="text-xs text-gray-400 uppercase">{tStatus("partial")}</p>
         </div>
         <div className="text-center hidden md:block">
-          <p className="text-2xl font-black text-slate-400">{stats.abandoned}</p>
-          <p className="text-xs text-gray-400 uppercase">{tStatus("abandoned")}</p>
+          <p className="text-2xl font-black text-gray-400">{stats.cancelled}</p>
+          <p className="text-xs text-gray-400 uppercase">{tStatus("cancelled")}</p>
         </div>
       </div>
     </motion.div>
