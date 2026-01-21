@@ -10,6 +10,7 @@ async function getDashboardStats() {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
+  // Batch 1: Promise Status Counts (Parallel)
   const [
     totalPromises,
     keptPromises,
@@ -17,13 +18,6 @@ async function getDashboardStats() {
     inProgressPromises,
     notKeptPromises,
     cancelledPromises,
-    totalPoliticians,
-    totalParties,
-    totalCategories,
-    recentPromises,
-    topPoliticians,
-    topCategories,
-    allParties,
   ] = await withRetry(() => Promise.all([
     prisma.promise.count(),
     prisma.promise.count({ where: { status: "KEPT" } }),
@@ -31,21 +25,36 @@ async function getDashboardStats() {
     prisma.promise.count({ where: { status: "IN_PROGRESS" } }),
     prisma.promise.count({ where: { status: "NOT_KEPT" } }),
     prisma.promise.count({ where: { status: "CANCELLED" } }),
+  ]));
+
+  // Batch 2: Entity Counts (Parallel)
+  const [
+    totalPoliticians,
+    totalParties,
+    totalCategories,
+  ] = await withRetry(() => Promise.all([
     prisma.politician.count(),
     prisma.party.count(),
     prisma.category.count(),
-    prisma.promise.findMany({
-      take: 6,
-      orderBy: { createdAt: "desc" },
-      include: {
-        category: { select: { slug: true } },
-        politician: { select: { name: true } },
-        party: { select: { name: true } },
-        coalitionParties: { select: { name: true } },
-      },
-    }),
-    // Top 3 politicians by promise count
-    // Top 3 politicians by promise count
+  ]));
+
+  // Batch 3: Complex Lists (Sequentially or smaller parallel batch)
+  const recentPromises = await withRetry(() => prisma.promise.findMany({
+    take: 6,
+    orderBy: { createdAt: "desc" },
+    include: {
+      category: { select: { slug: true } },
+      politician: { select: { name: true } },
+      party: { select: { name: true } },
+      coalitionParties: { select: { name: true } },
+    },
+  }));
+
+  const [
+    topPoliticians,
+    topCategories,
+    allParties,
+  ] = await withRetry(() => Promise.all([
     prisma.politician.findMany({
       take: 3,
       select: {
@@ -56,7 +65,6 @@ async function getDashboardStats() {
       },
       orderBy: { promises: { _count: 'desc' } }
     }),
-    // Top 3 categories by promise count
     prisma.category.findMany({
       take: 3,
       select: {
@@ -67,7 +75,6 @@ async function getDashboardStats() {
       },
       orderBy: { promises: { _count: 'desc' } }
     }),
-    // All parties for sorting
     prisma.party.findMany({
       select: {
         id: true,
