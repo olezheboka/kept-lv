@@ -1,4 +1,4 @@
-import { prisma } from "./prisma";
+import { prisma, withRetry } from "./prisma";
 import { Prisma, Party, Source } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import { mapStatusToUI } from "./utils";
@@ -167,9 +167,9 @@ const partyMpCounts: Record<string, number> = {
 
 const getPartiesFromDb = async (locale: Locale): Promise<PartyUI[]> => {
     try {
-        const parties = await prisma.party.findMany({
+        const parties = await withRetry(() => prisma.party.findMany({
             orderBy: { createdAt: "asc" },
-        });
+        }));
 
         return parties.map((party) => ({
             id: party.slug,
@@ -242,10 +242,10 @@ export async function getPartyBySlug(
 
 const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianUI[]> => {
     try {
-        const politicians = await prisma.politician.findMany({
+        const politicians = await withRetry(() => prisma.politician.findMany({
             include: { party: true },
             orderBy: { createdAt: "asc" },
-        });
+        }));
 
         return politicians.map((pol) => ({
             id: pol.slug,
@@ -377,7 +377,7 @@ function mapPromiseToUI(p: any, locale: Locale): PromiseUI {
 
 const getPromisesFromDb = async (locale: Locale): Promise<PromiseUI[]> => {
     try {
-        const promises = await prisma.promise.findMany({
+        const promises = await withRetry(() => prisma.promise.findMany({
             include: {
                 politician: { include: { party: true } },
                 party: true,
@@ -386,7 +386,7 @@ const getPromisesFromDb = async (locale: Locale): Promise<PromiseUI[]> => {
                 sources: true,
             },
             orderBy: { updatedAt: "desc" },
-        });
+        }));
 
         return promises.map((p) => mapPromiseToUI(p, locale));
     } catch (error) {
@@ -673,14 +673,14 @@ type CategoryWithStats = CategoryUI & {
 
 const getCategoriesFromDb = async (locale: Locale): Promise<CategoryWithStats[]> => {
     try {
-        const categories = await prisma.category.findMany({
+        const categories = await withRetry(() => prisma.category.findMany({
             include: {
                 promises: {
                     select: { status: true },
                 },
             },
             orderBy: { slug: "asc" },
-        });
+        }));
 
         return categories.map((cat) => {
             const total = cat.promises.length;
