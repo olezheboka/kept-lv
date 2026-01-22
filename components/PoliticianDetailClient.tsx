@@ -8,7 +8,7 @@ import { PerformanceCard } from '@/components/PerformanceCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PromiseStatus, STATUS_CONFIG } from '@/lib/types';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Briefcase, GraduationCap } from 'lucide-react';
 import { PoliticianUI, PartyUI, PromiseUI } from '@/lib/db';
 
 interface PoliticianDetailClientProps {
@@ -72,33 +72,22 @@ export const PoliticianDetailClient = ({ politician, party, promises }: Politici
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4 }}
-                        className="flex flex-col md:flex-row items-start gap-6"
+                        className="flex flex-col md:flex-row md:items-start gap-6"
                     >
                         <div className="flex-1 text-left">
-                            {/* Row 1: Name + Party Badge */}
+                            {/* Row 1: Name */}
                             <div className="flex flex-wrap items-center justify-start gap-4 mb-2">
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">
                                     {politician.name}
                                 </h1>
-                                {party && party.logoUrl ? (
-                                    <div className="h-9 w-auto min-w-[36px] relative flex items-center justify-center flex-shrink-0">
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img
-                                            src={party.logoUrl}
-                                            alt={party.abbreviation}
-                                            className="h-full w-auto object-contain"
-                                        />
-                                    </div>
-                                ) : party ? (
-                                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-muted text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                                        {party.abbreviation}
-                                    </span>
-                                ) : null}
                             </div>
 
                             {/* Row 2: Role + Amatā Badge */}
                             <div className="flex flex-wrap items-center justify-start gap-3 text-lg text-muted-foreground">
-                                <span>{politician.role}</span>
+                                <span>
+                                    {politician.role}
+                                    {party && <span className="text-muted-foreground"> • {party.name}</span>}
+                                </span>
                                 {politician.isInOffice ? (
                                     <span className="px-2.5 py-0.5 bg-muted text-muted-foreground text-xs font-medium rounded-full">
                                         Amatā
@@ -111,20 +100,59 @@ export const PoliticianDetailClient = ({ politician, party, promises }: Politici
                             </div>
 
                             {/* Row 3: Bio */}
-                            {politician.bio && (
-                                <div className="mt-6 max-w-2xl">
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        {politician.bio}
-                                    </p>
-                                </div>
-                            )}
+                            {/* Row 3: Experience & Education */}
+                            <div className="mt-8 w-full grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                {/* Experience */}
+                                {politician.jobs && politician.jobs.length > 0 && (
+                                    <div className="flex flex-col gap-3 h-full">
+                                        <h3 className="text-sm font-semibold flex items-center gap-2">
+                                            <Briefcase className="w-5 h-5 text-primary" />
+                                            Experience
+                                        </h3>
+                                        <div className="flex flex-col gap-3 flex-1">
+                                            {politician.jobs.map((job, i) => (
+                                                <div key={i} className="p-3 bg-card rounded-lg border border-border/50 text-sm h-full">
+                                                    <div className="font-medium text-foreground">
+                                                        {job.title}
+                                                        {job.company && <span className="font-normal text-muted-foreground text-sm"> • {job.company}</span>}
+                                                    </div>
+                                                    <div className="text-xs text-muted-foreground mt-1">{job.years}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Education */}
+                                {politician.educationEntries && politician.educationEntries.length > 0 && (
+                                    <div className="flex flex-col gap-3 h-full">
+                                        <h3 className="text-sm font-semibold flex items-center gap-2">
+                                            <GraduationCap className="w-5 h-5 text-primary" />
+                                            Education
+                                        </h3>
+                                        <div className="flex flex-col gap-3 flex-1">
+                                            {politician.educationEntries.map((edu, i) => (
+                                                <div key={i} className="p-3 bg-card rounded-lg border border-border/50 text-sm h-full">
+                                                    <div className="font-medium text-foreground">
+                                                        {edu.degree}
+                                                        <span className="font-normal text-muted-foreground text-sm"> • {edu.institution}</span>
+                                                    </div>
+                                                    <div className="text-xs text-muted-foreground mt-1">
+                                                        {edu.year}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </motion.div>
                 </div>
-            </section>
+            </section >
 
             {/* Performance Section */}
-            <section className="py-4 border-b border-border/50">
+            < section className="py-4 border-b border-border/50" >
                 <div className="container-wide">
                     <PerformanceCard
                         stats={stats}
@@ -132,10 +160,10 @@ export const PoliticianDetailClient = ({ politician, party, promises }: Politici
                         onFilterChange={setFilterStatus}
                     />
                 </div>
-            </section>
+            </section >
 
             {/* Promises List */}
-            <section className="py-8 md:py-12">
+            < section className="py-8 md:py-12" >
                 <div className="container-wide">
                     <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
                         {filterStatus === 'all' ? 'Visi solījumi' : STATUS_CONFIG[filterStatus].label}
@@ -167,7 +195,7 @@ export const PoliticianDetailClient = ({ politician, party, promises }: Politici
                         </Card>
                     )}
                 </div>
-            </section>
-        </div>
+            </section >
+        </div >
     );
 };
