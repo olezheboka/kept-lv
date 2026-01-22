@@ -13,13 +13,26 @@ export const createPartySchema = z.object({
 export const updatePartySchema = createPartySchema.partial();
 
 // Politician schemas
+// Politician schemas
+export const jobSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  company: z.string().optional().nullable(),
+  years: z.string().min(1, "Years are required"),
+});
+
+export const educationEntrySchema = z.object({
+  degree: z.string().min(1, "Degree is required"),
+  institution: z.string().min(1, "Institution is required"),
+  year: z.string().min(1, "Year is required"),
+});
+
 export const createPoliticianSchema = z.object({
   name: z.string().min(1).max(200),
   slug: z.string().min(1).max(100),
   imageUrl: z.string().url().optional().nullable(),
   role: z.string().min(1, "Position is required"),
-  bio: z.string().optional().nullable(),
-  education: z.string().optional().nullable(),
+  jobs: z.array(jobSchema).optional(),
+  educationEntries: z.array(educationEntrySchema).optional(),
   isActive: z.boolean().default(true),
   partyId: z.string().cuid().optional().nullable(),
 });
@@ -29,8 +42,8 @@ export const updatePoliticianSchema = z.object({
   slug: z.string().min(1).max(100).optional(),
   imageUrl: z.string().url().optional().nullable(),
   role: z.string().min(1, "Position is required").optional(),
-  bio: z.string().optional().nullable(),
-  education: z.string().optional().nullable(),
+  jobs: z.array(jobSchema).optional(),
+  educationEntries: z.array(educationEntrySchema).optional(),
   isActive: z.boolean().optional(),
   partyId: z.string().cuid().optional(),
 });

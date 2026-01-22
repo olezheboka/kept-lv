@@ -10,6 +10,10 @@ export default async function EditPoliticianPage({ params }: { params: Promise<{
     const [politician, parties] = await Promise.all([
         prisma.politician.findUnique({
             where: { id },
+            include: {
+                jobs: true,
+                educationEntries: true,
+            },
         }),
         prisma.party.findMany({
             select: { id: true, name: true },

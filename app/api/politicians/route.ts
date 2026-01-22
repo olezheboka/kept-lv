@@ -54,14 +54,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { bio, education, isActive, ...rest } = parsed.data;
+    const { jobs, educationEntries, isActive, ...rest } = parsed.data;
 
 
     const politician = await prisma.politician.create({
       data: {
         ...rest,
-        bio: bio || null,
-        education: education || null,
+        jobs: jobs ? { create: jobs } : undefined,
+        educationEntries: educationEntries ? { create: educationEntries } : undefined,
         isActive: isActive !== undefined ? isActive : true,
       },
       include: {

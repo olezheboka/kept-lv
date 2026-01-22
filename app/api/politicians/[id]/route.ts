@@ -67,7 +67,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { bio, education, isActive, ...rest } = parsed.data;
+    const { jobs, educationEntries, isActive, ...rest } = parsed.data;
 
     const politician = await prisma.politician.update({
       where: { id },
@@ -76,11 +76,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         slug: rest.slug,
         imageUrl: rest.imageUrl,
         role: rest.role,
-        bio: bio || null, // Handle null explicitly
-        education: education || null,
+        jobs: jobs ? { deleteMany: {}, create: jobs } : undefined,
+        educationEntries: educationEntries ? { deleteMany: {}, create: educationEntries } : undefined,
         isActive: isActive !== undefined ? isActive : undefined,
         partyId: rest.partyId !== undefined ? (rest.partyId || null) : undefined,
-
       },
       include: {
         party: true,
@@ -93,16 +92,20 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     if (currentPolitician) {
       // Compare fields
-      const changesToCheck = { ...rest, bio, education, isActive };
+      const changesToCheck = { ...rest, isActive };
       Object.entries(changesToCheck).forEach(([key, value]) => {
         if (value !== undefined) { // Check only if provided in update
-          const currVal = currentPolitician[key as keyof typeof currentPolitician];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const currVal = (currentPolitician as any)[key];
           // Simple equality check, handling nulls
           if (currVal !== value && !(currVal === null && value === undefined)) {
             updatedFields.push(key);
           }
         }
       });
+      // Always track if complex fields change
+      if (jobs) updatedFields.push('jobs');
+      if (educationEntries) updatedFields.push('educationEntries');
     } else {
       updatedFields.push(...Object.keys(parsed.data));
     }

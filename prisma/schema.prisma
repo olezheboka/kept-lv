@@ -44,8 +44,10 @@ model Politician {
   slug      String    @unique
   imageUrl  String?
   role      String?
-  bio       String?
-  education String?
+  // New structured fields
+  jobs      PoliticianJob[]
+  educationEntries PoliticianEducation[]
+  
   isActive  Boolean   @default(true)
   partyId   String?
   createdAt DateTime  @default(now())
@@ -54,6 +56,30 @@ model Politician {
   promises  Promise[]
 
   @@map("politicians")
+}
+
+model PoliticianJob {
+  id           String     @id @default(cuid())
+  title        String
+  company      String?
+  years        String     // Display string e.g. "2018 - šobrīd"
+  politicianId String
+  politician   Politician @relation(fields: [politicianId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  
+  @@map("politician_jobs")
+}
+
+model PoliticianEducation {
+  id           String     @id @default(cuid())
+  degree       String
+  institution  String
+  year         String     // Display string e.g. "2005"
+  politicianId String
+  politician   Politician @relation(fields: [politicianId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@map("politician_education")
 }
 
 model Category {

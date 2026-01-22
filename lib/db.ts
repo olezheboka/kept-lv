@@ -26,8 +26,16 @@ export interface PoliticianUI {
     isInOffice: boolean;
     roleStartDate?: string;
     roleEndDate?: string;
-    bio?: string;
-    education?: string;
+    jobs?: {
+        title: string;
+        company?: string;
+        years: string;
+    }[];
+    educationEntries?: {
+        degree: string;
+        institution: string;
+        year: string;
+    }[];
 }
 
 export interface PromiseUI {
@@ -219,7 +227,11 @@ export async function getPartyBySlug(
 
 const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianUI[]> => {
     const politicians = await withRetry(() => prisma.politician.findMany({
-        include: { party: true },
+        include: {
+            party: true,
+            jobs: { orderBy: { createdAt: 'desc' } },
+            educationEntries: { orderBy: { createdAt: 'desc' } },
+        },
         orderBy: { createdAt: "asc" },
     }));
 
@@ -227,14 +239,22 @@ const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianUI[]> => 
         id: pol.slug,
         slug: pol.slug,
         name: pol.name,
-        role: pol.role ? getLocalizedText(pol.role, locale) : (pol.bio ? getLocalizedText(pol.bio, locale) : ""),
+        role: pol.role ? getLocalizedText(pol.role, locale) : "",
         partyId: pol.party?.slug,
         photoUrl: pol.imageUrl || "",
         isInOffice: pol.isActive,
         roleStartDate: undefined,
         roleEndDate: undefined,
-        bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
-        education: pol.education || undefined,
+        jobs: pol.jobs.map(j => ({
+            title: j.title,
+            company: j.company || undefined,
+            years: j.years
+        })),
+        educationEntries: pol.educationEntries.map(e => ({
+            degree: e.degree,
+            institution: e.institution,
+            year: e.year
+        })),
     }));
 };
 
@@ -253,7 +273,11 @@ export async function getPoliticianBySlug(
 ): Promise<PoliticianUI | null> {
     const pol = await withRetry(() => prisma.politician.findUnique({
         where: { slug },
-        include: { party: true },
+        include: {
+            party: true,
+            jobs: { orderBy: { createdAt: 'desc' } },
+            educationEntries: { orderBy: { createdAt: 'desc' } },
+        },
     }));
 
     if (!pol) return null;
@@ -262,14 +286,22 @@ export async function getPoliticianBySlug(
         id: pol.slug,
         slug: pol.slug,
         name: pol.name,
-        role: pol.role ? getLocalizedText(pol.role, locale) : (pol.bio ? getLocalizedText(pol.bio, locale) : ""),
+        role: pol.role ? getLocalizedText(pol.role, locale) : "",
         partyId: pol.party?.slug,
         photoUrl: pol.imageUrl || "",
         isInOffice: pol.isActive,
         roleStartDate: undefined,
         roleEndDate: undefined,
-        bio: pol.bio ? getLocalizedText(pol.bio, locale) : undefined,
-        education: pol.education || undefined,
+        jobs: pol.jobs.map(j => ({
+            title: j.title,
+            company: j.company || undefined,
+            years: j.years
+        })),
+        educationEntries: pol.educationEntries.map(e => ({
+            degree: e.degree,
+            institution: e.institution,
+            year: e.year
+        })),
     };
 }
 

@@ -3,18 +3,32 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
-import { Flag, GraduationCap, Briefcase, CheckCircle2, XCircle } from "lucide-react";
+import { Flag, GraduationCap, Briefcase, CheckCircle2, XCircle, Plus, Trash2 } from "lucide-react";
 import { FormActions } from "@/components/admin/FormActions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { FormError } from "@/components/ui/form-error";
 import { SearchableSelect } from "@/components/ui/searchable-select";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface Party {
     id: string;
     name: string;
+}
+
+interface Job {
+    id?: string;
+    title: string;
+    company: string | null;
+    years: string;
+}
+
+interface EducationEntry {
+    id?: string;
+    degree: string;
+    institution: string;
+    year: string;
 }
 
 interface Politician {
@@ -24,8 +38,8 @@ interface Politician {
     partyId?: string | null;
     role?: string | null;
     isActive: boolean;
-    bio?: string | null;
-    education?: string | null;
+    jobs?: Job[];
+    educationEntries?: EducationEntry[];
 }
 
 interface PoliticianFormProps {
@@ -39,14 +53,16 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [origin, setOrigin] = useState("");
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [formData, setFormData] = useState({
         name: "",
         slug: "",
         partyId: "",
         role: "Member of Parliament",
         isActive: true,
-        bio: "",
-        education: "",
+        jobs: [] as Job[],
+        educationEntries: [] as EducationEntry[],
     });
 
     useEffect(() => {
@@ -64,8 +80,8 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
                 partyId: initialData.partyId || "",
                 role: initialData.role || "Member of Parliament",
                 isActive: initialData.isActive ?? true,
-                bio: initialData.bio || "",
-                education: initialData.education || "",
+                jobs: initialData.jobs || [],
+                educationEntries: initialData.educationEntries || [],
             });
         }
     }, [initialData]);
@@ -84,6 +100,17 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
         if (!formData.name.trim()) newErrors.name = "Full name is required";
         if (!formData.slug.trim()) newErrors.slug = "Slug is required";
         if (!formData.partyId) newErrors.partyId = "Party is required";
+
+        // Basic validation for array items if needed
+        formData.jobs.forEach((job, idx) => {
+            if (!job.title) newErrors[`jobs.${idx}.title`] = "Title required";
+            if (!job.years) newErrors[`jobs.${idx}.years`] = "Years required";
+        });
+        formData.educationEntries.forEach((edu, idx) => {
+            if (!edu.degree) newErrors[`education.${idx}.degree`] = "Degree required";
+            if (!edu.institution) newErrors[`education.${idx}.institution`] = "Institution required";
+            if (!edu.year) newErrors[`education.${idx}.year`] = "Year required";
+        });
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -120,6 +147,46 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
         } finally {
             setLoading(false);
         }
+    };
+
+    const addJob = () => {
+        setFormData(prev => ({
+            ...prev,
+            jobs: [...prev.jobs, { title: "", company: "", years: "" }]
+        }));
+    };
+
+    const removeJob = (index: number) => {
+        setFormData(prev => ({
+            ...prev,
+            jobs: prev.jobs.filter((_, i) => i !== index)
+        }));
+    };
+
+    const updateJob = (index: number, field: keyof Job, value: string) => {
+        const newJobs = [...formData.jobs];
+        newJobs[index] = { ...newJobs[index], [field]: value };
+        setFormData(prev => ({ ...prev, jobs: newJobs }));
+    };
+
+    const addEducation = () => {
+        setFormData(prev => ({
+            ...prev,
+            educationEntries: [...prev.educationEntries, { degree: "", institution: "", year: "" }]
+        }));
+    };
+
+    const removeEducation = (index: number) => {
+        setFormData(prev => ({
+            ...prev,
+            educationEntries: prev.educationEntries.filter((_, i) => i !== index)
+        }));
+    };
+
+    const updateEducation = (index: number, field: keyof EducationEntry, value: string) => {
+        const newEdu = [...formData.educationEntries];
+        newEdu[index] = { ...newEdu[index], [field]: value };
+        setFormData(prev => ({ ...prev, educationEntries: newEdu }));
     };
 
     const partyOptions = parties.map(p => ({ label: p.name, value: p.id }));
@@ -226,31 +293,121 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
                     </div>
                 </div>
 
-                {/* Bio & Education */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="bio" className="text-foreground font-semibold">Biography</Label>
-                        <Textarea
-                            id="bio"
-                            value={formData.bio}
-                            onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                            rows={5}
-                            placeholder="Brief biography or background information..."
-                            className="resize-none bg-background min-h-[120px]"
-                        />
+                {/* Experience & Education */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Experience Section */}
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <Label className="text-foreground font-semibold flex items-center gap-2">
+                                <Briefcase className="w-4 h-4" /> Experience
+                            </Label>
+                            <Button type="button" variant="outline" size="sm" onClick={addJob}>
+                                <Plus className="w-3 h-3 mr-1" /> Add
+                            </Button>
+                        </div>
+
+                        <div className="space-y-3">
+                            {formData.jobs.map((job, idx) => (
+                                <div key={idx} className="p-3 border rounded-lg bg-card relative group">
+                                    <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-6 w-6 text-destructive hover:bg-destructive/10"
+                                            onClick={() => removeJob(idx)}
+                                        >
+                                            <Trash2 className="w-3 h-3" />
+                                        </Button>
+                                    </div>
+                                    <div className="space-y-2 pr-6">
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <Input
+                                                value={job.title}
+                                                onChange={(e) => updateJob(idx, 'title', e.target.value)}
+                                                placeholder="Title (e.g. MP)"
+                                                className="h-8 text-sm"
+                                            />
+                                            <Input
+                                                value={job.years}
+                                                onChange={(e) => updateJob(idx, 'years', e.target.value)}
+                                                placeholder="Years (e.g. 2018-Now)"
+                                                className="h-8 text-sm"
+                                            />
+                                        </div>
+                                        <Input
+                                            value={job.company || ""}
+                                            onChange={(e) => updateJob(idx, 'company', e.target.value)}
+                                            placeholder="Organization (Optional)"
+                                            className="h-8 text-sm"
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                            {formData.jobs.length === 0 && (
+                                <div className="text-sm text-muted-foreground text-center py-4 border border-dashed rounded-lg">
+                                    No experience entries
+                                </div>
+                            )}
+                        </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="education" className="text-foreground font-semibold">Education</Label>
-                        <div className="relative">
-                            <GraduationCap className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                            <Textarea
-                                id="education"
-                                value={formData.education}
-                                onChange={(e) => setFormData({ ...formData, education: e.target.value })}
-                                placeholder="University of Latvia, Master's degree in Law..."
-                                className="pl-9 bg-background min-h-[120px] resize-none"
-                            />
+                    {/* Education Section */}
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <Label className="text-foreground font-semibold flex items-center gap-2">
+                                <GraduationCap className="w-4 h-4" /> Education
+                            </Label>
+                            <Button type="button" variant="outline" size="sm" onClick={addEducation}>
+                                <Plus className="w-3 h-3 mr-1" /> Add
+                            </Button>
+                        </div>
+
+                        <div className="space-y-3">
+                            {formData.educationEntries.map((edu, idx) => (
+                                <div key={idx} className="p-3 border rounded-lg bg-card relative group">
+                                    <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-6 w-6 text-destructive hover:bg-destructive/10"
+                                            onClick={() => removeEducation(idx)}
+                                        >
+                                            <Trash2 className="w-3 h-3" />
+                                        </Button>
+                                    </div>
+                                    <div className="space-y-2 pr-6">
+                                        <Input
+                                            value={edu.degree}
+                                            onChange={(e) => updateEducation(idx, 'degree', e.target.value)}
+                                            placeholder="Degree"
+                                            className="h-8 text-sm font-medium"
+                                        />
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <div className="col-span-2">
+                                                <Input
+                                                    value={edu.institution}
+                                                    onChange={(e) => updateEducation(idx, 'institution', e.target.value)}
+                                                    placeholder="Institution"
+                                                    className="h-8 text-sm"
+                                                />
+                                            </div>
+                                            <Input
+                                                value={edu.year}
+                                                onChange={(e) => updateEducation(idx, 'year', e.target.value)}
+                                                placeholder="Year"
+                                                className="h-8 text-sm"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                            {formData.educationEntries.length === 0 && (
+                                <div className="text-sm text-muted-foreground text-center py-4 border border-dashed rounded-lg">
+                                    No education entries
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
