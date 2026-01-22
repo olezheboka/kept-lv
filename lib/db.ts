@@ -204,7 +204,7 @@ export async function getPartyBySlug(
     slug: string,
     locale: Locale = "lv"
 ): Promise<PartyUI | null> {
-    const party = await withRetry(() => prisma.party.findUnique({
+    const party = await withRetry(() => prisma.party.findFirst({
         where: { slug },
     }));
 
@@ -271,7 +271,7 @@ export async function getPoliticianBySlug(
     slug: string,
     locale: Locale = "lv"
 ): Promise<PoliticianUI | null> {
-    const pol = await withRetry(() => prisma.politician.findUnique({
+    const pol = await withRetry(() => prisma.politician.findFirst({
         where: { slug },
         include: {
             party: true,
