@@ -35,6 +35,16 @@ export async function GET() {
             report.politicians = { status: "failed", error: e instanceof Error ? e.message : String(e), duration: `${Date.now() - t3}ms` };
         }
 
+        // Test 4: Promises (The likeliest suspect)
+        const t4 = Date.now();
+        try {
+            const { getPromises } = await import("@/lib/db");
+            const promises = await getPromises("lv");
+            report.promises = { status: "ok", count: promises.length, duration: `${Date.now() - t4}ms` };
+        } catch (e) {
+            report.promises = { status: "failed", error: e instanceof Error ? e.message : String(e), duration: `${Date.now() - t4}ms` };
+        }
+
         const totalDuration = Date.now() - start;
 
         return NextResponse.json({
