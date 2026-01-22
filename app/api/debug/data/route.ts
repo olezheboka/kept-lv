@@ -45,6 +45,33 @@ export async function GET() {
             report.promises = { status: "failed", error: e instanceof Error ? e.message : String(e), duration: `${Date.now() - t4}ms` };
         }
 
+        // Test 5: Detail Page Simulation (Politician)
+        // Pick one politician and try to load their full profile + promises
+        const t5 = Date.now();
+        try {
+            const { getPoliticians, getPoliticianBySlug, getPromisesByPolitician } = await import("@/lib/db");
+            const allPol = await getPoliticians("lv");
+
+            if (allPol.length > 0) {
+                const targetSlug = allPol[0].slug;
+                const detail = await getPoliticianBySlug(targetSlug);
+                const polPromises = await getPromisesByPolitician(targetSlug);
+
+                report.detailSimulation = {
+                    status: "ok",
+                    target: targetSlug,
+                    detailFound: !!detail,
+                    promisesCount: polPromises.length,
+                    duration: `${Date.now() - t5}ms`
+                };
+            } else {
+                report.detailSimulation = { status: "skipped", reason: "no politicians found" };
+            }
+
+        } catch (e) {
+            report.detailSimulation = { status: "failed", error: e instanceof Error ? e.message : String(e), duration: `${Date.now() - t5}ms` };
+        }
+
         const totalDuration = Date.now() - start;
 
         return NextResponse.json({
