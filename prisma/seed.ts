@@ -295,13 +295,11 @@ async function main() {
   for (const pol of politiciansData) {
     const created = await prisma.politician.upsert({
       where: { slug: pol.slug },
-      update: { name: pol.name, role: pol.role, bio: pol.bio, education: pol.education, isActive: pol.isActive, partyId: parties[pol.partySlug].id },
+      update: { name: pol.name, role: pol.role, isActive: pol.isActive, partyId: parties[pol.partySlug].id },
       create: {
         slug: pol.slug,
         name: pol.name,
         role: pol.role,
-        bio: pol.bio,
-        education: pol.education,
         isActive: pol.isActive,
         partyId: parties[pol.partySlug].id,
       },
