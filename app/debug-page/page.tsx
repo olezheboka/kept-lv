@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { getParties, getPromises } from "@/lib/db";
 import { PartiesClient } from "@/components/PartiesClient";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 export const dynamic = 'force-dynamic';
 
@@ -40,17 +42,21 @@ export default async function DebugPage() {
 
     return (
         <div className="flex flex-col min-h-screen">
+            <Header />
+
             <div className="p-4 bg-yellow-100 dark:bg-yellow-900 border-b">
-                <h1 className="font-bold">Debug Page: Rendering PartiesClient</h1>
+                <h1 className="font-bold">Debug Page with Header/Footer</h1>
                 <p className="text-sm">
-                    Data loaded in {Date.now() - start}ms.
-                    Parties: {parties.length}, Promises: {promises.length}.
-                    Attempting to render client component below.
+                    If this page crashes, the issue is in the Header or Footer.
+                    If it prompts for auth/cookies, it might be Header login logic.
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">If you see this header but no content below, the Client Component likely crashed.</p>
             </div>
 
-            <PartiesClient parties={parties} promises={promises} />
+            <main className="flex-1">
+                <PartiesClient parties={parties} promises={promises} />
+            </main>
+
+            <Footer />
         </div>
     );
 }
