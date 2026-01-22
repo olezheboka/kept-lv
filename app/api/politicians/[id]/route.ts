@@ -116,7 +116,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   } catch (error) {
     console.error("Error updating politician:", error);
     return NextResponse.json(
-      { error: "Failed to update politician" },
+      { error: "Failed to update politician", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
