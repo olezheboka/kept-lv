@@ -55,3 +55,24 @@ const user = await prisma.user.findFirst({
 ```
 
 This applies to all entities (Politicians, Promises, Parties, Categories, etc.) in `lib/db.ts` or API routes.
+
+## 🚀 Performance Rule: Select Minimal Fields
+
+**Problem:**
+Fetching full objects (especially with nested relations like `include: { promises: true }`) consumes excessive memory and bandwidth, leading to connection timeouts on the Serverless DB.
+
+**Solution:**
+Always use `select` to fetch **only the fields you strictly need** for the logic.
+
+**Example (Counting Promises):**
+```typescript
+// ❌ BAD: Fetches title, description, body, etc. for 1000 promises
+const promises = await prisma.promise.findMany();
+const keptCount = promises.filter(p => p.status === 'KEPT').length;
+
+// ✅ GOOD: Fetches only the status enum
+const promises = await prisma.promise.findMany({
+  select: { status: true }
+});
+const keptCount = promises.filter(p => p.status === 'KEPT').length;
+```

@@ -512,10 +512,19 @@ export async function getFeaturedPromises(
     locale: Locale = "lv",
     limit: number = 4
 ): Promise<PromiseUI[]> {
-    // withRetry is already used inside getPromises, so errors will propagate
-    const promises = await getPromises(locale);
-    // Return most recently updated promises as "featured"
-    return promises.slice(0, limit);
+    const promises = await withRetry(() => prisma.promise.findMany({
+        take: limit,
+        orderBy: { updatedAt: "desc" },
+        include: {
+            politician: { include: { party: true } },
+            party: true,
+            coalitionParties: true,
+            category: true,
+            sources: true,
+        },
+    }));
+
+    return promises.map((p) => mapPromiseToUI(p, locale));
 }
 
 
@@ -697,7 +706,9 @@ export async function getCategoryBySlug(
 // ========== STATS ==========
 
 export async function getPromiseStats() {
-    const promises = await withRetry(() => prisma.promise.findMany());
+    const promises = await withRetry(() => prisma.promise.findMany({
+        select: { status: true }
+    }));
 
     const total = promises.length;
     const kept = promises.filter((p) => p.status === "KEPT").length;
