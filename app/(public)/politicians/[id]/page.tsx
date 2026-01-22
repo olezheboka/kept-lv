@@ -9,7 +9,8 @@ interface PageProps {
 
 import { notFound } from 'next/navigation';
 
-export const revalidate = 60;
+// export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 const PoliticianDetailPage = async ({ params }: PageProps) => {
     const { id } = await params;
