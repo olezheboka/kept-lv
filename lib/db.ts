@@ -388,7 +388,7 @@ export async function getPromiseById(
     id: string,
     locale: Locale = "lv"
 ): Promise<PromiseUI | null> {
-    const p = await withRetry(() => prisma.promise.findUnique({
+    const p = await withRetry(() => prisma.promise.findFirst({
         where: { id },
         include: {
             politician: { include: { party: true } },
@@ -435,7 +435,7 @@ export async function getPromisesByPolitician(
     locale: Locale = "lv",
     limit?: number
 ): Promise<PromiseUI[]> {
-    const politician = await withRetry(() => prisma.politician.findUnique({
+    const politician = await withRetry(() => prisma.politician.findFirst({
         where: { slug: politicianSlug },
     }));
 
@@ -462,7 +462,7 @@ export async function getPromisesByParty(
     locale: Locale = "lv",
     limit?: number
 ): Promise<PromiseUI[]> {
-    const party = await withRetry(() => prisma.party.findUnique({
+    const party = await withRetry(() => prisma.party.findFirst({
         where: { slug: partySlug },
         include: { politicians: true },
     }));
@@ -675,7 +675,7 @@ export async function getCategoryBySlug(
     slug: string,
     locale: Locale = "lv"
 ): Promise<CategoryUI | null> {
-    const category = await withRetry(() => prisma.category.findUnique({
+    const category = await withRetry(() => prisma.category.findFirst({
         where: { slug },
     }));
 

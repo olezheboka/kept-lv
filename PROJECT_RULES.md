@@ -31,3 +31,27 @@ export const dynamic = 'force-dynamic';
 
 ## Future Optimization
 Once the database schema is stable (Production v1.0), we can revert to `revalidate = 60` (ISR) to improve performance. However, every time the schema changes, you MUST manually purge the Vercel Data Cache or redeploy with cache clearing.
+
+## ⚠️ Database Stability Rule: Use `findFirst` instead of `findUnique`
+
+**Problem:**
+When using Prisma Accelerate (Data Proxy) with a rapidly changing schema, `findUnique` queries often fail with "Can't reach database server" or invalid invocation errors, even when `findMany` works fine. This is a known behavior related to how the Proxy caches unique constraints.
+
+**Solution:**
+Always use `findFirst` instead of `findUnique` for single item lookups, even when querying by `@unique` fields or `@id`.
+
+**Implementation:**
+
+```typescript
+// ❌ Avoid findUnique
+const user = await prisma.user.findUnique({
+  where: { email: "..." }
+});
+
+// ✅ Use findFirst
+const user = await prisma.user.findFirst({
+  where: { email: "..." }
+});
+```
+
+This applies to all entities (Politicians, Promises, Parties, Categories, etc.) in `lib/db.ts` or API routes.
