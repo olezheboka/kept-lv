@@ -34,10 +34,21 @@ export async function GET() {
         // 4. Attempt simple read
         const testCategory = await prisma.category.findFirst({ select: { slug: true } });
 
+        // 5. Schema Consistency Check (Critical)
+        // Try to fetch a relation that was recently added/modified
+        let schemaCheck = "ok";
+        try {
+            await prisma.politician.findFirst({
+                include: { jobs: true } // This table 'politician_jobs' must exist
+            });
+        } catch (e) {
+            schemaCheck = `FAILED: ${e instanceof Error ? e.message : String(e)}`;
+        }
+
         const duration = Date.now() - start;
 
         return NextResponse.json({
-            status: "ok",
+            status: schemaCheck === "ok" ? "ok" : "schema-mismatch",
             duration: `${duration}ms`,
             env: {
                 DATABASE_URL_CONFIG: maskedUrl,
@@ -48,6 +59,7 @@ export async function GET() {
             results: {
                 userCount,
                 categoryFound: !!testCategory,
+                schemaCheck,
             },
             prismaVersion: require('@prisma/client/package.json').version,
         });
