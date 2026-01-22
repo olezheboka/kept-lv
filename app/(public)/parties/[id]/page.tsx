@@ -15,20 +15,27 @@ export const revalidate = 60;
 
 const PartyDetailPage = async ({ params }: PageProps) => {
     const { id } = await params;
-    const party = await getPartyBySlug(id);
+    try {
+        const party = await getPartyBySlug(id);
 
-    if (!party) {
-        notFound();
+        if (!party) {
+            notFound();
+        }
+
+        const promises = await getPromisesByParty(party.id);
+
+        return (
+            <PartyDetailClient
+                party={party}
+                promises={promises}
+            />
+        );
+    } catch (error) {
+        console.error(`Error loading party ${id}:`, error);
+        throw error;
     }
 
-    const promises = await getPromisesByParty(party.id);
 
-    return (
-        <PartyDetailClient
-            party={party}
-            promises={promises}
-        />
-    );
 };
 
 export default PartyDetailPage;

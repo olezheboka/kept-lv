@@ -14,17 +14,22 @@ export const revalidate = 60;
 
 const CategoryDetailPage = async ({ params }: PageProps) => {
     const { id } = await params;
-    const category = await getCategoryBySlug(id);
+    try {
+        const category = await getCategoryBySlug(id);
 
-    if (!category) {
-        notFound();
+        if (!category) {
+            notFound();
+        }
+
+        const promises = await getPromisesByCategory(category.id);
+
+        return (
+            <CategoryDetailClient category={category} promises={promises} />
+        );
+    } catch (error) {
+        console.error(`Error loading category ${id}:`, error);
+        throw error;
     }
-
-    const promises = await getPromisesByCategory(category.id);
-
-    return (
-        <CategoryDetailClient category={category} promises={promises} />
-    );
 };
 
 export default CategoryDetailPage;
