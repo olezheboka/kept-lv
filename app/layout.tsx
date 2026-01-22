@@ -24,6 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   // Fetch dynamic config
   let config: Record<string, string> = {};
+  /* 
   try {
     const dbConfigs = await prisma.systemConfig.findMany();
     config = dbConfigs.reduce((acc: Record<string, string>, curr: { key: string; value: string }) => {
@@ -33,6 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (error) {
     console.error("Failed to fetch system config for metadata", error);
   }
+  */
 
   const title = config.title || t("title");
   const description = config.description || t("description");

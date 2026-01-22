@@ -37,12 +37,29 @@ export async function GET() {
         // 5. Schema Consistency Check (Critical)
         // Try to fetch a relation that was recently added/modified
         let schemaCheck = "ok";
+        let evidenceCheck = "ok";
+        let configCheck = "ok";
+
         try {
             await prisma.politician.findFirst({
                 include: { jobs: true } // This table 'politician_jobs' must exist
             });
         } catch (e) {
-            schemaCheck = `FAILED: ${e instanceof Error ? e.message : String(e)}`;
+            schemaCheck = `FAILED (jobs): ${e instanceof Error ? e.message : String(e)}`;
+        }
+
+        try {
+            // Check Evidence table (used in detail pages)
+            await prisma.evidence.findFirst();
+        } catch (e) {
+            evidenceCheck = `FAILED (evidence): ${e instanceof Error ? e.message : String(e)}`;
+        }
+
+        try {
+            // Check SystemConfig table (used in Layout)
+            await prisma.systemConfig.findFirst();
+        } catch (e) {
+            configCheck = `FAILED (systemConfig): ${e instanceof Error ? e.message : String(e)}`;
         }
 
         const duration = Date.now() - start;
@@ -60,6 +77,8 @@ export async function GET() {
                 userCount,
                 categoryFound: !!testCategory,
                 schemaCheck,
+                evidenceCheck,
+                configCheck,
             },
             prismaVersion: require('@prisma/client/package.json').version,
         });
