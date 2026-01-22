@@ -528,7 +528,9 @@ export async function getPoliticianRankings(
     const politicians = await withRetry(() => prisma.politician.findMany({
         include: {
             party: true,
-            promises: true,
+            promises: {
+                select: { status: true }
+            },
         },
     }));
 
@@ -563,7 +565,9 @@ export async function getPartyRankings(locale: Locale = "lv"): Promise<RankingIt
         include: {
             politicians: {
                 include: {
-                    promises: true,
+                    promises: {
+                        select: { status: true }
+                    },
                 },
             },
         },
