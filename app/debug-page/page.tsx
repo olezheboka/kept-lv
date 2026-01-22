@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getParties, getPromises } from "@/lib/db";
+import { PartiesClient } from "@/components/PartiesClient";
 
 export const dynamic = 'force-dynamic';
 
@@ -9,19 +10,18 @@ export default async function DebugPage() {
     // Try a DB call in the page component
     let dbStatus = "ok";
     let count = 0;
-    let partiesCount = 0;
-    let promisesCount = 0;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let parties: any[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let promises: any[] = [];
     let errorDetail = "";
 
     try {
         count = await prisma.user.count();
 
         // Testing lib/db.ts functions in RSC context
-        const parties = await getParties();
-        partiesCount = parties.length;
-
-        const promises = await getPromises();
-        promisesCount = promises.length;
+        parties = await getParties();
+        promises = await getPromises();
 
     } catch (e) {
         dbStatus = "FAILED";
@@ -29,34 +29,28 @@ export default async function DebugPage() {
         console.error("Debug Page Error:", e);
     }
 
-    return (
-        <div className="p-8 font-mono">
-            <h1 className="text-2xl font-bold mb-4">Debug Page (Server Component)</h1>
-            <div className="space-y-4">
-                <div className="space-y-1">
-                    <p>Render Time: {new Date().toISOString()}</p>
-                    <p>Duration: {Date.now() - start}ms</p>
-                </div>
-
-                <div className="space-y-1">
-                    <p className={dbStatus === "ok" ? "text-green-600 font-bold" : "text-red-600 font-bold"}>
-                        Overall Status: {dbStatus}
-                    </p>
-                </div>
-
-                <div className="border p-4 rounded bg-gray-50 dark:bg-gray-900 space-y-2">
-                    <p>User Count (Direct Prisma): {count}</p>
-                    <p>Parties (getParties): {partiesCount}</p>
-                    <p>Promises (getPromises): {promisesCount}</p>
-                </div>
-
-                {errorDetail && (
-                    <div className="p-4 bg-red-100 text-red-800 rounded border border-red-300 overflow-auto">
-                        <p className="font-bold underline mb-2">Error Trace:</p>
-                        <pre className="text-sm whitespace-pre-wrap">{errorDetail}</pre>
-                    </div>
-                )}
+    if (errorDetail) {
+        return (
+            <div className="p-8 font-mono text-red-600">
+                <h1 className="text-2xl font-bold">Debug Failed (Data Fetching)</h1>
+                <pre>{errorDetail}</pre>
             </div>
+        );
+    }
+
+    return (
+        <div className="flex flex-col min-h-screen">
+            <div className="p-4 bg-yellow-100 dark:bg-yellow-900 border-b">
+                <h1 className="font-bold">Debug Page: Rendering PartiesClient</h1>
+                <p className="text-sm">
+                    Data loaded in {Date.now() - start}ms.
+                    Parties: {parties.length}, Promises: {promises.length}.
+                    Attempting to render client component below.
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">If you see this header but no content below, the Client Component likely crashed.</p>
+            </div>
+
+            <PartiesClient parties={parties} promises={promises} />
         </div>
     );
 }
