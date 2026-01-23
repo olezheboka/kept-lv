@@ -173,7 +173,7 @@ export const PoliticianDetailClient = ({ politician, party, promises }: Politici
                     </h2>
 
                     {filteredPromises.length > 0 ? (
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                             {filteredPromises.map((promise, index) => (
                                 <PromiseCard key={promise.id} promise={promise} index={index} />
                             ))}

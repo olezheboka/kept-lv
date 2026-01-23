@@ -10,6 +10,7 @@ import { PromiseUI, CategoryUI } from '@/lib/db';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
 import { PerformanceCard } from '@/components/PerformanceCard';
+import { Button } from '@/components/ui/button';
 
 interface CategoryDetailClientProps {
     category: CategoryUI;
@@ -99,14 +100,15 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
             {/* Promises */}
             <section className="py-8 md:py-12">
                 <div className="container-wide">
-                    <h2 className="text-2xl font-bold text-foreground mb-6">
-                        {filterStatus === 'all'
-                            ? `Visi solījumi (${stats.total})`
-                            : `${STATUS_CONFIG[filterStatus].label} (${filteredPromises.length})`}
+                    <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+                        {filterStatus === 'all' ? 'Visi solījumi' : STATUS_CONFIG[filterStatus].label}
+                        <span className="text-muted-foreground font-normal text-lg">
+                            ({filteredPromises.length})
+                        </span>
                     </h2>
 
                     {filteredPromises.length > 0 ? (
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                             {filteredPromises.map((promise, index) => (
                                 <PromiseCard key={promise.id} promise={promise} index={index} />
                             ))}
@@ -115,8 +117,15 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
                         <Card className="border-border/50">
                             <CardContent className="py-12 text-center">
                                 <p className="text-muted-foreground">
-                                    Šajā kategorijā nav reģistrētu solījumu.
+                                    {filterStatus === 'all'
+                                        ? 'Šajā kategorijā nav reģistrētu solījumu.'
+                                        : `Nav atrasti solījumi ar statusu "${STATUS_CONFIG[filterStatus].label}".`}
                                 </p>
+                                {filterStatus !== 'all' && (
+                                    <Button variant="outline" onClick={() => setFilterStatus('all')} className="mt-4">
+                                        Rādīt visus solījumus
+                                    </Button>
+                                )}
                             </CardContent>
                         </Card>
                     )}
