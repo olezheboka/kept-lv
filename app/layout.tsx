@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "metadata" });
 
   // Fetch dynamic config
-  let config: Record<string, string> = {};
+  const config: Record<string, string> = {};
   /* 
   try {
     const dbConfigs = await prisma.systemConfig.findMany();

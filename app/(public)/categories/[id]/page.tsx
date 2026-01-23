@@ -15,22 +15,27 @@ export const dynamic = 'force-dynamic';
 
 const CategoryDetailPage = async ({ params }: PageProps) => {
     const { id } = await params;
+    let category;
+    let promises;
+
     try {
-        const category = await getCategoryBySlug(id);
+        category = await getCategoryBySlug(id);
 
-        if (!category) {
-            notFound();
+        if (category) {
+            promises = await getPromisesByCategory(category.id);
         }
-
-        const promises = await getPromisesByCategory(category.id);
-
-        return (
-            <CategoryDetailClient category={category} promises={promises} />
-        );
     } catch (error) {
         console.error(`Error loading category ${id}:`, error);
         throw error;
     }
+
+    if (!category) {
+        notFound();
+    }
+
+    return (
+        <CategoryDetailClient category={category} promises={promises!} />
+    );
 };
 
 export default CategoryDetailPage;

@@ -54,7 +54,6 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
     const [loading, setLoading] = useState(false);
     const [origin, setOrigin] = useState("");
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [formData, setFormData] = useState({
         name: "",
         slug: "",

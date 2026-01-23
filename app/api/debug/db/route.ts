@@ -80,6 +80,7 @@ export async function GET() {
                 evidenceCheck,
                 configCheck,
             },
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             prismaVersion: require('@prisma/client/package.json').version,
         });
 

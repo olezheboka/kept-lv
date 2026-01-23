@@ -16,27 +16,31 @@ export const dynamic = 'force-dynamic';
 
 const PartyDetailPage = async ({ params }: PageProps) => {
     const { id } = await params;
+
+    let party;
+    let promises;
+
     try {
-        const party = await getPartyBySlug(id);
+        party = await getPartyBySlug(id);
 
-        if (!party) {
-            notFound();
+        if (party) {
+            promises = await getPromisesByParty(party.id);
         }
-
-        const promises = await getPromisesByParty(party.id);
-
-        return (
-            <PartyDetailClient
-                party={party}
-                promises={promises}
-            />
-        );
     } catch (error) {
         console.error(`Error loading party ${id}:`, error);
         throw error;
     }
 
+    if (!party) {
+        notFound();
+    }
 
+    return (
+        <PartyDetailClient
+            party={party}
+            promises={promises!}
+        />
+    );
 };
 
 export default PartyDetailPage;

@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 export const dynamic = 'force-dynamic';
 
 export default async function DebugPage() {
+    // eslint-disable-next-line react-hooks/purity
     const start = Date.now();
 
     // Try a DB call in the page component
