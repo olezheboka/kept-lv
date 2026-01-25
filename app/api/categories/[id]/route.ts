@@ -62,12 +62,30 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       imageUrl: parsed.data.imageUrl,
     };
 
+    // 1. Fetch current for diffing
+    const currentCategory = await prisma.category.findUnique({ where: { id } });
+
     const category = await prisma.category.update({
       where: { id },
       data: payload,
     });
 
-    await logActivity("updated", "Category", category.id, category.name);
+    // 2. Calculate changed fields
+    const updatedFields: string[] = [];
+    if (currentCategory) {
+      Object.entries(payload).forEach(([key, value]) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const currVal = (currentCategory as any)[key];
+        // Compare values (handling potential null/undefined though category fields are mostly required strings or optional strings)
+        if (currVal !== value && !(currVal === null && (value === undefined || value === null))) {
+          updatedFields.push(key);
+        }
+      });
+    } else {
+      updatedFields.push(...Object.keys(payload));
+    }
+
+    await logActivity("updated", "Category", category.id, category.name, { updatedFields });
 
     return NextResponse.json(category);
   } catch (error) {

@@ -152,8 +152,24 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Deep compare sources
     if (sources) {
-      const oldSources = currentPromise.sources.map(s => ({ url: s.url, title: s.title, description: s.description }));
-      const newSources = sources.map(s => ({ url: s.url, title: s.title, description: s.description }));
+      const oldSources = currentPromise.sources.map(s => ({
+        type: s.type,
+        url: s.url,
+        title: s.title || null,
+        description: s.description || null
+      }));
+      const newSources = sources.map(s => ({
+        type: s.type,
+        url: s.url,
+        title: s.title || null,
+        description: s.description || null
+      }));
+
+      // Sort by URL to ensure order doesn't affect comparison (optional but good practice)
+      const sortFn = (a: { url: string }, b: { url: string }) => a.url.localeCompare(b.url);
+      oldSources.sort(sortFn);
+      newSources.sort(sortFn);
+
       if (JSON.stringify(oldSources) !== JSON.stringify(newSources)) {
         updatedFields.push("sources");
       }
@@ -161,8 +177,21 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Deep compare evidence
     if (evidence) {
-      const oldEvidence = currentPromise.evidence.map(e => ({ url: e.url, description: e.description }));
-      const newEvidence = evidence.map(e => ({ url: e.url, description: e.description }));
+      const oldEvidence = currentPromise.evidence.map(e => ({
+        type: e.type,
+        url: e.url,
+        description: e.description || null
+      }));
+      const newEvidence = evidence.map(e => ({
+        type: e.type,
+        url: e.url,
+        description: e.description || null
+      }));
+
+      const sortFn = (a: { url: string }, b: { url: string }) => a.url.localeCompare(b.url);
+      oldEvidence.sort(sortFn);
+      newEvidence.sort(sortFn);
+
       if (JSON.stringify(oldEvidence) !== JSON.stringify(newEvidence)) {
         updatedFields.push("evidence");
       }

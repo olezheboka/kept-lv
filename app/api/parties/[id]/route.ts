@@ -68,7 +68,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (currentParty) {
       Object.entries(parsed.data).forEach(([key, value]) => {
         const k = key as keyof typeof currentParty;
-        if (currentParty[k] !== value) {
+        const currVal = currentParty[k];
+
+        // Check for inequality, ignoring null vs undefined/missing mismatch
+        if (currVal !== value && !(currVal === null && (value === undefined || value === null))) {
           updatedFields.push(key);
         }
       });
