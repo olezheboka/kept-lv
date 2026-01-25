@@ -5,7 +5,7 @@ import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
-import { Search, Menu, X, ChevronRight } from 'lucide-react';
+import { Search, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NavLink } from '@/components/NavLink';
@@ -300,14 +300,13 @@ export const Header = () => {
                         href={link.href}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={({ isActive }) => cn(
-                          'flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+                          'flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors',
                           isActive
                             ? 'bg-[#2563EB]/10 text-[#2563EB] font-bold'
                             : 'text-foreground hover:bg-muted'
                         )}
                       >
                         {link.label}
-                        <ChevronRight className="h-4 w-4 opacity-50" />
                       </NavLink>
                     ))}
                   </nav>

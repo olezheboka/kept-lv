@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { CATEGORIES, PromiseStatus, STATUS_CONFIG } from '@/lib/types';
 import { Search, Filter, X, SlidersHorizontal, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { PromiseUI, PartyUI } from '@/lib/db';
@@ -381,13 +381,16 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                             // clearFilters={clearFilters}
                                             />
                                         </div>
-                                        {hasActiveFilters && (
-                                            <div className="sticky bottom-0 pt-4 pb-2 bg-background border-t border-border">
+                                        <div className="sticky bottom-0 pt-4 pb-2 bg-background border-t border-border space-y-2">
+                                            <SheetClose asChild>
+                                                <Button className="w-full">Piemērot filtrus</Button>
+                                            </SheetClose>
+                                            {hasActiveFilters && (
                                                 <Button variant="outline" onClick={clearFilters} className="w-full">
                                                     Notīrīt filtrus
                                                 </Button>
-                                            </div>
-                                        )}
+                                            )}
+                                        </div>
                                     </SheetContent>
                                 </Sheet>
 

@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { Filter, Search, SlidersHorizontal, ChevronDown, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import type { PartyWithStats, PromiseUI } from '@/lib/db';
@@ -296,13 +296,16 @@ export function PartiesClient({ parties }: PartiesClientProps) {
 
                                             />
                                         </div>
-                                        {hasActiveFilters && (
-                                            <div className="sticky bottom-0 pt-4 pb-2 bg-background border-t border-border">
+                                        <div className="sticky bottom-0 pt-4 pb-2 bg-background border-t border-border space-y-2">
+                                            <SheetClose asChild>
+                                                <Button className="w-full">Piemērot filtrus</Button>
+                                            </SheetClose>
+                                            {hasActiveFilters && (
                                                 <Button variant="outline" onClick={clearFilters} className="w-full">
                                                     Notīrīt filtrus
                                                 </Button>
-                                            </div>
-                                        )}
+                                            )}
+                                        </div>
                                     </SheetContent>
                                 </Sheet>
 

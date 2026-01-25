@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Search, Filter, SlidersHorizontal, ChevronDown, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
@@ -306,13 +306,16 @@ export function PoliticiansClient({ politicians, parties }: PoliticiansClientPro
 
                                             />
                                         </div>
-                                        {hasActiveFilters && (
-                                            <div className="sticky bottom-0 pt-4 pb-2 bg-background border-t border-border">
+                                        <div className="sticky bottom-0 pt-4 pb-2 bg-background border-t border-border space-y-2">
+                                            <SheetClose asChild>
+                                                <Button className="w-full">Piemērot filtrus</Button>
+                                            </SheetClose>
+                                            {hasActiveFilters && (
                                                 <Button variant="outline" onClick={clearFilters} className="w-full">
                                                     Notīrīt filtrus
                                                 </Button>
-                                            </div>
-                                        )}
+                                            )}
+                                        </div>
                                     </SheetContent>
                                 </Sheet>
 
