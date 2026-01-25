@@ -36,7 +36,9 @@ const PromiseCardComponent = ({ promise }: PromiseCardProps) => {
       className="h-full"
     >
       <Card className="group relative h-full flex flex-col overflow-hidden border-border/50 bg-card hover:shadow-elevated hover:border-border transition-all duration-300 cursor-pointer">
-        <Link href={getPromiseUrl(promise)} className="absolute inset-0 z-10" aria-label={promise.title} suppressHydrationWarning />
+        <Link href={getPromiseUrl(promise)} className="absolute inset-0 z-10" suppressHydrationWarning>
+          <span className="sr-only">{promise.title}</span>
+        </Link>
         <CardContent className="p-5 pt-8 flex flex-col h-full pointer-events-none">
           {/* Status Badge - Absolute Top Right */}
           <div className="absolute top-0 right-0 z-20">

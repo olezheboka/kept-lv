@@ -41,7 +41,7 @@ export default async function Index() {
                             </h2>
 
                         </div>
-                        <Link href="/promises" suppressHydrationWarning>
+                        <Link href="/promises" suppressHydrationWarning aria-label="Skatīt visus aktuālos solījumus desktop">
                             <Button variant="ghost" className="hidden md:flex gap-2 hover:bg-primary hover:text-primary-foreground">
                                 Skatīt visus <ArrowRight className="h-4 w-4" />
                             </Button>
@@ -55,7 +55,7 @@ export default async function Index() {
                     </div>
 
                     <div className="mt-8 text-center md:hidden">
-                        <Link href="/promises" suppressHydrationWarning>
+                        <Link href="/promises" suppressHydrationWarning aria-label="Skatīt visus aktuālos solījumus mobile">
                             <Button variant="ghost" className="gap-2 hover:bg-primary hover:text-primary-foreground">
                                 Skatīt visus <ArrowRight className="h-4 w-4" />
                             </Button>

@@ -17,7 +17,7 @@ export function HeroSection() {
                         className=""
                     >
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight text-balance">
-                            Seko līdzi varas pārstāvju solījumiem un to izpildei
+                            Seko līdzi Latvijas politiķu solījumiem un to izpildei
                         </h1>
                         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
                             Neatkarīga un objektīva platforma, kas atspoguļo valdības solījumu izpildi.

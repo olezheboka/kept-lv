@@ -266,6 +266,7 @@ export const Header = () => {
               size="icon"
               className="md:hidden h-9 w-9"
               onClick={() => setIsSearchOpen(!isSearchOpen)}
+              aria-label="Atvērt meklēšanu"
             >
               <Search className="h-4 w-4" />
             </Button>
@@ -273,7 +274,7 @@ export const Header = () => {
             {/* Mobile Menu */}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="lg:hidden h-9 w-9">
+                <Button variant="ghost" size="icon" className="lg:hidden h-9 w-9" aria-label="Atvērt izvēlni">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
@@ -287,6 +288,7 @@ export const Header = () => {
                       size="icon"
                       className="h-8 w-8"
                       onClick={() => setIsMobileMenuOpen(false)}
+                      aria-label="Aizvērt izvēlni"
                     >
                       <X className="h-4 w-4" />
                     </Button>

@@ -90,7 +90,12 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                         </div>
                     )}
                 </div>
-                <Progress value={progress} className="h-1.5 w-full transition-all duration-1000 ease-out" indicatorClassName="bg-status-kept" />
+                <Progress
+                    value={progress}
+                    className="h-1.5 w-full transition-all duration-1000 ease-out"
+                    indicatorClassName="bg-status-kept"
+                    aria-label={`Procenti izpildīto solījumu: ${item.keptPercentage}%`}
+                />
             </div>
 
             <div className="flex-shrink-0 text-right min-w-[3rem]">
