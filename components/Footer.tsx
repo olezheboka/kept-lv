@@ -14,7 +14,7 @@ export const Footer = () => {
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
-              Seko līdzi varas pārstāvju solījumiem un to izpildei.
+              Seko līdzi politiķu un amatpersonu solījumiem un to izpildei.
             </p>
           </div>
 

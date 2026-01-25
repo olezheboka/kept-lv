@@ -39,11 +39,8 @@ const PromiseCardComponent = ({ promise }: PromiseCardProps) => {
         <Link href={getPromiseUrl(promise)} className="absolute inset-0 z-10" suppressHydrationWarning>
           <span className="sr-only">{promise.title}</span>
         </Link>
-        <CardContent className="p-5 pt-8 flex flex-col h-full pointer-events-none">
-          {/* Status Badge - Absolute Top Right */}
-          <div className="absolute top-0 right-0 z-20">
-            <StatusBadge status={promise.status} className="rounded-none rounded-bl-lg" />
-          </div>
+        <CardContent className="p-5 flex flex-col h-full pointer-events-none">
+
 
           {/* Author & Party - Name on LEFT, Avatar on RIGHT */}
           <div className="flex flex-col gap-3 mb-4 pt-1 pointer-events-auto">
@@ -107,6 +104,10 @@ const PromiseCardComponent = ({ promise }: PromiseCardProps) => {
             <div className="pt-3 border-t border-border/50 text-xs text-muted-foreground flex items-center gap-2">
               <Calendar size={12} className="text-muted-foreground/70" />
               <span>Solīts <span className="font-medium text-foreground">{format(new Date(promise.datePromised), 'dd.MM.yyyy')}</span></span>
+
+              <div className="ml-auto pointer-events-auto z-20">
+                <StatusBadge status={promise.status} size="sm" />
+              </div>
             </div>
           </div>
         </CardContent>

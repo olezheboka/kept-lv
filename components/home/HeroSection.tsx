@@ -10,19 +10,14 @@ export function HeroSection() {
 
             <div className="container-wide py-7 md:py-8 relative z-10">
                 <div className="max-w-4xl mx-auto text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className=""
-                    >
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight text-balance">
-                            Seko līdzi Latvijas politiķu solījumiem un to izpildei
+                            Seko līdzi politiķu un amatpersonu solījumiem un to izpildei
                         </h1>
                         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
                             Neatkarīga un objektīva platforma, kas atspoguļo valdības solījumu izpildi.
                         </p>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
         </section>
