@@ -512,19 +512,26 @@ export async function getFeaturedPromises(
     locale: Locale = "lv",
     limit: number = 4
 ): Promise<PromiseUI[]> {
-    const promises = await withRetry(() => prisma.promise.findMany({
-        take: limit,
-        orderBy: { updatedAt: "desc" },
-        include: {
-            politician: { include: { party: true } },
-            party: true,
-            coalitionParties: true,
-            category: true,
-            sources: true,
+    const getCachedFeaturedPromises = unstable_cache(
+        async () => {
+            const promises = await withRetry(() => prisma.promise.findMany({
+                take: limit,
+                orderBy: { updatedAt: "desc" },
+                include: {
+                    politician: { include: { party: true } },
+                    party: true,
+                    coalitionParties: true,
+                    category: true,
+                    sources: true,
+                },
+            }));
+            return promises.map((p) => mapPromiseToUI(p, locale));
         },
-    }));
+        [`featured-promises-${locale}-${limit}`],
+        { revalidate: 60, tags: ['promises', 'featured'] }
+    );
 
-    return promises.map((p) => mapPromiseToUI(p, locale));
+    return getCachedFeaturedPromises();
 }
 
 
@@ -534,76 +541,92 @@ export async function getFeaturedPromises(
 export async function getPoliticianRankings(
     locale: Locale = "lv"
 ): Promise<RankingItem[]> {
-    const politicians = await withRetry(() => prisma.politician.findMany({
-        include: {
-            party: true,
-            promises: {
-                select: { status: true }
-            },
-        },
-    }));
-
-    const rankings = politicians
-        .map((pol) => {
-            const totalPromises = pol.promises.length;
-            const keptPromises = pol.promises.filter((p) => p.status === "KEPT").length;
-
-            return {
-                id: pol.slug,
-                name: pol.name,
-                avatarUrl: pol.imageUrl || undefined,
-                partyId: pol.party?.slug,
-                partyLogoUrl: pol.party?.logoUrl || undefined,
-                role: pol.role ? getLocalizedText(pol.role, locale) : undefined,
-                isInOffice: pol.isActive,
-                totalPromises,
-                keptPromises,
-                keptPercentage:
-                    totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0,
-                abbreviation: pol.party ? (partyAbbreviations[pol.party.slug] || pol.party.slug.toUpperCase()) : undefined,
-            };
-        })
-        .filter((item) => item.totalPromises > 0)
-        .sort((a, b) => b.keptPercentage - a.keptPercentage);
-
-    return rankings;
-}
-
-export async function getPartyRankings(locale: Locale = "lv"): Promise<RankingItem[]> {
-    const parties = await withRetry(() => prisma.party.findMany({
-        include: {
-            politicians: {
+    const getCachedPoliticianRankings = unstable_cache(
+        async () => {
+            const politicians = await withRetry(() => prisma.politician.findMany({
                 include: {
+                    party: true,
                     promises: {
                         select: { status: true }
                     },
                 },
-            },
+            }));
+
+            const rankings = politicians
+                .map((pol) => {
+                    const totalPromises = pol.promises.length;
+                    const keptPromises = pol.promises.filter((p) => p.status === "KEPT").length;
+
+                    return {
+                        id: pol.slug,
+                        name: pol.name,
+                        avatarUrl: pol.imageUrl || undefined,
+                        partyId: pol.party?.slug,
+                        partyLogoUrl: pol.party?.logoUrl || undefined,
+                        role: pol.role ? getLocalizedText(pol.role, locale) : undefined,
+                        isInOffice: pol.isActive,
+                        totalPromises,
+                        keptPromises,
+                        keptPercentage:
+                            totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0,
+                        abbreviation: pol.party ? (partyAbbreviations[pol.party.slug] || pol.party.slug.toUpperCase()) : undefined,
+                    };
+                })
+                .filter((item) => item.totalPromises > 0)
+                .sort((a, b) => b.keptPercentage - a.keptPercentage);
+
+            return rankings;
         },
-    }));
+        [`politician-rankings-${locale}`],
+        { revalidate: 3600, tags: ['rankings', 'politicians'] }
+    );
 
-    const rankings = parties
-        .map((party) => {
-            const allPromises = party.politicians.flatMap((p) => p.promises);
-            const totalPromises = allPromises.length;
-            const keptPromises = allPromises.filter((p) => p.status === "KEPT").length;
+    return getCachedPoliticianRankings();
+}
 
-            return {
-                id: party.slug,
-                name: getLocalizedText(party.name, locale),
-                avatarUrl: party.logoUrl || undefined,
-                abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
-                isInCoalition: party.isCoalition,
-                totalPromises,
-                keptPromises,
-                keptPercentage:
-                    totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0,
-            };
-        })
-        .filter((item) => item.totalPromises > 0)
-        .sort((a, b) => b.keptPercentage - a.keptPercentage);
+export async function getPartyRankings(locale: Locale = "lv"): Promise<RankingItem[]> {
+    const getCachedPartyRankings = unstable_cache(
+        async () => {
+            const parties = await withRetry(() => prisma.party.findMany({
+                include: {
+                    politicians: {
+                        include: {
+                            promises: {
+                                select: { status: true }
+                            },
+                        },
+                    },
+                },
+            }));
 
-    return rankings;
+            const rankings = parties
+                .map((party) => {
+                    const allPromises = party.politicians.flatMap((p) => p.promises);
+                    const totalPromises = allPromises.length;
+                    const keptPromises = allPromises.filter((p) => p.status === "KEPT").length;
+
+                    return {
+                        id: party.slug,
+                        name: getLocalizedText(party.name, locale),
+                        avatarUrl: party.logoUrl || undefined,
+                        abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
+                        isInCoalition: party.isCoalition,
+                        totalPromises,
+                        keptPromises,
+                        keptPercentage:
+                            totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0,
+                    };
+                })
+                .filter((item) => item.totalPromises > 0)
+                .sort((a, b) => b.keptPercentage - a.keptPercentage);
+
+            return rankings;
+        },
+        [`party-rankings-${locale}`],
+        { revalidate: 3600, tags: ['rankings', 'parties'] }
+    );
+
+    return getCachedPartyRankings();
 }
 
 // ========== CATEGORIES ==========

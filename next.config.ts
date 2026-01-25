@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  poweredByHeader: false,
 };
 
 export default withNextIntl(nextConfig);
