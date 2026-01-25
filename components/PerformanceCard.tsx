@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { PromiseStatus, STATUS_CONFIG } from '@/lib/types';
 import { CheckCircle2, Clock, XCircle, CircleDot, Ban, List } from 'lucide-react';
 
-const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'pending', 'broken', 'cancelled'];
+const STATUSES: PromiseStatus[] = ['pending', 'partially-kept', 'kept', 'broken', 'cancelled'];
 
 interface Stats {
     total: number;
@@ -74,9 +74,9 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                             {/* Computed Segments */}
                             {(() => {
                                 const segments = [
-                                    { key: 'kept', value: stats.kept, color: 'text-status-kept' },
-                                    { key: 'partially-kept', value: stats.partiallyKept, color: 'text-status-partially' },
                                     { key: 'pending', value: stats.pending, color: 'text-status-pending' },
+                                    { key: 'partially-kept', value: stats.partiallyKept, color: 'text-status-partially' },
+                                    { key: 'kept', value: stats.kept, color: 'text-status-kept' },
                                     { key: 'broken', value: stats.broken, color: 'text-status-broken' },
                                     { key: 'cancelled', value: stats.cancelled, color: 'text-[#D1D5DC]' },
                                 ];

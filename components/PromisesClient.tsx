@@ -15,7 +15,7 @@ import { Search, Filter, X, SlidersHorizontal, ChevronDown, ChevronLeft, Chevron
 import type { PromiseUI, PartyUI } from '@/lib/db';
 import { useDebounce } from '@/hooks/use-debounce';
 
-const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'pending', 'broken', 'cancelled'];
+const STATUSES: PromiseStatus[] = ['pending', 'partially-kept', 'kept', 'broken', 'cancelled'];
 const ITEMS_PER_PAGE = 30;
 
 interface PromisesClientProps {
