@@ -261,10 +261,10 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                                         <span>{total > 0 ? Math.round((kept / total) * 100) : 0}% izpildīti</span>
                                                     </div>
                                                     <div className="h-2 bg-muted rounded-full overflow-hidden flex">
-                                                        {kept > 0 && (
+                                                        {pending > 0 && (
                                                             <div
-                                                                className="h-full bg-status-kept"
-                                                                style={{ width: `${(kept / total) * 100}%` }}
+                                                                className="h-full bg-status-pending"
+                                                                style={{ width: `${(pending / total) * 100}%` }}
                                                             />
                                                         )}
                                                         {partiallyKept > 0 && (
@@ -273,10 +273,10 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                                                 style={{ width: `${(partiallyKept / total) * 100}%` }}
                                                             />
                                                         )}
-                                                        {pending > 0 && (
+                                                        {kept > 0 && (
                                                             <div
-                                                                className="h-full bg-status-progress"
-                                                                style={{ width: `${(pending / total) * 100}%` }}
+                                                                className="h-full bg-status-kept"
+                                                                style={{ width: `${(kept / total) * 100}%` }}
                                                             />
                                                         )}
                                                         {broken > 0 && (

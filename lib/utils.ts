@@ -57,6 +57,22 @@ export function convertToEmbedUrl(url: string): string {
 }
 
 export const statusConfig = {
+  PENDING: {
+    icon: "⟳",
+    label: { lv: "GAIDA IZPILDI", en: "PENDING", ru: "ОЖИДАЕТ" },
+    gradient: "from-amber-500 to-orange-600",
+    bg: "bg-amber-500/20",
+    border: "border-amber-400/50",
+    text: "text-amber-400",
+  },
+  PARTIAL: {
+    icon: "◐",
+    label: { lv: "DAĻĒJI", en: "PARTIAL", ru: "ЧАСТИЧНО" },
+    gradient: "from-violet-500 to-purple-600",
+    bg: "bg-violet-500/20",
+    border: "border-violet-400/50",
+    text: "text-violet-400",
+  },
   KEPT: {
     icon: "✓",
     label: { lv: "IZPILDĪTS", en: "KEPT", ru: "ВЫПОЛНЕНО" },
@@ -72,23 +88,6 @@ export const statusConfig = {
     bg: "bg-rose-500/20",
     border: "border-rose-400/50",
     text: "text-rose-400",
-  },
-
-  PARTIAL: {
-    icon: "◐",
-    label: { lv: "DAĻĒJI", en: "PARTIAL", ru: "ЧАСТИЧНО" },
-    gradient: "from-violet-500 to-purple-600",
-    bg: "bg-violet-500/20",
-    border: "border-violet-400/50",
-    text: "text-violet-400",
-  },
-  PENDING: {
-    icon: "⟳",
-    label: { lv: "GAIDA IZPILDI", en: "PENDING", ru: "ОЖИДАЕТ" },
-    gradient: "from-amber-500 to-orange-600",
-    bg: "bg-amber-500/20",
-    border: "border-amber-400/50",
-    text: "text-amber-400",
   },
   CANCELLED: {
     icon: "⊘",

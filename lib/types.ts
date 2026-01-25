@@ -77,20 +77,20 @@ export interface CategoryInfo {
 
 // Status display utilities
 export const STATUS_CONFIG: Record<PromiseStatus, { label: string; className: string; icon: string }> = {
-  'kept': {
-    label: 'Izpildīts',
-    className: 'status-kept',
-    icon: 'CheckCircle2'
+  'pending': {
+    label: 'Gaida izpildi',
+    className: 'status-pending',
+    icon: 'Clock'
   },
   'partially-kept': {
     label: 'Daļēji izpildīts',
     className: 'status-partially',
     icon: 'Contrast'
   },
-  'pending': {
-    label: 'Gaida izpildi',
-    className: 'status-pending',
-    icon: 'Clock'
+  'kept': {
+    label: 'Izpildīts',
+    className: 'status-kept',
+    icon: 'CheckCircle2'
   },
   'broken': {
     label: 'Lauzts',

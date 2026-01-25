@@ -79,28 +79,12 @@ const STATUS_OPTIONS: {
     bgClass: string;
 }[] = [
         {
-            value: "cancelled",
-            label: "Cancelled",
-            description: "Promise cancelled",
-            icon: Ban,
-            colorClass: "text-slate-500",
-            bgClass: "bg-slate-100",
-        },
-        {
             value: "pending",
             label: "Pending",
             description: "Active work",
             icon: Loader2,
             colorClass: "text-blue-500",
             bgClass: "bg-blue-100",
-        },
-        {
-            value: "kept",
-            label: "Kept",
-            description: "Fulfilled",
-            icon: CheckCircle2,
-            colorClass: "text-green-500",
-            bgClass: "bg-green-100",
         },
         {
             value: "partially-kept",
@@ -111,12 +95,28 @@ const STATUS_OPTIONS: {
             bgClass: "bg-yellow-100",
         },
         {
+            value: "kept",
+            label: "Kept",
+            description: "Fulfilled",
+            icon: CheckCircle2,
+            colorClass: "text-green-500",
+            bgClass: "bg-green-100",
+        },
+        {
             value: "broken",
             label: "Not Kept",
             description: "Cancelled",
             icon: XCircle,
             colorClass: "text-red-500",
             bgClass: "bg-red-100",
+        },
+        {
+            value: "cancelled",
+            label: "Cancelled",
+            description: "Promise cancelled",
+            icon: Ban,
+            colorClass: "text-slate-500",
+            bgClass: "bg-slate-100",
         },
     ];
 

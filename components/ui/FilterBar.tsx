@@ -47,10 +47,10 @@ export function FilterBar({ politicians, categories, stats }: FilterBarProps) {
 
   const statusOptions = [
     { value: "all", label: t("filterByStatus"), color: "gray" },
-    { value: "KEPT", label: tStatus("kept"), color: "emerald" },
-    { value: "NOT_KEPT", label: tStatus("notKept"), color: "rose" },
     { value: "PENDING", label: tStatus("pending"), color: "amber" },
     { value: "PARTIAL", label: tStatus("partial"), color: "violet" },
+    { value: "KEPT", label: tStatus("kept"), color: "emerald" },
+    { value: "NOT_KEPT", label: tStatus("notKept"), color: "rose" },
     { value: "CANCELLED", label: tStatus("cancelled"), color: "gray" },
   ];
 

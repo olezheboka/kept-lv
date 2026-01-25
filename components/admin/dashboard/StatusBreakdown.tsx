@@ -33,9 +33,9 @@ export function StatusBreakdown({ stats }: StatusBreakdownProps) {
     const cancelledPct = (cancelledPromises / total) * 100;
 
     const items = [
-        { label: "Kept", count: keptPromises, pct: keptPct, color: "#22c55e" },
-        { label: "Partially kept", count: partialPromises, pct: partialPct, color: "#facc15" },
         { label: "Pending", count: pendingPromises, pct: pendingPct, color: "#3b82f6" },
+        { label: "Partially kept", count: partialPromises, pct: partialPct, color: "#facc15" },
+        { label: "Kept", count: keptPromises, pct: keptPct, color: "#22c55e" },
         { label: "Not kept", count: notKeptPromises, pct: notKeptPct, color: "#ef4444" },
         { label: "Cancelled", count: cancelledPromises, pct: cancelledPct, color: "#d1d5db" },
     ];

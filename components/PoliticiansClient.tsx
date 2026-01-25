@@ -441,10 +441,10 @@ export function PoliticiansClient({ politicians, parties }: PoliticiansClientPro
                                                                         <span>{total > 0 ? Math.round((keptCount / total) * 100) : 0}% izpildīti</span>
                                                                     </div>
                                                                     <div className="h-2 bg-muted rounded-full overflow-hidden flex">
-                                                                        {keptCount > 0 && (
+                                                                        {inProgressCount > 0 && (
                                                                             <div
-                                                                                className="h-full bg-status-kept"
-                                                                                style={{ width: `${(keptCount / total) * 100}%` }}
+                                                                                className="h-full bg-status-pending"
+                                                                                style={{ width: `${(inProgressCount / total) * 100}%` }}
                                                                             />
                                                                         )}
                                                                         {partiallyKeptCount > 0 && (
@@ -453,10 +453,10 @@ export function PoliticiansClient({ politicians, parties }: PoliticiansClientPro
                                                                                 style={{ width: `${(partiallyKeptCount / total) * 100}%` }}
                                                                             />
                                                                         )}
-                                                                        {inProgressCount > 0 && (
+                                                                        {keptCount > 0 && (
                                                                             <div
-                                                                                className="h-full bg-status-pending"
-                                                                                style={{ width: `${(inProgressCount / total) * 100}%` }}
+                                                                                className="h-full bg-status-kept"
+                                                                                style={{ width: `${(keptCount / total) * 100}%` }}
                                                                             />
                                                                         )}
                                                                         {brokenCount > 0 && (

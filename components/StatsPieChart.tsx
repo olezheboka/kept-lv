@@ -14,9 +14,9 @@ export const StatsPieChart = () => {
   const stats = getPromiseStats();
 
   const data = [
-    { name: 'Izpildīti', value: stats.kept, color: COLORS.kept },
-    { name: 'Daļēji izpildīti', value: stats.partiallyKept, color: COLORS.partiallyKept },
     { name: 'Gaida izpildi', value: stats.pending, color: COLORS.pending },
+    { name: 'Daļēji izpildīti', value: stats.partiallyKept, color: COLORS.partiallyKept },
+    { name: 'Izpildīti', value: stats.kept, color: COLORS.kept },
     { name: 'Lauzti', value: stats.broken, color: COLORS.broken },
     { name: 'Atcelti', value: stats.cancelled, color: COLORS.cancelled },
   ].filter(d => d.value > 0);
