@@ -22,14 +22,14 @@ export function CTASection() {
                             <Lightbulb className="h-6 w-6" />
                         </div>
                         <h3 className="text-xl font-bold text-foreground mb-3">
-                            Ieteikt solījumu
+                            Priekšlikumi un idejas
                         </h3>
                         <p className="text-muted-foreground mb-8 leading-relaxed">
                             Ir ideja uzlabojumiem vai konkrēts solījums, ko pievienot? Padod ziņu, un mēs izskatīsim.
                         </p>
                         <Link href="mailto:info@solijums.lv?subject=Jauns%20solījums" className="mt-auto" suppressHydrationWarning>
                             <Button size="lg" className="font-semibold">
-                                Iesniegt priekšlikumu
+                                Iesniegt
                             </Button>
                         </Link>
                     </div>
@@ -40,14 +40,14 @@ export function CTASection() {
                             <AlertCircle className="h-6 w-6" />
                         </div>
                         <h3 className="text-xl font-bold text-foreground mb-3">
-                            Paziņot par problēmu
+                            Neprecizitātes un kļūdas
                         </h3>
                         <p className="text-muted-foreground mb-8 leading-relaxed">
                             Pamanīji neprecizitāti datos vai tehnisku kļūdu? Dod mums ziņu, lai varam to pēc iespējas ātrāk novērst.
                         </p>
                         <Link href="mailto:support@solijums.lv?subject=Kļūda%20vai%20problēma" className="mt-auto" suppressHydrationWarning>
                             <Button size="lg" variant="outline" className="font-semibold text-[#DC2626] border-[#DC2626] hover:bg-[#DC2626] hover:text-white">
-                                Ziņot par kļūdu
+                                Paziņot
                             </Button>
                         </Link>
                     </div>
