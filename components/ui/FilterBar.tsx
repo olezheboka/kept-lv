@@ -49,7 +49,7 @@ export function FilterBar({ politicians, categories, stats }: FilterBarProps) {
     { value: "all", label: t("filterByStatus"), color: "gray" },
     { value: "KEPT", label: tStatus("kept"), color: "emerald" },
     { value: "NOT_KEPT", label: tStatus("notKept"), color: "rose" },
-    { value: "IN_PROGRESS", label: tStatus("inProgress"), color: "amber" },
+    { value: "PENDING", label: tStatus("pending"), color: "amber" },
     { value: "PARTIAL", label: tStatus("partial"), color: "violet" },
     { value: "CANCELLED", label: tStatus("cancelled"), color: "gray" },
   ];
@@ -186,8 +186,8 @@ export function FilterBar({ politicians, categories, stats }: FilterBarProps) {
           <p className="text-xs text-gray-400 uppercase">{tStatus("notKept")}</p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-black text-amber-400">{stats.inProgress}</p>
-          <p className="text-xs text-gray-400 uppercase">{tStatus("inProgress")}</p>
+          <p className="text-2xl font-black text-amber-400">{stats.pending}</p>
+          <p className="text-xs text-gray-400 uppercase">{tStatus("pending")}</p>
         </div>
         <div className="text-center hidden md:block">
           <p className="text-2xl font-black text-violet-400">{stats.partial}</p>

@@ -34,7 +34,7 @@
   "status": {
     "kept": "IZPILDĪTS",
     "notKept": "NEIZPILDĪTS",
-    "inProgress": "PROCESĀ",
+    "pending": "GAIDA IZPILDI",
     "partial": "DAĻĒJI",
     "cancelled": "ATCELTS"
   },

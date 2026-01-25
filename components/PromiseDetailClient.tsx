@@ -247,7 +247,7 @@ export const PromiseDetailClient = ({
                         >
                             <Card className={`shadow-sm border transition-colors w-full ${promise.status === 'kept' ? "bg-status-kept-bg border-status-kept/30" :
                                 promise.status === 'partially-kept' ? "bg-status-partially-bg border-status-partially/30" :
-                                    promise.status === 'in-progress' ? "bg-status-progress-bg border-status-progress/30" :
+                                    promise.status === 'pending' ? "bg-status-pending-bg border-status-pending/30" :
                                         promise.status === 'broken' ? "bg-status-broken-bg border-status-broken/30" :
                                             "bg-[#F4F5F7] border-[#C9CED7]"
                                 }`}>

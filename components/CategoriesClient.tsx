@@ -206,7 +206,7 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                         {paginatedCategories.map((category, index) => {
-                            const { total, kept, partiallyKept, inProgress, broken, cancelled } = category.stats;
+                            const { total, kept, partiallyKept, pending, broken, cancelled } = category.stats;
 
                             return (
                                 <motion.div
@@ -273,10 +273,10 @@ export const CategoriesClient = ({ categories }: CategoriesClientProps) => {
                                                                 style={{ width: `${(partiallyKept / total) * 100}%` }}
                                                             />
                                                         )}
-                                                        {inProgress > 0 && (
+                                                        {pending > 0 && (
                                                             <div
                                                                 className="h-full bg-status-progress"
-                                                                style={{ width: `${(inProgress / total) * 100}%` }}
+                                                                style={{ width: `${(pending / total) * 100}%` }}
                                                             />
                                                         )}
                                                         {broken > 0 && (

@@ -5,7 +5,7 @@ interface StatusBreakdownProps {
         totalPromises: number;
         keptPromises: number;
         partialPromises: number;
-        inProgressPromises: number;
+        pendingPromises: number;
         notKeptPromises: number;
         cancelledPromises: number;
         keptRateTrend?: number;
@@ -17,7 +17,7 @@ export function StatusBreakdown({ stats }: StatusBreakdownProps) {
         totalPromises,
         keptPromises,
         partialPromises,
-        inProgressPromises,
+        pendingPromises,
         notKeptPromises,
         cancelledPromises,
         keptRateTrend = 0
@@ -28,14 +28,14 @@ export function StatusBreakdown({ stats }: StatusBreakdownProps) {
     // Calculate percentages
     const keptPct = (keptPromises / total) * 100;
     const partialPct = (partialPromises / total) * 100;
-    const inProgressPct = (inProgressPromises / total) * 100;
+    const pendingPct = (pendingPromises / total) * 100;
     const notKeptPct = (notKeptPromises / total) * 100;
     const cancelledPct = (cancelledPromises / total) * 100;
 
     const items = [
         { label: "Kept", count: keptPromises, pct: keptPct, color: "#22c55e" },
         { label: "Partially kept", count: partialPromises, pct: partialPct, color: "#facc15" },
-        { label: "In progress", count: inProgressPromises, pct: inProgressPct, color: "#3b82f6" },
+        { label: "Pending", count: pendingPromises, pct: pendingPct, color: "#3b82f6" },
         { label: "Not kept", count: notKeptPromises, pct: notKeptPct, color: "#ef4444" },
         { label: "Cancelled", count: cancelledPromises, pct: cancelledPct, color: "#d1d5db" },
     ];

@@ -381,7 +381,7 @@ export function PartiesClient({ parties }: PartiesClientProps) {
                                         {paginatedParties.map((party, index) => {
                                             const keptCount = party.stats.kept;
                                             const partiallyKeptCount = party.stats.partiallyKept;
-                                            const inProgressCount = party.stats.inProgress;
+                                            const inProgressCount = party.stats.pending;
                                             const brokenCount = party.stats.broken;
                                             const cancelledCount = party.stats.cancelled;
                                             const total = party.stats.total;
@@ -443,7 +443,7 @@ export function PartiesClient({ parties }: PartiesClientProps) {
                                                                         )}
                                                                         {inProgressCount > 0 && (
                                                                             <div
-                                                                                className="h-full bg-status-progress"
+                                                                                className="h-full bg-status-pending"
                                                                                 style={{ width: `${(inProgressCount / total) * 100}%` }}
                                                                             />
                                                                         )}

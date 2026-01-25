@@ -9,7 +9,7 @@ interface StatsSectionProps {
     total: number;
     kept: number;
     notKept: number;
-    inProgress: number;
+    pending: number;
     cancelled: number;
     partial: number;
   };
@@ -35,10 +35,10 @@ export function StatsSection({ stats, politicians, parties }: StatsSectionProps)
       icon: statusConfig.NOT_KEPT.icon,
     },
     {
-      value: stats.inProgress,
-      label: tStatus("inProgress"),
+      value: stats.pending,
+      label: tStatus("pending"),
       color: "text-amber-400",
-      icon: statusConfig.IN_PROGRESS.icon,
+      icon: statusConfig.PENDING.icon,
     },
     {
       value: stats.partial,

@@ -36,7 +36,7 @@ export const PartyDetailClient = ({ party, promises }: PartyDetailClientProps) =
         total: promises.length,
         kept: promises.filter(p => p.status === 'kept').length,
         partiallyKept: promises.filter(p => p.status === 'partially-kept').length,
-        inProgress: promises.filter(p => p.status === 'in-progress').length,
+        pending: promises.filter(p => p.status === 'pending').length,
         broken: promises.filter(p => p.status === 'broken').length,
         cancelled: promises.filter(p => p.status === 'cancelled').length,
     };

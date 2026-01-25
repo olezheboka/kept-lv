@@ -4,13 +4,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { PromiseStatus, STATUS_CONFIG } from '@/lib/types';
 import { CheckCircle2, Clock, XCircle, CircleDot, Ban, List } from 'lucide-react';
 
-const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'in-progress', 'broken', 'cancelled'];
+const STATUSES: PromiseStatus[] = ['kept', 'partially-kept', 'pending', 'broken', 'cancelled'];
 
 interface Stats {
     total: number;
     kept: number;
     partiallyKept: number;
-    inProgress: number;
+    pending: number;
     broken: number;
     cancelled: number;
 }
@@ -76,7 +76,7 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                                 const segments = [
                                     { key: 'kept', value: stats.kept, color: 'text-status-kept' },
                                     { key: 'partially-kept', value: stats.partiallyKept, color: 'text-status-partially' },
-                                    { key: 'in-progress', value: stats.inProgress, color: 'text-status-progress' },
+                                    { key: 'pending', value: stats.pending, color: 'text-status-pending' },
                                     { key: 'broken', value: stats.broken, color: 'text-status-broken' },
                                     { key: 'cancelled', value: stats.cancelled, color: 'text-[#D1D5DC]' },
                                 ];
@@ -152,13 +152,13 @@ export const PerformanceCard = ({ stats, filterStatus = 'all', onFilterChange }:
                             const config = {
                                 'kept': { icon: CheckCircle2, color: 'text-status-kept', bg: 'bg-status-kept-bg' },
                                 'partially-kept': { icon: CircleDot, color: 'text-status-partially', bg: 'bg-status-partially-bg' },
-                                'in-progress': { icon: Clock, color: 'text-status-progress', bg: 'bg-status-progress-bg' },
+                                'pending': { icon: Clock, color: 'text-status-pending', bg: 'bg-status-pending-bg' },
                                 'broken': { icon: XCircle, color: 'text-status-broken', bg: 'bg-status-broken-bg' },
                                 'cancelled': { icon: Ban, color: 'text-status-unrated', bg: 'bg-status-unrated-bg' },
                             }[status as string] || { icon: Ban, color: 'text-status-unrated', bg: 'bg-status-unrated-bg' };
 
                             const Icon = config.icon;
-                            const count = stats[status === 'partially-kept' ? 'partiallyKept' : status === 'in-progress' ? 'inProgress' : status === 'cancelled' ? 'cancelled' : status];
+                            const count = stats[status === 'partially-kept' ? 'partiallyKept' : status === 'pending' ? 'pending' : status === 'cancelled' ? 'cancelled' : status];
                             const isActive = filterStatus === status;
 
                             return (

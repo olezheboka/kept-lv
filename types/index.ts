@@ -141,7 +141,7 @@ export interface PromiseStats {
   total: number;
   kept: number;
   notKept: number;
-  inProgress: number;
+  pending: number;
   cancelled: number;
   partial: number;
 }

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 const COLORS = {
   kept: 'hsl(160, 84%, 39%)',
   partiallyKept: 'hsl(38, 92%, 50%)',
-  inProgress: 'hsl(217, 91%, 60%)',
+  pending: 'hsl(217, 91%, 60%)',
   broken: 'hsl(350, 89%, 60%)',
   cancelled: 'hsl(215, 16%, 47%)',
 };
@@ -16,7 +16,7 @@ export const StatsPieChart = () => {
   const data = [
     { name: 'Izpildīti', value: stats.kept, color: COLORS.kept },
     { name: 'Daļēji izpildīti', value: stats.partiallyKept, color: COLORS.partiallyKept },
-    { name: 'Procesā', value: stats.inProgress, color: COLORS.inProgress },
+    { name: 'Gaida izpildi', value: stats.pending, color: COLORS.pending },
     { name: 'Lauzti', value: stats.broken, color: COLORS.broken },
     { name: 'Atcelti', value: stats.cancelled, color: COLORS.cancelled },
   ].filter(d => d.value > 0);

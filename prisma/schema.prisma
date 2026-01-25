@@ -101,7 +101,7 @@ model Promise {
   title            String
   slug             String?       @unique
   description      String?
-  status           PromiseStatus @default(IN_PROGRESS)
+  status           PromiseStatus @default(PENDING)
   explanation      String?
   tags             String[]      @default([])
   dateOfPromise    DateTime
@@ -184,9 +184,10 @@ enum PromiseType {
 }
 
 enum PromiseStatus {
+
   KEPT
   NOT_KEPT
-  IN_PROGRESS
+  PENDING
   PARTIAL
   CANCELLED
 }

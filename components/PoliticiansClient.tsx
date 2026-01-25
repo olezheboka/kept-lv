@@ -392,7 +392,7 @@ export function PoliticiansClient({ politicians, parties }: PoliticiansClientPro
                                         {paginatedPoliticians.map((politician, index) => {
                                             const keptCount = politician.stats.kept;
                                             const partiallyKeptCount = politician.stats.partiallyKept;
-                                            const inProgressCount = politician.stats.inProgress;
+                                            const inProgressCount = politician.stats.pending;
                                             const brokenCount = politician.stats.broken;
                                             const cancelledCount = politician.stats.cancelled;
                                             const total = politician.stats.total;
@@ -455,7 +455,7 @@ export function PoliticiansClient({ politicians, parties }: PoliticiansClientPro
                                                                         )}
                                                                         {inProgressCount > 0 && (
                                                                             <div
-                                                                                className="h-full bg-status-progress"
+                                                                                className="h-full bg-status-pending"
                                                                                 style={{ width: `${(inProgressCount / total) * 100}%` }}
                                                                             />
                                                                         )}

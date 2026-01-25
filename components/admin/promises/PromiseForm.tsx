@@ -45,7 +45,7 @@ interface PromiseData {
     title: string;
     slug: string;
     description?: string | null;
-    status: "in-progress" | "kept" | "broken" | "partially-kept" | "cancelled";
+    status: "pending" | "kept" | "broken" | "partially-kept" | "cancelled";
     explanation?: string | null;
     dateOfPromise: string | Date;
     statusUpdatedAt?: string | Date | null;
@@ -68,7 +68,7 @@ export interface PromiseFormProps {
     readOnly?: boolean; // Add readOnly support for strict type checking in parent if needed, though mostly unused
 }
 
-type StatusType = "in-progress" | "kept" | "broken" | "partially-kept" | "cancelled";
+type StatusType = "pending" | "kept" | "broken" | "partially-kept" | "cancelled";
 
 const STATUS_OPTIONS: {
     value: StatusType;
@@ -87,8 +87,8 @@ const STATUS_OPTIONS: {
             bgClass: "bg-slate-100",
         },
         {
-            value: "in-progress",
-            label: "In Progress",
+            value: "pending",
+            label: "Pending",
             description: "Active work",
             icon: Loader2,
             colorClass: "text-blue-500",
@@ -134,16 +134,17 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
 
     // Normalize status from DB (UPPERCASE/Underscore) to Frontend (kebab-case)
     const normalizeStatus = (status: string | undefined): StatusType => {
-        if (!status) return "in-progress";
+        if (!status) return "pending";
 
         // Check if it's already a valid kebab-case status
-        if (["in-progress", "kept", "broken", "partially-kept", "cancelled"].includes(status)) {
+        if (["pending", "kept", "broken", "partially-kept", "cancelled"].includes(status)) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return status as any;
         }
 
         const map: Record<string, string> = {
-            "IN_PROGRESS": "in-progress",
+            "PENDING": "pending",
+            "IN_PROGRESS": "pending", // Backward compatibility
             "KEPT": "kept",
             "NOT_KEPT": "broken",
             "PARTIAL": "partially-kept",
@@ -152,7 +153,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
         };
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (map[status] || "in-progress") as any;
+        return (map[status] || "pending") as any;
     };
 
     const [formData, setFormData] = useState(() => {
@@ -183,7 +184,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             title: "",
             slug: "",
             description: "",
-            status: "in-progress" as StatusType,
+            status: "pending" as StatusType,
             explanation: "",
             dateOfPromise: "",
             statusUpdatedAt: "",
@@ -271,7 +272,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
         try {
             // Map frontend status (kebab-case) to Backend Enum (UPPERCASE)
             const statusMap: Record<string, string> = {
-                "in-progress": "IN_PROGRESS",
+                "pending": "PENDING",
                 "kept": "KEPT",
                 "broken": "NOT_KEPT",
                 "partially-kept": "PARTIAL",
@@ -282,7 +283,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                 title: formData.title,
                 slug: formData.slug || slugify(formData.title),
                 description: formData.description || null,
-                status: statusMap[formData.status] || "IN_PROGRESS",
+                status: statusMap[formData.status] || "PENDING",
                 explanation: formData.explanation || null,
                 dateOfPromise: new Date(formData.dateOfPromise).toISOString(),
                 statusUpdatedAt: formData.statusUpdatedAt ? new Date(formData.statusUpdatedAt).toISOString() : null,

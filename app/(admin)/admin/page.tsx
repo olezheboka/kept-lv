@@ -22,7 +22,7 @@ async function getDashboardStats() {
     prisma.promise.count(),
     prisma.promise.count({ where: { status: "KEPT" } }),
     prisma.promise.count({ where: { status: "PARTIAL" } }),
-    prisma.promise.count({ where: { status: "IN_PROGRESS" } }),
+    prisma.promise.count({ where: { status: "PENDING" } }),
     prisma.promise.count({ where: { status: "NOT_KEPT" } }),
     prisma.promise.count({ where: { status: "CANCELLED" } }),
   ]));
@@ -105,7 +105,7 @@ async function getDashboardStats() {
     totalPromises,
     keptPromises,
     partialPromises,
-    inProgressPromises,
+    pendingPromises: inProgressPromises,
     notKeptPromises,
     cancelledPromises,
     totalPoliticians,

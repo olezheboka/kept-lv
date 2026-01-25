@@ -73,14 +73,7 @@ export const statusConfig = {
     border: "border-rose-400/50",
     text: "text-rose-400",
   },
-  IN_PROGRESS: {
-    icon: "⟳",
-    label: { lv: "PROCESĀ", en: "IN PROGRESS", ru: "В ПРОЦЕССЕ" },
-    gradient: "from-amber-500 to-orange-600",
-    bg: "bg-amber-500/20",
-    border: "border-amber-400/50",
-    text: "text-amber-400",
-  },
+
   PARTIAL: {
     icon: "◐",
     label: { lv: "DAĻĒJI", en: "PARTIAL", ru: "ЧАСТИЧНО" },
@@ -88,6 +81,14 @@ export const statusConfig = {
     bg: "bg-violet-500/20",
     border: "border-violet-400/50",
     text: "text-violet-400",
+  },
+  PENDING: {
+    icon: "⟳",
+    label: { lv: "GAIDA IZPILDI", en: "PENDING", ru: "ОЖИДАЕТ" },
+    gradient: "from-amber-500 to-orange-600",
+    bg: "bg-amber-500/20",
+    border: "border-amber-400/50",
+    text: "text-amber-400",
   },
   CANCELLED: {
     icon: "⊘",
@@ -100,11 +101,11 @@ export const statusConfig = {
 } as const;
 
 // Map Prisma status to UI status
-export function mapStatusToUI(status: string): "kept" | "partially-kept" | "in-progress" | "broken" | "cancelled" {
-  const statusMap: Record<string, "kept" | "partially-kept" | "in-progress" | "broken" | "cancelled"> = {
+export function mapStatusToUI(status: string): "kept" | "partially-kept" | "pending" | "broken" | "cancelled" {
+  const statusMap: Record<string, "kept" | "partially-kept" | "pending" | "broken" | "cancelled"> = {
     KEPT: "kept",
     NOT_KEPT: "broken",
-    IN_PROGRESS: "in-progress",
+    PENDING: "pending",
     PARTIAL: "partially-kept",
     CANCELLED: "cancelled",
   };

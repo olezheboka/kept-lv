@@ -21,7 +21,7 @@ export interface PartyWithStats extends PartyUI {
         total: number;
         kept: number;
         partiallyKept: number;
-        inProgress: number;
+        pending: number;
         broken: number;
         cancelled: number;
     }
@@ -54,7 +54,7 @@ export interface PoliticianWithStats extends PoliticianUI {
         total: number;
         kept: number;
         partiallyKept: number;
-        inProgress: number;
+        pending: number;
         broken: number;
         cancelled: number;
     }
@@ -87,7 +87,7 @@ export interface PromiseUI {
     }[];
     datePromised: string;
     electionCycle?: string;
-    status: "kept" | "partially-kept" | "in-progress" | "broken" | "cancelled";
+    status: "kept" | "partially-kept" | "pending" | "broken" | "cancelled";
     statusJustification: string;
     statusUpdatedAt: string;
     statusUpdatedBy: string;
@@ -226,20 +226,20 @@ const getPartiesFromDb = async (locale: Locale): Promise<PartyWithStats[]> => {
 
     // 4. Aggregate per party
     return parties.map((party) => {
-        let kept = 0, partiallyKept = 0, inProgress = 0, broken = 0, cancelled = 0;
+        let kept = 0, partiallyKept = 0, pending = 0, broken = 0, cancelled = 0;
 
         party.politicians.forEach(pol => {
             const stats = politicianStats.get(pol.id);
             if (stats) {
                 kept += stats["KEPT"] || 0;
                 partiallyKept += stats["PARTIAL"] || 0;
-                inProgress += stats["IN_PROGRESS"] || 0;
+                pending += stats["PENDING"] || 0;
                 broken += stats["NOT_KEPT"] || 0;
                 cancelled += stats["CANCELLED"] || 0;
             }
         });
 
-        const total = kept + partiallyKept + inProgress + broken + cancelled;
+        const total = kept + partiallyKept + pending + broken + cancelled;
 
         return {
             id: party.slug,
@@ -255,7 +255,7 @@ const getPartiesFromDb = async (locale: Locale): Promise<PartyWithStats[]> => {
                 total,
                 kept,
                 partiallyKept,
-                inProgress,
+                pending,
                 broken,
                 cancelled
             }
@@ -327,10 +327,10 @@ const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianWithStats
         const stats = statsMap.get(pol.id) || {};
         const kept = stats["KEPT"] || 0;
         const partiallyKept = stats["PARTIAL"] || 0;
-        const inProgress = stats["IN_PROGRESS"] || 0;
+        const pending = stats["PENDING"] || 0;
         const broken = stats["NOT_KEPT"] || 0;
         const cancelled = stats["CANCELLED"] || 0;
-        const total = kept + partiallyKept + inProgress + broken + cancelled;
+        const total = kept + partiallyKept + pending + broken + cancelled;
 
         return {
             id: pol.slug,
@@ -356,7 +356,7 @@ const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianWithStats
                 total,
                 kept,
                 partiallyKept,
-                inProgress,
+                pending,
                 broken,
                 cancelled
             }
@@ -765,7 +765,7 @@ export type CategoryWithStats = CategoryUI & {
         total: number;
         kept: number;
         partiallyKept: number;
-        inProgress: number;
+        pending: number;
         broken: number;
         cancelled: number;
     }
@@ -802,10 +802,10 @@ const getCategoriesFromDb = async (locale: Locale): Promise<CategoryWithStats[]>
         const stats = categoryStats.get(cat.id) || {};
         const kept = stats["KEPT"] || 0;
         const partiallyKept = stats["PARTIAL"] || 0;
-        const inProgress = stats["IN_PROGRESS"] || 0;
+        const pending = stats["PENDING"] || 0;
         const broken = stats["NOT_KEPT"] || 0;
         const cancelled = stats["CANCELLED"] || 0;
-        const total = kept + partiallyKept + inProgress + broken + cancelled;
+        const total = kept + partiallyKept + pending + broken + cancelled;
 
         return {
             id: cat.slug,
@@ -817,7 +817,7 @@ const getCategoriesFromDb = async (locale: Locale): Promise<CategoryWithStats[]>
                 total,
                 kept,
                 partiallyKept,
-                inProgress,
+                pending,
                 broken,
                 cancelled,
             }
@@ -883,7 +883,7 @@ export async function getPromiseStats() {
     const total = promises.length;
     const kept = promises.filter((p) => p.status === "KEPT").length;
     const partiallyKept = promises.filter((p) => p.status === "PARTIAL").length;
-    const inProgress = promises.filter((p) => p.status === "IN_PROGRESS").length;
+    const pending = promises.filter((p) => p.status === "PENDING").length;
     const broken = promises.filter((p) => p.status === "NOT_KEPT").length;
     const cancelled = promises.filter((p) => p.status === "CANCELLED").length;
 
@@ -891,7 +891,7 @@ export async function getPromiseStats() {
         total,
         kept,
         partiallyKept,
-        inProgress,
+        pending,
         broken,
         cancelled,
         keptPercentage: total > 0 ? Math.round((kept / total) * 100) : 0,

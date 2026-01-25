@@ -43,8 +43,8 @@
   --status-kept-bg: 160 84% 96%;
   --status-partially: 38 92% 50%;
   --status-partially-bg: 38 92% 96%;
-  --status-progress: 217 91% 60%;
-  --status-progress-bg: 217 91% 96%;
+  --status-pending: 217 91% 60%;
+  --status-pending-bg: 217 91% 96%;
   --status-broken: 350 89% 60%;
   --status-broken-bg: 350 89% 96%;
   --status-unrated-bar: 216 12% 85%;
@@ -88,8 +88,8 @@
       --status-kept-bg: 160 84% 96%;
       --status-partially: 38 92% 50%;
       --status-partially-bg: 38 92% 96%;
-      --status-progress: 217 91% 60%;
-      --status-progress-bg: 217 91% 96%;
+      --status-pending: 217 91% 60%;
+      --status-pending-bg: 217 91% 96%;
       --status-broken: 350 89% 60%;
       --status-broken-bg: 350 89% 96%;
       --status-unrated: 216 15% 47%;
@@ -158,8 +158,8 @@
       --status-kept-bg: 160 84% 15%;
       --status-partially: 38 92% 55%;
       --status-partially-bg: 38 92% 15%;
-      --status-progress: 217 91% 65%;
-      --status-progress-bg: 217 91% 15%;
+      --status-pending: 217 91% 65%;
+      --status-pending-bg: 217 91% 15%;
       --status-broken: 350 89% 55%;
       --status-broken-bg: 350 89% 15%;
       --status-unrated: 215 16% 55%;
@@ -232,8 +232,8 @@
     --color-status-kept-bg: hsl(var(--status-kept-bg));
     --color-status-partially: hsl(var(--status-partially));
     --color-status-partially-bg: hsl(var(--status-partially-bg));
-    --color-status-progress: hsl(var(--status-progress));
-    --color-status-progress-bg: hsl(var(--status-progress-bg));
+    --color-status-pending: hsl(var(--status-pending));
+    --color-status-pending-bg: hsl(var(--status-pending-bg));
     --color-status-broken: hsl(var(--status-broken));
     --color-status-broken-bg: hsl(var(--status-broken-bg));
     --color-status-unrated: hsl(var(--status-unrated));
@@ -413,8 +413,8 @@
       @apply bg-[hsl(var(--status-partially-bg))] text-[hsl(var(--status-partially))];
     }
 
-    .status-progress {
-      @apply bg-[hsl(var(--status-progress-bg))] text-[hsl(var(--status-progress))];
+    .status-pending {
+      @apply bg-[hsl(var(--status-pending-bg))] text-[hsl(var(--status-pending))];
     }
 
     .status-broken {
@@ -435,8 +435,8 @@
       @apply bg-[hsl(var(--status-partially))] text-white shadow-sm;
     }
 
-    .status-progress-solid {
-      @apply bg-[hsl(var(--status-progress))] text-white shadow-sm;
+    .status-pending-solid {
+      @apply bg-[hsl(var(--status-pending))] text-white shadow-sm;
     }
 
     .status-broken-solid {
@@ -458,7 +458,7 @@
       background: linear-gradient(135deg, #f43f5e 0%, #dc2626 100%);
     }
 
-    .status-in-progress-gradient {
+    .status-pending-gradient {
       background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
     }
 
@@ -475,8 +475,8 @@
       @apply bg-white text-[hsl(var(--status-partially))] border border-[hsl(var(--status-partially)/0.3)] shadow-sm;
     }
 
-    .status-progress-sticker {
-      @apply bg-white text-[hsl(var(--status-progress))] border border-[hsl(var(--status-progress)/0.3)] shadow-sm;
+    .status-pending-sticker {
+      @apply bg-white text-[hsl(var(--status-pending))] border border-[hsl(var(--status-pending)/0.3)] shadow-sm;
     }
 
     .status-broken-sticker {
@@ -496,8 +496,8 @@
       @apply bg-[hsl(var(--status-partially)/0.15)] text-[hsl(var(--status-partially))];
     }
 
-    .status-progress-tonal {
-      @apply bg-[hsl(var(--status-progress)/0.15)] text-[hsl(var(--status-progress))];
+    .status-pending-tonal {
+      @apply bg-[hsl(var(--status-pending)/0.15)] text-[hsl(var(--status-pending))];
     }
 
     .status-broken-tonal {
@@ -517,8 +517,8 @@
       @apply bg-transparent border-2 border-[hsl(var(--status-partially))] text-[hsl(var(--status-partially))];
     }
 
-    .status-progress-outline {
-      @apply bg-transparent border-2 border-[hsl(var(--status-progress))] text-[hsl(var(--status-progress))];
+    .status-pending-outline {
+      @apply bg-transparent border-2 border-[hsl(var(--status-pending))] text-[hsl(var(--status-pending))];
     }
 
     .status-broken-outline {

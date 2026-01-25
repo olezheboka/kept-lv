@@ -79,7 +79,7 @@ export const createPromiseSchema = z.object({
   title: z.string().min(1),
   slug: z.string().min(1, "Slug is required").max(255),
   description: z.string().optional().nullable(),
-  status: z.enum(["KEPT", "NOT_KEPT", "IN_PROGRESS", "PARTIAL", "CANCELLED"]).default("IN_PROGRESS"),
+  status: z.enum(["KEPT", "NOT_KEPT", "PENDING", "PARTIAL", "CANCELLED"]).default("PENDING"),
   explanation: z.string().optional().nullable(),
   dateOfPromise: z.string().datetime().or(z.date()),
   statusUpdatedAt: z.string().datetime().optional().nullable(),
@@ -97,7 +97,7 @@ export const updatePromiseSchema = createPromiseSchema.partial();
 
 // Filter schemas
 export const promiseFilterSchema = z.object({
-  status: z.enum(["KEPT", "NOT_KEPT", "IN_PROGRESS", "PARTIAL", "CANCELLED", "all"]).optional(),
+  status: z.enum(["KEPT", "NOT_KEPT", "PENDING", "PARTIAL", "CANCELLED", "all"]).optional(),
   politician: z.string().optional(),
   category: z.string().optional(),
   party: z.string().optional(),

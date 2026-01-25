@@ -174,7 +174,7 @@ export const promises: Promise[] = [
     partyId: 'jv',
     datePromised: '2022-09-15',
     electionCycle: '2022 Saeima Elections',
-    status: 'in-progress',
+    status: 'pending',
     statusJustification: 'Valdība ir īstenojusi 10% palielinājumu no 2024. gada janvāra, vēl 10% plānots 2025. gada budžetā, kas gaida Saeimas apstiprinājumu.',
     statusUpdatedAt: '2024-12-15',
     statusUpdatedBy: 'Kept Analytics Team',
@@ -253,7 +253,7 @@ export const promises: Promise[] = [
     politicianId: 'evika-silina',
     partyId: 'jv',
     datePromised: '2023-03-15',
-    status: 'in-progress',
+    status: 'pending',
     statusJustification: 'Būvdarbi turpinās, bet projekts saskaras ar kavējumiem un budžeta pārsniegumiem. Jauns termiņš varētu būt 2031-2032.',
     statusUpdatedAt: '2024-10-01',
     statusUpdatedBy: 'Kept Analytics Team',
@@ -305,7 +305,7 @@ export const promises: Promise[] = [
     partyId: 'jv',
     datePromised: '2022-10-10',
     electionCycle: '2022 Saeima Elections',
-    status: 'in-progress',
+    status: 'pending',
     statusJustification: 'Izveidotas 4,200 jaunas vietas. Programma turpinās, bet temps ir lēnāks nekā plānots.',
     statusUpdatedAt: '2024-09-01',
     statusUpdatedBy: 'Kept Analytics Team',
@@ -323,7 +323,7 @@ export const promises: Promise[] = [
     politicianId: 'evika-silina',
     partyId: 'jv',
     datePromised: '2023-06-01',
-    status: 'in-progress',
+    status: 'pending',
     statusJustification: 'Pašreizējais līmenis ir aptuveni 42%. Vairāki vēja parku projekti ir izstrādes stadijā.',
     statusUpdatedAt: '2024-12-01',
     statusUpdatedBy: 'Kept Analytics Team',
@@ -367,7 +367,7 @@ export const promises: Promise[] = [
     politicianId: 'hosams-abu-meri',
     partyId: 'jv',
     datePromised: '2023-02-15',
-    status: 'in-progress',
+    status: 'pending',
     statusJustification: 'Sistēma ir izstrādes stadijā. Pilotprojekts sākts Rīgā ar 50,000 lietotājiem.',
     statusUpdatedAt: '2024-11-01',
     statusUpdatedBy: 'Kept Analytics Team',
@@ -480,7 +480,7 @@ export const promises: Promise[] = [
     politicianId: 'evika-silina',
     partyId: 'jv',
     datePromised: '2023-05-20',
-    status: 'in-progress',
+    status: 'pending',
     statusJustification: 'Līdz šim investēti aptuveni 320 milj. EUR. Projekti turpinās saskaņā ar grafiku.',
     statusUpdatedAt: '2024-12-01',
     statusUpdatedBy: 'Kept Analytics Team',
@@ -536,7 +536,7 @@ export const promises: Promise[] = [
     politicianId: 'evika-silina',
     partyId: 'jv',
     datePromised: '2023-01-10',
-    status: 'in-progress',
+    status: 'pending',
     statusJustification: 'Aptuveni 75% valsts pakalpojumu pieejami digitāli. Portāls Latvija.lv turpina attīstīties.',
     statusUpdatedAt: '2024-11-15',
     statusUpdatedBy: 'Kept Analytics Team',
@@ -578,7 +578,7 @@ export const getPromiseStats = () => {
   const total = promises.length;
   const kept = promises.filter(p => p.status === 'kept').length;
   const partiallyKept = promises.filter(p => p.status === 'partially-kept').length;
-  const inProgress = promises.filter(p => p.status === 'in-progress').length;
+  const pending = promises.filter(p => p.status === 'pending').length;
   const broken = promises.filter(p => p.status === 'broken').length;
   const cancelled = promises.filter(p => p.status === 'cancelled').length;
 
@@ -586,7 +586,7 @@ export const getPromiseStats = () => {
     total,
     kept,
     partiallyKept,
-    inProgress,
+    pending,
     broken,
     cancelled,
     keptPercentage: Math.round((kept / total) * 100),
