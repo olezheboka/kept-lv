@@ -16,6 +16,17 @@ export interface PartyUI {
     mpCount: number;
 }
 
+export interface PartyWithStats extends PartyUI {
+    stats: {
+        total: number;
+        kept: number;
+        partiallyKept: number;
+        inProgress: number;
+        broken: number;
+        cancelled: number;
+    }
+}
+
 export interface PoliticianUI {
     id: string;
     slug: string;
@@ -36,6 +47,17 @@ export interface PoliticianUI {
         institution: string;
         year: string;
     }[];
+}
+
+export interface PoliticianWithStats extends PoliticianUI {
+    stats: {
+        total: number;
+        kept: number;
+        partiallyKept: number;
+        inProgress: number;
+        broken: number;
+        cancelled: number;
+    }
 }
 
 export interface PromiseUI {
@@ -173,28 +195,78 @@ const partyMpCounts: Record<string, number> = {
 
 // ========== PARTIES ==========
 
-const getPartiesFromDb = async (locale: Locale): Promise<PartyUI[]> => {
+const getPartiesFromDb = async (locale: Locale): Promise<PartyWithStats[]> => {
+    // 1. Fetch parties
     const parties = await withRetry(() => prisma.party.findMany({
         orderBy: { createdAt: "asc" },
+        include: {
+            politicians: {
+                select: { id: true }
+            }
+        }
     }));
 
-    return parties.map((party) => ({
-        id: party.slug,
-        slug: party.slug,
-        name: getLocalizedText(party.name, locale),
-        description: party.description ? getLocalizedText(party.description, locale) : undefined,
-        abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
-        logoUrl: party.logoUrl || undefined,
-        websiteUrl: party.websiteUrl || undefined,
-        isInCoalition: party.isCoalition,
-        mpCount: partyMpCounts[party.slug] ?? 0,
+    // 2. Fetch aggregation for all politicians
+    // Since we only track stats for promises linked to politicians of the party
+    // We group by politicianId
+    const promiseStats = await withRetry(() => prisma.promise.groupBy({
+        by: ["politicianId", "status"],
+        _count: { status: true },
+        where: { politicianId: { not: null } }
     }));
+
+    // 3. Map aggregates to a dictionary for O(1) lookup
+    const politicianStats = new Map<string, Record<string, number>>();
+    promiseStats.forEach(stat => {
+        if (!stat.politicianId) return;
+        const current = politicianStats.get(stat.politicianId) || {};
+        current[stat.status] = (current[stat.status] || 0) + (stat._count?.status || 0);
+        politicianStats.set(stat.politicianId, current);
+    });
+
+    // 4. Aggregate per party
+    return parties.map((party) => {
+        let kept = 0, partiallyKept = 0, inProgress = 0, broken = 0, cancelled = 0;
+
+        party.politicians.forEach(pol => {
+            const stats = politicianStats.get(pol.id);
+            if (stats) {
+                kept += stats["KEPT"] || 0;
+                partiallyKept += stats["PARTIAL"] || 0;
+                inProgress += stats["IN_PROGRESS"] || 0;
+                broken += stats["NOT_KEPT"] || 0;
+                cancelled += stats["CANCELLED"] || 0;
+            }
+        });
+
+        const total = kept + partiallyKept + inProgress + broken + cancelled;
+
+        return {
+            id: party.slug,
+            slug: party.slug,
+            name: getLocalizedText(party.name, locale),
+            description: party.description ? getLocalizedText(party.description, locale) : undefined,
+            abbreviation: partyAbbreviations[party.slug] || party.slug.toUpperCase(),
+            logoUrl: party.logoUrl || undefined,
+            websiteUrl: party.websiteUrl || undefined,
+            isInCoalition: party.isCoalition,
+            mpCount: partyMpCounts[party.slug] ?? 0,
+            stats: {
+                total,
+                kept,
+                partiallyKept,
+                inProgress,
+                broken,
+                cancelled
+            }
+        };
+    });
 };
 
-export async function getParties(locale: Locale = "lv"): Promise<PartyUI[]> {
+export async function getParties(locale: Locale = "lv"): Promise<PartyWithStats[]> {
     const getCachedParties = unstable_cache(
         () => getPartiesFromDb(locale),
-        [`parties-${locale}`],
+        [`parties-stats-${locale}`],
         { revalidate: 60, tags: ['parties'] }
     );
     return getCachedParties();
@@ -225,43 +297,77 @@ export async function getPartyBySlug(
 
 // ========== POLITICIANS ==========
 
-const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianUI[]> => {
-    const politicians = await withRetry(() => prisma.politician.findMany({
-        include: {
-            party: true,
-            jobs: { orderBy: { createdAt: 'desc' } },
-            educationEntries: { orderBy: { createdAt: 'desc' } },
-        },
-        orderBy: { createdAt: "asc" },
-    }));
+const getPoliticiansFromDb = async (locale: Locale): Promise<PoliticianWithStats[]> => {
+    const [politicians, promiseStats] = await Promise.all([
+        withRetry(() => prisma.politician.findMany({
+            include: {
+                party: true,
+                jobs: { orderBy: { createdAt: 'desc' } },
+                educationEntries: { orderBy: { createdAt: 'desc' } },
+            },
+            orderBy: { createdAt: "asc" },
+        })),
+        withRetry(() => prisma.promise.groupBy({
+            by: ["politicianId", "status"],
+            _count: { status: true },
+            where: { politicianId: { not: null } }
+        }))
+    ]);
 
-    return politicians.map((pol) => ({
-        id: pol.slug,
-        slug: pol.slug,
-        name: pol.name,
-        role: pol.role ? getLocalizedText(pol.role, locale) : "",
-        partyId: pol.party?.slug,
-        photoUrl: pol.imageUrl || "",
-        isInOffice: pol.isActive,
-        roleStartDate: undefined,
-        roleEndDate: undefined,
-        jobs: pol.jobs.map(j => ({
-            title: j.title,
-            company: j.company || undefined,
-            years: j.years
-        })),
-        educationEntries: pol.educationEntries.map(e => ({
-            degree: e.degree,
-            institution: e.institution,
-            year: e.year
-        })),
-    }));
+    // Map stats
+    const statsMap = new Map<string, Record<string, number>>();
+    promiseStats.forEach(stat => {
+        if (!stat.politicianId) return;
+        const current = statsMap.get(stat.politicianId) || {};
+        current[stat.status] = (current[stat.status] || 0) + (stat._count?.status || 0);
+        statsMap.set(stat.politicianId, current);
+    });
+
+    return politicians.map((pol) => {
+        const stats = statsMap.get(pol.id) || {};
+        const kept = stats["KEPT"] || 0;
+        const partiallyKept = stats["PARTIAL"] || 0;
+        const inProgress = stats["IN_PROGRESS"] || 0;
+        const broken = stats["NOT_KEPT"] || 0;
+        const cancelled = stats["CANCELLED"] || 0;
+        const total = kept + partiallyKept + inProgress + broken + cancelled;
+
+        return {
+            id: pol.slug,
+            slug: pol.slug,
+            name: pol.name,
+            role: pol.role ? getLocalizedText(pol.role, locale) : "",
+            partyId: pol.party?.slug,
+            photoUrl: pol.imageUrl || "",
+            isInOffice: pol.isActive,
+            roleStartDate: undefined,
+            roleEndDate: undefined,
+            jobs: pol.jobs.map(j => ({
+                title: j.title,
+                company: j.company || undefined,
+                years: j.years
+            })),
+            educationEntries: pol.educationEntries.map(e => ({
+                degree: e.degree,
+                institution: e.institution,
+                year: e.year
+            })),
+            stats: {
+                total,
+                kept,
+                partiallyKept,
+                inProgress,
+                broken,
+                cancelled
+            }
+        };
+    });
 };
 
-export async function getPoliticians(locale: Locale = "lv"): Promise<PoliticianUI[]> {
+export async function getPoliticians(locale: Locale = "lv"): Promise<PoliticianWithStats[]> {
     const getCachedPoliticians = unstable_cache(
         () => getPoliticiansFromDb(locale),
-        [`politicians-${locale}`],
+        [`politicians-stats-${locale}`],
         { revalidate: 60, tags: ['politicians'] }
     );
     return getCachedPoliticians();
@@ -543,19 +649,42 @@ export async function getPoliticianRankings(
 ): Promise<RankingItem[]> {
     const getCachedPoliticianRankings = unstable_cache(
         async () => {
-            const politicians = await withRetry(() => prisma.politician.findMany({
-                include: {
-                    party: true,
-                    promises: {
-                        select: { status: true }
+            // Parallel fetch: Politicians and Promise stats
+            const [politicians, promiseStats] = await Promise.all([
+                withRetry(() => prisma.politician.findMany({
+                    include: {
+                        party: true,
                     },
-                },
-            }));
+                })),
+                withRetry(() => prisma.promise.groupBy({
+                    by: ["politicianId", "status"],
+                    _count: {
+                        status: true,
+                    },
+                    where: {
+                        politicianId: { not: null },
+                    },
+                })),
+            ]);
+
+            // Create a map for fast lookup: politicianId -> { total, kept }
+            const statsMap = new Map<string, { total: number; kept: number }>();
+
+            promiseStats.forEach((stat) => {
+                if (!stat.politicianId) return;
+                const current = statsMap.get(stat.politicianId) || { total: 0, kept: 0 };
+
+                current.total += stat._count.status;
+                if (stat.status === "KEPT") {
+                    current.kept += stat._count.status;
+                }
+
+                statsMap.set(stat.politicianId, current);
+            });
 
             const rankings = politicians
                 .map((pol) => {
-                    const totalPromises = pol.promises.length;
-                    const keptPromises = pol.promises.filter((p) => p.status === "KEPT").length;
+                    const stats = statsMap.get(pol.id) || { total: 0, kept: 0 };
 
                     return {
                         id: pol.slug,
@@ -565,10 +694,10 @@ export async function getPoliticianRankings(
                         partyLogoUrl: pol.party?.logoUrl || undefined,
                         role: pol.role ? getLocalizedText(pol.role, locale) : undefined,
                         isInOffice: pol.isActive,
-                        totalPromises,
-                        keptPromises,
+                        totalPromises: stats.total,
+                        keptPromises: stats.kept,
                         keptPercentage:
-                            totalPromises > 0 ? Math.round((keptPromises / totalPromises) * 100) : 0,
+                            stats.total > 0 ? Math.round((stats.kept / stats.total) * 100) : 0,
                         abbreviation: pol.party ? (partyAbbreviations[pol.party.slug] || pol.party.slug.toUpperCase()) : undefined,
                     };
                 })
@@ -631,7 +760,7 @@ export async function getPartyRankings(locale: Locale = "lv"): Promise<RankingIt
 
 // ========== CATEGORIES ==========
 
-type CategoryWithStats = CategoryUI & {
+export type CategoryWithStats = CategoryUI & {
     stats: {
         total: number;
         kept: number;
@@ -643,22 +772,40 @@ type CategoryWithStats = CategoryUI & {
 };
 
 const getCategoriesFromDb = async (locale: Locale): Promise<CategoryWithStats[]> => {
+    // 1. Fetch categories
     const categories = await withRetry(() => prisma.category.findMany({
-        include: {
-            promises: {
-                select: { status: true },
-            },
-        },
         orderBy: { slug: "asc" },
+        include: {
+            _count: {
+                select: { promises: true }
+            }
+        }
     }));
 
+    // 2. Fetch aggregation for statuses
+    // Group by categoryId and status
+    const promiseStats = await withRetry(() => prisma.promise.groupBy({
+        by: ["categoryId", "status"],
+        _count: { status: true }
+    }));
+
+    // 3. Map to dictionary
+    const categoryStats = new Map<string, Record<string, number>>();
+    promiseStats.forEach(stat => {
+        if (!stat.categoryId) return;
+        const current = categoryStats.get(stat.categoryId) || {};
+        current[stat.status] = (current[stat.status] || 0) + (stat._count?.status || 0);
+        categoryStats.set(stat.categoryId, current);
+    });
+
     return categories.map((cat) => {
-        const total = cat.promises.length;
-        const kept = cat.promises.filter((p) => p.status === "KEPT").length;
-        const partiallyKept = cat.promises.filter((p) => p.status === "PARTIAL").length;
-        const inProgress = cat.promises.filter((p) => p.status === "IN_PROGRESS").length;
-        const broken = cat.promises.filter((p) => p.status === "NOT_KEPT").length;
-        const cancelled = cat.promises.filter((p) => p.status === "CANCELLED").length;
+        const stats = categoryStats.get(cat.id) || {};
+        const kept = stats["KEPT"] || 0;
+        const partiallyKept = stats["PARTIAL"] || 0;
+        const inProgress = stats["IN_PROGRESS"] || 0;
+        const broken = stats["NOT_KEPT"] || 0;
+        const cancelled = stats["CANCELLED"] || 0;
+        const total = kept + partiallyKept + inProgress + broken + cancelled;
 
         return {
             id: cat.slug,

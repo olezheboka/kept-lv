@@ -54,7 +54,7 @@ export default async function DebugPage() {
             </div>
 
             <main className="flex-1">
-                <PartiesClient parties={parties} promises={promises} />
+                <PartiesClient parties={parties} />
             </main>
 
             <Footer />

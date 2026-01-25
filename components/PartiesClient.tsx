@@ -10,15 +10,14 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Filter, Search, SlidersHorizontal, ChevronDown, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import type { PartyUI, PromiseUI } from '@/lib/db';
+import type { PartyWithStats, PromiseUI } from '@/lib/db';
 import { useDebounce } from '@/hooks/use-debounce';
 
 const ITEMS_PER_PAGE = 30;
 
 interface PartiesClientProps {
-    parties: PartyUI[];
-    // politicians: PoliticianUI[]; // Unused
-    promises: PromiseUI[];
+    parties: PartyWithStats[];
+    // promises: PromiseUI[]; // Removed
 }
 
 interface FilterPanelProps {
@@ -67,7 +66,7 @@ const FilterPanel = memo(({
 
 FilterPanel.displayName = 'FilterPanel';
 
-export function PartiesClient({ parties, promises, /* politicians */ }: PartiesClientProps) {
+export function PartiesClient({ parties }: PartiesClientProps) {
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -97,9 +96,7 @@ export function PartiesClient({ parties, promises, /* politicians */ }: PartiesC
         setLocalSearchQuery(value);
     };
 
-    // Helper to get promises by party
-    const getPromisesByParty = useCallback((partyId: string) =>
-        promises.filter(p => p.partyId === partyId), [promises]);
+    // Helper to get promises by party removed as stats are pre-calculated
 
     // Helper to get politicians by party
     // const getPoliticiansByParty = (partyId: string) =>
@@ -129,15 +126,10 @@ export function PartiesClient({ parties, promises, /* politicians */ }: PartiesC
 
         // Sorting
         result.sort((a, b) => {
-            const aPromises = getPromisesByParty(a.id);
-            const aTotal = aPromises.length;
-            const aKept = aPromises.filter(p => p.status === 'kept').length;
-            const aPercentage = aTotal > 0 ? (aKept / aTotal) * 100 : 0;
-
-            const bPromises = getPromisesByParty(b.id);
-            const bTotal = bPromises.length;
-            const bKept = bPromises.filter(p => p.status === 'kept').length;
-            const bPercentage = bTotal > 0 ? (bKept / bTotal) * 100 : 0;
+            const aPercentage = a.stats.total > 0 ? (a.stats.kept / a.stats.total) * 100 : 0;
+            const bPercentage = b.stats.total > 0 ? (b.stats.kept / b.stats.total) * 100 : 0;
+            const aKept = a.stats.kept;
+            const bKept = b.stats.kept;
 
             switch (sortBy) {
                 case 'alphabetical-asc':
@@ -162,7 +154,7 @@ export function PartiesClient({ parties, promises, /* politicians */ }: PartiesC
         });
 
         return result;
-    }, [parties, debouncedSearchQuery, filterCoalition, filterOpposition, sortBy, getPromisesByParty]);
+    }, [parties, debouncedSearchQuery, filterCoalition, filterOpposition, sortBy]);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredParties.length / ITEMS_PER_PAGE);
@@ -384,14 +376,12 @@ export function PartiesClient({ parties, promises, /* politicians */ }: PartiesC
                                 <>
                                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                                         {paginatedParties.map((party, index) => {
-                                            const partyPromises = getPromisesByParty(party.id);
-                                            // const partyPoliticians = getPoliticiansByParty(party.id);
-                                            const keptCount = partyPromises.filter(p => p.status === 'kept').length;
-                                            const partiallyKeptCount = partyPromises.filter(p => p.status === 'partially-kept').length;
-                                            const inProgressCount = partyPromises.filter(p => p.status === 'in-progress').length;
-                                            const brokenCount = partyPromises.filter(p => p.status === 'broken').length;
-                                            const cancelledCount = partyPromises.filter(p => p.status === 'cancelled').length;
-                                            const total = partyPromises.length;
+                                            const keptCount = party.stats.kept;
+                                            const partiallyKeptCount = party.stats.partiallyKept;
+                                            const inProgressCount = party.stats.inProgress;
+                                            const brokenCount = party.stats.broken;
+                                            const cancelledCount = party.stats.cancelled;
+                                            const total = party.stats.total;
 
                                             return (
                                                 <motion.div

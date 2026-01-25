@@ -7,24 +7,13 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CategoryUI } from '@/lib/db';
+import type { CategoryWithStats } from '@/lib/db';
 import { TrendingUp, ChevronLeft, ChevronRight, Search, ChevronDown, X } from 'lucide-react';
 import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
 import { useDebounce } from '@/hooks/use-debounce';
 
 interface CategoriesClientProps {
-    categories: (CategoryUI & {
-        stats: {
-            total: number;
-            kept: number;
-            partiallyKept: number;
-            inProgress: number;
-            broken: number;
-            cancelled: number;
-            // partial is deprecated in favor of partiallyKept
-            partial?: number;
-        }
-    })[];
+    categories: CategoryWithStats[];
 }
 
 const ITEMS_PER_PAGE = 30;

@@ -13,15 +13,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Search, Filter, SlidersHorizontal, ChevronDown, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import type { PoliticianUI, PartyUI, PromiseUI } from '@/lib/db';
+import type { PoliticianWithStats, PartyUI } from '@/lib/db';
 import { useDebounce } from '@/hooks/use-debounce';
 
 const ITEMS_PER_PAGE = 30;
 
 interface PoliticiansClientProps {
-    politicians: PoliticianUI[];
+    politicians: PoliticianWithStats[];
     parties: PartyUI[];
-    promises: PromiseUI[];
 }
 
 interface FilterPanelProps {
@@ -82,7 +81,7 @@ const FilterPanel = memo(({
 
 FilterPanel.displayName = 'FilterPanel';
 
-export function PoliticiansClient({ politicians, parties, promises }: PoliticiansClientProps) {
+export function PoliticiansClient({ politicians, parties }: PoliticiansClientProps) {
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -116,9 +115,7 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
     // const getPartyById = (partyId: string | undefined) => parties.find(p => p.id === partyId);
 
     // Helper to get promises by politician
-    // Helper to get promises by politician
-    const getPromisesByPolitician = useCallback((politicianId: string) =>
-        promises.filter(p => p.politicianId === politicianId), [promises]);
+    // Helper to get promises by politician removed as stats are pre-calculated
 
     const filteredPoliticians = useMemo(() => {
         let result = [...politicians];
@@ -141,34 +138,25 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
 
         // Sorting
         result.sort((a, b) => {
-            const aPromises = getPromisesByPolitician(a.id);
-            const aKept = aPromises.filter(p => p.status === 'kept').length;
-            const aTotal = aPromises.length;
-            const aPercentage = aTotal > 0 ? (aKept / aTotal) * 100 : 0;
-
-            const bPromises = getPromisesByPolitician(b.id);
-            const bKept = bPromises.filter(p => p.status === 'kept').length;
-            const bTotal = bPromises.length;
-            const bPercentage = bTotal > 0 ? (bKept / bTotal) * 100 : 0;
+            const aPercentage = a.stats.total > 0 ? (a.stats.kept / a.stats.total) * 100 : 0;
+            const bPercentage = b.stats.total > 0 ? (b.stats.kept / b.stats.total) * 100 : 0;
+            const aKept = a.stats.kept;
+            const bKept = b.stats.kept;
 
             if (sortBy === 'kept-percentage-asc') {
-                // sort by percentage asc
                 return aPercentage - bPercentage;
             } else if (sortBy === 'kept-percentage-desc') {
-                // sort by percentage desc
                 return bPercentage - aPercentage;
             } else if (sortBy === 'kept-count-asc') {
-                // sort by count asc
                 return aKept - bKept;
             } else if (sortBy === 'kept-count-desc') {
-                // sort by count desc
                 return bKept - aKept;
             }
             return 0;
         });
 
         return result;
-    }, [debouncedSearchQuery, selectedParties, showInOffice, sortBy, politicians, getPromisesByPolitician]);
+    }, [debouncedSearchQuery, selectedParties, showInOffice, sortBy, politicians]);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredPoliticians.length / ITEMS_PER_PAGE);
@@ -399,14 +387,12 @@ export function PoliticiansClient({ politicians, parties, promises }: Politician
                                 <>
                                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                                         {paginatedPoliticians.map((politician, index) => {
-                                            // const party = getPartyById(politician.partyId);
-                                            const politicianPromises = getPromisesByPolitician(politician.id);
-                                            const keptCount = politicianPromises.filter(p => p.status === 'kept').length;
-                                            const partiallyKeptCount = politicianPromises.filter(p => p.status === 'partially-kept').length;
-                                            const inProgressCount = politicianPromises.filter(p => p.status === 'in-progress').length;
-                                            const brokenCount = politicianPromises.filter(p => p.status === 'broken').length;
-                                            const cancelledCount = politicianPromises.filter(p => p.status === 'cancelled').length;
-                                            const total = politicianPromises.length;
+                                            const keptCount = politician.stats.kept;
+                                            const partiallyKeptCount = politician.stats.partiallyKept;
+                                            const inProgressCount = politician.stats.inProgress;
+                                            const brokenCount = politician.stats.broken;
+                                            const cancelledCount = politician.stats.cancelled;
+                                            const total = politician.stats.total;
 
                                             return (
                                                 <motion.div
