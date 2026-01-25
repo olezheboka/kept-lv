@@ -25,7 +25,7 @@ export function CTASection() {
                             Ieteikt solījumu
                         </h3>
                         <p className="text-muted-foreground mb-8 leading-relaxed">
-                            Zini solījumu, kas šeit trūkst? Iesniedz to mums izskatīšanai un palīdzi veidot pilnīgāku ainu par politisko atbildību.
+                            Ir ideja uzlabojumiem vai konkrēts solījums, ko pievienot? Padod ziņu, un mēs izskatīsim.
                         </p>
                         <Link href="mailto:info@solijums.lv?subject=Jauns%20solījums" className="mt-auto" suppressHydrationWarning>
                             <Button size="lg" className="font-semibold">
