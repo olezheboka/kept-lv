@@ -56,13 +56,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // 1. Fetch current state BEFORE update for diffing
+    const currentParty = await prisma.party.findUnique({ where: { id } });
+
     const party = await prisma.party.update({
       where: { id },
       data: parsed.data,
     });
 
     // Calculate changed fields
-    const currentParty = await prisma.party.findUnique({ where: { id } });
     const updatedFields: string[] = [];
 
     if (currentParty) {
