@@ -16,7 +16,7 @@ const inter = Inter({
 
 import { getLocale, getTranslations } from "next-intl/server";
 import { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
+// import { prisma } from "@/lib/prisma";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -40,10 +40,20 @@ export async function generateMetadata(): Promise<Metadata> {
   const description = config.description || t("description");
   const siteName = config.siteName || t("siteName");
 
+  const defaultKeywords = [
+    "solījumi", "politiķi", "partijas", "Saeima", "valdība",
+    "Latvija", "vēlēšanas", "izpilde", "monitorings",
+    "atbildība", "caurspīdīgums", "demokrātija"
+  ];
+
+  const keywords = config.keywords
+    ? config.keywords.split(",").map(k => k.trim())
+    : defaultKeywords;
+
   return {
     title,
     description,
-    keywords: config.keywords ? config.keywords.split(",").map(k => k.trim()) : undefined,
+    keywords,
     openGraph: {
       title,
       description,
@@ -60,9 +70,12 @@ export async function generateMetadata(): Promise<Metadata> {
     verification: config.googleVerificationId ? {
       google: config.googleVerificationId,
     } : undefined,
-    icons: config.faviconUrl ? {
-      icon: config.faviconUrl,
-    } : undefined,
+    icons: {
+      icon: config.faviconUrl || "/favicon.ico",
+    },
+    other: {
+      "application-name": siteName,
+    }
   };
 }
 
@@ -78,6 +91,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={locale}>
       <body className={`${inter.variable} antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Solījums.lv",
+              "url": "https://solijums.lv",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://solijums.lv/search?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            })
+          }}
+        />
         <NextIntlClientProvider messages={messages}>
           <Providers>
             {children}
