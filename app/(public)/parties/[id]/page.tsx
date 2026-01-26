@@ -1,7 +1,8 @@
 
 import {
     getPartyBySlug,
-    getPromisesByParty
+    getPromisesByParty,
+    getPoliticiansByPartySlug
 } from '@/lib/db';
 import { PartyDetailClient } from '@/components/PartyDetailClient';
 
@@ -19,12 +20,14 @@ const PartyDetailPage = async ({ params }: PageProps) => {
 
     let party;
     let promises;
+    let politicians;
 
     try {
         party = await getPartyBySlug(id);
 
         if (party) {
             promises = await getPromisesByParty(party.id);
+            politicians = await getPoliticiansByPartySlug(party.id);
         }
     } catch (error) {
         console.error(`Error loading party ${id}:`, error);
@@ -39,6 +42,7 @@ const PartyDetailPage = async ({ params }: PageProps) => {
         <PartyDetailClient
             party={party}
             promises={promises!}
+            politicians={politicians!}
         />
     );
 };

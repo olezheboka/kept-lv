@@ -9,14 +9,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PromiseStatus, STATUS_CONFIG } from '@/lib/types';
 import { ArrowLeft, Globe } from 'lucide-react';
-import { PartyUI, PromiseUI } from '@/lib/db';
+import { PartyUI, PromiseUI, PoliticianWithStats } from '@/lib/db';
+import { PartyPoliticiansList } from '@/components/PartyPoliticiansList';
 
 interface PartyDetailClientProps {
     party: PartyUI | null;
     promises: PromiseUI[];
+    politicians: PoliticianWithStats[];
 }
 
-export const PartyDetailClient = ({ party, promises }: PartyDetailClientProps) => {
+export const PartyDetailClient = ({ party, promises, politicians }: PartyDetailClientProps) => {
     const [filterStatus, setFilterStatus] = useState<PromiseStatus | 'all'>('all');
 
     if (!party) {
@@ -107,9 +109,9 @@ export const PartyDetailClient = ({ party, promises }: PartyDetailClientProps) =
 
                             {/* Row 3: Description & Link */}
                             {(party.description || party.websiteUrl) && (
-                                <div className="mt-6 max-w-2xl">
+                                <div className="mt-6 flex flex-col md:flex-row md:items-start md:justify-between gap-4 w-full">
                                     {party.description && (
-                                        <p className="text-muted-foreground mb-4 leading-relaxed">
+                                        <p className="text-muted-foreground leading-relaxed max-w-2xl flex-1">
                                             {party.description}
                                         </p>
                                     )}
@@ -118,9 +120,9 @@ export const PartyDetailClient = ({ party, promises }: PartyDetailClientProps) =
                                             href={party.websiteUrl}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-medium"
+                                            className="inline-flex items-center gap-1.5 text-primary hover:text-primary/80 transition-colors font-medium text-xs whitespace-nowrap md:ml-4"
                                         >
-                                            <Globe className="h-4 w-4" />
+                                            <Globe className="h-3 w-3" />
                                             Partijas mājaslapa
                                         </a>
                                     )}
@@ -128,6 +130,13 @@ export const PartyDetailClient = ({ party, promises }: PartyDetailClientProps) =
                             )}
                         </div>
                     </motion.div>
+                </div>
+            </section>
+
+            {/* Politicians List */}
+            <section className="py-8 border-b border-border/50">
+                <div className="container-wide">
+                    <PartyPoliticiansList politicians={politicians} />
                 </div>
             </section>
 

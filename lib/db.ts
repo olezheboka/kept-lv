@@ -411,6 +411,83 @@ export async function getPoliticianBySlug(
     };
 }
 
+export async function getPoliticiansByPartySlug(
+    partySlug: string,
+    locale: Locale = "lv"
+): Promise<PoliticianWithStats[]> {
+    const party = await withRetry(() => prisma.party.findFirst({
+        where: { slug: partySlug },
+    }));
+
+    if (!party) return [];
+
+    const [politicians, promiseStats] = await Promise.all([
+        withRetry(() => prisma.politician.findMany({
+            where: { partyId: party.id },
+            include: {
+                party: true,
+                jobs: { orderBy: { createdAt: 'desc' } },
+                educationEntries: { orderBy: { createdAt: 'desc' } },
+            },
+            orderBy: { name: "asc" },
+        })),
+        withRetry(() => prisma.promise.groupBy({
+            by: ["politicianId", "status"],
+            _count: { status: true },
+            where: { politicianId: { not: null } }
+        }))
+    ]);
+
+    // Map stats
+    const statsMap = new Map<string, Record<string, number>>();
+    promiseStats.forEach(stat => {
+        if (!stat.politicianId) return;
+        const current = statsMap.get(stat.politicianId) || {};
+        current[stat.status] = (current[stat.status] || 0) + (stat._count?.status || 0);
+        statsMap.set(stat.politicianId, current);
+    });
+
+    return politicians.map((pol) => {
+        const stats = statsMap.get(pol.id) || {};
+        const kept = stats["KEPT"] || 0;
+        const partiallyKept = stats["PARTIAL"] || 0;
+        const pending = stats["PENDING"] || 0;
+        const broken = stats["NOT_KEPT"] || 0;
+        const cancelled = stats["CANCELLED"] || 0;
+        const total = kept + partiallyKept + pending + broken + cancelled;
+
+        return {
+            id: pol.slug,
+            slug: pol.slug,
+            name: pol.name,
+            role: pol.role ? getLocalizedText(pol.role, locale) : "",
+            partyId: pol.party?.slug,
+            photoUrl: pol.imageUrl || "",
+            isInOffice: pol.isActive,
+            roleStartDate: undefined,
+            roleEndDate: undefined,
+            jobs: pol.jobs.map(j => ({
+                title: j.title,
+                company: j.company || undefined,
+                years: j.years
+            })),
+            educationEntries: pol.educationEntries.map(e => ({
+                degree: e.degree,
+                institution: e.institution,
+                year: e.year
+            })),
+            stats: {
+                total,
+                kept,
+                partiallyKept,
+                pending,
+                broken,
+                cancelled
+            }
+        };
+    });
+}
+
 // ========== PROMISES ==========
 
 // Helper to map DB promise to UI promise
