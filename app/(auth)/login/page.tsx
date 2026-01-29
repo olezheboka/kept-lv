@@ -26,6 +26,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [globalError, setGlobalError] = useState("");
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -53,6 +54,7 @@ export default function LoginPage() {
       if (result?.error) {
         setGlobalError("Invalid email or password");
       } else {
+        setIsRedirecting(true);
         router.push("/admin");
         router.refresh();
       }
@@ -186,7 +188,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isRedirecting}
                 className="w-full h-11 font-semibold text-base shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] active:scale-[0.99]"
               >
                 {isSubmitting ? (
