@@ -17,7 +17,10 @@ model User {
   role         Role      @default(ADMIN)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  lastLogin    DateTime?
+  lastLogin        DateTime?
+  resetRequests    Int       @default(0)
+  lastResetRequest DateTime?
+  tokens           PasswordResetToken[]
 
   @@map("users")
 }
@@ -176,6 +179,18 @@ model AuditLog {
 enum Role {
   ADMIN
   EDITOR
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
 }
 
 enum PromiseType {
