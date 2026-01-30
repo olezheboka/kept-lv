@@ -1,3 +1,5 @@
+"use client";
+
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { getPromiseStats } from '@/lib/data';
 import { motion } from 'framer-motion';
