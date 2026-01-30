@@ -395,11 +395,11 @@ export function PartiesClient({ parties }: PartiesClientProps) {
                                                 >
                                                     <Link href={`/parties/${party.id}`} className="block h-full">
                                                         <Card className="group overflow-hidden border-border/50 hover:shadow-elevated hover:border-border transition-all duration-300 h-full">
-                                                            <CardContent className="p-6">
+                                                            <CardContent className="p-5">
                                                                 {/* Party Header - Politician Card Style */}
-                                                                <div className="flex flex-col gap-1 mb-4">
+                                                                <div className="flex flex-col mb-4">
                                                                     <div className="flex items-center gap-2 flex-wrap max-w-full">
-                                                                        <h3 className="text-sm font-semibold text-foreground leading-tight truncate group-hover:text-accent transition-colors">
+                                                                        <h3 className="text-sm font-semibold text-foreground leading-none truncate group-hover:text-accent transition-colors">
                                                                             {party.name}
                                                                         </h3>
                                                                     </div>
@@ -411,11 +411,11 @@ export function PartiesClient({ parties }: PartiesClientProps) {
                                                                             </span>
                                                                         )}
                                                                         {party.isInCoalition ? (
-                                                                            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
+                                                                            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
                                                                                 Koalīcijā
                                                                             </span>
                                                                         ) : (
-                                                                            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
+                                                                            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
                                                                                 Opozīcijā
                                                                             </span>
                                                                         )}

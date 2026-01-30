@@ -53,7 +53,7 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
 
             <div className="flex-1 min-w-0 flex flex-col justify-center">
                 <div className="mb-1.5 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap text-sm leading-tight">
+                    <div className="flex items-center gap-2 flex-wrap text-sm leading-none">
                         <Link
                             href={type === 'politician' ? `/politicians/${item.id}` : `/parties/${item.id}`}
                             className="font-semibold text-foreground truncate hover:underline underline-offset-4 decoration-primary/30 hover:decoration-primary transition-all"
@@ -65,25 +65,25 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                         {/* Party badge removed */}
                     </div>
                     {type === 'politician' && item.role && (
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground w-full mt-0.5">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground w-full mt-0">
                             <span className="truncate max-w-[150px]">
                                 {item.role}
                             </span>
                             {item.isInOffice && (
-                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
+                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
                                     Amatā
                                 </span>
                             )}
                         </div>
                     )}
                     {type === 'party' && (
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground w-full mt-0.5">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground w-full mt-0">
                             {item.isInCoalition ? (
-                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
+                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
                                     Koalīcijā
                                 </span>
                             ) : (
-                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
+                                <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
                                     Opozīcijā
                                 </span>
                             )}
@@ -105,7 +105,7 @@ const RankingRow = ({ item, index, viewMode, type, getRankIcon }: {
                     <span className="text-sm font-bold text-foreground">{item.keptPromises}<span className="text-muted-foreground font-normal text-xs">/{item.totalPromises}</span></span>
                 )}
             </div>
-        </motion.div>
+        </motion.div >
     );
 };
 

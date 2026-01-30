@@ -407,9 +407,9 @@ export function PoliticiansClient({ politicians, parties }: PoliticiansClientPro
                                                     <Link href={`/politicians/${politician.slug}`}>
                                                         <Card className="group overflow-hidden border-border/50 hover:shadow-elevated hover:border-border transition-all duration-300">
                                                             <CardContent className="p-5">
-                                                                <div className="flex flex-col gap-1 mb-4">
+                                                                <div className="flex flex-col mb-4">
                                                                     <div className="flex items-center gap-2 flex-wrap max-w-full">
-                                                                        <h3 className="text-sm font-semibold text-foreground leading-tight truncate group-hover:text-accent transition-colors">
+                                                                        <h3 className="text-sm font-semibold text-foreground leading-none truncate group-hover:text-accent transition-colors">
                                                                             {politician.name}
                                                                         </h3>
                                                                     </div>
@@ -428,7 +428,7 @@ export function PoliticiansClient({ politicians, parties }: PoliticiansClientPro
                                                                             </Tooltip>
                                                                         </TooltipProvider>
                                                                         {politician.isInOffice && (
-                                                                            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
+                                                                            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-muted/60 text-[10px] font-medium text-muted-foreground">
                                                                                 Amatā
                                                                             </span>
                                                                         )}
