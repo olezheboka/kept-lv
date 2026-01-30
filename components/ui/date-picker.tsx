@@ -27,7 +27,7 @@ interface DatePickerProps {
     placeholder?: string;
 }
 
-export function DatePicker({ date, setDate, className, placeholder = "dd/mm/yyyy" }: DatePickerProps) {
+export function DatePicker({ date, setDate, className, placeholder = "dd.MM.yyyy" }: DatePickerProps) {
     const [open, setOpen] = React.useState(false);
     const [month, setMonth] = React.useState<Date>(date || new Date());
 
@@ -66,7 +66,7 @@ export function DatePicker({ date, setDate, className, placeholder = "dd/mm/yyyy
                         className
                     )}
                 >
-                    {date ? format(date, "dd/MM/yyyy") : <span>{placeholder}</span>}
+                    {date ? format(date, "dd.MM.yyyy") : <span>{placeholder}</span>}
                     <CalendarIcon className="h-4 w-4 opacity-50" />
                 </Button>
             </PopoverTrigger>

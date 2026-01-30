@@ -17,6 +17,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { format } from 'date-fns';
 import { PromiseUI, PoliticianUI, PartyUI, CategoryUI } from '@/lib/db';
+import { PromiseTimeline } from '@/components/PromiseTimeline';
 
 
 interface PromiseDetailClientProps {
@@ -131,7 +132,7 @@ export const PromiseDetailClient = ({
                                         {/* Date first */}
                                         <div className="flex items-center gap-1.5">
                                             <Calendar className="h-4 w-4" />
-                                            <span>{format(new Date(promise.datePromised), 'yyyy.MM.dd')}</span>
+                                            <span>{format(new Date(promise.datePromised), 'dd.MM.yyyy')}</span>
                                         </div>
 
                                         {/* Category with proper icon */}
@@ -255,10 +256,12 @@ export const PromiseDetailClient = ({
                                     <div className="flex justify-start">
                                         <StatusBadge status={promise.status} size="lg" variant="solid" />
                                     </div>
-                                    <div className="text-lg text-foreground leading-relaxed">
-                                        <span className="font-bold block mb-2 text-foreground/80">Pamatojums:</span>
-                                        {promise.statusJustification}
-                                    </div>
+                                    {promise.statusJustification && (
+                                        <div className="text-lg text-foreground leading-relaxed">
+                                            <span className="font-bold block mb-2 text-foreground/80">Pamatojums:</span>
+                                            {promise.statusJustification}
+                                        </div>
+                                    )}
 
                                     <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-black/5 text-sm text-foreground/70">
                                         <div className="flex items-center gap-2">
@@ -286,6 +289,18 @@ export const PromiseDetailClient = ({
                                     </div>
                                 </CardContent>
                             </Card>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: 0.15 }}
+                            className="mb-8"
+                        >
+                            <PromiseTimeline
+                                history={promise.statusHistory || []}
+                                createdAt={promise.datePromised}
+                            />
                         </motion.div>
 
                         {promise.tags && promise.tags.length > 0 && (

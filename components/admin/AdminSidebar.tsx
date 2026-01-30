@@ -120,7 +120,7 @@ export function AdminSidebar() {
                                     {session?.user?.email || "Admin User"}
                                 </p>
                                 <p className="text-xs text-g-gray-500">
-                                    Previous login: {session?.user?.lastLogin ? format(new Date(session.user.lastLogin), "dd.MM.yyyy HH:mm") : "First login"}
+                                    Last login: {session?.user?.lastLogin ? format(new Date(session.user.lastLogin), "dd.MM.yyyy HH:mm") : "First login"}
                                 </p>
                             </div>
                         </div>
