@@ -131,13 +131,13 @@ export default function PoliticianClientPage({ initialPoliticians }: PoliticianC
             result = result.filter(p => p.isInOffice ?? p.isActive);
         }
 
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
+        if (localSearchQuery) {
+            const query = localSearchQuery.toLowerCase();
             result = result.filter(p => p.searchText.includes(query));
         }
 
         return result;
-    }, [politiciansWithSearchText, searchQuery, selectedParties, showInOffice]);
+    }, [politiciansWithSearchText, localSearchQuery, selectedParties, showInOffice]);
 
     // Sort politicians
     const sortedPoliticians = useMemo(() => {
