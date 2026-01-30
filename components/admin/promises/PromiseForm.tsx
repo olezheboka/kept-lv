@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
 import { Loader2, CheckCircle2, XCircle, PieChart, User, Folder, Building2, Layers, Ban } from "lucide-react";
+import { toast } from "sonner";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 
 import { FormActions } from "@/components/admin/FormActions";
 import { Input } from "@/components/ui/input";
@@ -202,6 +204,67 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
         };
     });
 
+
+
+    // Simple dirty check
+    const [isDirty, setIsDirty] = useState(false);
+
+    useEffect(() => {
+        // We only check simple equality for dirty state to avoid deep comparison overhead
+        // Just checking if title or status changed is often enough, but let's do a basic JSON compare of the form data
+        // We need to exclude the helper fields or ensure they match initialData structure
+        // To be safe and simple: set dirty to true on any change handler? 
+        // No, that's annoying if you change back.
+        // Let's rely on JSON stringify for now, it's efficient enough for this size.
+
+        // Reconstruct initial state for comparison
+        let initialFormState = {
+            title: "",
+            slug: "",
+            description: "",
+            status: "pending" as StatusType,
+            explanation: "",
+            dateOfPromise: "",
+            statusUpdatedAt: "",
+            type: "INDIVIDUAL" as PromiseType,
+            politicianId: "",
+            partyId: "",
+            coalitionPartyIds: [] as string[],
+            categoryId: "",
+            sourceType: "VIDEO" as "VIDEO" | "ARTICLE" | "DOCUMENT" | "SOCIAL_MEDIA" | "INTERVIEW" | "MANIFESTO" | "GOVERNMENT_DOC",
+            sourceUrl: "",
+            sourceTitle: "",
+            tags: [] as string[],
+        };
+
+        if (initialData) {
+            const source = initialData.sources?.[0];
+            initialFormState = {
+                title: initialData.title || "",
+                slug: initialData.slug || "",
+                description: initialData.description || "",
+                status: normalizeStatus(initialData.status),
+                explanation: initialData.explanation || "",
+                dateOfPromise: initialData.dateOfPromise ? new Date(initialData.dateOfPromise).toISOString().split('T')[0] : "",
+                statusUpdatedAt: initialData.statusUpdatedAt ? new Date(initialData.statusUpdatedAt).toISOString().split('T')[0] : "",
+                type: initialData.type || "INDIVIDUAL",
+                politicianId: initialData.politicianId || "",
+                partyId: initialData.partyId || "",
+                coalitionPartyIds: initialData.coalitionParties ? initialData.coalitionParties.map(p => p.id) : [],
+                categoryId: initialData.categoryId || "",
+                sourceType: source?.type || "VIDEO",
+                sourceUrl: source?.url || "",
+                sourceTitle: source?.title || "",
+                tags: Array.isArray(initialData.tags) ? initialData.tags : [],
+            };
+        }
+
+        const isModified = JSON.stringify(formData) !== JSON.stringify(initialFormState);
+        setIsDirty(isModified);
+    }, [formData, initialData]);
+
+    const { handleCancel, UnsavedChangesModal } = useUnsavedChanges(isDirty);
+
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     // Reset form if initialData changes (for when dialog reopens with new data if component persists)
@@ -318,6 +381,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             });
 
             if (res.ok) {
+                toast.success(initialData ? "Promise updated successfully" : "Promise created successfully");
                 router.refresh();
                 onSuccess();
             } else {
@@ -692,9 +756,11 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
 
             </div>
 
+            {UnsavedChangesModal}
+
             <FormActions
                 loading={loading}
-                onCancel={onCancel}
+                onCancel={() => handleCancel(onCancel)}
                 submitLabel={initialData ? "Update" : "Create"}
             />
         </form>

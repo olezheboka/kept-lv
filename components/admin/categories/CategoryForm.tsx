@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
 import { TrendingUp } from "lucide-react";
+import { toast } from "sonner";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { SLUG_ICON_MAP } from "@/lib/categoryIcons";
 import { FormActions } from "@/components/admin/FormActions";
 import { Input } from "@/components/ui/input";
@@ -58,6 +60,29 @@ export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormP
         }
     }, [initialData]);
 
+    const [isDirty, setIsDirty] = useState(false);
+
+    useEffect(() => {
+        let initialFormState = {
+            name: "",
+            slug: "",
+            description: "",
+        };
+
+        if (initialData) {
+            initialFormState = {
+                name: initialData.name || "",
+                slug: initialData.slug || "",
+                description: initialData.description || "",
+            };
+        }
+
+        const isModified = JSON.stringify(formData) !== JSON.stringify(initialFormState);
+        setIsDirty(isModified);
+    }, [formData, initialData]);
+
+    const { handleCancel, UnsavedChangesModal } = useUnsavedChanges(isDirty);
+
     // Auto-generate slug from name only in create mode or if slug is empty
     useEffect(() => {
         if (!initialData && formData.name && !formData.slug) {
@@ -93,6 +118,7 @@ export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormP
             });
 
             if (res.ok) {
+                toast.success(initialData ? "Category updated successfully" : "Category created successfully");
                 router.refresh();
                 onSuccess();
             } else {
@@ -179,9 +205,10 @@ export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormP
                 </div>
             </div>
 
+
             <FormActions
                 loading={loading}
-                onCancel={onCancel}
+                onCancel={() => handleCancel(onCancel)}
                 submitLabel={initialData ? "Update" : "Create"}
             />
         </form>

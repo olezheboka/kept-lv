@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { FormActions } from "@/components/admin/FormActions";
 import {
     Form,
@@ -57,6 +58,9 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
             googleVerificationId: "",
         },
     });
+
+    const { isDirty } = form.formState;
+    const { handleCancel, UnsavedChangesModal } = useUnsavedChanges(isDirty);
 
     async function onSubmit(data: ConfigFormValues) {
         setLoading(true);
@@ -292,10 +296,11 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
 
                 <FormActions
                     loading={loading}
-                    onCancel={() => onCancel?.()}
+                    onCancel={() => handleCancel(() => onCancel?.())}
                     submitLabel="Save Configuration"
                 />
             </form>
+            {UnsavedChangesModal}
         </Form>
     );
 }

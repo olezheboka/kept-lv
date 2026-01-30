@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
 import { Flag, GraduationCap, Briefcase, CheckCircle2, XCircle, Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { FormActions } from "@/components/admin/FormActions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -85,6 +87,27 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
         }
     }, [initialData]);
 
+
+
+    const [isDirty, setIsDirty] = useState(false);
+
+    useEffect(() => {
+        const initialFormState = {
+            name: initialData?.name || "",
+            slug: initialData?.slug || "",
+            partyId: initialData?.partyId || "",
+            role: initialData?.role || "Member of Parliament",
+            isActive: initialData?.isActive ?? true,
+            jobs: initialData?.jobs || [],
+            educationEntries: initialData?.educationEntries || [],
+        };
+
+        const isModified = JSON.stringify(formData) !== JSON.stringify(initialFormState);
+        setIsDirty(isModified);
+    }, [formData, initialData]);
+
+    const { handleCancel, UnsavedChangesModal } = useUnsavedChanges(isDirty);
+
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     // Auto-generate slug from name only in create mode or if slug is empty
@@ -134,6 +157,7 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
             });
 
             if (res.ok) {
+                toast.success(initialData ? "Politician updated successfully" : "Politician created successfully");
                 router.refresh();
                 onSuccess();
             } else {
@@ -454,11 +478,15 @@ export function PoliticianForm({ initialData, parties, onSuccess, onCancel }: Po
 
             </div>
 
+
+
+            {UnsavedChangesModal}
+
             <FormActions
                 loading={loading}
-                onCancel={onCancel}
+                onCancel={() => handleCancel(onCancel)}
                 submitLabel={initialData ? "Update" : "Create"}
             />
-        </form>
+        </form >
     );
 }

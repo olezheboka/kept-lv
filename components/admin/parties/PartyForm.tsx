@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
 import { CheckCircle2, XCircle } from "lucide-react";
+import { toast } from "sonner";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { FormActions } from "@/components/admin/FormActions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -94,6 +96,37 @@ export function PartyForm({ initialData, onSuccess, onCancel }: PartyFormProps) 
         }
     }, [initialData]);
 
+    const [isDirty, setIsDirty] = useState(false);
+
+    useEffect(() => {
+        let initialFormState = {
+            name: "",
+            slug: "",
+            code: "",
+            description: "",
+            logoUrl: "",
+            websiteUrl: "",
+            isCoalition: false,
+        };
+
+        if (initialData) {
+            initialFormState = {
+                name: initialData.name || "",
+                slug: initialData.slug || "",
+                code: initialData.code || "",
+                description: initialData.description || "",
+                logoUrl: initialData.logoUrl || "",
+                websiteUrl: initialData.websiteUrl || "",
+                isCoalition: initialData.isCoalition || false,
+            };
+        }
+
+        const isModified = JSON.stringify(formData) !== JSON.stringify(initialFormState);
+        setIsDirty(isModified);
+    }, [formData, initialData]);
+
+    const { handleCancel, UnsavedChangesModal } = useUnsavedChanges(isDirty);
+
     // Auto-generate slug from name only in create mode or if slug is empty
     useEffect(() => {
         if (!initialData && formData.name && !formData.slug) {
@@ -143,6 +176,7 @@ export function PartyForm({ initialData, onSuccess, onCancel }: PartyFormProps) 
             });
 
             if (res.ok) {
+                toast.success(initialData ? "Party updated successfully" : "Party created successfully");
                 router.refresh();
                 onSuccess();
             } else {
@@ -309,9 +343,10 @@ export function PartyForm({ initialData, onSuccess, onCancel }: PartyFormProps) 
                 </div>
             </div>
 
+
             <FormActions
                 loading={loading}
-                onCancel={onCancel}
+                onCancel={() => handleCancel(onCancel)}
                 submitLabel={initialData ? "Update" : "Create"}
             />
         </form>
