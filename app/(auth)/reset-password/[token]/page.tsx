@@ -61,6 +61,7 @@ export default function ResetPasswordPage({ params }: PageProps) {
 
     const form = useForm<ResetPasswordFormValues>({
         resolver: zodResolver(resetPasswordSchema),
+        mode: "onBlur",
         defaultValues: {
             password: "",
             confirmPassword: "",
