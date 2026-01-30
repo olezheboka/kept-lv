@@ -12,7 +12,7 @@ const forgotPasswordSchema = z.object({
 const TOKEN_EXPIRATION_MS = 60 * 60 * 1000;
 
 // Rate limit: max 3 requests per hour
-const MAX_REQUESTS_PER_HOUR = 3;
+const MAX_REQUESTS_PER_HOUR = 6;
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 
 function hashToken(token: string): string {
