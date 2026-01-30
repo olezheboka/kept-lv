@@ -351,14 +351,59 @@ export default function ResetPasswordPage({ params }: PageProps) {
                             </div>
 
                             {/* Password requirements hint */}
-                            <div className="p-3 rounded-lg bg-muted/50 text-xs text-muted-foreground">
-                                <p className="font-medium mb-1">Password requirements:</p>
-                                <ul className="space-y-0.5 ml-3 list-disc">
-                                    <li>At least 8 characters</li>
-                                    <li>One uppercase letter</li>
-                                    <li>One lowercase letter</li>
-                                    <li>One number</li>
-                                    <li>One special character</li>
+                            <div className="p-3 rounded-lg bg-muted/50 text-xs">
+                                <p className="font-medium mb-2 text-muted-foreground">Password requirements:</p>
+                                <ul className="space-y-1">
+                                    <li className={cn(
+                                        "flex items-center gap-2 transition-colors",
+                                        (password?.length ?? 0) >= 8 ? "text-green-600" : "text-muted-foreground"
+                                    )}>
+                                        <CheckCircle2 className={cn(
+                                            "w-3.5 h-3.5 transition-colors",
+                                            (password?.length ?? 0) >= 8 ? "text-green-600" : "text-muted-foreground/50"
+                                        )} />
+                                        At least 8 characters
+                                    </li>
+                                    <li className={cn(
+                                        "flex items-center gap-2 transition-colors",
+                                        /[A-Z]/.test(password || "") ? "text-green-600" : "text-muted-foreground"
+                                    )}>
+                                        <CheckCircle2 className={cn(
+                                            "w-3.5 h-3.5 transition-colors",
+                                            /[A-Z]/.test(password || "") ? "text-green-600" : "text-muted-foreground/50"
+                                        )} />
+                                        One uppercase letter
+                                    </li>
+                                    <li className={cn(
+                                        "flex items-center gap-2 transition-colors",
+                                        /[a-z]/.test(password || "") ? "text-green-600" : "text-muted-foreground"
+                                    )}>
+                                        <CheckCircle2 className={cn(
+                                            "w-3.5 h-3.5 transition-colors",
+                                            /[a-z]/.test(password || "") ? "text-green-600" : "text-muted-foreground/50"
+                                        )} />
+                                        One lowercase letter
+                                    </li>
+                                    <li className={cn(
+                                        "flex items-center gap-2 transition-colors",
+                                        /[0-9]/.test(password || "") ? "text-green-600" : "text-muted-foreground"
+                                    )}>
+                                        <CheckCircle2 className={cn(
+                                            "w-3.5 h-3.5 transition-colors",
+                                            /[0-9]/.test(password || "") ? "text-green-600" : "text-muted-foreground/50"
+                                        )} />
+                                        One number
+                                    </li>
+                                    <li className={cn(
+                                        "flex items-center gap-2 transition-colors",
+                                        /[^A-Za-z0-9]/.test(password || "") ? "text-green-600" : "text-muted-foreground"
+                                    )}>
+                                        <CheckCircle2 className={cn(
+                                            "w-3.5 h-3.5 transition-colors",
+                                            /[^A-Za-z0-9]/.test(password || "") ? "text-green-600" : "text-muted-foreground/50"
+                                        )} />
+                                        One special character
+                                    </li>
                                 </ul>
                             </div>
 
