@@ -613,7 +613,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                                             setFormData(prev => ({
                                                 ...prev,
                                                 status: option.value,
-                                                statusUpdatedAt: prev.statusUpdatedAt || new Date().toISOString().split('T')[0]
+                                                statusUpdatedAt: new Date().toISOString().split('T')[0]
                                             }));
                                             if (errors.status) setErrors({ ...errors, status: "" });
                                         }}
