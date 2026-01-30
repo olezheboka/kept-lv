@@ -60,6 +60,15 @@ export interface PoliticianWithStats extends PoliticianUI {
     }
 }
 
+export interface PromiseTimelineEntry {
+    id: string;
+    oldStatus: string | null;
+    newStatus: string;
+    changedAt: string;
+    changedBy: string | null;
+    note: string | null;
+}
+
 export interface PromiseUI {
     id: string;
     slug: string;
@@ -99,6 +108,7 @@ export interface PromiseUI {
     sources: { title: string; url: string; publication: string; date: string }[];
     viewCount: number;
     featured: boolean;
+    statusHistory: PromiseTimelineEntry[];
 }
 
 export interface CategoryUI {
@@ -540,6 +550,15 @@ function mapPromiseToUI(p: any, locale: Locale): PromiseUI {
         })),
         viewCount: 0,
         featured: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        statusHistory: p.statusHistory ? p.statusHistory.map((h: any) => ({
+            id: h.id,
+            oldStatus: h.oldStatus ? mapStatusToUI(h.oldStatus) : null,
+            newStatus: mapStatusToUI(h.newStatus),
+            changedAt: h.changedAt.toISOString(),
+            changedBy: h.changedBy,
+            note: h.note
+        })) : [],
     };
 }
 
@@ -580,6 +599,9 @@ export async function getPromiseById(
             category: true,
             sources: true,
             evidence: true,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            statusHistory: { orderBy: { changedAt: 'desc' } },
         },
     }));
 
@@ -605,6 +627,9 @@ export async function getPromiseBySlug(
             category: true,
             sources: true,
             evidence: true,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            statusHistory: { orderBy: { changedAt: 'desc' } },
         },
     }));
 

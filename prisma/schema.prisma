@@ -118,6 +118,7 @@ model Promise {
   politician       Politician?   @relation(fields: [politicianId], references: [id])
   sources          Source[]
   coalitionParties Party[]       @relation("CoalitionPromises")
+  statusHistory    PromiseStatusHistory[]
 
   @@map("promises")
 }
@@ -208,4 +209,19 @@ enum EvidenceType {
   VIDEO
   STATISTICS
   OTHER
+}
+
+model PromiseStatusHistory {
+  id        String        @id @default(cuid())
+  promiseId String
+  oldStatus PromiseStatus? // Nullable for initial creation
+  newStatus PromiseStatus
+  changedAt DateTime      @default(now())
+  changedBy String?       // Email or Name of the user
+  note      String?       // Optional justification
+
+  promise   Promise       @relation(fields: [promiseId], references: [id], onDelete: Cascade)
+
+  @@index([promiseId])
+  @@map("promise_status_history")
 }

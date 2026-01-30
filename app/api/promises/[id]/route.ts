@@ -80,6 +80,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const { sources, evidence, dateOfPromise, coalitionPartyIds, ...promiseData } = parsed.data;
 
+    // Check for status change
+    const statusChanged = promiseData.status && promiseData.status !== currentPromise.status;
+
     // 2. Perform updates
     // Delete existing sources and evidence if new ones are provided
     if (sources) {
@@ -116,6 +119,17 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
               url: e.url,
               description: e.description,
             })),
+          }
+          : undefined,
+        statusHistory: statusChanged
+          ? {
+            create: {
+              oldStatus: currentPromise.status,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              newStatus: promiseData.status as any,
+              changedBy: session.user?.email || "Unknown",
+              note: `Status changed from ${currentPromise.status} to ${promiseData.status}`
+            }
           }
           : undefined,
       },
@@ -202,6 +216,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       updatedFields
     });
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     revalidatePromise(promise);
 
     return NextResponse.json(promise);
@@ -234,10 +250,12 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     await logActivity("deleted", "Promise", id, deletedPromise.title);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    revalidatePromise({ ...deletedPromise, coalitionParties: [] } as any); // Partial match for types, or better, include all relations needed.
     // revalidate.ts expects PromiseWithRelations.
     // Let's include all relations in delete as well.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    revalidatePromise({ ...deletedPromise, coalitionParties: [] } as any);
 
     return NextResponse.json({ success: true });
   } catch (error) {
