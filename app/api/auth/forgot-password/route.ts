@@ -97,7 +97,13 @@ export async function POST(request: NextRequest) {
         });
 
         // Send email
-        const baseUrl = process.env.NEXTAUTH_URL || process.env.VERCEL_URL || "http://localhost:3000";
+        let baseUrl = process.env.NEXTAUTH_URL || "";
+        if (!baseUrl && process.env.VERCEL_URL) {
+            baseUrl = `https://${process.env.VERCEL_URL}`;
+        }
+        if (!baseUrl) {
+            baseUrl = "http://localhost:3000";
+        }
         const resetLink = `${baseUrl}/reset-password/${token}`;
 
         await sendPasswordResetEmail({
