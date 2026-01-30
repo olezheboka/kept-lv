@@ -143,15 +143,7 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/forgot-password"
-                    className="text-xs text-primary hover:text-primary/80 hover:underline font-medium tabindex-0 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative group">
                   <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground transition-colors group-focus-within:text-primary" />
                   <Input
@@ -184,6 +176,14 @@ export default function LoginPage() {
                     {errors.password.message}
                   </p>
                 )}
+                <div className="flex justify-end">
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs text-primary hover:text-primary/80 hover:underline font-medium tabindex-0 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
               </div>
 
               <Button
