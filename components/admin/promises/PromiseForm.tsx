@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
 import { Loader2, CheckCircle2, XCircle, PieChart, User, Folder, Building2, Layers, Ban } from "lucide-react";
 import { toast } from "sonner";
+import { format } from "date-fns";
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 
 import { FormActions } from "@/components/admin/FormActions";
@@ -641,7 +642,10 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                         <DatePicker
                             date={formData.dateOfPromise ? new Date(formData.dateOfPromise) : undefined}
                             setDate={(date) => {
-                                setFormData({ ...formData, dateOfPromise: date ? date.toISOString().split('T')[0] : "" });
+                                setFormData({
+                                    ...formData,
+                                    dateOfPromise: date ? format(date, "yyyy-MM-dd") : ""
+                                });
                                 if (errors.dateOfPromise) setErrors({ ...errors, dateOfPromise: "" });
                             }}
                             className={cn(errors.dateOfPromise && "border-destructive ring-destructive focus-visible:ring-destructive")}
@@ -742,7 +746,10 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                                     <DatePicker
                                         date={formData.statusUpdatedAt ? new Date(formData.statusUpdatedAt) : undefined}
                                         setDate={(date) => {
-                                            setFormData({ ...formData, statusUpdatedAt: date ? date.toISOString().split('T')[0] : "" });
+                                            setFormData({
+                                                ...formData,
+                                                statusUpdatedAt: date ? format(date, "yyyy-MM-dd") : ""
+                                            });
                                             if (errors.statusUpdatedAt) setErrors({ ...errors, statusUpdatedAt: "" });
                                         }}
                                         className={cn(errors.statusUpdatedAt && "border-destructive ring-destructive focus-visible:ring-destructive")}
