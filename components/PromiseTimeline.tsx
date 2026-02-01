@@ -105,10 +105,11 @@ export function PromiseTimeline({ history, createdAt }: PromiseTimelineProps) {
                                                 <StatusBadge status={entry.newStatus as any} size="sm" showIcon={true} />
                                             </div>
                                         ) : (
-                                            <span className="flex items-center gap-2">
-                                                <Plus className="h-3.5 w-3.5" />
-                                                Solījums reģistrēts
-                                            </span>
+                                            <div className="flex items-center gap-1">
+                                                <span>Statuss atjaunots uz</span>
+                                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                                <StatusBadge status={entry.newStatus as any} size="sm" showIcon={true} />
+                                            </div>
                                         )}
                                     </span>
                                 </div>

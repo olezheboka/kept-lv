@@ -35,29 +35,39 @@ export function DatePicker({ date, setDate, className, placeholder = "dd.MM.yyyy
 
     // Sync input value when date changes externally
     React.useEffect(() => {
+        // Prevent overwriting input while user is typing
+        if (document.activeElement === document.querySelector(`input[value="${inputValue}"]`)) {
+            return;
+        }
+
         if (date) {
             setInputValue(format(date, "dd.MM.yyyy"));
             setMonth(date);
         } else {
             setInputValue("");
         }
-    }, [date]);
+    }, [date]); // Removed inputValue dependency to avoid loop, but let's keep logic simple
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setInputValue(value);
 
-        const parsedDate = parse(value, "dd.MM.yyyy", new Date());
-        if (isValid(parsedDate)) {
-            setDate(parsedDate);
-            setMonth(parsedDate);
-        } else {
-            if (value === "") {
-                setDate(undefined);
+        // Strict parsing: only attempt to parse if it looks like a full date
+        // format: dd.MM.yyyy (10 chars)
+        if (value.length === 10 && /^\d{2}\.\d{2}\.\d{4}$/.test(value)) {
+            const parsedDate = parse(value, "dd.MM.yyyy", new Date());
+            if (isValid(parsedDate)) {
+                // Check if year is reasonable (e.g. not 0002)
+                const year = getYear(parsedDate);
+                if (year > 1900 && year < 2100) {
+                    setDate(parsedDate);
+                    setMonth(parsedDate);
+                }
             }
-            // If invalid but not empty, we don't clear the date prop immediately
-            // to allow typing. Validation should be handled by the form.
+        } else if (value === "") {
+            setDate(undefined);
         }
+        // If invalid or partial, do nothing to date prop, just update input state
     };
 
     const years = Array.from({ length: 101 }, (_, i) => 1950 + i);
