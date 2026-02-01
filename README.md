@@ -1,4 +1,4 @@
-# Solījums.lv
+# solījums.lv
 
 Platform for tracking and analyzing political promises in Latvia.
 

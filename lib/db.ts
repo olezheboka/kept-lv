@@ -536,7 +536,7 @@ function mapPromiseToUI(p: any, locale: Locale): PromiseUI {
         status: mapStatusToUI(p.status),
         statusJustification: p.explanation ? getLocalizedText(p.explanation, locale) : "",
         statusUpdatedAt: (p.statusUpdatedAt || p.updatedAt).toISOString().split("T")[0],
-        statusUpdatedBy: "Solījums.lv Team",
+        statusUpdatedBy: "solījums.lv Team",
         category: mapCategorySlug(p.category.slug),
         description: p.description ? getLocalizedText(p.description, locale) : undefined,
         importance: undefined,

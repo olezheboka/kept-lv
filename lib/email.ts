@@ -5,7 +5,7 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const FROM_EMAIL = process.env.EMAIL_FROM || "onboarding@resend.dev";
-const SITE_NAME = "Solījums.lv";
+const SITE_NAME = "solījums.lv";
 
 interface SendPasswordResetEmailParams {
     to: string;

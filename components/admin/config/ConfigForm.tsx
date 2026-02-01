@@ -49,8 +49,8 @@ export function ConfigForm({ initialData, onSuccess, onCancel }: ConfigFormProps
         resolver: zodResolver(configSchema),
         defaultValues: initialData || {
             siteName: "solījums.lv",
-            title: "Solījums.lv - Seko līdzi varas pārstāvju solījumiem un to izpildei",
-            description: "Neatkarīga un objektīva platforma, kas atspoguļo valdības solījumu izpildi.",
+            title: "solījums.lv - Seko līdzi varas pārstāvju solījumiem",
+            description: "Neatkarīga un objektīva platforma, kas atspoguļo solījumu izpildi.",
             ogImageUrl: "",
             faviconUrl: "",
             keywords: "",

@@ -436,7 +436,7 @@ export default function ResetPasswordPage({ params }: PageProps) {
                     </div>
 
                     <div className="p-4 bg-muted/50 border-t border-border/50 text-center text-xs text-muted-foreground">
-                        &copy; {new Date().getFullYear()} Solījums.lv. All rights reserved.
+                        &copy; {new Date().getFullYear()} solījums.lv. All rights reserved.
                     </div>
                 </div>
             </motion.div>

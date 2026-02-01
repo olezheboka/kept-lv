@@ -97,7 +97,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "Solījums.lv",
+              "name": "solījums.lv",
               "url": "https://solijums.lv",
               "potentialAction": {
                 "@type": "SearchAction",

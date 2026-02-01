@@ -22,8 +22,8 @@ export default async function ConfigPage() {
 
     const initialData = {
         siteName: config.siteName || "solījums.lv",
-        title: config.title || "Solījums.lv - Seko līdzi varas pārstāvju solījumiem un to izpildei",
-        description: config.description || "Neatkarīga un objektīva platforma, kas atspoguļo valdības solījumu izpildi.",
+        title: config.title || "solījums.lv - Seko līdzi varas pārstāvju solījumiem",
+        description: config.description || "Neatkarīga un objektīva platforma, kas atspoguļo solījumu izpildi.",
         ogImageUrl: config.ogImageUrl || "",
         faviconUrl: config.faviconUrl || "",
         keywords: config.keywords || "",
