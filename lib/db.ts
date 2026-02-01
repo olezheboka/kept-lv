@@ -213,6 +213,9 @@ const getPartiesFromDb = async (locale: Locale): Promise<PartyWithStats[]> => {
         include: {
             politicians: {
                 select: { id: true }
+            },
+            coalitionPromises: {
+                select: { status: true }
             }
         }
     }));
@@ -220,11 +223,18 @@ const getPartiesFromDb = async (locale: Locale): Promise<PartyWithStats[]> => {
     // 2. Fetch aggregation for all politicians
     // Since we only track stats for promises linked to politicians of the party
     // We group by politicianId
-    const promiseStats = await withRetry(() => prisma.promise.groupBy({
-        by: ["politicianId", "status"],
-        _count: { status: true },
-        where: { politicianId: { not: null } }
-    }));
+    const [promiseStats, partyPromiseStats] = await Promise.all([
+        withRetry(() => prisma.promise.groupBy({
+            by: ["politicianId", "status"],
+            _count: { status: true },
+            where: { politicianId: { not: null } }
+        })),
+        withRetry(() => prisma.promise.groupBy({
+            by: ["partyId", "status"],
+            _count: { status: true },
+            where: { partyId: { not: null } }
+        }))
+    ]);
 
     // 3. Map aggregates to a dictionary for O(1) lookup
     const politicianStats = new Map<string, Record<string, number>>();
@@ -235,10 +245,19 @@ const getPartiesFromDb = async (locale: Locale): Promise<PartyWithStats[]> => {
         politicianStats.set(stat.politicianId, current);
     });
 
+    const partyStatsMap = new Map<string, Record<string, number>>();
+    partyPromiseStats.forEach(stat => {
+        if (!stat.partyId) return;
+        const current = partyStatsMap.get(stat.partyId) || {};
+        current[stat.status] = (current[stat.status] || 0) + (stat._count?.status || 0);
+        partyStatsMap.set(stat.partyId, current);
+    });
+
     // 4. Aggregate per party
     return parties.map((party) => {
         let kept = 0, partiallyKept = 0, pending = 0, broken = 0, cancelled = 0;
 
+        // Add politician promises
         party.politicians.forEach(pol => {
             const stats = politicianStats.get(pol.id);
             if (stats) {
@@ -248,6 +267,27 @@ const getPartiesFromDb = async (locale: Locale): Promise<PartyWithStats[]> => {
                 broken += stats["NOT_KEPT"] || 0;
                 cancelled += stats["CANCELLED"] || 0;
             }
+        });
+
+        // Add direct party promises
+        const pStats = partyStatsMap.get(party.id);
+        if (pStats) {
+            kept += pStats["KEPT"] || 0;
+            partiallyKept += pStats["PARTIAL"] || 0;
+            pending += pStats["PENDING"] || 0;
+            broken += pStats["NOT_KEPT"] || 0;
+            cancelled += pStats["CANCELLED"] || 0;
+        }
+
+        // Add coalition promises
+        party.coalitionPromises.forEach(p => {
+            // Map DB status to our counters
+            // Note: using direct mapping or switch - status comes as Enum
+            if (p.status === "KEPT") kept++;
+            else if (p.status === "PARTIAL") partiallyKept++;
+            else if (p.status === "PENDING") pending++;
+            else if (p.status === "NOT_KEPT") broken++;
+            else if (p.status === "CANCELLED") cancelled++;
         });
 
         const total = kept + partiallyKept + pending + broken + cancelled;
