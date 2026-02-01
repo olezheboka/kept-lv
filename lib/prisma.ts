@@ -2,15 +2,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prismaClientSingleton = () => {
   const url = process.env.DATABASE_URL;
-  // Append connection parameters if they don't exist
-  // connect_timeout=30: Increase timeout for slower connections/proxies
-  // connection_limit=5: Limit connections in dev to avoid exhaustion
-  const enhancedUrl = url && !url.includes("connect_timeout")
-    ? `${url}${url.includes("?") ? "&" : "?"}connect_timeout=30&pool_timeout=30&socket_timeout=30`
-    : url;
 
   return new PrismaClient({
-    datasourceUrl: enhancedUrl,
+    datasourceUrl: url,
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error", "warn"],
   });
 };
