@@ -27,8 +27,8 @@
     "language": "Valoda"
   },
   "metadata": {
-    "title": "Solījums.lv - Seko līdzi politiķu un amatpersonu solījumiem un to izpildei",
-    "description": "Neatkarīga un objektīva platforma, kas atspoguļo valdības solījumu izpildi.",
+    "title": "solījums.lv - Seko līdzi politiskajiem solījumiem",
+    "description": "Neatkarīga un objektīva platforma, kas atspoguļo solījumu izpildi.",
     "siteName": "solījums.lv"
   },
   "status": {
@@ -39,7 +39,7 @@
     "cancelled": "ATCELTS"
   },
   "home": {
-    "heroTitle": "Sekojiet līdzi politiķu solījumiem",
+    "heroTitle": "Sekojiet līdzi politiskajiem solījumiem",
     "heroSubtitle": "Pārskatāma platforma politiskās atbildības uzskaitei Latvijā",
     "statsTitle": "Statistika",
     "totalPromises": "Kopā solījumu",
@@ -86,7 +86,7 @@
     "title": "Par solījums.lv",
     "subtitle": "Mūsu misija ir padarīt politisko procesu caurskatāmāku",
     "mission": "Misija",
-    "missionText": "solījums.lv ir neatkarīga platforma, kas seko līdzi politiķu solījumiem un to izpildei. Mēs uzskatām, ka caurskatāmība ir demokrātijas pamats.",
+    "missionText": "solījums.lv ir neatkarīga platforma, kas seko līdzi politiskajiem solījumiem. Mēs uzskatām, ka caurskatāmība ir demokrātijas pamats.",
     "howItWorks": "Kā tas darbojas",
     "howItWorksText": "Mēs apkopojam politiķu solījumus no dažādiem avotiem - intervijām, preses konferencēm, sociālajiem tīkliem - un sekojam līdzi to izpildei.",
     "contact": "Kontakti"
