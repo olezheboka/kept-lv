@@ -729,7 +729,13 @@ export async function getPromisesByParty(
     const politicianIds = party.politicians.map((p) => p.id);
 
     const promises = await withRetry(() => prisma.promise.findMany({
-        where: { politicianId: { in: politicianIds } },
+        where: {
+            OR: [
+                { politicianId: { in: politicianIds } },
+                { partyId: party.id },
+                { coalitionParties: { some: { id: party.id } } }
+            ]
+        },
         include: {
             politician: { include: { party: true } },
             party: true,
