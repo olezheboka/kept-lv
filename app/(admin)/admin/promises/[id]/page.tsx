@@ -12,6 +12,7 @@ export default async function EditPromisePage({ params }: { params: Promise<{ id
             where: { id },
             include: {
                 sources: true,
+                evidence: true,
                 coalitionParties: {
                     select: {
                         id: true,

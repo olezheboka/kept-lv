@@ -35,13 +35,21 @@ interface Party {
     name: string;
 }
 
+// Re-adding missing interfaces
 interface Source {
     type: "VIDEO" | "ARTICLE" | "DOCUMENT" | "SOCIAL_MEDIA" | "INTERVIEW" | "MANIFESTO" | "GOVERNMENT_DOC";
     url: string;
     title?: string | null;
+    description?: string | null;
 }
 
 type PromiseType = "INDIVIDUAL" | "PARTY" | "COALITION";
+
+interface Evidence {
+    type: "NEWS_ARTICLE" | "OFFICIAL_DOCUMENT" | "VIDEO" | "STATISTICS" | "OTHER";
+    url: string;
+    description?: string | null;
+}
 
 interface PromiseData {
     id: string;
@@ -58,6 +66,7 @@ interface PromiseData {
     categoryId: string;
     tags: string[];
     sources?: Source[];
+    evidence?: Evidence[];
     coalitionParties?: Party[];
 }
 
@@ -123,6 +132,22 @@ const STATUS_OPTIONS: {
         },
     ];
 
+const mapLegacyType = (type: string): Evidence["type"] => {
+    const mapping: Record<string, Evidence["type"]> = {
+        "ARTICLE": "NEWS_ARTICLE",
+        "VIDEO": "VIDEO",
+        "DOCUMENT": "OFFICIAL_DOCUMENT",
+        "SOCIAL_MEDIA": "OTHER",
+        "INTERVIEW": "OTHER",
+        "GOVERNMENT_DOC": "OFFICIAL_DOCUMENT",
+        "MANIFESTO": "OTHER"
+    };
+    if (["NEWS_ARTICLE", "OFFICIAL_DOCUMENT", "VIDEO", "STATISTICS", "OTHER"].includes(type)) {
+        return type as Evidence["type"];
+    }
+    return mapping[type] || "NEWS_ARTICLE";
+};
+
 export function PromiseForm({ initialData, politicians, parties, categories, onSuccess, onCancel }: PromiseFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -161,7 +186,11 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
 
     const [formData, setFormData] = useState(() => {
         if (initialData) {
-            const source = initialData.sources?.[0];
+            // Find Source (Manifesto)
+            const source = initialData.sources?.find(s => s.type === "MANIFESTO");
+            // Find Evidence (From Evidence table OR Legacy Sources)
+            const evidence = initialData.evidence?.[0] || initialData.sources?.find(s => s.type !== "MANIFESTO");
+
             return {
                 title: initialData.title || "",
                 slug: initialData.slug || "",
@@ -177,9 +206,18 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                 coalitionPartyIds: initialData.coalitionParties ? initialData.coalitionParties.map(p => p.id) : [],
 
                 categoryId: initialData.categoryId || "",
-                sourceType: source?.type || "VIDEO",
+
+                // Promise Source (e.g. Manifesto)
+                sourceType: source?.type || "MANIFESTO", // Default better suited for promises
                 sourceUrl: source?.url || "",
                 sourceTitle: source?.title || "",
+
+                // Status Evidence
+                // Status Evidence
+                evidenceType: evidence ? mapLegacyType(evidence.type) : "NEWS_ARTICLE",
+                evidenceUrl: evidence?.url || "",
+                evidenceDescription: evidence?.description || "", // Mapped from description (source) or description (evidence)
+
                 tags: Array.isArray(initialData.tags) ? initialData.tags : [],
             };
         }
@@ -198,9 +236,15 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             coalitionPartyIds: [] as string[],
 
             categoryId: "",
-            sourceType: "VIDEO" as const,
+
+            sourceType: "MANIFESTO" as "VIDEO" | "ARTICLE" | "DOCUMENT" | "SOCIAL_MEDIA" | "INTERVIEW" | "MANIFESTO" | "GOVERNMENT_DOC",
             sourceUrl: "",
             sourceTitle: "",
+
+            evidenceType: "NEWS_ARTICLE" as "NEWS_ARTICLE" | "OFFICIAL_DOCUMENT" | "VIDEO" | "STATISTICS" | "OTHER",
+            evidenceUrl: "",
+            evidenceDescription: "",
+
             tags: [] as string[],
         };
     });
@@ -212,13 +256,6 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
 
     useEffect(() => {
         // We only check simple equality for dirty state to avoid deep comparison overhead
-        // Just checking if title or status changed is often enough, but let's do a basic JSON compare of the form data
-        // We need to exclude the helper fields or ensure they match initialData structure
-        // To be safe and simple: set dirty to true on any change handler? 
-        // No, that's annoying if you change back.
-        // Let's rely on JSON stringify for now, it's efficient enough for this size.
-
-        // Reconstruct initial state for comparison
         let initialFormState = {
             title: "",
             slug: "",
@@ -232,14 +269,21 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             partyId: "",
             coalitionPartyIds: [] as string[],
             categoryId: "",
-            sourceType: "VIDEO" as "VIDEO" | "ARTICLE" | "DOCUMENT" | "SOCIAL_MEDIA" | "INTERVIEW" | "MANIFESTO" | "GOVERNMENT_DOC",
+            sourceType: "MANIFESTO" as Source["type"],
             sourceUrl: "",
             sourceTitle: "",
+            evidenceType: "NEWS_ARTICLE" as Evidence["type"],
+            evidenceUrl: "",
+            evidenceDescription: "",
             tags: [] as string[],
         };
 
         if (initialData) {
-            const source = initialData.sources?.[0];
+            // Find Source (Manifesto)
+            const source = initialData.sources?.find(s => s.type === "MANIFESTO");
+            // Find Evidence (From Evidence table OR Legacy Sources)
+            const evidence = initialData.evidence?.[0] || initialData.sources?.find(s => s.type !== "MANIFESTO");
+
             initialFormState = {
                 title: initialData.title || "",
                 slug: initialData.slug || "",
@@ -253,9 +297,15 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                 partyId: initialData.partyId || "",
                 coalitionPartyIds: initialData.coalitionParties ? initialData.coalitionParties.map(p => p.id) : [],
                 categoryId: initialData.categoryId || "",
-                sourceType: source?.type || "VIDEO",
+
+                sourceType: source?.type || "MANIFESTO", // Default better suited for promises
                 sourceUrl: source?.url || "",
                 sourceTitle: source?.title || "",
+
+                evidenceType: evidence ? mapLegacyType(evidence.type) : "NEWS_ARTICLE",
+                evidenceUrl: evidence?.url || "",
+                evidenceDescription: evidence?.description || "",
+
                 tags: Array.isArray(initialData.tags) ? initialData.tags : [],
             };
         }
@@ -271,7 +321,11 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
     // Reset form if initialData changes (for when dialog reopens with new data if component persists)
     useEffect(() => {
         if (initialData) {
-            const source = initialData.sources?.[0];
+            // Find Source (Manifesto)
+            const source = initialData.sources?.find(s => s.type === "MANIFESTO");
+            // Find Evidence (From Evidence table OR Legacy Sources)
+            const evidence = initialData.evidence?.[0] || initialData.sources?.find(s => s.type !== "MANIFESTO");
+
             setFormData({
                 title: initialData.title || "",
                 slug: initialData.slug || "",
@@ -287,9 +341,17 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                 coalitionPartyIds: initialData.coalitionParties ? initialData.coalitionParties.map(p => p.id) : [],
 
                 categoryId: initialData.categoryId || "",
-                sourceType: source?.type || "VIDEO",
+
+                // Promise Source (e.g. Manifesto)
+                sourceType: source?.type || "MANIFESTO", // Default better suited for promises
                 sourceUrl: source?.url || "",
                 sourceTitle: source?.title || "",
+
+                // Status Evidence
+                evidenceType: evidence ? mapLegacyType(evidence.type) : "NEWS_ARTICLE",
+                evidenceUrl: evidence?.url || "",
+                evidenceDescription: evidence?.description || "", // Mapped from description (source) or description (evidence)
+
                 tags: Array.isArray(initialData.tags) ? initialData.tags : [],
             });
         }
@@ -360,11 +422,23 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
 
                 categoryId: formData.categoryId,
                 tags: formData.tags,
+
+                // Promise Source 
                 sources: formData.sourceUrl
                     ? [{
                         type: formData.sourceType,
                         url: formData.sourceUrl,
                         title: formData.sourceTitle || null,
+                        description: null
+                    }]
+                    : [],
+
+                // Status Evidence
+                evidence: formData.evidenceUrl
+                    ? [{
+                        type: formData.evidenceType,
+                        url: formData.evidenceUrl,
+                        description: formData.evidenceDescription || null
                     }]
                     : [],
             };
@@ -616,6 +690,30 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                     </div>
                 </div>
 
+                {/* Source Field directly under Description */}
+                <div className="space-y-2">
+                    <Label htmlFor="source" className="text-foreground font-semibold">Source (Original)</Label>
+                    <div className="flex gap-2">
+                        <div className="flex-1">
+                            <Input
+                                value={formData.sourceUrl}
+                                onChange={(e) => setFormData({ ...formData, sourceUrl: e.target.value })}
+                                placeholder="http://party-program.com/manifesto.pdf"
+                                className="bg-background"
+                            />
+                        </div>
+                        <div className="w-1/3">
+                            <Input
+                                value={formData.sourceTitle}
+                                onChange={(e) => setFormData({ ...formData, sourceTitle: e.target.value })}
+                                placeholder="Link title (optional)"
+                                className="bg-background"
+                            />
+                        </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Link to the manifesto, interview or document where the promise was originally made.</p>
+                </div>
+
                 {/* Category (Full Width now) */}
                 <div className="space-y-2">
                     <Label htmlFor="category" className="text-foreground font-semibold">Category <span className="text-destructive">*</span></Label>
@@ -732,11 +830,12 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                                 <div className="space-y-2 md:col-span-2">
                                     <Label className="text-foreground font-semibold">Evidence link</Label>
                                     <Input
-                                        value={formData.sourceUrl}
-                                        onChange={(e) => setFormData({ ...formData, sourceUrl: e.target.value })}
+                                        value={formData.evidenceUrl}
+                                        onChange={(e) => setFormData({ ...formData, evidenceUrl: e.target.value })}
                                         placeholder="https://news.example.com/article"
                                         className="bg-background"
                                     />
+                                    <p className="text-xs text-muted-foreground">Link that proves the current status.</p>
                                 </div>
 
                                 <div className="space-y-2">

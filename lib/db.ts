@@ -1,5 +1,5 @@
 import { prisma, withRetry } from "./prisma";
-import { Prisma, Party, Source } from "@prisma/client";
+import { Prisma, Party, Source, Evidence } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import { mapStatusToUI } from "./utils";
 
@@ -105,7 +105,8 @@ export interface PromiseUI {
     importance?: string;
     deadline?: string;
     tags: string[];
-    sources: { title: string; url: string; publication: string; date: string }[];
+    sources: { title: string; url: string; publication: string; date: string; type: string }[];
+    evidence: { title: string; url: string; publication: string; date: string; type: string }[];
     viewCount: number;
     featured: boolean;
     statusHistory: PromiseTimelineEntry[];
@@ -547,7 +548,15 @@ function mapPromiseToUI(p: any, locale: Locale): PromiseUI {
             url: s.url,
             publication: "",
             date: s.createdAt.toISOString().split("T")[0],
+            type: s.type,
         })),
+        evidence: p.evidence ? p.evidence.map((e: Evidence) => ({
+            title: "",
+            url: e.url,
+            publication: "",
+            date: e.createdAt.toISOString().split("T")[0],
+            type: e.type,
+        })) : [],
         viewCount: 0,
         featured: false,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

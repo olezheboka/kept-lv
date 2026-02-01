@@ -1,0 +1,1 @@
+import { PrismaClient } from '@prisma/client'; const prisma = new PrismaClient(); async function main() { const history = await prisma.promiseStatusHistory.findMany({ orderBy: { changedAt: 'desc' }, take: 5, include: { promise: true } }); console.log(JSON.stringify(history, null, 2)); } main();

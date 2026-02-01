@@ -182,7 +182,7 @@ export const PromiseDetailClient = ({
                                 {/* Row 2: Promisor */}
                                 <div className="flex items-center gap-3 mb-4">
                                     {isCoalition ? (
-                                        <span className="text-foreground font-semibold">
+                                        <span className="text-muted-foreground font-semibold">
                                             {(promise.coalitionParties || []).map((p, idx) => (
                                                 <span key={p.id}>
                                                     <Link
@@ -199,7 +199,7 @@ export const PromiseDetailClient = ({
                                     ) : isParty && party ? (
                                         <Link
                                             href={`/parties/${party.id}`}
-                                            className="text-foreground font-semibold hover:text-primary transition-colors"
+                                            className="text-muted-foreground font-semibold hover:text-primary transition-colors"
                                             suppressHydrationWarning
                                         >
                                             {party.name}
@@ -207,7 +207,7 @@ export const PromiseDetailClient = ({
                                     ) : politician ? (
                                         <Link
                                             href={`/politicians/${politician.id}`}
-                                            className="text-foreground font-semibold hover:text-primary transition-colors"
+                                            className="text-muted-foreground font-semibold hover:text-primary transition-colors"
                                             suppressHydrationWarning
                                         >
                                             {politician.name}
@@ -222,16 +222,31 @@ export const PromiseDetailClient = ({
                             </div>
 
                             {/* Description */}
-                            <div>
+                            <div className="space-y-4">
                                 {promise.description && (
-                                    <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                                    <p className="text-base md:text-lg text-foreground leading-relaxed mb-4">
                                         {promise.description}
                                     </p>
                                 )}
 
-
-
-
+                                {/* Promise Source (Manifesto) */}
+                                {(() => {
+                                    const source = promise.sources?.find(s => s.type === "MANIFESTO");
+                                    if (source) return (
+                                        <div className="flex items-center gap-2 text-sm text-foreground/70">
+                                            <Link2 className="h-4 w-4 opacity-70" />
+                                            <span className="opacity-70 font-semibold">Avots:</span>
+                                            <a
+                                                href={source.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-medium hover:underline text-primary text-base"
+                                            >
+                                                {source.title || extractDomain(source.url)}
+                                            </a>
+                                        </div>
+                                    );
+                                })()}
                             </div>
                         </motion.div>
 
@@ -257,7 +272,7 @@ export const PromiseDetailClient = ({
                                         <StatusBadge status={promise.status} size="lg" variant="solid" />
                                     </div>
                                     {promise.statusJustification && (
-                                        <div className="text-lg text-foreground leading-relaxed">
+                                        <div className="text-base md:text-lg text-foreground leading-relaxed whitespace-pre-wrap">
                                             <span className="font-bold block mb-2 text-foreground/80">Pamatojums:</span>
                                             {promise.statusJustification}
                                         </div>
@@ -269,23 +284,51 @@ export const PromiseDetailClient = ({
                                             <span className="opacity-70">Atjaunināts:</span>
                                             <span className="font-medium">{format(new Date(promise.statusUpdatedAt), 'dd.MM.yyyy')}</span>
                                         </div>
-                                        {promise.sources.length > 0 && (
-                                            <>
-                                                <div className="hidden sm:block w-px h-3 bg-foreground/20"></div>
-                                                <div className="flex items-center gap-2">
-                                                    <Link2 className="h-3.5 w-3.5 opacity-70" />
-                                                    <span className="opacity-70">Avots:</span>
-                                                    <a
-                                                        href={promise.sources[0].url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="font-medium hover:underline text-primary"
-                                                    >
-                                                        {promise.sources[0].title || extractDomain(promise.sources[0].url)}
-                                                    </a>
-                                                </div>
-                                            </>
-                                        )}
+                                        {(() => {
+                                            // 1. Try Promise Evidence (New schema)
+                                            if (promise.evidence && promise.evidence.length > 0) {
+                                                const e = promise.evidence[0];
+                                                return (
+                                                    <>
+                                                        <div className="hidden sm:block w-px h-3 bg-foreground/20"></div>
+                                                        <div className="flex items-center gap-2">
+                                                            <Link2 className="h-3.5 w-3.5 opacity-70" />
+                                                            <span className="opacity-70">Avots:</span>
+                                                            <a
+                                                                href={e.url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="font-medium hover:underline text-primary"
+                                                            >
+                                                                {extractDomain(e.url)}
+                                                            </a>
+                                                        </div>
+                                                    </>
+                                                );
+                                            }
+
+                                            // 2. Legacy Fallback: Try finding it in Sources (any non-manifesto)
+                                            const legacyEvidence = promise.sources?.find(s => s.type !== "MANIFESTO");
+
+                                            if (legacyEvidence) return (
+                                                <>
+                                                    <div className="hidden sm:block w-px h-3 bg-foreground/20"></div>
+                                                    <div className="flex items-center gap-2">
+                                                        <Link2 className="h-3.5 w-3.5 opacity-70" />
+                                                        <span className="opacity-70">Avots:</span>
+                                                        <a
+                                                            href={legacyEvidence.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="font-medium hover:underline text-primary"
+                                                        >
+                                                            {legacyEvidence.title || extractDomain(legacyEvidence.url)}
+                                                        </a>
+                                                    </div>
+                                                </>
+                                            );
+                                            return null;
+                                        })()}
                                     </div>
                                 </CardContent>
                             </Card>
