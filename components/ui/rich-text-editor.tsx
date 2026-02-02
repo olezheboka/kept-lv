@@ -57,6 +57,9 @@ import {
     Heading1,
     Heading2,
     Heading3,
+    Heading4,
+    Heading5,
+    Heading6,
     AlignLeft,
     AlignCenter,
     AlignRight,
@@ -265,7 +268,7 @@ function ToolbarPlugin() {
         setBlockType("paragraph");
     };
 
-    const formatHeading = (headingLevel: "h1" | "h2" | "h3") => {
+    const formatHeading = (headingLevel: "h1" | "h2" | "h3" | "h4" | "h5" | "h6") => {
         editor.update(() => {
             const selection = $getSelection();
             if ($isRangeSelection(selection)) {
@@ -395,6 +398,9 @@ function ToolbarPlugin() {
         "h1": "Heading 1",
         "h2": "Heading 2",
         "h3": "Heading 3",
+        "h4": "Heading 4",
+        "h5": "Heading 5",
+        "h6": "Heading 6",
         "ul": "Bullet List",
         "ol": "Numbered List",
         "quote": "Quote",
@@ -446,6 +452,18 @@ function ToolbarPlugin() {
                     <DropdownMenuItem onClick={() => formatHeading("h3")} className={cn(blockType === "h3" && "bg-accent")}>
                         <Heading3 className="w-4 h-4 mr-2" />
                         <span className="text-base font-bold">Heading 3</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => formatHeading("h4")} className={cn(blockType === "h4" && "bg-accent")}>
+                        <Heading4 className="w-4 h-4 mr-2" />
+                        <span className="text-sm font-bold">Heading 4</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => formatHeading("h5")} className={cn(blockType === "h5" && "bg-accent")}>
+                        <Heading5 className="w-4 h-4 mr-2" />
+                        <span className="text-xs font-bold">Heading 5</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => formatHeading("h6")} className={cn(blockType === "h6" && "bg-accent")}>
+                        <Heading6 className="w-4 h-4 mr-2" />
+                        <span className="text-xs font-bold">Heading 6</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
