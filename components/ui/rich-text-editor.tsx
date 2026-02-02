@@ -557,7 +557,7 @@ function ToolbarPlugin() {
                         <LinkIcon className="w-4 h-4" />
                     </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-72 p-3" align="start">
+                <PopoverContent className="w-[600px] p-3" align="start">
                     <div className="flex flex-col gap-2">
                         <div className="flex gap-2">
                             <Input
