@@ -224,7 +224,7 @@ export const PromiseDetailClient = ({
                             {/* Description */}
                             <div className="space-y-4">
                                 {promise.description && (
-                                    <p className="text-base md:text-lg text-foreground leading-relaxed mb-4">
+                                    <p className="text-base md:text-lg text-foreground leading-relaxed mb-4 whitespace-pre-wrap">
                                         {promise.description}
                                     </p>
                                 )}

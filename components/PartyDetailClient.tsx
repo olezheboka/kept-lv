@@ -111,7 +111,7 @@ export const PartyDetailClient = ({ party, promises, politicians }: PartyDetailC
                             {(party.description || party.websiteUrl) && (
                                 <div className="mt-6 flex flex-col md:flex-row md:items-start md:justify-between gap-4 w-full">
                                     {party.description && (
-                                        <p className="text-muted-foreground leading-relaxed max-w-2xl flex-1">
+                                        <p className="text-muted-foreground leading-relaxed max-w-2xl flex-1 whitespace-pre-wrap">
                                             {party.description}
                                         </p>
                                     )}

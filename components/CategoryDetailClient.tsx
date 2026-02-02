@@ -80,7 +80,7 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
                                 {category.name}
                             </h1>
 
-                            <p className="text-muted-foreground">{category.description}</p>
+                            <p className="text-muted-foreground whitespace-pre-wrap">{category.description}</p>
                         </div>
                     </motion.div>
                 </div>
