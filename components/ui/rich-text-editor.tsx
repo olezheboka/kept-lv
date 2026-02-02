@@ -11,6 +11,8 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { $getNearestNodeOfType } from "@lexical/utils";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { ListItemNode, ListNode, INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, $isListNode } from "@lexical/list";
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
+
 import { CodeHighlightNode, CodeNode, $createCodeNode, $isCodeNode } from "@lexical/code";
 import { AutoLinkNode, LinkNode, $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
@@ -37,7 +39,10 @@ import {
     LexicalCommand,
     createCommand,
     $insertNodes,
+    INDENT_CONTENT_COMMAND,
+    OUTDENT_CONTENT_COMMAND,
 } from "lexical";
+
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode, $isQuoteNode } from "@lexical/rich-text";
 import { $setBlocksType, $patchStyleText } from "@lexical/selection";
 import {
@@ -69,7 +74,10 @@ import {
     X,
     Eraser,
     FileCode,
+    Indent,
+    Outdent,
 } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 import { LexicalTheme } from "./lexical-theme";
 import {
@@ -274,6 +282,15 @@ function ToolbarPlugin() {
     const formatNumberedList = () => {
         editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
     };
+
+    const indentContent = () => {
+        editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined);
+    };
+
+    const outdentContent = () => {
+        editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
+    };
+
 
     const toggleQuote = () => {
         editor.update(() => {
@@ -626,6 +643,13 @@ function ToolbarPlugin() {
             <ToolbarButton onClick={formatNumberedList} title="Numbered List">
                 <ListOrdered className="w-4 h-4" />
             </ToolbarButton>
+            <ToolbarButton onClick={outdentContent} title="Outdent">
+                <Outdent className="w-4 h-4" />
+            </ToolbarButton>
+            <ToolbarButton onClick={indentContent} title="Indent">
+                <Indent className="w-4 h-4" />
+            </ToolbarButton>
+
 
             <div className="w-[1px] h-6 bg-border mx-1" />
 
@@ -792,7 +816,9 @@ export function RichTextEditor({
                     <ListPlugin />
                     <LinkPlugin />
                     <HorizontalRulePlugin />
+                    <TabIndentationPlugin />
                     <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+
                     <OnChangePlugin
                         onChange={(editorState) => {
                             const jsonString = JSON.stringify(editorState.toJSON());
