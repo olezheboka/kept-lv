@@ -441,7 +441,9 @@ export function PromisesClient({ initialPromises, parties }: PromisesClientProps
                                                 onClick={() => toggleParty(partyId)}
                                                 className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground hover:bg-muted/80"
                                             >
-                                                {party.abbreviation}
+                                                {party.id === 'jauna-vienotiba' ? 'JV' :
+                                                    party.id === 'apvienotais-saraksts' ? 'AS' :
+                                                        party.abbreviation}
                                                 <X className="h-3 w-3" />
                                             </button>
                                         ) : null;
