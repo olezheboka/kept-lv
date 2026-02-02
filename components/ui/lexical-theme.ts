@@ -5,12 +5,12 @@ export const LexicalTheme = {
     paragraph: "mb-3 last:mb-0",
     quote: "border-l-4 border-gray-300 pl-4 italic text-gray-700 dark:border-gray-600 dark:text-gray-300 my-4",
     heading: {
-        h1: "text-3xl font-bold mb-4 mt-6 first:mt-0",
-        h2: "text-2xl font-bold mb-3 mt-5 first:mt-0",
-        h3: "text-xl font-bold mb-2 mt-4 first:mt-0",
-        h4: "text-lg font-bold mb-2 mt-3 first:mt-0",
-        h5: "text-base font-bold mb-2 mt-2 first:mt-0",
-        h6: "text-sm font-bold mb-2 mt-2 first:mt-0",
+        h1: "text-xl md:text-2xl font-bold mb-4 mt-6 first:mt-0",
+        h2: "text-lg md:text-xl font-bold mb-3 mt-5 first:mt-0",
+        h3: "text-base md:text-lg font-bold mb-2 mt-4 first:mt-0",
+        h4: "text-sm md:text-base font-bold mb-2 mt-3 first:mt-0",
+        h5: "text-xs md:text-sm font-bold mb-2 mt-2 first:mt-0",
+        h6: "text-xs font-bold mb-2 mt-2 first:mt-0",
     },
     list: {
         nested: {
