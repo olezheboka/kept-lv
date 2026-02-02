@@ -650,7 +650,7 @@ export async function getPromiseById(
             evidence: true,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            statusHistory: { orderBy: { changedAt: 'desc' } },
+            statusHistory: { orderBy: [{ changedAt: 'desc' }, { id: 'desc' }] },
         },
     }));
 
@@ -678,7 +678,7 @@ export async function getPromiseBySlug(
             evidence: true,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            statusHistory: { orderBy: { changedAt: 'desc' } },
+            statusHistory: { orderBy: [{ changedAt: 'desc' }, { id: 'desc' }] },
         },
     }));
 

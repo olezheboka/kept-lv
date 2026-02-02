@@ -73,9 +73,12 @@ const getStatusColorClass = (status: string) => {
 
 export function PromiseTimeline({ history, createdAt }: PromiseTimelineProps) {
     // Sort history by date desc (newest first)
-    const sortedHistory = [...history].sort((a, b) =>
-        new Date(b.changedAt).getTime() - new Date(a.changedAt).getTime()
-    );
+    const sortedHistory = [...history].sort((a, b) => {
+        const timeDiff = new Date(b.changedAt).getTime() - new Date(a.changedAt).getTime();
+        if (timeDiff !== 0) return timeDiff;
+        // Tie-breaker: sort by ID desc (assuming CUID/UUID or similar monotonic or consistent sort)
+        return b.id.localeCompare(a.id);
+    });
 
     return (
         <div className="space-y-4">
