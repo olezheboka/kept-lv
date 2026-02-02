@@ -11,6 +11,7 @@ import { ArrowLeft, TrendingUp } from 'lucide-react';
 import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
 import { PerformanceCard } from '@/components/PerformanceCard';
 import { Button } from '@/components/ui/button';
+import { RichTextViewer } from '@/components/ui/rich-text-viewer';
 
 interface CategoryDetailClientProps {
     category: CategoryUI;
@@ -80,7 +81,9 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
                                 {category.name}
                             </h1>
 
-                            <p className="text-muted-foreground whitespace-pre-wrap">{category.description}</p>
+                            <div className="text-muted-foreground">
+                                {category.description && <RichTextViewer value={category.description} />}
+                            </div>
                         </div>
                     </motion.div>
                 </div>
