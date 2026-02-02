@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Share2, Calendar, Tag, Link2, MessageCircle, Send, Copy, FileText } from 'lucide-react';
 import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
+import { RichTextViewer } from "@/components/ui/rich-text-viewer";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -222,9 +223,9 @@ export const PromiseDetailClient = ({
                             {/* Description */}
                             <div className="space-y-4">
                                 {promise.description && (
-                                    <p className="text-base md:text-lg text-foreground leading-relaxed mb-4 whitespace-pre-wrap">
-                                        {promise.description}
-                                    </p>
+                                    <div className="text-base md:text-lg text-foreground leading-relaxed mb-4">
+                                        <RichTextViewer value={promise.description} />
+                                    </div>
                                 )}
 
                                 {/* Promise Source (Manifesto) */}
@@ -270,9 +271,9 @@ export const PromiseDetailClient = ({
                                         <StatusBadge status={promise.status} size="lg" variant="solid" />
                                     </div>
                                     {promise.statusJustification && (
-                                        <div className="text-base md:text-lg text-foreground leading-relaxed whitespace-pre-wrap">
+                                        <div className="text-base md:text-lg text-foreground leading-relaxed">
                                             <span className="font-bold block mb-2 text-foreground/80">Pamatojums:</span>
-                                            {promise.statusJustification}
+                                            <RichTextViewer value={promise.statusJustification} />
                                         </div>
                                     )}
 

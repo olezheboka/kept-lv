@@ -29,7 +29,20 @@ export function RichTextViewer({ value, className }: RichTextViewerProps) {
     const ensureRichTextState = (text: string): string => {
         try {
             const json = JSON.parse(text);
-            if (json.root) return text;
+
+            // Handle double-stringified JSON (common DB issue)
+            if (typeof json === 'string') {
+                try {
+                    const innerJson = JSON.parse(json);
+                    if (innerJson && innerJson.root) {
+                        return json; // Return the inner string which is the valid Lexical state
+                    }
+                } catch (e) {
+                    // Inner text is not JSON, proceed
+                }
+            }
+
+            if (json && json.root) return text;
         } catch (e) {
             // Not JSON
         }
