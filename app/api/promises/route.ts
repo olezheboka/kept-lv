@@ -126,13 +126,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { sources, evidence, dateOfPromise, coalitionPartyIds, ...promiseData } = parsed.data;
+    const { sources, evidence, dateOfPromise, statusUpdatedAt, coalitionPartyIds, ...promiseData } = parsed.data;
+
+    // Convert statusUpdatedAt to Date, fallback to now if not provided
+    const statusUpdatedAtDate = statusUpdatedAt ? new Date(statusUpdatedAt) : new Date();
+
+    console.log("DEBUG POST promise:", {
+      statusUpdatedAtRaw: statusUpdatedAt,
+      statusUpdatedAtDate: statusUpdatedAtDate.toISOString(),
+      dateOfPromiseRaw: dateOfPromise,
+    });
 
     const promise = await prisma.promise.create({
       data: {
         ...promiseData,
         tags: promiseData.tags || [],
         dateOfPromise: new Date(dateOfPromise),
+        statusUpdatedAt: statusUpdatedAtDate,
         // Handle relation logic based on type (though simplistic here, validated by UI/Schema)
         coalitionParties: coalitionPartyIds?.length
           ? { connect: coalitionPartyIds.map(id => ({ id })) }
@@ -161,6 +171,7 @@ export async function POST(request: NextRequest) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             newStatus: (promiseData.status || "PENDING") as any,
             changedBy: session.user?.email || "Unknown",
+            changedAt: statusUpdatedAtDate,
             note: "Initial creation",
             oldStatus: null
           }
