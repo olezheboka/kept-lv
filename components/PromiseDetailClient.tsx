@@ -223,7 +223,7 @@ export const PromiseDetailClient = ({
                             {/* Description */}
                             <div className="space-y-4">
                                 {promise.description && (
-                                    <div className="text-base md:text-lg text-foreground leading-relaxed mb-4">
+                                    <div className="text-sm md:text-base text-foreground leading-relaxed mb-4">
                                         <RichTextViewer value={promise.description} />
                                     </div>
                                 )}
@@ -271,7 +271,7 @@ export const PromiseDetailClient = ({
                                         <StatusBadge status={promise.status} size="lg" variant="solid" />
                                     </div>
                                     {promise.statusJustification && (
-                                        <div className="text-base md:text-lg text-foreground leading-relaxed">
+                                        <div className="text-sm md:text-base text-foreground leading-relaxed">
                                             <span className="font-bold block mb-2 text-foreground/80">Pamatojums:</span>
                                             <RichTextViewer value={promise.statusJustification} />
                                         </div>
