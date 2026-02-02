@@ -14,7 +14,7 @@ interface TypewriterTextProps {
 export function TypewriterText({
     words,
     className,
-    waitTime = 3000,
+    waitTime = 2000,
     eraseSpeed = 60,
     typeSpeed = 50,
 }: TypewriterTextProps) {
