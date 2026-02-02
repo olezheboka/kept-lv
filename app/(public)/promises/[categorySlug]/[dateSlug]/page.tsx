@@ -2,8 +2,7 @@ import {
     getPromiseBySlug,
     getPoliticianBySlug,
     getPartyBySlug,
-    getPromisesByPolitician,
-    getPromisesByCategory,
+    getRelatedPromises,
     CategoryUI,
     PromiseUI,
     PoliticianUI,
@@ -34,8 +33,7 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
             politician={null}
             party={null}
             category={undefined}
-            relatedByPolitician={[]}
-            relatedByCategory={[]}
+            relatedPromises={[]}
         />;
     }
 
@@ -45,8 +43,7 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
     let politician: PoliticianUI | null = null;
     let party: PartyUI | null = null;
     let category: CategoryUI | undefined = undefined;
-    let relatedByPolitician: PromiseUI[] = [];
-    let relatedByCategory: PromiseUI[] = [];
+    let relatedPromises: PromiseUI[] = [];
 
     promise = await getPromiseBySlug(categorySlug, promiseSlug);
 
@@ -67,18 +64,8 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
         };
     }
 
-    const [relatedPol, relatedCat] = await Promise.all([
-        currentPromise.politicianId ? getPromisesByPolitician(currentPromise.politicianId, "lv", 4) : Promise.resolve([]),
-        getPromisesByCategory(currentPromise.categorySlug, "lv", 4),
-    ]);
-
-    // Filter out current promise from related
-    relatedByPolitician = relatedPol
-        .filter(p => p.id !== currentPromise.id)
-        .slice(0, 3);
-    relatedByCategory = relatedCat
-        .filter(p => p.id !== currentPromise.id)
-        .slice(0, 3);
+    // Get related promises with priority-based matching
+    relatedPromises = await getRelatedPromises(currentPromise, "lv", 3);
 
     return (
         <PromiseDetailClient
@@ -86,8 +73,7 @@ const PromiseDetailPage = async ({ params }: PageProps) => {
             politician={politician}
             party={party}
             category={category}
-            relatedByPolitician={relatedByPolitician}
-            relatedByCategory={relatedByCategory}
+            relatedPromises={relatedPromises}
         />
     );
 };

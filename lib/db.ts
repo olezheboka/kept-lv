@@ -771,6 +771,100 @@ export async function getPromisesByCategory(
     return promises.map((p) => mapPromiseToUI(p, locale));
 }
 
+/**
+ * Get related promises with priority-based matching:
+ * 1st: same politician/party/coalition + same category + shared tags
+ * 2nd: same politician/party/coalition + same category
+ * 3rd: same category OR shared tag
+ * 4th: same politician/party/coalition only
+ */
+export async function getRelatedPromises(
+    currentPromise: PromiseUI,
+    locale: Locale = "lv",
+    limit: number = 3
+): Promise<PromiseUI[]> {
+    // Fetch all promises (we'll filter and score in memory for flexibility)
+    const allPromises = await getPromises(locale);
+
+    // Filter out the current promise
+    const candidates = allPromises.filter(p => p.id !== currentPromise.id);
+
+    if (candidates.length === 0) return [];
+
+    // Helper to check if promises share the same "owner" (politician, party, or coalition)
+    const hasSameOwner = (p: PromiseUI): boolean => {
+        // Same politician
+        if (currentPromise.politicianId && p.politicianId === currentPromise.politicianId) {
+            return true;
+        }
+        // Same party (for PARTY type promises)
+        if (currentPromise.partyId && p.partyId === currentPromise.partyId) {
+            return true;
+        }
+        // Same coalition (check if coalition parties overlap)
+        if (currentPromise.coalitionParties && currentPromise.coalitionParties.length > 0 &&
+            p.coalitionParties && p.coalitionParties.length > 0) {
+            const currentCoalitionIds = new Set(currentPromise.coalitionParties.map(cp => cp.id));
+            const hasOverlap = p.coalitionParties.some(cp => currentCoalitionIds.has(cp.id));
+            if (hasOverlap) return true;
+        }
+        return false;
+    };
+
+    // Helper to check if promises share category
+    const hasSameCategory = (p: PromiseUI): boolean => {
+        return p.categorySlug === currentPromise.categorySlug;
+    };
+
+    // Helper to check if promises share tags
+    const hasSharedTags = (p: PromiseUI): boolean => {
+        if (!currentPromise.tags || currentPromise.tags.length === 0) return false;
+        if (!p.tags || p.tags.length === 0) return false;
+        const currentTags = new Set(currentPromise.tags.map(t => t.toLowerCase()));
+        return p.tags.some(t => currentTags.has(t.toLowerCase()));
+    };
+
+    // Score each candidate based on priority
+    const scored = candidates.map(p => {
+        let score = 0;
+        const sameOwner = hasSameOwner(p);
+        const sameCategory = hasSameCategory(p);
+        const sharedTags = hasSharedTags(p);
+
+        // Priority 1: same owner + same category + shared tags (highest score)
+        if (sameOwner && sameCategory && sharedTags) {
+            score = 4;
+        }
+        // Priority 2: same owner + same category
+        else if (sameOwner && sameCategory) {
+            score = 3;
+        }
+        // Priority 3: same category OR shared tag
+        else if (sameCategory || sharedTags) {
+            score = 2;
+        }
+        // Priority 4: same owner only
+        else if (sameOwner) {
+            score = 1;
+        }
+
+        return { promise: p, score };
+    });
+
+    // Filter out promises with score 0 (no relation at all)
+    const related = scored
+        .filter(s => s.score > 0)
+        .sort((a, b) => {
+            // Sort by score descending, then by date descending
+            if (b.score !== a.score) return b.score - a.score;
+            return new Date(b.promise.statusUpdatedAt).getTime() - new Date(a.promise.statusUpdatedAt).getTime();
+        })
+        .slice(0, limit)
+        .map(s => s.promise);
+
+    return related;
+}
+
 export async function getFeaturedPromises(
     locale: Locale = "lv",
     limit: number = 4
