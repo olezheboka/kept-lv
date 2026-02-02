@@ -18,6 +18,7 @@ import { TagInput } from "@/components/ui/tag-input";
 import { DatePicker } from "@/components/ui/date-picker";
 import { cn } from "@/lib/utils";
 import { MultiSelectDropdown } from "@/components/ui/multi-select-dropdown";
+import { AutoResizeTextarea } from "@/components/ui/auto-resize-textarea";
 
 interface Politician {
     id: string;
@@ -673,7 +674,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                     <Label htmlFor="description" className="text-foreground font-semibold">
                         Description <span className="text-destructive">*</span>
                     </Label>
-                    <Textarea
+                    <AutoResizeTextarea
                         id="description"
                         value={formData.description}
                         onChange={(e) => {
@@ -682,7 +683,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                         }}
                         rows={4}
                         placeholder="Detailed explanation of the promise"
-                        className={cn("resize-none bg-background", errors.description && "border-destructive focus-visible:ring-destructive")}
+                        className={cn("min-h-[200px] max-h-[500px] bg-background", errors.description && "border-destructive focus-visible:ring-destructive")}
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
                         <FormError message={errors.description} />
@@ -816,13 +817,13 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                         <div className="space-y-6 pt-2">
                             <div className="space-y-2">
                                 <Label htmlFor="explanation" className="font-semibold text-foreground">Justification</Label>
-                                <Textarea
+                                <AutoResizeTextarea
                                     id="explanation"
                                     value={formData.explanation}
                                     onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
                                     rows={6}
                                     placeholder="Provide a detailed justification for the status change. Explain the context, reasoning, and any relevant details supporting this status."
-                                    className="bg-background resize-none"
+                                    className="min-h-[200px] max-h-[500px] bg-background"
                                 />
                             </div>
 

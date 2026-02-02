@@ -52,30 +52,40 @@ async function main() {
   console.log("Seeding database with real Latvia data...");
 
   // Create admin user
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const adminPassword = await hash("17191719", 12);
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@example.com";
+  // Default password only for dev environments, otherwise require env var
+  const defaultPassword = process.env.NODE_ENV === "production" ? undefined : "admin";
+  const rawPassword = process.env.ADMIN_PASSWORD || defaultPassword;
 
-  // Cleanup old default admin if exists
-  try {
-    await prisma.user.deleteMany({ where: { email: "admin@solijums.lv" } });
-  } catch {
-    // ignore
+  if (!rawPassword) {
+    console.warn("No ADMIN_PASSWORD provided. Skipping admin creation.");
+  } else {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const adminPassword = await hash(rawPassword, 12);
+
+    // Cleanup old default admin if exists
+    try {
+      await prisma.user.deleteMany({ where: { email: "admin@solijums.lv" } });
+    } catch {
+      // ignore
+    }
+
+    const admin = await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {
+        passwordHash: adminPassword,
+      },
+      create: {
+        email: adminEmail,
+        passwordHash: adminPassword,
+        name: "Admin",
+        role: "ADMIN",
+      },
+    });
+    console.log("Created/Updated admin user:", admin.email);
   }
 
-  const admin = await prisma.user.upsert({
-    where: { email: "oleg.jar@gmail.com" },
-    update: {
-      passwordHash: adminPassword,
-    },
-    create: {
-      email: "oleg.jar@gmail.com",
-      passwordHash: adminPassword,
-      name: "Admin",
-      role: "ADMIN",
-    },
-  });
-  console.log("Created admin user:", admin.email);
 
   // Clear existing data (Promises, Politicians, Parties)
   console.log("Clearing existing promises, politicians, and parties...");
