@@ -73,7 +73,9 @@ const getStatusColorClass = (status: string) => {
 
 export function PromiseTimeline({ history, createdAt }: PromiseTimelineProps) {
     // Sort history by date desc (newest first)
-    const sortedHistory = [...history];
+    const sortedHistory = [...history].sort((a, b) =>
+        new Date(b.changedAt).getTime() - new Date(a.changedAt).getTime()
+    );
 
     return (
         <div className="space-y-4">
