@@ -882,12 +882,28 @@ export async function getPartyRankings(locale: Locale = "lv"): Promise<RankingIt
                             },
                         },
                     },
+                    // Include party-level promises (type: PARTY)
+                    partyPromises: {
+                        select: { status: true }
+                    },
+                    // Include coalition promises where this party participates
+                    coalitionPromises: {
+                        select: { status: true }
+                    },
                 },
             }));
 
             const rankings = parties
                 .map((party) => {
-                    const allPromises = party.politicians.flatMap((p) => p.promises);
+                    // Aggregate all promise types:
+                    // 1. Individual promises from politicians
+                    const politicianPromises = party.politicians.flatMap((p) => p.promises);
+                    // 2. Direct party promises (type: PARTY)
+                    const partyPromises = party.partyPromises || [];
+                    // 3. Coalition promises where this party participates
+                    const coalitionPromises = party.coalitionPromises || [];
+
+                    const allPromises = [...politicianPromises, ...partyPromises, ...coalitionPromises];
                     const totalPromises = allPromises.length;
                     const keptPromises = allPromises.filter((p) => p.status === "KEPT").length;
 
