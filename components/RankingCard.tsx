@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { Trophy, Medal, ArrowRight, Users, Building2 } from 'lucide-react';
+import { Trophy, Medal, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from "framer-motion";
 import type { RankingItem, PartyUI } from '@/lib/db';
@@ -177,23 +177,8 @@ export const RankingCard = ({ title, type, data }: RankingCardProps) => {
                             </div>
                         </>
                     ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center py-8 px-4 text-center">
-                            <div className="relative mb-4">
-                                <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl" />
-                                <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-muted/80 to-muted flex items-center justify-center">
-                                    {type === 'politician' ? (
-                                        <Users className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground/60" />
-                                    ) : (
-                                        <Building2 className="w-8 h-8 md:w-10 md:h-10 text-muted-foreground/60" />
-                                    )}
-                                </div>
-                            </div>
-                            <h3 className="text-base md:text-lg font-semibold text-foreground/80 mb-2">
-                                {type === 'politician'
-                                    ? 'Pagaidām nav individuālu solījumu'
-                                    : 'Pagaidām nav partiju solījumu'}
-                            </h3>
-                            <p className="text-sm text-muted-foreground max-w-[240px] leading-relaxed">
+                        <div className="flex-1 flex items-center justify-center py-8 px-4 text-center">
+                            <p className="text-sm text-muted-foreground max-w-[280px] leading-relaxed">
                                 {type === 'politician'
                                     ? 'Kad tiks pievienoti politiķu personiskie solījumi, šeit parādīsies uzticamības reitings.'
                                     : 'Kad tiks pievienoti partiju solījumi, šeit parādīsies uzticamības reitings.'}
