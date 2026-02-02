@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { TrendingUp } from 'lucide-react';
 import type { CategoryWithStats } from '@/lib/db';
 import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
+import { getPlainTextFromLexical } from '@/lib/lexical-utils';
 
 interface CategoryCardProps {
     category: CategoryWithStats;
@@ -46,7 +47,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
                             </h3>
                             {category.description && (
                                 <p className="text-xs text-muted-foreground line-clamp-1">
-                                    {category.description}
+                                    {getPlainTextFromLexical(category.description)}
                                 </p>
                             )}
                         </div>

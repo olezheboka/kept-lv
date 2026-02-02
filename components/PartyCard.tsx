@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import type { PartyWithStats } from '@/lib/db';
+import { getPlainTextFromLexical } from '@/lib/lexical-utils';
 
 interface PartyCardProps {
     party: PartyWithStats;
@@ -30,7 +31,7 @@ export function PartyCard({ party }: PartyCardProps) {
                         <div className="flex items-center gap-2 mt-0">
                             {party.description && (
                                 <span className="text-xs text-muted-foreground truncate max-w-[200px]">
-                                    {party.description}
+                                    {getPlainTextFromLexical(party.description)}
                                 </span>
                             )}
                             {party.isInCoalition ? (
