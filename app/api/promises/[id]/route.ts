@@ -78,12 +78,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Promise not found" }, { status: 404 });
     }
 
-    const { sources, evidence, dateOfPromise, coalitionPartyIds, ...promiseData } = parsed.data;
+    const { sources, evidence, dateOfPromise, statusUpdatedAt, coalitionPartyIds, ...promiseData } = parsed.data;
 
     console.log("DEBUG PUT payload:", {
       status: promiseData.status,
-      statusUpdatedAtRaw: promiseData.statusUpdatedAt,
-      statusUpdatedAtDate: promiseData.statusUpdatedAt ? new Date(promiseData.statusUpdatedAt) : "N/A"
+      statusUpdatedAtRaw: statusUpdatedAt,
+      statusUpdatedAtDate: statusUpdatedAt ? new Date(statusUpdatedAt) : "N/A"
     });
 
     // Check for status change
@@ -107,6 +107,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
           ...promiseData,
           tags: promiseData.tags,
           dateOfPromise: dateOfPromise ? new Date(dateOfPromise) : undefined,
+          statusUpdatedAt: statusUpdatedAt ? new Date(statusUpdatedAt) : undefined,
           // Update coalition parties if provided (using set to replace)
           coalitionParties: coalitionPartyIds
             ? { set: coalitionPartyIds.map(id => ({ id })) }
@@ -137,7 +138,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 newStatus: promiseData.status as any,
                 changedBy: session.user?.email || "Unknown",
-                changedAt: promiseData.statusUpdatedAt ? new Date(promiseData.statusUpdatedAt) : new Date(),
+                changedAt: statusUpdatedAt ? new Date(statusUpdatedAt) : new Date(),
                 note: `Status changed from ${currentPromise.status} to ${promiseData.status}`
               }
             }
@@ -231,7 +232,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // This handles two cases:
     // 1. User changes the date in the form (dateChanged is true)
     // 2. User saves form again to fix a desynchronized history entry (dateChanged might be false if promise already has new date)
-    if (!statusChanged && promiseData.statusUpdatedAt) {
+    if (!statusChanged && statusUpdatedAt) {
       // Find the latest history entry
       const latestHistory = await prisma.promiseStatusHistory.findFirst({
         where: { promiseId: id },
@@ -239,10 +240,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       });
 
       if (latestHistory) {
-        const newDate = new Date(promiseData.statusUpdatedAt);
+        const newDate = new Date(statusUpdatedAt);
         // Update if the timestamps differ more than 1000ms (to avoid floating point/precision issues)
         if (Math.abs(latestHistory.changedAt.getTime() - newDate.getTime()) > 1000) {
-          console.log("Syncing latest history entry date to:", promiseData.statusUpdatedAt);
+          console.log("Syncing latest history entry date to:", statusUpdatedAt);
           await prisma.promiseStatusHistory.update({
             where: { id: latestHistory.id },
             data: { changedAt: newDate }
