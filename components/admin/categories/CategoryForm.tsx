@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { FormError } from "@/components/ui/form-error";
 import { cn } from "@/lib/utils";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { ensureRichTextState } from "@/lib/lexical-utils";
 
 interface Category {
     id: string;
@@ -31,11 +33,21 @@ export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormP
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [origin, setOrigin] = useState("");
-    const [formData, setFormData] = useState({
-        name: "",
-        slug: "",
-        description: "",
+    const [formData, setFormData] = useState(() => {
+        if (initialData) {
+            return {
+                name: initialData.name || "",
+                slug: initialData.slug || "",
+                description: ensureRichTextState(initialData.description),
+            };
+        }
+        return {
+            name: "",
+            slug: "",
+            description: "",
+        };
     });
+
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
@@ -43,22 +55,6 @@ export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormP
             setOrigin(window.location.origin);
         }
     }, []);
-
-    useEffect(() => {
-        if (initialData) {
-            setFormData({
-                name: initialData.name || "",
-                slug: initialData.slug || "",
-                description: initialData.description || "",
-            });
-        } else {
-            setFormData({
-                name: "",
-                slug: "",
-                description: "",
-            });
-        }
-    }, [initialData]);
 
     const [isDirty, setIsDirty] = useState(false);
 
@@ -179,12 +175,11 @@ export function CategoryForm({ initialData, onSuccess, onCancel }: CategoryFormP
                     <Label htmlFor="description" className="text-foreground font-semibold">
                         Description
                     </Label>
-                    <Textarea
-                        id="description"
+                    <RichTextEditor
                         value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="min-h-[120px] resize-y bg-background"
+                        onChange={(newValue) => setFormData({ ...formData, description: newValue })}
                         placeholder="Brief description of the category..."
+                        className="min-h-[150px]"
                     />
                 </div>
 

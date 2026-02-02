@@ -13,6 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormError } from "@/components/ui/form-error";
 import { cn } from "@/lib/utils";
 import { ImageUpload } from "@/components/ui/ImageUpload";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { ensureRichTextState } from "@/lib/lexical-utils";
 
 const COALITION_OPTIONS = [
     {
@@ -55,15 +57,29 @@ export function PartyForm({ initialData, onSuccess, onCancel }: PartyFormProps) 
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [origin, setOrigin] = useState("");
-    const [formData, setFormData] = useState({
-        name: "",
-        slug: "",
-        code: "",
-        description: "",
-        logoUrl: "",
-        websiteUrl: "",
-        isCoalition: false,
+    const [formData, setFormData] = useState(() => {
+        if (initialData) {
+            return {
+                name: initialData.name || "",
+                slug: initialData.slug || "",
+                code: initialData.code || "",
+                description: ensureRichTextState(initialData.description),
+                logoUrl: initialData.logoUrl || "",
+                websiteUrl: initialData.websiteUrl || "",
+                isCoalition: initialData.isCoalition || false,
+            };
+        }
+        return {
+            name: "",
+            slug: "",
+            code: "",
+            description: "",
+            logoUrl: "",
+            websiteUrl: "",
+            isCoalition: false,
+        };
     });
+
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
@@ -71,30 +87,6 @@ export function PartyForm({ initialData, onSuccess, onCancel }: PartyFormProps) 
             setOrigin(window.location.origin);
         }
     }, []);
-
-    useEffect(() => {
-        if (initialData) {
-            setFormData({
-                name: initialData.name || "",
-                slug: initialData.slug || "",
-                code: initialData.code || "",
-                description: initialData.description || "",
-                logoUrl: initialData.logoUrl || "",
-                websiteUrl: initialData.websiteUrl || "",
-                isCoalition: initialData.isCoalition || false,
-            });
-        } else {
-            setFormData({
-                name: "",
-                slug: "",
-                code: "",
-                description: "",
-                logoUrl: "",
-                websiteUrl: "",
-                isCoalition: false,
-            });
-        }
-    }, [initialData]);
 
     const [isDirty, setIsDirty] = useState(false);
 
@@ -258,13 +250,11 @@ export function PartyForm({ initialData, onSuccess, onCancel }: PartyFormProps) 
                     <Label htmlFor="description" className="text-foreground font-semibold">
                         Description
                     </Label>
-                    <Textarea
-                        id="description"
+                    <RichTextEditor
                         value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        rows={3}
+                        onChange={(newValue) => setFormData({ ...formData, description: newValue })}
                         placeholder="Brief description..."
-                        className="bg-background"
+                        className="min-h-[150px]"
                     />
                 </div>
 

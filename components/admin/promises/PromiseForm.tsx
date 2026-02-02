@@ -19,6 +19,9 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { cn } from "@/lib/utils";
 import { MultiSelectDropdown } from "@/components/ui/multi-select-dropdown";
 import { AutoResizeTextarea } from "@/components/ui/auto-resize-textarea";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { ensureRichTextState } from "@/lib/lexical-utils";
+
 
 interface Politician {
     id: string;
@@ -195,9 +198,9 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             return {
                 title: initialData.title || "",
                 slug: initialData.slug || "",
-                description: initialData.description || "",
+                description: ensureRichTextState(initialData.description),
                 status: normalizeStatus(initialData.status),
-                explanation: initialData.explanation || "",
+                explanation: ensureRichTextState(initialData.explanation),
                 dateOfPromise: initialData.dateOfPromise ? new Date(initialData.dateOfPromise).toISOString().split('T')[0] : "",
                 statusUpdatedAt: initialData.statusUpdatedAt ? new Date(initialData.statusUpdatedAt).toISOString().split('T')[0] : "",
 
@@ -288,9 +291,9 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             initialFormState = {
                 title: initialData.title || "",
                 slug: initialData.slug || "",
-                description: initialData.description || "",
+                description: ensureRichTextState(initialData.description),
                 status: normalizeStatus(initialData.status),
-                explanation: initialData.explanation || "",
+                explanation: ensureRichTextState(initialData.explanation),
                 dateOfPromise: initialData.dateOfPromise ? new Date(initialData.dateOfPromise).toISOString().split('T')[0] : "",
                 statusUpdatedAt: initialData.statusUpdatedAt ? new Date(initialData.statusUpdatedAt).toISOString().split('T')[0] : "",
                 type: initialData.type || "INDIVIDUAL",
@@ -330,9 +333,9 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             setFormData({
                 title: initialData.title || "",
                 slug: initialData.slug || "",
-                description: initialData.description || "",
+                description: ensureRichTextState(initialData.description),
                 status: normalizeStatus(initialData.status),
-                explanation: initialData.explanation || "",
+                explanation: ensureRichTextState(initialData.explanation),
                 dateOfPromise: initialData.dateOfPromise ? new Date(initialData.dateOfPromise).toISOString().split('T')[0] : "",
                 statusUpdatedAt: initialData.statusUpdatedAt ? new Date(initialData.statusUpdatedAt).toISOString().split('T')[0] : "",
 
@@ -674,193 +677,187 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                     <Label htmlFor="description" className="text-foreground font-semibold">
                         Description <span className="text-destructive">*</span>
                     </Label>
-                    <AutoResizeTextarea
-                        id="description"
+                    <RichTextEditor
                         value={formData.description}
-                        onChange={(e) => {
-                            setFormData({ ...formData, description: e.target.value });
+                        onChange={(value) => {
+                            setFormData({ ...formData, description: value });
                             if (errors.description) setErrors({ ...errors, description: "" });
                         }}
-                        rows={4}
                         placeholder="Detailed explanation of the promise"
-                        className={cn("min-h-[200px] max-h-[500px] bg-background", errors.description && "border-destructive focus-visible:ring-destructive")}
+                        className={cn(errors.description && "border-destructive ring-destructive focus-visible:ring-destructive")}
                     />
                     <div className="flex justify-between text-xs text-muted-foreground">
                         <FormError message={errors.description} />
                         <span>{formData.description.length}/2000 characters</span>
                     </div>
                 </div>
+            </div>
 
-                {/* Source Field directly under Description */}
-                <div className="space-y-2">
-                    <Label htmlFor="source" className="text-foreground font-semibold">Source (Original)</Label>
-                    <div className="flex gap-2">
-                        <div className="flex-1">
-                            <Input
-                                value={formData.sourceUrl}
-                                onChange={(e) => setFormData({ ...formData, sourceUrl: e.target.value })}
-                                placeholder="http://party-program.com/manifesto.pdf"
-                                className="bg-background"
-                            />
-                        </div>
-                        <div className="w-1/3">
-                            <Input
-                                value={formData.sourceTitle}
-                                onChange={(e) => setFormData({ ...formData, sourceTitle: e.target.value })}
-                                placeholder="Link title (optional)"
-                                className="bg-background"
-                            />
-                        </div>
+            {/* Source Field directly under Description */}
+            <div className="space-y-2">
+                <Label htmlFor="source" className="text-foreground font-semibold">Source (Original)</Label>
+                <div className="flex gap-2">
+                    <div className="flex-1">
+                        <Input
+                            value={formData.sourceUrl}
+                            onChange={(e) => setFormData({ ...formData, sourceUrl: e.target.value })}
+                            placeholder="http://party-program.com/manifesto.pdf"
+                            className="bg-background"
+                        />
                     </div>
-                    <p className="text-xs text-muted-foreground">Link to the manifesto, interview or document where the promise was originally made.</p>
+                    <div className="w-1/3">
+                        <Input
+                            value={formData.sourceTitle}
+                            onChange={(e) => setFormData({ ...formData, sourceTitle: e.target.value })}
+                            placeholder="Link title (optional)"
+                            className="bg-background"
+                        />
+                    </div>
                 </div>
+                <p className="text-xs text-muted-foreground">Link to the manifesto, interview or document where the promise was originally made.</p>
+            </div>
 
-                {/* Category (Full Width now) */}
+            {/* Category (Full Width now) */}
+            <div className="space-y-2">
+                <Label htmlFor="category" className="text-foreground font-semibold">Category <span className="text-destructive">*</span></Label>
+                <SearchableSelect
+                    options={categoryOptions}
+                    value={formData.categoryId}
+                    onChange={(val) => {
+                        setFormData({ ...formData, categoryId: val });
+                        if (errors.categoryId) setErrors({ ...errors, categoryId: "" });
+                    }}
+                    placeholder="Select category"
+                    searchPlaceholder="Search categories..."
+                    icon={Folder}
+                    className={cn(errors.categoryId && "border-destructive focus-visible:ring-destructive ring-destructive")}
+                />
+                <FormError message={errors.categoryId} />
+            </div>
+
+
+            {/* Date & Tags */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <Label htmlFor="category" className="text-foreground font-semibold">Category <span className="text-destructive">*</span></Label>
-                    <SearchableSelect
-                        options={categoryOptions}
-                        value={formData.categoryId}
-                        onChange={(val) => {
-                            setFormData({ ...formData, categoryId: val });
-                            if (errors.categoryId) setErrors({ ...errors, categoryId: "" });
+                    <Label htmlFor="date" className="text-foreground font-semibold">Promise given <span className="text-destructive">*</span></Label>
+                    <DatePicker
+                        date={formData.dateOfPromise ? new Date(formData.dateOfPromise) : undefined}
+                        setDate={(date) => {
+                            setFormData({
+                                ...formData,
+                                dateOfPromise: date ? format(date, "yyyy-MM-dd") : ""
+                            });
+                            if (errors.dateOfPromise) setErrors({ ...errors, dateOfPromise: "" });
                         }}
-                        placeholder="Select category"
-                        searchPlaceholder="Search categories..."
-                        icon={Folder}
-                        className={cn(errors.categoryId && "border-destructive focus-visible:ring-destructive ring-destructive")}
+                        className={cn(errors.dateOfPromise && "border-destructive ring-destructive focus-visible:ring-destructive")}
                     />
-                    <FormError message={errors.categoryId} />
+                    <FormError message={errors.dateOfPromise} />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="tags" className="text-foreground font-semibold">Tags</Label>
+                    <TagInput
+                        value={formData.tags}
+                        onChange={(tags) => setFormData({ ...formData, tags })}
+                        placeholder="economy, jobs, taxes (comma-separated)"
+                    />
+                </div>
+            </div>
+
+            <div className="pt-4 pb-6 space-y-6">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-bold text-foreground">Current status</h2>
                 </div>
 
+                <div className="bg-gradient-to-br from-green-50/30 to-green-100/30 dark:from-green-950/10 dark:to-green-900/10 rounded-xl border p-6 shadow-sm space-y-8">
+                    {/* Status Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                        {STATUS_OPTIONS.map((option) => {
+                            const isSelected = formData.status === option.value;
+                            const Icon = option.icon;
 
-                {/* Date & Tags */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="date" className="text-foreground font-semibold">Promise given <span className="text-destructive">*</span></Label>
-                        <DatePicker
-                            date={formData.dateOfPromise ? new Date(formData.dateOfPromise) : undefined}
-                            setDate={(date) => {
-                                setFormData({
-                                    ...formData,
-                                    dateOfPromise: date ? format(date, "yyyy-MM-dd") : ""
-                                });
-                                if (errors.dateOfPromise) setErrors({ ...errors, dateOfPromise: "" });
-                            }}
-                            className={cn(errors.dateOfPromise && "border-destructive ring-destructive focus-visible:ring-destructive")}
-                        />
-                        <FormError message={errors.dateOfPromise} />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="tags" className="text-foreground font-semibold">Tags</Label>
-                        <TagInput
-                            value={formData.tags}
-                            onChange={(tags) => setFormData({ ...formData, tags })}
-                            placeholder="economy, jobs, taxes (comma-separated)"
-                        />
-                    </div>
-                </div>
-
-                <div className="pt-4 pb-6 space-y-6">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-bold text-foreground">Current status</h2>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-green-50/30 to-green-100/30 dark:from-green-950/10 dark:to-green-900/10 rounded-xl border p-6 shadow-sm space-y-8">
-                        {/* Status Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                            {STATUS_OPTIONS.map((option) => {
-                                const isSelected = formData.status === option.value;
-                                const Icon = option.icon;
-
-                                return (
-                                    <div
-                                        key={option.value}
-                                        onClick={() => {
-                                            setFormData(prev => ({
-                                                ...prev,
-                                                status: option.value,
-                                                statusUpdatedAt: new Date().toISOString().split('T')[0]
-                                            }));
-                                            if (errors.status) setErrors({ ...errors, status: "" });
-                                        }}
-                                        className={cn(
-                                            "relative flex flex-col p-4 rounded-xl border-2 transition-all cursor-pointer hover:shadow-md",
-                                            isSelected
-                                                ? "border-blue-500 bg-white dark:bg-slate-950 shadow-sm"
-                                                : "border-border hover:border-gray-300 dark:hover:border-gray-700 bg-white/50"
-                                        )}
-                                    >
-                                        <div className="flex justify-between items-start mb-3">
-                                            <div className={cn("p-2 rounded-lg", option.bgClass)}>
-                                                <Icon className={cn("w-5 h-5", option.colorClass)} />
-                                            </div>
-                                            <div className={cn(
-                                                "w-5 h-5 rounded-full border flex items-center justify-center",
-                                                isSelected ? "border-blue-500" : "border-gray-300"
-                                            )}>
-                                                {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />}
-                                            </div>
+                            return (
+                                <div
+                                    key={option.value}
+                                    onClick={() => {
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            status: option.value,
+                                            statusUpdatedAt: new Date().toISOString().split('T')[0]
+                                        }));
+                                        if (errors.status) setErrors({ ...errors, status: "" });
+                                    }}
+                                    className={cn(
+                                        "relative flex flex-col p-4 rounded-xl border-2 transition-all cursor-pointer hover:shadow-md",
+                                        isSelected
+                                            ? "border-blue-500 bg-white dark:bg-slate-950 shadow-sm"
+                                            : "border-border hover:border-gray-300 dark:hover:border-gray-700 bg-white/50"
+                                    )}
+                                >
+                                    <div className="flex justify-between items-start mb-3">
+                                        <div className={cn("p-2 rounded-lg", option.bgClass)}>
+                                            <Icon className={cn("w-5 h-5", option.colorClass)} />
                                         </div>
-
-                                        <div className="space-y-1">
-                                            <p className="font-semibold text-sm text-foreground">{option.label}</p>
-                                            <p className="text-xs text-muted-foreground">{option.description}</p>
+                                        <div className={cn(
+                                            "w-5 h-5 rounded-full border flex items-center justify-center",
+                                            isSelected ? "border-blue-500" : "border-gray-300"
+                                        )}>
+                                            {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />}
                                         </div>
                                     </div>
-                                );
-                            })}
-                        </div>
-                        <FormError message={errors.status} />
 
-                        {/* Status Details */}
-                        <div className="space-y-6 pt-2">
-                            <div className="space-y-2">
-                                <Label htmlFor="explanation" className="font-semibold text-foreground">Justification</Label>
-                                <AutoResizeTextarea
-                                    id="explanation"
-                                    value={formData.explanation}
-                                    onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
-                                    rows={6}
-                                    placeholder="Provide a detailed justification for the status change. Explain the context, reasoning, and any relevant details supporting this status."
-                                    className="min-h-[200px] max-h-[500px] bg-background"
+                                    <div className="space-y-1">
+                                        <p className="font-semibold text-sm text-foreground">{option.label}</p>
+                                        <p className="text-xs text-muted-foreground">{option.description}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <FormError message={errors.status} />
+
+                    {/* Status Details */}
+                    <div className="space-y-6 pt-2">
+                        <div className="space-y-2">
+                            <Label htmlFor="explanation" className="font-semibold text-foreground">Justification</Label>
+                            <RichTextEditor
+                                value={formData.explanation}
+                                onChange={(value) => setFormData({ ...formData, explanation: value })}
+                                placeholder="Provide a detailed justification for the status change..."
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="space-y-2 md:col-span-2">
+                                <Label className="text-foreground font-semibold">Evidence link</Label>
+                                <Input
+                                    value={formData.evidenceUrl}
+                                    onChange={(e) => setFormData({ ...formData, evidenceUrl: e.target.value })}
+                                    placeholder="https://news.example.com/article"
+                                    className="bg-background"
                                 />
+                                <p className="text-xs text-muted-foreground">Link that proves the current status.</p>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="space-y-2 md:col-span-2">
-                                    <Label className="text-foreground font-semibold">Evidence link</Label>
-                                    <Input
-                                        value={formData.evidenceUrl}
-                                        onChange={(e) => setFormData({ ...formData, evidenceUrl: e.target.value })}
-                                        placeholder="https://news.example.com/article"
-                                        className="bg-background"
-                                    />
-                                    <p className="text-xs text-muted-foreground">Link that proves the current status.</p>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="statusDate" className="font-semibold text-foreground">
-                                        Status updated <span className="text-destructive">*</span>
-                                    </Label>
-                                    <DatePicker
-                                        date={formData.statusUpdatedAt ? new Date(formData.statusUpdatedAt) : undefined}
-                                        setDate={(date) => {
-                                            setFormData({
-                                                ...formData,
-                                                statusUpdatedAt: date ? format(date, "yyyy-MM-dd") : ""
-                                            });
-                                            if (errors.statusUpdatedAt) setErrors({ ...errors, statusUpdatedAt: "" });
-                                        }}
-                                        className={cn(errors.statusUpdatedAt && "border-destructive ring-destructive focus-visible:ring-destructive")}
-                                    />
-                                    <FormError message={errors.statusUpdatedAt} />
-                                </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="statusDate" className="font-semibold text-foreground">
+                                    Status updated <span className="text-destructive">*</span>
+                                </Label>
+                                <DatePicker
+                                    date={formData.statusUpdatedAt ? new Date(formData.statusUpdatedAt) : undefined}
+                                    setDate={(date) => {
+                                        setFormData({
+                                            ...formData,
+                                            statusUpdatedAt: date ? format(date, "yyyy-MM-dd") : ""
+                                        });
+                                        if (errors.statusUpdatedAt) setErrors({ ...errors, statusUpdatedAt: "" });
+                                    }}
+                                    className={cn(errors.statusUpdatedAt && "border-destructive ring-destructive focus-visible:ring-destructive")}
+                                />
+                                <FormError message={errors.statusUpdatedAt} />
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
 
             {UnsavedChangesModal}
