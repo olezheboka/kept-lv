@@ -16,7 +16,7 @@ export function TypewriterText({
     className,
     waitTime = 3000,
     eraseSpeed = 60,
-    typeSpeed = 100,
+    typeSpeed = 50,
 }: TypewriterTextProps) {
     const elementRef = useRef<HTMLSpanElement>(null);
 
