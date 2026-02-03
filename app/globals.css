@@ -407,6 +407,15 @@
         radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
         radial-gradient(at 0% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
     }
+
+    /* Lexical Table Selection Highlighting */
+    .lexical-table-selected-cell,
+    td[style*="background-color: highlight"],
+    th[style*="background-color: highlight"] {
+      background-color: rgba(59, 130, 246, 0.2) !important;
+      outline: 2px solid rgba(59, 130, 246, 0.6);
+      outline-offset: -2px;
+    }
   }
 
   /* Components */
