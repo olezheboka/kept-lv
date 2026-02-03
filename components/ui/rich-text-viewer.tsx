@@ -14,6 +14,9 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
+import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
+import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import { cn } from "@/lib/utils";
 import { LexicalTheme } from "./lexical-theme";
 
@@ -115,7 +118,11 @@ export function RichTextViewer({ value, className }: RichTextViewerProps) {
                 />
                 <ListPlugin />
                 <LinkPlugin />
+
                 <ClickableLinkPlugin />
+                <TablePlugin />
+                <HorizontalRulePlugin />
+                <TabIndentationPlugin />
             </LexicalComposer>
         </div>
     );
