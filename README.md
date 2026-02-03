@@ -80,6 +80,22 @@ To learn more about Next.js, take a look at the following resources:
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-<!-- Deployment Test Tue Feb  3 18:36:31 EET 2026 -->
 
-<!-- Final Deployment Test Tue Feb  3 20:26:33 EET 2026 -->
+## Deployment
+
+This project is deployed on **Vercel** and configured for automatic deployments via GitHub.
+
+### Automatic Deployments
+Any push to the `main` branch automatically triggers a new deployment on Vercel.
+
+**Important Note for Agentic/AI Commits:**
+If using AI agents (like Gemini/Antigravity) that commit directly to the repository, Vercel may reject the deployment with the error:
+`Deployment was canceled because it was created with an unverified commit`.
+
+To resolve this:
+1.  Go to your Vercel Project Settings.
+2.  Navigate to **Git** (or Security).
+3.  **Disable** the "Verify Commit Signing" (or "Git Authorship Verification") option.
+
+This ensures that unsigned commits from the agent trigger builds correctly.
+
