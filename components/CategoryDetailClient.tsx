@@ -57,9 +57,9 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4 }}
-                        className="flex items-start gap-6"
+                        className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-4 md:flex md:flex-row md:items-start md:gap-6"
                     >
-                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-blue-50 flex items-center justify-center overflow-hidden shrink-0">
+                        <div className="w-9 h-9 md:w-20 md:h-20 rounded-xl bg-blue-50 flex items-center justify-center overflow-hidden shrink-0">
                             {category.imageUrl ? (
                                 /* eslint-disable-next-line @next/next/no-img-element */
                                 <img
@@ -71,17 +71,17 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
                                 <div className="flex items-center justify-center w-full h-full text-blue-600">
                                     {(() => {
                                         const IconComponent = SLUG_ICON_MAP[category.slug] || TrendingUp;
-                                        return <IconComponent className="h-8 w-8 md:h-10 md:w-10" />;
+                                        return <IconComponent className="h-5 w-5 md:h-10 md:w-10" />;
                                     })()}
                                 </div>
                             )}
                         </div>
-                        <div>
-                            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+                        <div className="contents md:block">
+                            <h1 className="text-3xl md:text-4xl font-bold text-foreground self-center">
                                 {category.name}
                             </h1>
 
-                            <div className="text-muted-foreground">
+                            <div className="col-span-2 text-muted-foreground text-lg">
                                 {category.description && <RichTextViewer value={category.description} />}
                             </div>
                         </div>
