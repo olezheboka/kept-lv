@@ -11,6 +11,7 @@ import { ListItemNode, ListNode } from "@lexical/list";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { cn } from "@/lib/utils";
@@ -114,6 +115,7 @@ export function RichTextViewer({ value, className }: RichTextViewerProps) {
                 />
                 <ListPlugin />
                 <LinkPlugin />
+                <ClickableLinkPlugin />
             </LexicalComposer>
         </div>
     );
