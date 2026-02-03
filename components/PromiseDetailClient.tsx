@@ -127,10 +127,10 @@ export const PromiseDetailClient = ({
                             <div className="mb-6">
                                 {/* Row 1: Category + Date + Share Button */}
                                 <div className="flex items-center justify-between gap-4 mb-3">
-                                    <div className="flex items-center gap-4 text-sm text-muted-foreground/70">
+                                    <div className="flex items-center gap-4 text-xs md:text-sm text-muted-foreground/70">
                                         {/* Date first */}
                                         <div className="flex items-center gap-1.5">
-                                            <Calendar className="h-4 w-4" />
+                                            <Calendar className="h-3 w-3 md:h-4 md:w-4" />
                                             <span>{format(new Date(promise.datePromised), 'dd.MM.yyyy')}</span>
                                         </div>
 
@@ -143,7 +143,7 @@ export const PromiseDetailClient = ({
                                                     className="flex items-center gap-1.5 hover:text-foreground transition-colors"
                                                     suppressHydrationWarning
                                                 >
-                                                    <CategoryIcon className="h-4 w-4" />
+                                                    <CategoryIcon className="h-3 w-3 md:h-4 md:w-4" />
                                                     <span>{category.name}</span>
                                                 </Link>
                                             );
