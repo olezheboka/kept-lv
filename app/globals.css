@@ -188,7 +188,11 @@
     }
 
     body {
-      @apply bg-background text-foreground text-lg md:text-base;
+      @apply bg-background text-foreground text-base;
+    }
+
+    h2 {
+      @apply text-2xl md:text-[28px];
     }
 
     button,

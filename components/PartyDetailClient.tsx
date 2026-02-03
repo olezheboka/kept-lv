@@ -155,7 +155,7 @@ export const PartyDetailClient = ({ party, promises, politicians }: PartyDetailC
             {/* Promises */}
             <section className="py-8 md:py-12">
                 <div className="container-wide">
-                    <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+                    <h2 className="font-bold text-foreground mb-6 flex items-center gap-2">
                         {filterStatus === 'all' ? 'Visi solījumi' : STATUS_CONFIG[filterStatus].label}
                         <span className="text-muted-foreground font-normal text-lg">
                             ({filteredPromises.length})

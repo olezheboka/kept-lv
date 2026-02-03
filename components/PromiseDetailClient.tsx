@@ -223,7 +223,7 @@ export const PromiseDetailClient = ({
                             {/* Description */}
                             <div className="space-y-4">
                                 {promise.description && (
-                                    <div className="text-sm md:text-base text-foreground leading-relaxed mb-4">
+                                    <div className="text-foreground leading-relaxed mb-4">
                                         <RichTextViewer value={promise.description} />
                                     </div>
                                 )}
@@ -271,13 +271,13 @@ export const PromiseDetailClient = ({
                                         <StatusBadge status={promise.status} size="lg" variant="solid" />
                                     </div>
                                     {promise.statusJustification && (
-                                        <div className="text-sm md:text-base text-foreground leading-relaxed">
+                                        <div className="text-foreground leading-relaxed">
 
                                             <RichTextViewer value={promise.statusJustification} />
                                         </div>
                                     )}
 
-                                    <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-black/5 text-sm text-foreground/70">
+                                    <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-black/5 text-xs text-foreground/70">
                                         <div className="flex items-center gap-2">
                                             <Calendar className="h-3.5 w-3.5 opacity-70" />
                                             <span className="opacity-70">Atjaunināts:</span>
