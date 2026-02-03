@@ -13,6 +13,9 @@ export default async function EditPromisePage({ params }: { params: Promise<{ id
             include: {
                 sources: true,
                 evidence: true,
+                statusHistory: {
+                    orderBy: { changedAt: 'desc' }
+                },
                 coalitionParties: {
                     select: {
                         id: true,
@@ -46,6 +49,14 @@ export default async function EditPromisePage({ params }: { params: Promise<{ id
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         status: promise.status as any, // Form handles normalization
         slug: promise.slug || "",
+        // Convert dates to strings for the form
+        statusHistory: promise.statusHistory.map(entry => ({
+            ...entry,
+            changedAt: entry.changedAt.toISOString(),
+            // Ensure enums are cast to string for the interface
+            oldStatus: entry.oldStatus ? String(entry.oldStatus) : null,
+            newStatus: String(entry.newStatus)
+        }))
     };
 
     async function handleSuccess() {

@@ -21,6 +21,8 @@ import { MultiSelectDropdown } from "@/components/ui/multi-select-dropdown";
 import { AutoResizeTextarea } from "@/components/ui/auto-resize-textarea";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { ensureRichTextState } from "@/lib/lexical-utils";
+import { EditableTimeline } from "./EditableTimeline";
+import { PromiseTimelineEntry } from "@/lib/db";
 
 
 interface Politician {
@@ -72,6 +74,7 @@ interface PromiseData {
     sources?: Source[];
     evidence?: Evidence[];
     coalitionParties?: Party[];
+    statusHistory?: PromiseTimelineEntry[];
 }
 
 export interface PromiseFormProps {
@@ -155,6 +158,7 @@ const mapLegacyType = (type: string): Evidence["type"] => {
 export function PromiseForm({ initialData, politicians, parties, categories, onSuccess, onCancel }: PromiseFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [isDeletingHistory, setIsDeletingHistory] = useState<string | null>(null);
     const [origin, setOrigin] = useState("");
 
     useEffect(() => {
@@ -472,6 +476,30 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             alert("An error occurred");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDeleteHistoryEntry = async (entryId: string) => {
+        if (!initialData?.id) return;
+
+        setIsDeletingHistory(entryId);
+        try {
+            const res = await fetch(`/api/promises/${initialData.id}/timeline/${entryId}`, {
+                method: "DELETE",
+            });
+
+            if (res.ok) {
+                toast.success("History entry deleted");
+                router.refresh();
+            } else {
+                const text = await res.text();
+                toast.error(text || "Failed to delete entry");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("An error occurred");
+        } finally {
+            setIsDeletingHistory(null);
         }
     };
 
@@ -858,6 +886,18 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                         </div>
                     </div>
                 </div>
+
+                {/* Timeline Section */}
+                {initialData && initialData.statusHistory && initialData.statusHistory.length > 0 && (
+                    <div className="pt-6 border-t mt-8">
+                        <EditableTimeline
+                            history={initialData.statusHistory}
+                            createdAt={initialData.dateOfPromise as string}
+                            onDelete={handleDeleteHistoryEntry}
+                            isDeleting={isDeletingHistory}
+                        />
+                    </div>
+                )}
             </div>
 
             {UnsavedChangesModal}
