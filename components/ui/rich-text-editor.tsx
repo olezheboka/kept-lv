@@ -9,8 +9,11 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { $getNearestNodeOfType } from "@lexical/utils";
-import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
+import { TableCellNode, TableNode, TableRowNode, INSERT_TABLE_COMMAND } from "@lexical/table";
 import { ListItemNode, ListNode, INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, $isListNode } from "@lexical/list";
+import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
+import { TableToolbarPlugin } from "./table-toolbar-plugin";
+import { TableCellResizerPlugin } from "./table-cell-resizer-plugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 
 import { CodeHighlightNode, CodeNode, $createCodeNode, $isCodeNode } from "@lexical/code";
@@ -79,6 +82,7 @@ import {
     FileCode,
     Indent,
     Outdent,
+    Table as TableIcon,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -158,6 +162,11 @@ function ToolbarPlugin() {
     const [imageWidth, setImageWidth] = useState("");
     const [imageHeight, setImageHeight] = useState("");
     const [isImagePopoverOpen, setIsImagePopoverOpen] = useState(false);
+
+    // Table Popover State
+    const [isTablePopoverOpen, setIsTablePopoverOpen] = useState(false);
+    const [tableRows, setTableRows] = useState(1);
+    const [tableCols, setTableCols] = useState(1);
 
     // Block Type State
     const [blockType, setBlockType] = useState("paragraph");
@@ -378,6 +387,15 @@ function ToolbarPlugin() {
         setIsImagePopoverOpen(false);
     };
 
+    const insertTable = (rows: string, columns: string) => {
+        editor.dispatchCommand(INSERT_TABLE_COMMAND, {
+            columns,
+            rows,
+            includeHeaders: false,
+        });
+        setIsTablePopoverOpen(false);
+    };
+
     // Helper for Text Color / Bg
     const applyStyleText = (styles: Record<string, string>) => {
         editor.update(() => {
@@ -408,7 +426,7 @@ function ToolbarPlugin() {
     };
 
     return (
-        <div className="flex flex-wrap items-center gap-1 border-b p-2 bg-muted/20">
+        <div className="flex flex-wrap items-center gap-1 p-2">
             <ToolbarButton
                 onClick={() => {
                     editor.dispatchCommand(UNDO_COMMAND, undefined);
@@ -699,6 +717,67 @@ function ToolbarPlugin() {
 
             <div className="w-[1px] h-6 bg-border mx-1" />
 
+            {/* Table Selector */}
+            <Popover open={isTablePopoverOpen} onOpenChange={setIsTablePopoverOpen}>
+                <PopoverTrigger asChild>
+                    <button
+                        className={cn(
+                            "p-1.5 rounded transition-colors hover:bg-muted text-muted-foreground",
+                            isTablePopoverOpen && "bg-muted text-primary"
+                        )}
+                        title="Insert Table"
+                        type="button"
+                    >
+                        <TableIcon className="w-4 h-4" />
+                    </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-2" align="start">
+                    <div className="flex flex-col gap-2">
+                        <div className="text-xs font-medium text-center text-muted-foreground">
+                            {tableCols} x {tableRows}
+                        </div>
+                        <div
+                            className="grid gap-1"
+                            style={{ gridTemplateColumns: "repeat(10, 1fr)" }}
+                            onMouseLeave={() => {
+                                setTableCols(1);
+                                setTableRows(1);
+                            }}
+                        >
+                            {Array.from({ length: 100 }).map((_, i) => {
+                                const row = Math.floor(i / 10) + 1;
+                                const col = (i % 10) + 1;
+                                const isSelected = row <= tableRows && col <= tableCols;
+
+                                return (
+                                    <button
+                                        key={i}
+                                        className={cn(
+                                            "w-4 h-4 border rounded-sm transition-colors",
+                                            isSelected
+                                                ? "bg-primary border-primary"
+                                                : "bg-muted border-transparent hover:border-primary/50"
+                                        )}
+                                        onMouseEnter={() => {
+                                            setTableRows(row);
+                                            setTableCols(col);
+                                        }}
+                                        onClick={() => insertTable(String(row), String(col))}
+                                        type="button"
+                                        aria-label={`${row} rows, ${col} columns`}
+                                    />
+                                );
+                            })}
+                        </div>
+                        <div className="text-xs text-center text-muted-foreground mt-1">
+                            {tableCols} Columns x {tableRows} Rows
+                        </div>
+                    </div>
+                </PopoverContent>
+            </Popover>
+
+            <div className="w-[1px] h-6 bg-border mx-1" />
+
             {/* Image Button with Popover */}
             <Popover open={isImagePopoverOpen} onOpenChange={setIsImagePopoverOpen}>
                 <PopoverTrigger asChild>
@@ -817,7 +896,10 @@ export function RichTextEditor({
     return (
         <div className={cn("rounded-md border border-input shadow-sm focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 overflow-hidden bg-background", className)}>
             <LexicalComposer initialConfig={initialConfig}>
-                <ToolbarPlugin />
+                <div className="flex flex-col border-b bg-muted/20">
+                    <ToolbarPlugin />
+                    <TableToolbarPlugin />
+                </div>
                 <div className="relative">
                     <RichTextPlugin
                         contentEditable={
@@ -833,6 +915,8 @@ export function RichTextEditor({
                     <HistoryPlugin />
                     <ListPlugin />
                     <LinkPlugin />
+                    <TablePlugin hasCellBackgroundColor={true} />
+                    <TableCellResizerPlugin />
                     <HorizontalRulePlugin />
                     <TabIndentationPlugin />
                     <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
