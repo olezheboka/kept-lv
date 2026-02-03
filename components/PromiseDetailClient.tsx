@@ -239,7 +239,7 @@ export const PromiseDetailClient = ({
                                                 href={source.url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="font-medium hover:underline text-primary text-base"
+                                                className="font-medium hover:underline text-primary"
                                             >
                                                 {source.title || extractDomain(source.url)}
                                             </a>
@@ -272,7 +272,7 @@ export const PromiseDetailClient = ({
                                     </div>
                                     {promise.statusJustification && (
                                         <div className="text-sm md:text-base text-foreground leading-relaxed">
-                                            <span className="font-bold block mb-2 text-foreground/80">Pamatojums:</span>
+
                                             <RichTextViewer value={promise.statusJustification} />
                                         </div>
                                     )}
