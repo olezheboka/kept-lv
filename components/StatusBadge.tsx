@@ -39,7 +39,7 @@ const iconMap = {
 };
 
 export const StatusBadge = ({ status, size = 'md', showIcon = true, variant = 'subtle', className }: StatusBadgeProps) => {
-  const config = STATUS_CONFIG[status];
+  const config = STATUS_CONFIG[status] || STATUS_CONFIG['pending'];
   const IconComponent = iconMap[config.icon as keyof typeof iconMap];
   const statusClass = variant === 'subtle' ? config.className : `${config.className}-${variant}`;
 
