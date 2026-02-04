@@ -23,6 +23,7 @@ import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { ensureRichTextState } from "@/lib/lexical-utils";
 import { EditableTimeline } from "./EditableTimeline";
 import { PromiseTimelineEntry } from "@/lib/db";
+import { TimePicker } from "@/components/ui/time-picker";
 
 
 interface Politician {
@@ -891,15 +892,11 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                                             className={cn(errors.statusUpdatedAt && "border-destructive ring-destructive focus-visible:ring-destructive")}
                                         />
                                     </div>
-                                    <div className="w-[110px]">
-                                        <div className="relative">
-                                            <Input
-                                                type="time"
-                                                value={formData.statusUpdatedTime}
-                                                onChange={(e) => setFormData({ ...formData, statusUpdatedTime: e.target.value })}
-                                                className="bg-background"
-                                            />
-                                        </div>
+                                    <div className="w-[140px]">
+                                        <TimePicker
+                                            value={formData.statusUpdatedTime}
+                                            onChange={(val) => setFormData({ ...formData, statusUpdatedTime: val })}
+                                        />
                                     </div>
                                 </div>
                                 <FormError message={errors.statusUpdatedAt} />
