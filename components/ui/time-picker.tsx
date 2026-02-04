@@ -72,8 +72,8 @@ export function TimePicker({ value = "00:00", onChange, className }: TimePickerP
                         className
                     )}
                 >
-                    <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
                     <span>{value}</span>
+                    <Clock className="ml-auto h-4 w-4 text-muted-foreground opacity-50" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-4 bg-white dark:bg-slate-950 rounded-xl shadow-xl" align="start">
@@ -147,6 +147,6 @@ export function TimePicker({ value = "00:00", onChange, className }: TimePickerP
 
                 </div>
             </PopoverContent>
-        </Popover>
+        </Popover >
     );
 }

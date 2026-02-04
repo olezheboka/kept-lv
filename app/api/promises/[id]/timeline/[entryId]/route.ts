@@ -34,16 +34,31 @@ export async function DELETE(
             return new NextResponse("Promise not found", { status: 404 });
         }
 
-        // 2. We no longer revert the Promise status when deleting the latest entry.
-        // The user wants to keep the current status/justification on the Promise object,
-        // even if the corresponding history entry is deleted.
-        // This allows cleaning up history without "undoing" the current state.
+        // 3. Delete the entry and check if any remain
+        await prisma.$transaction(async (tx) => {
+            // Delete the specific entry
+            await tx.promiseStatusHistory.delete({
+                where: {
+                    id: entryId,
+                    promiseId: id
+                }
+            });
 
-        // 3. Delete the entry
-        await prisma.promiseStatusHistory.delete({
-            where: {
-                id: entryId,
-                promiseId: id // Extra safety check
+            // Count remaining entries
+            const count = await tx.promiseStatusHistory.count({
+                where: { promiseId: id }
+            });
+
+            // If no history remains, revert to initial status (PENDING)
+            // This handles the case where "Promise Created" is the only thing left conceptually
+            if (count === 0) {
+                await tx.promise.update({
+                    where: { id },
+                    data: {
+                        status: "PENDING",
+                        statusUpdatedAt: null
+                    }
+                });
             }
         });
 
