@@ -34,11 +34,38 @@ export async function DELETE(
             return new NextResponse("Promise not found", { status: 404 });
         }
 
-        // 2. Validate: Cannot delete the most recent entry (Current Status)
+        // 2. Check if we are deleting the current status (the most recent one)
+        // If so, we need to revert the Promise to the PREVIOUS status
         if (promise.statusHistory.length > 0) {
             const latestEntry = promise.statusHistory[0];
+
             if (latestEntry.id === entryId) {
-                return new NextResponse("Cannot delete the current status. Change status first.", { status: 400 });
+                // Deleting the current status
+
+                // Get previous entry (if any)
+                const previousEntry = promise.statusHistory[1];
+
+                if (previousEntry) {
+                    // Revert to previous status
+                    await prisma.promise.update({
+                        where: { id },
+                        data: {
+                            status: previousEntry.newStatus,
+                            explanation: previousEntry.note, // note maps to explanation/justification
+                            statusUpdatedAt: previousEntry.changedAt
+                        }
+                    });
+                } else {
+                    // No previous history -> Revert to initial state (PENDING)
+                    await prisma.promise.update({
+                        where: { id },
+                        data: {
+                            status: "PENDING",
+                            explanation: null,
+                            statusUpdatedAt: null // or promise.datePromised
+                        }
+                    });
+                }
             }
         }
 
@@ -49,6 +76,9 @@ export async function DELETE(
                 promiseId: id // Extra safety check
             }
         });
+
+        // Revalidate the promise page to reflect status update
+        // revalidatePath(`/promises/${id}`); // If strictly needed, but client usually handles it
 
         return new NextResponse(null, { status: 204 });
 
