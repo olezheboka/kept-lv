@@ -16,11 +16,16 @@ export async function DELETE(
         const { id, entryId } = await params;
 
         // 1. Fetch the promise with its history to determine validity
+        // Use the same sort order as the UI (EditableTimeline): changedAt desc, then id desc
+        // This ensures consistent "latest" determination when multiple entries have the same timestamp
         const promise = await prisma.promise.findUnique({
             where: { id },
             include: {
                 statusHistory: {
-                    orderBy: { changedAt: 'desc' }
+                    orderBy: [
+                        { changedAt: 'desc' },
+                        { id: 'desc' }
+                    ]
                 }
             }
         });
