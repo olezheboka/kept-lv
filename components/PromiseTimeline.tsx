@@ -1,6 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
 import {
     Timeline,
     TimelineItem,
@@ -100,7 +99,12 @@ export function PromiseTimeline({ history, createdAt }: PromiseTimelineProps) {
                             <TimelineContent className={!isLatest ? "opacity-60 saturate-50" : ""}>
                                 <div className="flex flex-col gap-0.5">
                                     <span className="text-xs text-muted-foreground">
-                                        {format(new Date(entry.changedAt), "dd.MM.yyyy")}
+                                        {new Date(entry.changedAt).toLocaleDateString("lv-LV", {
+                                            timeZone: "Europe/Riga",
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric"
+                                        })}
                                     </span>
                                     <span className={`text-sm text-foreground ${isLatest ? 'font-bold' : 'font-medium'}`}>
                                         {entry.oldStatus ? (
@@ -138,7 +142,14 @@ export function PromiseTimeline({ history, createdAt }: PromiseTimelineProps) {
                             </TimelineBadge>
                             <TimelineContent className={!isCreationActive ? "opacity-60 saturate-50" : ""}>
                                 <div className="flex flex-col gap-0.5">
-                                    <span className="text-xs text-muted-foreground">{format(new Date(createdAt), "dd.MM.yyyy")}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                        {new Date(createdAt).toLocaleDateString("lv-LV", {
+                                            timeZone: "Europe/Riga",
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric"
+                                        })}
+                                    </span>
                                     <span className={`text-sm text-foreground flex items-center gap-1 ${isCreationActive ? 'font-bold' : 'font-medium'}`}>
                                         <span>Solījums reģistrēts</span>
                                         <StatusBadge status="pending" size="sm" showIcon={true} />

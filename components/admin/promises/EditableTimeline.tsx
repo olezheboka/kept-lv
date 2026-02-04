@@ -1,6 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
 import {
     Timeline,
     TimelineItem,
@@ -141,7 +140,17 @@ export function EditableTimeline({ history, createdAt, onDelete, isDeleting }: E
                                 <div className="flex items-end gap-3 w-full group">
                                     <div className="flex flex-col gap-0.5">
                                         <span className="text-xs text-muted-foreground">
-                                            {format(new Date(entry.changedAt), "dd.MM.yyyy")}
+                                            {new Date(entry.changedAt).toLocaleDateString("lv-LV", {
+                                                timeZone: "Europe/Riga",
+                                                day: "2-digit",
+                                                month: "2-digit",
+                                                year: "numeric"
+                                            })}, {new Date(entry.changedAt).toLocaleTimeString("lv-LV", {
+                                                timeZone: "Europe/Riga",
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                                hour12: false
+                                            })}
                                         </span>
                                         <span className={`text-sm text-foreground ${isLatest ? 'font-bold' : 'font-medium'}`}>
                                             {normalizedOldStatus ? (
@@ -208,7 +217,19 @@ export function EditableTimeline({ history, createdAt, onDelete, isDeleting }: E
                             </TimelineBadge>
                             <TimelineContent className={!isCreationActive ? "opacity-60 saturate-50" : ""}>
                                 <div className="flex flex-col gap-0.5">
-                                    <span className="text-xs text-muted-foreground">{format(new Date(createdAt), "dd.MM.yyyy")}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                        {new Date(createdAt).toLocaleDateString("lv-LV", {
+                                            timeZone: "Europe/Riga",
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric"
+                                        })}, {new Date(createdAt).toLocaleTimeString("lv-LV", {
+                                            timeZone: "Europe/Riga",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            hour12: false
+                                        })}
+                                    </span>
                                     <span className={`text-sm text-foreground flex items-center gap-1 ${isCreationActive ? 'font-bold' : 'font-medium'}`}>
                                         <span>Solījums reģistrēts</span>
                                         <StatusBadge status="pending" size="sm" showIcon={true} />
