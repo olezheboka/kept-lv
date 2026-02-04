@@ -21,7 +21,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function Index() {
     const [featuredPromises, politicianRankings, partyRankings] = await Promise.all([
-        getFeaturedPromises("lv", 3),
+        getFeaturedPromises("lv", 6),
         getPoliticianRankings(),
         getPartyRankings(),
     ]);
