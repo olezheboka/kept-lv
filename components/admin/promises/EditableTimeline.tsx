@@ -122,9 +122,8 @@ export function EditableTimeline({ history, createdAt, onDelete, isDeleting }: E
                     const normalizedOldStatus = entry.oldStatus ? normalizeStatus(entry.oldStatus) : null;
                     const Icon = getStatusIcon(normalizedNewStatus);
 
-                    // Allow deleting ONLY if it's NOT the latest entry
-                    // Registration event is handled below separately and is not part of this array
-                    const canDelete = !isLatest;
+                    // Anyone in history list can be deleted now
+                    const canDelete = true;
 
                     return (
                         <TimelineItem key={entry.id}>
@@ -185,7 +184,9 @@ export function EditableTimeline({ history, createdAt, onDelete, isDeleting }: E
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        This will permanently delete this history entry. This action cannot be undone.
+                                                        {isLatest
+                                                            ? "Deleting the current status will revert the promise to its previous status (or Pending). This action cannot be undone."
+                                                            : "This will permanently delete this history entry. This action cannot be undone."}
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>
