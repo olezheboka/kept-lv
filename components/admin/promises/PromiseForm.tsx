@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
-import { Loader2, CheckCircle2, XCircle, PieChart, User, Folder, Building2, Layers, Ban } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, PieChart, User, Folder, Building2, Layers, Ban, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
@@ -237,6 +237,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             explanation: "",
             dateOfPromise: "",
             statusUpdatedAt: "",
+            statusUpdatedTime: format(new Date(), "HH:mm"),
 
             type: "INDIVIDUAL" as PromiseType,
             politicianId: "",
@@ -272,6 +273,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
             explanation: "",
             dateOfPromise: "",
             statusUpdatedAt: "",
+            statusUpdatedTime: "00:00",
             type: "INDIVIDUAL" as PromiseType,
             politicianId: "",
             partyId: "",
@@ -300,6 +302,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                 explanation: ensureRichTextState(initialData.explanation),
                 dateOfPromise: initialData.dateOfPromise ? new Date(initialData.dateOfPromise).toISOString().split('T')[0] : "",
                 statusUpdatedAt: initialData.statusUpdatedAt ? new Date(initialData.statusUpdatedAt).toISOString().split('T')[0] : "",
+                statusUpdatedTime: initialData.statusUpdatedAt ? format(new Date(initialData.statusUpdatedAt), "HH:mm") : format(new Date(), "HH:mm"),
                 type: initialData.type || "INDIVIDUAL",
                 politicianId: initialData.politicianId || "",
                 partyId: initialData.partyId || "",
@@ -342,6 +345,7 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                 explanation: ensureRichTextState(initialData.explanation),
                 dateOfPromise: initialData.dateOfPromise ? new Date(initialData.dateOfPromise).toISOString().split('T')[0] : "",
                 statusUpdatedAt: initialData.statusUpdatedAt ? new Date(initialData.statusUpdatedAt).toISOString().split('T')[0] : "",
+                statusUpdatedTime: initialData.statusUpdatedAt ? format(new Date(initialData.statusUpdatedAt), "HH:mm") : format(new Date(), "HH:mm"),
 
                 type: initialData.type || "INDIVIDUAL",
                 politicianId: initialData.politicianId || "",
@@ -420,7 +424,9 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                 status: statusMap[formData.status] || "PENDING",
                 explanation: formData.explanation || null,
                 dateOfPromise: new Date(formData.dateOfPromise).toISOString(),
-                statusUpdatedAt: formData.statusUpdatedAt ? new Date(formData.statusUpdatedAt).toISOString() : null,
+                statusUpdatedAt: formData.statusUpdatedAt
+                    ? new Date(`${formData.statusUpdatedAt}T${formData.statusUpdatedTime || "00:00"}:00`).toISOString()
+                    : null,
 
                 type: formData.type,
                 // Only send relevant ID based on type
@@ -810,7 +816,8 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                                         setFormData(prev => ({
                                             ...prev,
                                             status: option.value,
-                                            statusUpdatedAt: new Date().toISOString().split('T')[0]
+                                            statusUpdatedAt: new Date().toISOString().split('T')[0],
+                                            statusUpdatedTime: format(new Date(), "HH:mm")
                                         }));
                                         if (errors.status) setErrors({ ...errors, status: "" });
                                     }}
@@ -870,17 +877,32 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                                 <Label htmlFor="statusDate" className="font-semibold text-foreground">
                                     Status updated <span className="text-destructive">*</span>
                                 </Label>
-                                <DatePicker
-                                    date={formData.statusUpdatedAt ? new Date(formData.statusUpdatedAt) : undefined}
-                                    setDate={(date) => {
-                                        setFormData({
-                                            ...formData,
-                                            statusUpdatedAt: date ? format(date, "yyyy-MM-dd") : ""
-                                        });
-                                        if (errors.statusUpdatedAt) setErrors({ ...errors, statusUpdatedAt: "" });
-                                    }}
-                                    className={cn(errors.statusUpdatedAt && "border-destructive ring-destructive focus-visible:ring-destructive")}
-                                />
+                                <div className="flex gap-2">
+                                    <div className="flex-1">
+                                        <DatePicker
+                                            date={formData.statusUpdatedAt ? new Date(formData.statusUpdatedAt) : undefined}
+                                            setDate={(date) => {
+                                                setFormData({
+                                                    ...formData,
+                                                    statusUpdatedAt: date ? format(date, "yyyy-MM-dd") : ""
+                                                });
+                                                if (errors.statusUpdatedAt) setErrors({ ...errors, statusUpdatedAt: "" });
+                                            }}
+                                            className={cn(errors.statusUpdatedAt && "border-destructive ring-destructive focus-visible:ring-destructive")}
+                                        />
+                                    </div>
+                                    <div className="w-[110px]">
+                                        <div className="relative">
+                                            <Input
+                                                type="time"
+                                                value={formData.statusUpdatedTime}
+                                                onChange={(e) => setFormData({ ...formData, statusUpdatedTime: e.target.value })}
+                                                className="bg-background pl-8"
+                                            />
+                                            <Clock className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+                                        </div>
+                                    </div>
+                                </div>
                                 <FormError message={errors.statusUpdatedAt} />
                             </div>
                         </div>

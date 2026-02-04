@@ -89,7 +89,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Check for status change
     const statusChanged = promiseData.status && promiseData.status !== currentPromise.status;
 
-    // 2. Perform updates
     // 2. Perform updates in a transaction to prevent data loss on failure
     const promise = await prisma.$transaction(async (tx) => {
       // Delete existing sources and evidence if new ones are provided
@@ -229,9 +228,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     });
 
     // If statusUpdatedAt is present and status didn't change, check if we need to sync the history date.
-    // This handles two cases:
-    // 1. User changes the date in the form (dateChanged is true)
-    // 2. User saves form again to fix a desynchronized history entry (dateChanged might be false if promise already has new date)
     if (!statusChanged && statusUpdatedAt) {
       // Find the latest history entry
       const latestHistory = await prisma.promiseStatusHistory.findFirst({
@@ -251,9 +247,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }
       }
     }
-
-    // Removed revalidatePromise calls to prevent build errors
-    // revalidatePromise(promise);
 
     return NextResponse.json(promise);
   } catch (error) {
