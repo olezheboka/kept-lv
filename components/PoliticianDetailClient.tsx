@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from 'react';
-import Link from 'next/link';
+import { BackButton } from '@/components/ui/back-button';
 import { motion } from 'framer-motion';
 import { PromiseCard } from '@/components/PromiseCard';
 import { PerformanceCard } from '@/components/PerformanceCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PromiseStatus, STATUS_CONFIG } from '@/lib/types';
-import { ArrowLeft, Briefcase, GraduationCap } from 'lucide-react';
+import { Briefcase, GraduationCap } from 'lucide-react';
 import { PoliticianUI, PartyUI, PromiseUI } from '@/lib/db';
 
 interface PoliticianDetailClientProps {
@@ -27,9 +27,7 @@ export const PoliticianDetailClient = ({ politician, party, promises }: Politici
             <div className="flex flex-col bg-background min-h-[50vh] items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-foreground mb-4">Politiķis nav atrasta</h1>
-                    <Link href="/politicians" suppressHydrationWarning>
-                        <Button>Atpakaļ uz politiķiem</Button>
-                    </Link>
+                    <BackButton />
                 </div>
             </div>
         );
@@ -54,14 +52,7 @@ export const PoliticianDetailClient = ({ politician, party, promises }: Politici
             {/* Breadcrumb */}
             <div className="bg-surface-muted border-b border-border/50">
                 <div className="container-wide py-4">
-                    <Link
-                        href="/politicians"
-                        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                        suppressHydrationWarning
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Atpakaļ uz politiķiem
-                    </Link>
+                    <BackButton variant="link" />
                 </div>
             </div>
 

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from 'react';
-import Link from 'next/link';
+import { BackButton } from '@/components/ui/back-button';
 import { motion } from 'framer-motion';
 import { PromiseCard } from '@/components/PromiseCard';
 import { Card, CardContent } from '@/components/ui/card';
 import { STATUS_CONFIG, PromiseStatus } from '@/lib/types';
 import { PromiseUI, CategoryUI } from '@/lib/db';
-import { ArrowLeft, TrendingUp } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
 import { PerformanceCard } from '@/components/PerformanceCard';
 import { Button } from '@/components/ui/button';
@@ -39,14 +39,7 @@ export const CategoryDetailClient = ({ category, promises }: CategoryDetailClien
             {/* Breadcrumb */}
             <div className="bg-surface-muted border-b border-border/50">
                 <div className="container-wide py-4">
-                    <Link
-                        href="/categories"
-                        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                        suppressHydrationWarning
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Atpakaļ uz kategorijām
-                    </Link>
+                    <BackButton variant="link" />
                 </div>
             </div>
 

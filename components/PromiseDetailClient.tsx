@@ -1,12 +1,13 @@
 "use client";
 
 import Link from 'next/link';
+import { BackButton } from '@/components/ui/back-button';
 import { motion } from 'framer-motion';
 import { StatusBadge } from '@/components/StatusBadge';
 import { PromiseCard } from '@/components/PromiseCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowLeft, Share2, Calendar, Tag, Link2, MessageCircle, Send, Copy, FileText } from 'lucide-react';
+import { Share2, Calendar, Tag, Link2, MessageCircle, Send, Copy, FileText } from 'lucide-react';
 import { SLUG_ICON_MAP } from '@/lib/categoryIcons';
 import { RichTextViewer } from "@/components/ui/rich-text-viewer";
 import {
@@ -84,9 +85,7 @@ export const PromiseDetailClient = ({
             <div className="flex flex-col bg-background min-h-[50vh] items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-foreground mb-4">Solījums nav atrasts</h1>
-                    <Link href="/promises" suppressHydrationWarning>
-                        <Button>Atpakaļ uz solījumiem</Button>
-                    </Link>
+                    <BackButton />
                 </div>
             </div>
         );
@@ -100,14 +99,7 @@ export const PromiseDetailClient = ({
             {/* Breadcrumb */}
             <div className="bg-surface-muted border-b border-border/50">
                 <div className="container-wide py-4">
-                    <Link
-                        href="/promises"
-                        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                        suppressHydrationWarning
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Atpakaļ uz solījumiem
-                    </Link>
+                    <BackButton variant="link" />
                 </div>
             </div>
 
