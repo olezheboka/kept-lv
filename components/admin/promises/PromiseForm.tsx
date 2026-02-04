@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { slugify } from "@/lib/utils";
-import { Loader2, CheckCircle2, XCircle, PieChart, User, Folder, Building2, Layers, Ban, Clock } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, PieChart, User, Folder, Building2, Layers, Ban } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
@@ -897,9 +897,8 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                                                 type="time"
                                                 value={formData.statusUpdatedTime}
                                                 onChange={(e) => setFormData({ ...formData, statusUpdatedTime: e.target.value })}
-                                                className="bg-background pl-8"
+                                                className="bg-background"
                                             />
-                                            <Clock className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
                                         </div>
                                     </div>
                                 </div>
@@ -910,10 +909,10 @@ export function PromiseForm({ initialData, politicians, parties, categories, onS
                 </div>
 
                 {/* Timeline Section */}
-                {initialData && initialData.statusHistory && initialData.statusHistory.length > 0 && (
+                {initialData && (
                     <div className="pt-6 border-t mt-8">
                         <EditableTimeline
-                            history={initialData.statusHistory}
+                            history={initialData.statusHistory || []}
                             createdAt={initialData.dateOfPromise as string}
                             onDelete={handleDeleteHistoryEntry}
                             isDeleting={isDeletingHistory}
