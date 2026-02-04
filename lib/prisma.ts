@@ -1,7 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 
 const prismaClientSingleton = () => {
-  const url = process.env.DATABASE_URL;
+  // Prioritize ACCELERATE_DATABASE_URL (pooled) over linked DATABASE_URL (direct)
+  // This allows us to keep the Vercel-Prisma integration while using Accelerate
+  const url = process.env.ACCELERATE_DATABASE_URL || process.env.DATABASE_URL;
 
   return new PrismaClient({
     datasourceUrl: url,
@@ -24,16 +26,20 @@ const RETRYABLE_ERROR_CODES = [
   "P1017", // Server has closed the connection
   "P2024", // Timed out fetching a new connection from the pool
   "P2034", // Transaction failed due to a write conflict or deadlock
+  // Prisma Accelerate specific errors
+  "P6008", // Accelerate connection timeout
+  "P6009", // Accelerate request timeout
 ];
 
 /**
  * Helper function to execute with retry logic for serverless reliability.
  * Uses exponential backoff with jitter to handle transient failures.
+ * Optimized for Vercel serverless with faster recovery times.
  */
 export async function withRetry<T>(
   operation: () => Promise<T>,
-  retries: number = 5,
-  baseDelay: number = 500
+  retries: number = 4,
+  baseDelay: number = 200
 ): Promise<T> {
   let lastError: Error | undefined;
 
@@ -63,7 +69,8 @@ export async function withRetry<T>(
         lastError.message.includes("ECONNRESET") ||
         lastError.message.includes("ETIMEDOUT") ||
         lastError.message.includes("Connection pool timeout") ||
-        lastError.message.includes("Connection refused");
+        lastError.message.includes("Connection refused") ||
+        lastError.message.includes("Accelerate");
 
       console.error(
         `Database operation failed (attempt ${attempt}/${retries}):`,
@@ -76,8 +83,9 @@ export async function withRetry<T>(
         throw lastError;
       }
 
-      // Exponential backoff with jitter: 500ms → 1s → 2s → 4s → 8s (capped)
-      const waitTime = Math.min(baseDelay * Math.pow(2, attempt - 1), 8000);
+      // Exponential backoff with jitter: 200ms → 400ms → 800ms → 1.6s (capped at 3s)
+      // Faster recovery to avoid Vercel function timeout (10s default)
+      const waitTime = Math.min(baseDelay * Math.pow(2, attempt - 1), 3000);
       const jitter = Math.random() * waitTime * 0.1; // 10% jitter to prevent thundering herd
       await new Promise(resolve => setTimeout(resolve, waitTime + jitter));
     }
