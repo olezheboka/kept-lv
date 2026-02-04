@@ -21,7 +21,7 @@ export const LexicalTheme = {
         listitem: "mb-1",
     },
     image: "editor-image",
-    hr: "my-8 border-t-2 border-gray-200 dark:border-gray-800",
+    hr: "my-4 border-t-2 border-gray-200 dark:border-gray-800",
     link: "text-blue-600 dark:text-blue-400 hover:underline cursor-pointer",
     table: "border-collapse border border-gray-300 dark:border-gray-600 my-4 w-full",
     tableRow: "hover:bg-gray-50 dark:hover:bg-gray-800",
