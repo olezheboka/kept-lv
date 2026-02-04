@@ -34,40 +34,10 @@ export async function DELETE(
             return new NextResponse("Promise not found", { status: 404 });
         }
 
-        // 2. Check if we are deleting the current status (the most recent one)
-        // If so, we need to revert the Promise to the PREVIOUS status
-        if (promise.statusHistory.length > 0) {
-            const latestEntry = promise.statusHistory[0];
-
-            if (latestEntry.id === entryId) {
-                // Deleting the current status
-
-                // Get previous entry (if any)
-                const previousEntry = promise.statusHistory[1];
-
-                if (previousEntry) {
-                    // Revert to previous status
-                    await prisma.promise.update({
-                        where: { id },
-                        data: {
-                            status: previousEntry.newStatus,
-                            explanation: previousEntry.note, // note maps to explanation/justification
-                            statusUpdatedAt: previousEntry.changedAt
-                        }
-                    });
-                } else {
-                    // No previous history -> Revert to initial state (PENDING)
-                    await prisma.promise.update({
-                        where: { id },
-                        data: {
-                            status: "PENDING",
-                            explanation: null,
-                            statusUpdatedAt: null // or promise.datePromised
-                        }
-                    });
-                }
-            }
-        }
+        // 2. We no longer revert the Promise status when deleting the latest entry.
+        // The user wants to keep the current status/justification on the Promise object,
+        // even if the corresponding history entry is deleted.
+        // This allows cleaning up history without "undoing" the current state.
 
         // 3. Delete the entry
         await prisma.promiseStatusHistory.delete({

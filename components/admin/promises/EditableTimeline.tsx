@@ -184,9 +184,7 @@ export function EditableTimeline({ history, createdAt, onDelete, isDeleting }: E
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        {isLatest
-                                                            ? "Deleting the current status will revert the promise to its previous status (or Pending). This action cannot be undone."
-                                                            : "This will permanently delete this history entry. This action cannot be undone."}
+                                                        This will permanently delete this history entry. This action cannot be undone.
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>
