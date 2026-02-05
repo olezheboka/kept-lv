@@ -903,7 +903,7 @@ export function RichTextEditor({
                 <div className="relative">
                     <RichTextPlugin
                         contentEditable={
-                            <ContentEditable className="min-h-[150px] p-4 outline-none prose prose-slate dark:prose-invert max-w-none" />
+                            <ContentEditable className="min-h-[150px] p-4 outline-none prose prose-slate dark:prose-invert max-w-none prose-a:text-[#0A57D0]" />
                         }
                         placeholder={
                             <div className="absolute top-4 left-4 text-muted-foreground pointer-events-none select-none">

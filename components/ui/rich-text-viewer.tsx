@@ -111,7 +111,7 @@ export function RichTextViewer({ value, className }: RichTextViewerProps) {
             <LexicalComposer initialConfig={initialConfig}>
                 <RichTextPlugin
                     contentEditable={
-                        <ContentEditable className="outline-none prose prose-slate dark:prose-invert max-w-none" />
+                        <ContentEditable className="outline-none prose prose-slate dark:prose-invert max-w-none prose-a:text-[#0A57D0]" />
                     }
                     placeholder={null}
                     ErrorBoundary={LexicalErrorBoundary}
