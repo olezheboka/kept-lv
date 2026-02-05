@@ -231,7 +231,7 @@ export const PromiseDetailClient = ({
                                                 href={source.url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="font-medium hover:underline text-primary"
+                                                className="font-medium hover:underline text-[#237CB1]"
                                             >
                                                 {source.title || extractDomain(source.url)}
                                             </a>
@@ -289,7 +289,7 @@ export const PromiseDetailClient = ({
                                                                 href={e.url}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="font-medium hover:underline text-primary"
+                                                                className="font-medium hover:underline text-[#237CB1]"
                                                             >
                                                                 {extractDomain(e.url)}
                                                             </a>
@@ -311,7 +311,7 @@ export const PromiseDetailClient = ({
                                                             href={legacyEvidence.url}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="font-medium hover:underline text-primary"
+                                                            className="font-medium hover:underline text-[#237CB1]"
                                                         >
                                                             {legacyEvidence.title || extractDomain(legacyEvidence.url)}
                                                         </a>
