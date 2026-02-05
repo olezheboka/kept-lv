@@ -94,7 +94,7 @@ const PromiseCardComponent = ({ promise }: PromiseCardProps) => {
           </div>
 
           {/* Title */}
-          <h3 className="font-semibold text-base text-foreground leading-snug mb-4 line-clamp-3 group-hover:text-accent transition-colors flex-1 relative z-0">
+          <h3 className="text-lg text-foreground leading-snug mb-4 line-clamp-3 group-hover:text-accent transition-colors flex-1 relative z-0">
             {promise.title}
           </h3>
 
