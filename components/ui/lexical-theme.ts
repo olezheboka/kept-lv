@@ -22,7 +22,7 @@ export const LexicalTheme = {
     },
     image: "editor-image",
     hr: "my-4 border-t-2 border-gray-200 dark:border-gray-800",
-    link: "text-[#237CB1] dark:text-blue-400 hover:underline cursor-pointer",
+    link: "text-[#0A57D0] dark:text-blue-400 hover:underline cursor-pointer",
     table: "border-collapse border border-gray-300 dark:border-gray-600 my-4 w-full",
     tableRow: "hover:bg-gray-50 dark:hover:bg-gray-800",
     tableCell: "border border-gray-300 dark:border-gray-600 px-3 py-2 relative align-top min-w-[75px]",
