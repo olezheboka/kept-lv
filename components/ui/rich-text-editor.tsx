@@ -98,6 +98,7 @@ import {
     Popover,
     PopoverContent,
     PopoverTrigger,
+    PopoverAnchor,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -155,6 +156,8 @@ function ToolbarPlugin() {
     const [isLink, setIsLink] = useState(false);
     const [linkUrl, setLinkUrl] = useState("");
     const [linkTargetBlank, setLinkTargetBlank] = useState(false);
+    const [isLinkPopoverOpen, setIsLinkPopoverOpen] = useState(false);
+    const [linkRect, setLinkRect] = useState<{ left: number; top: number; height: number } | null>(null);
 
     // Image State
     const [imageUrl, setImageUrl] = useState("");
@@ -174,6 +177,9 @@ function ToolbarPlugin() {
     const updateToolbar = () => {
         const selection = $getSelection();
         if ($isRangeSelection(selection)) {
+            // Update link rect when selection changes if popover is open or for strict tracking
+            // We only need to capture it when opening, but tracking it might be useful if we want it to follow.
+            // For now, simpler to capture on open.
             setIsBold(selection.hasFormat("bold"));
             setIsItalic(selection.hasFormat("italic"));
             setIsUnderline(selection.hasFormat("underline"));
@@ -367,6 +373,7 @@ function ToolbarPlugin() {
         // Validate URL protocol
         const validUrl = linkUrl.startsWith("http") ? linkUrl : `https://${linkUrl}`;
         editor.dispatchCommand(TOGGLE_LINK_COMMAND, { url: validUrl, target: linkTargetBlank ? "_blank" : undefined });
+        setIsLinkPopoverOpen(false);
     };
 
     const insertImage = () => {
@@ -580,7 +587,26 @@ function ToolbarPlugin() {
             <div className="w-[1px] h-6 bg-border mx-1" />
 
             {/* Link */}
-            <Popover>
+            <Popover
+                open={isLinkPopoverOpen}
+                onOpenChange={(open) => {
+                    if (open) {
+                        const selection = window.getSelection();
+                        if (selection && selection.rangeCount > 0) {
+                            const range = selection.getRangeAt(0);
+                            const rect = range.getBoundingClientRect();
+                            setLinkRect({
+                                left: rect.left,
+                                top: rect.top,
+                                height: rect.height,
+                            });
+                        } else {
+                            setLinkRect(null);
+                        }
+                    }
+                    setIsLinkPopoverOpen(open);
+                }}
+            >
                 <PopoverTrigger asChild>
                     <button
                         className={cn(
@@ -593,7 +619,23 @@ function ToolbarPlugin() {
                         <LinkIcon className="w-4 h-4" />
                     </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[600px] p-3" align="start">
+                {/* 
+                  Anchor to selection if available. 
+                  We use fixed position to match getBoundingClientRect coordinates.
+                  We add scrollY/scrollX to make it robust against scroll if we used absolute, 
+                  but for simplest 'overlay' behavior fixed works well with client rects.
+                */}
+                {isLinkPopoverOpen && linkRect && (
+                    <PopoverAnchor
+                        className="absolute w-px h-px invisible pointer-events-none"
+                        style={{
+                            top: linkRect.top + window.scrollY,
+                            left: linkRect.left + window.scrollX,
+                            height: linkRect.height, // Make anchor full height of selection
+                        }}
+                    />
+                )}
+                <PopoverContent className="w-[600px] p-3" align="start" sideOffset={5}>
                     <div className="flex flex-col gap-2">
                         <div className="flex gap-2">
                             <Input
@@ -621,6 +663,7 @@ function ToolbarPlugin() {
                                     onClick={() => {
                                         setLinkUrl("");
                                         editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+                                        setIsLinkPopoverOpen(false);
                                     }}
                                     title="Remove Link"
                                 >
