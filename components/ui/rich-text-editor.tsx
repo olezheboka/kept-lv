@@ -37,6 +37,7 @@ import {
     CAN_UNDO_COMMAND,
     CAN_REDO_COMMAND,
     COMMAND_PRIORITY_CRITICAL,
+    COMMAND_PRIORITY_HIGH,
     COMMAND_PRIORITY_LOW,
     $isTextNode,
     $createParagraphNode,
@@ -306,7 +307,7 @@ function ToolbarPlugin() {
                 }
                 return false;
             },
-            COMMAND_PRIORITY_LOW
+            COMMAND_PRIORITY_HIGH
         );
     }, [editor]);
 
