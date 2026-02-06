@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -47,7 +46,6 @@ import {
     INDENT_CONTENT_COMMAND,
     OUTDENT_CONTENT_COMMAND,
     CLICK_COMMAND,
-    $getNearestNodeFromDOMNode,
 } from "lexical";
 
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode, $isQuoteNode } from "@lexical/rich-text";
@@ -280,44 +278,28 @@ function ToolbarPlugin() {
     }, [editor]);
 
     // Handle link clicks
-    // Handle link clicks
     useEffect(() => {
         return editor.registerCommand(
             CLICK_COMMAND,
             (payload: MouseEvent) => {
                 const target = payload.target as HTMLElement;
+                const linkElement = target.closest('a');
 
-                // Use Lexical to find the node from the DOM element
-                // This is more reliable than manual DOM traversal
-                editor.getEditorState().read(() => {
-                    const node = $getNearestNodeFromDOMNode(target);
-                    if (node) {
-                        const parent = node.getParent();
-                        const isLink = $isLinkNode(parent) || $isLinkNode(node);
+                if (linkElement && editor.getRootElement()?.contains(linkElement)) {
+                    // Anchor to the specific element
+                    virtualAnchorRef.current = linkElement;
 
-                        if (isLink) {
-                            const linkNode = ($isLinkNode(parent) ? parent : node) as LinkNode;
-                            const linkElement = editor.getElementByKey(linkNode.getKey());
+                    const href = linkElement.getAttribute('href');
+                    const targetAttr = linkElement.getAttribute('target');
 
-                            if (linkElement) {
-                                // Set virtual anchor to the link element
-                                virtualAnchorRef.current = linkElement;
-
-                                setLinkUrl(linkNode.getURL());
-                                setLinkTargetBlank(linkNode.getTarget() === "_blank");
-                                setIsLink(true);
-                                setIsLinkPopoverOpen(true);
-                            }
-                        }
+                    if (href) {
+                        setLinkUrl(href);
+                        setLinkTargetBlank(!!targetAttr && targetAttr === "_blank");
+                        setIsLink(true);
+                        setIsLinkPopoverOpen(true);
                     }
-                });
+                }
 
-                // Return true to stop propagation if it was a link? 
-                // Using low priority usually means false is fine, but for CRITICAL 
-                // we might want to check if we handled it. 
-                // Actually, for CLICK_COMMAND, returning false allows other handlers (like selection) to run 
-                // but we want our overlay to show.
-                // We'll return false to allow selection to update normally.
                 return false;
             },
             COMMAND_PRIORITY_CRITICAL
