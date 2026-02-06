@@ -159,7 +159,10 @@ function ToolbarPlugin() {
     const [linkUrl, setLinkUrl] = useState("");
     const [linkTargetBlank, setLinkTargetBlank] = useState(false);
     const [isLinkPopoverOpen, setIsLinkPopoverOpen] = useState(false);
-    const [linkRect, setLinkRect] = useState<{ left: number; top: number; height: number } | null>(null);
+    // Use a ref for the anchor to avoid re-renders just for position updates, 
+    // but ensure we update it before opening the popover.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const virtualAnchorRef = useRef<any>(null);
 
     // Image State
     const [imageUrl, setImageUrl] = useState("");
@@ -283,12 +286,8 @@ function ToolbarPlugin() {
                 const linkElement = target.closest('a');
 
                 if (linkElement && editor.getRootElement()?.contains(linkElement)) {
-                    const rect = linkElement.getBoundingClientRect();
-                    setLinkRect({
-                        left: rect.left,
-                        top: rect.top,
-                        height: rect.height,
-                    });
+                    // Anchor to the specific element
+                    virtualAnchorRef.current = linkElement;
 
                     editor.getEditorState().read(() => {
                         const selection = $getSelection();
@@ -630,17 +629,17 @@ function ToolbarPlugin() {
                 open={isLinkPopoverOpen}
                 onOpenChange={(open) => {
                     if (open) {
+                        // If opening via other means (e.g. keyboard), fallback to selection range
                         const selection = window.getSelection();
                         if (selection && selection.rangeCount > 0) {
                             const range = selection.getRangeAt(0);
                             const rect = range.getBoundingClientRect();
-                            setLinkRect({
-                                left: rect.left,
-                                top: rect.top,
-                                height: rect.height,
-                            });
-                        } else {
-                            setLinkRect(null);
+                            // Only set if we don't have a specific element anchor from click
+                            // OR if we are just toggling it via toolbar button (where click handler wouldn't have fired)
+                            // We can create a virtual element
+                            virtualAnchorRef.current = {
+                                getBoundingClientRect: () => rect,
+                            };
                         }
                     }
                     setIsLinkPopoverOpen(open);
@@ -654,26 +653,23 @@ function ToolbarPlugin() {
                         )}
                         title="Insert Link"
                         type="button"
+                        onClick={(e) => {
+                            // When clicking the toolbar button explicitly
+                            const selection = window.getSelection();
+                            if (selection && selection.rangeCount > 0) {
+                                const range = selection.getRangeAt(0);
+                                virtualAnchorRef.current = {
+                                    getBoundingClientRect: () => range.getBoundingClientRect(),
+                                };
+                            }
+                        }}
                     >
                         <LinkIcon className="w-4 h-4" />
                     </button>
                 </PopoverTrigger>
-                {/* 
-                  Anchor to selection if available. 
-                  We use fixed position to match getBoundingClientRect coordinates.
-                  We add scrollY/scrollX to make it robust against scroll if we used absolute, 
-                  but for simplest 'overlay' behavior fixed works well with client rects.
-                */}
-                {isLinkPopoverOpen && linkRect && (
-                    <PopoverAnchor
-                        className="absolute w-px h-px invisible pointer-events-none"
-                        style={{
-                            top: linkRect.top + window.scrollY,
-                            left: linkRect.left + window.scrollX,
-                            height: linkRect.height, // Make anchor full height of selection
-                        }}
-                    />
-                )}
+
+                <PopoverAnchor virtualRef={virtualAnchorRef} />
+
                 <PopoverContent className="w-[600px] p-3" align="start" sideOffset={5}>
                     <div className="flex flex-col gap-2">
                         <div className="flex gap-2">
