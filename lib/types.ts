@@ -93,7 +93,7 @@ export const STATUS_CONFIG: Record<PromiseStatus, { label: string; className: st
     icon: 'CheckCircle2'
   },
   'broken': {
-    label: 'Lauzts',
+    label: 'Neizpildīts',
     className: 'status-broken',
     icon: 'XCircle'
   },
