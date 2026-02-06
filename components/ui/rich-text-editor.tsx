@@ -47,6 +47,7 @@ import {
     INDENT_CONTENT_COMMAND,
     OUTDENT_CONTENT_COMMAND,
     CLICK_COMMAND,
+    $getNearestNodeFromDOMNode,
 } from "lexical";
 
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode, $isQuoteNode } from "@lexical/rich-text";
@@ -279,35 +280,47 @@ function ToolbarPlugin() {
     }, [editor]);
 
     // Handle link clicks
+    // Handle link clicks
     useEffect(() => {
         return editor.registerCommand(
             CLICK_COMMAND,
             (payload: MouseEvent) => {
                 const target = payload.target as HTMLElement;
-                const linkElement = target.closest('a');
 
-                if (linkElement && editor.getRootElement()?.contains(linkElement)) {
-                    // Anchor to the specific element
-                    virtualAnchorRef.current = linkElement;
+                // Use Lexical to find the node from the DOM element
+                // This is more reliable than manual DOM traversal
+                editor.getEditorState().read(() => {
+                    const node = $getNearestNodeFromDOMNode(target);
+                    if (node) {
+                        const parent = node.getParent();
+                        const isLink = $isLinkNode(parent) || $isLinkNode(node);
 
-                    editor.getEditorState().read(() => {
-                        const selection = $getSelection();
-                        if ($isRangeSelection(selection)) {
-                            const node = selection.anchor.getNode();
-                            const parent = node.getParent();
-                            if ($isLinkNode(parent) || $isLinkNode(node)) {
-                                const linkNode = ($isLinkNode(parent) ? parent : node) as LinkNode;
+                        if (isLink) {
+                            const linkNode = ($isLinkNode(parent) ? parent : node) as LinkNode;
+                            const linkElement = editor.getElementByKey(linkNode.getKey());
+
+                            if (linkElement) {
+                                // Set virtual anchor to the link element
+                                virtualAnchorRef.current = linkElement;
+
                                 setLinkUrl(linkNode.getURL());
                                 setLinkTargetBlank(linkNode.getTarget() === "_blank");
                                 setIsLink(true);
                                 setIsLinkPopoverOpen(true);
                             }
                         }
-                    });
-                }
+                    }
+                });
+
+                // Return true to stop propagation if it was a link? 
+                // Using low priority usually means false is fine, but for CRITICAL 
+                // we might want to check if we handled it. 
+                // Actually, for CLICK_COMMAND, returning false allows other handlers (like selection) to run 
+                // but we want our overlay to show.
+                // We'll return false to allow selection to update normally.
                 return false;
             },
-            COMMAND_PRIORITY_HIGH
+            COMMAND_PRIORITY_CRITICAL
         );
     }, [editor]);
 
