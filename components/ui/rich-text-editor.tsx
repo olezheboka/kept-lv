@@ -37,6 +37,7 @@ import {
     CAN_UNDO_COMMAND,
     CAN_REDO_COMMAND,
     COMMAND_PRIORITY_CRITICAL,
+    COMMAND_PRIORITY_LOW,
     $isTextNode,
     $createParagraphNode,
     LexicalCommand,
@@ -44,6 +45,7 @@ import {
     $insertNodes,
     INDENT_CONTENT_COMMAND,
     OUTDENT_CONTENT_COMMAND,
+    CLICK_COMMAND,
 } from "lexical";
 
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode, $isQuoteNode } from "@lexical/rich-text";
@@ -269,6 +271,43 @@ function ToolbarPlugin() {
                 return true;
             },
             COMMAND_PRIORITY_CRITICAL
+        );
+    }, [editor]);
+
+    // Handle link clicks
+    useEffect(() => {
+        return editor.registerCommand(
+            CLICK_COMMAND,
+            (payload: MouseEvent) => {
+                const target = payload.target as HTMLElement;
+                const linkElement = target.closest('a');
+
+                if (linkElement && editor.getRootElement()?.contains(linkElement)) {
+                    const rect = linkElement.getBoundingClientRect();
+                    setLinkRect({
+                        left: rect.left,
+                        top: rect.top,
+                        height: rect.height,
+                    });
+
+                    editor.getEditorState().read(() => {
+                        const selection = $getSelection();
+                        if ($isRangeSelection(selection)) {
+                            const node = selection.anchor.getNode();
+                            const parent = node.getParent();
+                            if ($isLinkNode(parent) || $isLinkNode(node)) {
+                                const linkNode = ($isLinkNode(parent) ? parent : node) as LinkNode;
+                                setLinkUrl(linkNode.getURL());
+                                setLinkTargetBlank(linkNode.getTarget() === "_blank");
+                                setIsLink(true);
+                                setIsLinkPopoverOpen(true);
+                            }
+                        }
+                    });
+                }
+                return false;
+            },
+            COMMAND_PRIORITY_LOW
         );
     }, [editor]);
 
