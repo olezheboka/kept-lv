@@ -210,6 +210,9 @@ export const PromiseDetailClient = ({
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
                                     {promise.title}
                                 </h1>
+                                <div className="mt-4">
+                                    <StatusBadge status={promise.status} size="lg" variant="solid" />
+                                </div>
                             </div>
 
                             {/* Description */}
@@ -259,9 +262,15 @@ export const PromiseDetailClient = ({
                                             "bg-[#F4F5F7] border-[#C9CED7]"
                                 }`}>
                                 <CardContent className="p-6 space-y-4">
-                                    <div className="flex justify-start">
-                                        <StatusBadge status={promise.status} size="lg" variant="solid" />
+                                    <div className={`border-l-4 pl-4 mb-4 ${promise.status === 'kept' ? "border-status-kept" :
+                                            promise.status === 'partially-kept' ? "border-status-partially" :
+                                                promise.status === 'pending' ? "border-status-pending" :
+                                                    promise.status === 'broken' ? "border-status-broken" :
+                                                        "border-gray-400"
+                                        }`}>
+                                        <h2 className="text-xl md:text-2xl font-bold text-foreground">Rezultāts</h2>
                                     </div>
+
                                     {promise.statusJustification && (
                                         <div className="text-foreground leading-relaxed">
 
