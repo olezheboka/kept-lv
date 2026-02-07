@@ -249,90 +249,90 @@ export const PromiseDetailClient = ({
                         {/* Sources Removed */}
 
                         {/* Status Justification (Moved to Main Column) */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: 0.1 }}
-                            className="mb-8"
-                        >
-                            <Card className={`shadow-sm border transition-colors w-full ${promise.status === 'kept' ? "bg-status-kept-bg border-status-kept/30" :
-                                promise.status === 'partially-kept' ? "bg-status-partially-bg border-status-partially/30" :
-                                    promise.status === 'pending' ? "bg-status-pending-bg border-status-pending/30" :
-                                        promise.status === 'broken' ? "bg-status-broken-bg border-status-broken/30" :
-                                            "bg-[#F4F5F7] border-[#C9CED7]"
-                                }`}>
-                                <CardContent className="p-6 space-y-4">
-                                    <div className={`border-l-4 pl-4 mb-4 ${promise.status === 'kept' ? "border-status-kept" :
+                        {promise.statusJustification && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.4, delay: 0.1 }}
+                                className="mb-8"
+                            >
+                                <Card className={`shadow-sm border transition-colors w-full ${promise.status === 'kept' ? "bg-status-kept-bg border-status-kept/30" :
+                                    promise.status === 'partially-kept' ? "bg-status-partially-bg border-status-partially/30" :
+                                        promise.status === 'pending' ? "bg-status-pending-bg border-status-pending/30" :
+                                            promise.status === 'broken' ? "bg-status-broken-bg border-status-broken/30" :
+                                                "bg-[#F4F5F7] border-[#C9CED7]"
+                                    }`}>
+                                    <CardContent className="p-6 space-y-4">
+                                        <div className={`border-l-4 pl-4 mb-4 ${promise.status === 'kept' ? "border-status-kept" :
                                             promise.status === 'partially-kept' ? "border-status-partially" :
                                                 promise.status === 'pending' ? "border-status-pending" :
                                                     promise.status === 'broken' ? "border-status-broken" :
                                                         "border-gray-400"
-                                        }`}>
-                                        <h2 className="text-xl md:text-2xl font-bold text-foreground">Rezultāts</h2>
-                                    </div>
+                                            }`}>
+                                            <h2 className="text-xl md:text-2xl font-bold text-foreground">Rezultāts</h2>
+                                        </div>
 
-                                    {promise.statusJustification && (
                                         <div className="text-foreground leading-relaxed">
 
                                             <RichTextViewer value={promise.statusJustification} />
                                         </div>
-                                    )}
 
-                                    <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-black/5 text-xs text-foreground/70">
-                                        <div className="flex items-center gap-2">
-                                            <Calendar className="h-3.5 w-3.5 opacity-70" />
-                                            <span className="opacity-70">Atjaunināts:</span>
-                                            <span className="font-medium">{format(new Date(promise.statusUpdatedAt), 'dd.MM.yyyy')}</span>
-                                        </div>
-                                        {(() => {
-                                            // 1. Try Promise Evidence (New schema)
-                                            if (promise.evidence && promise.evidence.length > 0) {
-                                                const e = promise.evidence[0];
-                                                return (
+                                        <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-black/5 text-xs text-foreground/70">
+                                            <div className="flex items-center gap-2">
+                                                <Calendar className="h-3.5 w-3.5 opacity-70" />
+                                                <span className="opacity-70">Atjaunināts:</span>
+                                                <span className="font-medium">{format(new Date(promise.statusUpdatedAt), 'dd.MM.yyyy')}</span>
+                                            </div>
+                                            {(() => {
+                                                // 1. Try Promise Evidence (New schema)
+                                                if (promise.evidence && promise.evidence.length > 0) {
+                                                    const e = promise.evidence[0];
+                                                    return (
+                                                        <>
+                                                            <div className="hidden sm:block w-px h-3 bg-foreground/20"></div>
+                                                            <div className="flex items-center gap-2">
+                                                                <Link2 className="h-3.5 w-3.5 opacity-70" />
+                                                                <span className="opacity-70">Avots:</span>
+                                                                <a
+                                                                    href={e.url}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="font-medium hover:underline text-[#0A57D0]"
+                                                                >
+                                                                    {extractDomain(e.url)}
+                                                                </a>
+                                                            </div>
+                                                        </>
+                                                    );
+                                                }
+
+                                                // 2. Legacy Fallback: Try finding it in Sources (any non-manifesto)
+                                                const legacyEvidence = promise.sources?.find(s => s.type !== "MANIFESTO");
+
+                                                if (legacyEvidence) return (
                                                     <>
                                                         <div className="hidden sm:block w-px h-3 bg-foreground/20"></div>
                                                         <div className="flex items-center gap-2">
                                                             <Link2 className="h-3.5 w-3.5 opacity-70" />
                                                             <span className="opacity-70">Avots:</span>
                                                             <a
-                                                                href={e.url}
+                                                                href={legacyEvidence.url}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 className="font-medium hover:underline text-[#0A57D0]"
                                                             >
-                                                                {extractDomain(e.url)}
+                                                                {legacyEvidence.title || extractDomain(legacyEvidence.url)}
                                                             </a>
                                                         </div>
                                                     </>
                                                 );
-                                            }
-
-                                            // 2. Legacy Fallback: Try finding it in Sources (any non-manifesto)
-                                            const legacyEvidence = promise.sources?.find(s => s.type !== "MANIFESTO");
-
-                                            if (legacyEvidence) return (
-                                                <>
-                                                    <div className="hidden sm:block w-px h-3 bg-foreground/20"></div>
-                                                    <div className="flex items-center gap-2">
-                                                        <Link2 className="h-3.5 w-3.5 opacity-70" />
-                                                        <span className="opacity-70">Avots:</span>
-                                                        <a
-                                                            href={legacyEvidence.url}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="font-medium hover:underline text-[#0A57D0]"
-                                                        >
-                                                            {legacyEvidence.title || extractDomain(legacyEvidence.url)}
-                                                        </a>
-                                                    </div>
-                                                </>
-                                            );
-                                            return null;
-                                        })()}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
+                                                return null;
+                                            })()}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        )}
 
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
