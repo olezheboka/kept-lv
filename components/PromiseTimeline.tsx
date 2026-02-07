@@ -81,7 +81,7 @@ export function PromiseTimeline({ history, createdAt }: PromiseTimelineProps) {
 
     return (
         <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">Statuss</h3>
+            <h3 className="text-lg font-semibold text-foreground">Izpildes gaita</h3>
             <Timeline>
                 {sortedHistory.map((entry, index) => {
                     const isLatest = index === 0;
