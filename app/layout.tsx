@@ -111,7 +111,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Providers>
             {children}
             <Toaster />
-            <Sonner />
+            <Sonner position="top-center" />
           </Providers>
         </NextIntlClientProvider>
       </body>
